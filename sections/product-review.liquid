@@ -16,30 +16,45 @@
         assign title_color = section.settings.title_color
         assign text_color_1 = section.settings.text_color_1
         assign text_color_2 = section.settings.text_color_2
-
-        if settings.show_dark_mode
-            assign dark_mode = false
-            unless background_color == blank or background_color == '#fff' or background_color == '#FFF' or background_color == '#ffffff' or background_color == '#FFFFFF' or background_color == 'rgb(255,255,255)' or background_color == 'rgba(255,255,255,1)' or background_color == 'rgba(0,0,0,0)' or background_color == 'rgb(0,0,0,0)'
-                assign dark_mode = true
-                assign dark_mode_background_color = section.settings.background_color
-            endunless
-        endif
     -%}
-    <div class="halo-block halo-product-review halo-block-padding" id="halo-product-review"
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};
-            --bg-color: {{ background_color }};
-            --title-color: {{ title_color }};
-            --text-color-1: {{ text_color_1 }};
-            --text-color-2: {{ text_color_2 }};
-            {% if dark_mode %}
-                --dark-mode-bg-color: {{ dark_mode_background_color }};
-            {% endif %}"
-    >
+    <style type="text/css" media="screen">
+        #halo-product-review{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        #halo-product-review .spr-review{
+            background: {{ background_color }};
+        }
+
+        #halo-product-review .spr-review .spr-review-header-title{
+            color: {{ title_color }};
+        }
+
+        #halo-product-review .spr-review .spr-review-content-body{
+            color: {{ text_color_1 }};
+        }
+
+        #halo-product-review .spr-review .spr-review-reportreview,
+        #halo-product-review .spr-review .spr-review-header-byline{
+            color: {{ text_color_2 }};
+        }
+
+        @media (max-width: 1024px) {
+            #halo-product-review{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #halo-product-review{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+    </style>
+    <div class="halo-block halo-product-review" id="halo-product-review">
     	<div class="container container-{{ container }}">
     		{%- if block_title != blank -%}
                 <div class="halo-block-header">
@@ -56,10 +71,13 @@
                 </div>
             {%- endif -%}
             <div class="halo-block-content">
-                <div class="review-block productView-review layout-{{ layout }}{% unless dark_mode %} dark-mode{% endunless %}">
+                <div class="review-block productView-review layout-{{ layout }}">
+                    {% render 'judgeme_widgets', widget_type: 'judgeme_review_widget', concierge_install: true, product: product %}
+                    {% comment %}
                     <div class="productView-review--content" id="shopify-product-reviews" data-id="{{ product.id }}">
                         {{ product.metafields.spr.reviews.content }}
                     </div>
+                  {% endcomment %}
                 </div>
             </div>
     	</div>
@@ -240,10 +258,6 @@
             {
                 "value": "2",
                 "label": "2"
-            },
-            {
-                "value": "3",
-                "label": "3"
             }]
         },
         {
@@ -274,9 +288,6 @@
             "label": "t:sections.general.settings.color.label__7",
             "default": "#010101"
         }
-	],
-    "disabled_on": {
-        "groups": ["header", "footer"]
-    }
+	]
 }
 {% endschema %}

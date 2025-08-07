@@ -8,14 +8,28 @@
         assign padding_bottom_mobile = section.settings.padding_bottom_mobile | append: 'px'
         assign container = section.settings.container 
     -%}
-    <div class="halo-block halo-filter-blog halo-block-padding" id="FilterSection-{{ section.id }}"
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};"
-    >
+
+    <style type="text/css" media="screen">
+        #FilterSection-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        @media (max-width: 1024px) {
+            #FilterSection-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #FilterSection-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+    </style>
+    <div class="halo-block halo-filter-blog" id="FilterSection-{{ section.id }}">
         <div class="container container-{{ container }}">
             <ul class="blog-filter" data-filter-blog>
                 {%- for tag in blog.all_tags -%}

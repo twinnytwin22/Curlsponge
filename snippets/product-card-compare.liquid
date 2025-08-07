@@ -51,7 +51,7 @@
 		                    endif
 		                -%}
 		                <a class="card-media card-media--{{ media_size }}{% if settings.show_image_swap %} media--hover-effect{% endif%}"
-		                    href="{{ product_card_product.url }}"
+		                    href="{{ product_card_product.url | within: collection }}"
 		                    {% if product_card_product.featured_media %}
 		                        {% if media_size == 'adapt' %}
 		                            style="padding-bottom: {{ 1 | divided_by: featured_media_aspect_ratio | times: 100 }}%;"
@@ -165,12 +165,12 @@
 	                            </div>
 	                        {%- endif -%}
 	                    </div>
-		                <a class="card-title link-underline{% if settings.product_title_line_text != 'full' %} card-title-ellipsis{% endif %}{% if variant_selected != blank %} card-title-change{% endif %}" href="{{ product_card_product.url }}" data-product-title="{{ product_card_product.title | escape }}" data-product-url="{{ product_card_product.url }}">
+		                <a class="card-title link-underline{% if settings.product_title_line_text != 'full' %} card-title-ellipsis{% endif %}{% if variant_selected != blank %} card-title-change{% endif %}" href="{{ product_card_product.url | within: collection }}" data-product-title="{{ product_card_product.title | escape }}" data-product-url="{{ product_card_product.url | within: collection }}">
 		                    <span class="text">
 		                        {{ product_card_product.title | escape }}
-		                        {%- if variant_selected != blank -%}
+		                        {% if variant_selected != blank %}
 		                            <span data-change-title> - {{ variant_selected }}</span>
-		                        {%- endif -%}
+		                        {% endif %}
 		                    </span>
 		                </a>
 		                <div class="card-price">

@@ -9,8 +9,6 @@
 
 .halo-notifyMe .form-input{
     min-height: var(--btn-min-height);
-    padding-top: var(--btn-padding-top);
-    padding-bottom: var(--btn-padding-bottom);
     width: calc(100% - 185px);
 }
 

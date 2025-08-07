@@ -18,10 +18,10 @@
 <noscript>{{ 'component-before-you-leave.css' | asset_url | stylesheet_tag }}</noscript>
 
 <div class="halo-sidebar halo-sidebar-{{ position }} halo-leave-sidebar" id="halo-leave-sidebar" data-time="{{ time | times: 60000 }}">
-    <button type="button" class="halo-sidebar-close" data-close-before-you-leave aria-label="{{ 'general.common.close' | t }}">
+    <a href="#" class="halo-sidebar-close" data-close-before-you-leave role="button">
     	<span class="visually-hidden">{{ 'general.common.close' | t }}</span>
         {% render 'icon-close' %}
-    </button>
+    </a>
     <div class="halo-sidebar-wrapper custom-scrollbar">
     	{%- if logo != blank -%}
 			<div class="before-you-leave-header">
@@ -73,7 +73,7 @@
 		{%- endif -%}
 		{%- if btn_text != blank -%}
 			<div class="before-you-leave-back">
-				<a class="button button-height flex align-center justify-center button-{{ btn }}" href="{{ btn_link }}" role="button">
+				<a class="button button-height flex align-center justify-center button-{{ btn }}" href="{{ btn_link }}">
 					<span class="text">{{ btn_text | escape }}</span>
 				</a>
 			</div>

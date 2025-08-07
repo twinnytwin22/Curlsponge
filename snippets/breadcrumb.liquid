@@ -5,13 +5,7 @@
 {{ 'component-breadcrumb.css' | asset_url | stylesheet_tag }}
 
 {%- unless template == 'index' -%}
-    {%- liquid
-        assign breadcrumb_mobile_style = settings.breadcrumb_mobile_style
-    -%}
-    {%- if breadcrumb_mobile_style == 'inline' -%}
-        <div class="breadcrumbs-blur breadcrumbs-blur__left" {% if alignment == 'left' %} style="display: none;"{% endif %}></div>
-    {%- endif -%}
-    <nav class="breadcrumb breadcrumb-{{ alignment }} breadcrumb-{{ breadcrumb_mobile_style }} disable-scrollbar" role="navigation" aria-label="breadcrumbs">
+    <nav class="breadcrumb breadcrumb-{{ alignment }}" role="navigation" aria-label="breadcrumbs">
         <a class="link" href="/">{{ 'general.breadcrumb.home' | t }}</a>  
         {%- if template contains 'product' -%} 
             {%- if collection -%}
@@ -58,7 +52,4 @@
             <span>{{ page_title | split: '|' | first }}</span>
         {%- endif -%}
     </nav>
-    {%- if breadcrumb_mobile_style == 'inline' -%}
-        <div class="breadcrumbs-blur breadcrumbs-blur__right" {% if alignment == 'right' %} style="display: none;"{% endif %}></div>
-    {%- endif -%}
 {%- endunless -%}

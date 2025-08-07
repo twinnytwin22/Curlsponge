@@ -1,20 +1,16 @@
+<link rel="stylesheet" href="{{ 'component-add-to-cart.css' | asset_url }}" media="print" onload="this.media='all'">
+
 <noscript>{{ 'component-add-to-cart.css' | asset_url | stylesheet_tag }}</noscript>
 
-<custom-modal class="halo-modal halo-modal__topDown halo-add-to-cart-popup-2" id="Modal-Upsell" data-url-style-popup-cart2="{{ 'component-add-to-cart.css' | asset_url }}">
-	<div class="halo-modal__dialog" role="dialog" aria-label="Dialog" aria-modal="true" tabindex="-1">
-		<div class="halo-modal-header">
-			<button class="halo-modal-close clearfix" role="button" id="ModalClose-Upsell" aria-label="{{ 'general.common.close' | t }}">
-				{% render 'icon-close' %}
-			</button>
-			<h3 class="halo-modal-title text-center">
-				{{ 'sections.cart.upsell' | t }}
-			</h3>
-		</div>
-		<div class="halo-modal-content halo-popup-scroll custom-scrollbar">
-			<quick-upsell-cart-items data-view="ajax_upsell_cart" data-section="Upsell" data-added-class="true" data-empty-cart="true" data-toggle-class="">
-				<div class="halo-block-loader"></div>
-				<div id="Cart-Content-Upsell"></div>
-			</quick-upsell-cart-items>
-		</div>
+<div class="halo-popup halo-upsell-popup halo-popup-topDown customPopup-large" data-upsell-popup id="halo-upsell-popup">
+	<div class="halo-popup-header customPopup-header-2">
+	    <a href="javascript:void(0)" class="halo-popup-close clearfix" data-close-upsell-popup role="button">
+	    	<span class="visually-hidden">{{ 'general.common.close' | t }}</span>
+	        {% render 'icon-close' %}
+	    </a>
+	    <h5 class="halo-popup-title customPopup-title-2 text-center">
+            {{ 'sections.cart.upsell' | t }}
+        </h5>
 	</div>
-</custom-modal>
+    <div class="halo-popup-content halo-popup-scroll custom-scrollbar"></div>
+</div>

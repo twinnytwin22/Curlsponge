@@ -1,31 +1,24 @@
 {%- unless settings.show_quick_cart -%}
+    <link rel="stylesheet" href="{{ 'component-quick-cart.css' | asset_url }}" media="print" onload="this.media='all'">
+{%- endunless -%}
+<link rel="stylesheet" href="{{ 'component-add-to-cart.css' | asset_url }}" media="print" onload="this.media='all'">
+
+{%- unless settings.show_quick_cart -%}
     <noscript>{{ 'component-quick-cart.css' | asset_url | stylesheet_tag }}</noscript>
 {%- endunless -%}
 <noscript>{{ 'component-add-to-cart.css' | asset_url | stylesheet_tag }}</noscript>
 
-<add-to-cart-popup class="halo-popup halo-add-to-cart-popup halo-popup-right customPopup-tiny" id="Popup-AddToCart" data-view="ajax_mini_cart" 
-    data-url-style-quick-cart="{% unless settings.show_quick_cart %}{{ 'component-quick-cart.css' | asset_url }}{% endunless %}" 
-    data-url-style-popup-cart="{{ 'component-add-to-cart.css' | asset_url }}"
->
-    <button class="halo-popup-close customPopup-close clearfix" type="button" aria-label="{{ 'general.common.close' | t }}" id="PopupClose-AddToCart">
+<div class="halo-popup halo-add-to-cart-popup halo-popup-right customPopup-tiny" data-add-to-cart-popup id="halo-add-to-cart-popup">
+    <a href="javascript:void(0)" class="halo-popup-close customPopup-close clearfix" data-close-add-to-cart-popup role="button">
+        <span class="visually-hidden">{{ 'general.common.close' | t }}</span>
         {% render 'icon-close' %}
-    </button>
-    <div class="halo-popup-content" id="PopupContent-AddToCart">
-        {%- liquid
-            assign item = cart.items | first
-            if settings.show_global_checkbox
-                assign has_global_checkbox = false
-                assign global_checkbox_show = settings.global_checkbox_show
-                if global_checkbox_show == 'all' or global_checkbox_show == 'cart'
-                    assign has_global_checkbox = true
-                endif
-            endif
-        -%}
+    </a>
+    <div class="halo-popup-content">
         <div class="product-added clearfix">
-            <a class="product-image" href="{{ shop.url }}"></a>
+            <a class="product-image" href=""></a>
             <div class="product-info">
                 <div class="product-title">
-                    <a class="title" href="{{ shop.url }}"></a>
+                    <a class="title" href=""></a>
                     <span class="text">{{ 'products.product.add_to_cart_success_message' | t }}</span>
                 </div>
                 <div class="product-action clearfix">
@@ -45,6 +38,15 @@
                             {{ 'sections.cart.view_cart' | t }}
                         </span>
                     </a>
+                    {%- liquid
+                        if settings.show_global_checkbox
+                            assign has_global_checkbox = false
+                            assign global_checkbox_show = settings.global_checkbox_show
+                            if global_checkbox_show == 'all' or global_checkbox_show == 'cart'
+                                assign has_global_checkbox = true
+                            endif
+                        endif
+                    -%}
                     {%- unless has_global_checkbox -%}
                         <a class="link link-checkout" href="javascript:void(0)" onclick="window.location='{{ routes.cart_url | split: '/cart' | first }}/checkout'" role="button">
                             {% render 'icon-money-check' %}
@@ -57,4 +59,4 @@
             </div>
         </div>
     </div>
-</add-to-cart-popup>
+</div>

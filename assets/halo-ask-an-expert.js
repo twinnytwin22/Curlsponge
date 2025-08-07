@@ -126,9 +126,9 @@
                                 <table style='width:100%;'>`;
 
                 if(askAnExpert.querySelector('.ask-an-expert')?.classList.contains('has-product')){
-                	let productName = askAnExpert.querySelector('[name="halo-product-title"]')?.value,
-                        productUrl = askAnExpert.querySelector('[name="halo-product-link"]')?.value,
-                        productImage = askAnExpert.querySelector('[name="halo-product-image"]')?.value;
+                	let productName = $askAnExpert.querySelector('[name="halo-product-title"]')?.value,
+                        productUrl = $askAnExpert.querySelector('[name="halo-product-link"]')?.value,
+                        productImage = $askAnExpert.querySelector('[name="halo-product-image"]')?.value;
 
                     message += `<tr>\
                                 <td style="border-bottom: 1px solid #e6e6e6; padding-bottom: 25px; margin-bottom:25px; width:50%;">\
@@ -178,11 +178,9 @@
 		},
 
 		onBodyClickEvent: (event) => {
-			if(document.body.classList.contains('ask-an-expert-show')){
-				if ((!document.querySelector('[data-ask-an-expert-popup]').contains(event.target)) && (!(event.target).closest('[data-open-ask-an-expert]'))){
-		            halo.close();
-		        }
-			}
+			if ((!document.querySelector('[data-ask-an-expert-popup]').contains(event.target)) && (!(event.target).closest('[data-open-ask-an-expert]')) && document.querySelector('body').classList.contains('ask-an-expert-show')){
+	            halo.close();
+	        }
 		}
 	}
 

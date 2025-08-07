@@ -89,22 +89,12 @@
     margin: 0 0 40px 0;
 }
 
-.login-row .form-input{
-    min-height: var(--btn-min-height);
-    padding-top: var(--btn-padding-top);
-    padding-bottom: var(--btn-padding-bottom);
-}
-
 .login-row .form-field + .form-field{
     margin-top: 12px;
 }
 
 .login-row .form-actions{
     margin-top: 40px;
-}
-
-body.dark-mode .login-rowItem.login-rowLeft{
-    background: rgba(var(--dark-mode-line), .04);
 }
 
 /* START: Account */
@@ -121,8 +111,9 @@ body.dark-mode .login-rowItem.login-rowLeft{
     .address-title{
         display: block;
         position: relative;
-        font-size: calc(var(--font-size) + 8px);
-        font-weight: var(--font-weight-bold);
+        font-family: var(--font-heading-family);
+        font-size: var(--header-font-size);
+        font-weight: var(--header-font-weight);
         text-transform: var(--header-text-transform);
         letter-spacing: var(--letter-spacing);
         line-height: var(--line-height);
@@ -315,8 +306,9 @@ body.dark-mode .login-rowItem.login-rowLeft{
     .account-product-title{
         display: block;
         position: relative;
-        font-size: calc(var(--font-size) + 8px);
-        font-weight: var(--font-weight-bold);
+        font-family: var(--font-heading-family);
+        font-size: var(--header-font-size);
+        font-weight: var(--header-font-weight);
         line-height: var(--line-height);
         letter-spacing: var(--letter-spacing);
         color: var(--color-text);

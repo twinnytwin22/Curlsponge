@@ -1,18 +1,14 @@
-<div class="footer-block__item footer-block__info text-{{ text_align }}" {{ block.shopify_attributes }}>
+<div class="footer-block__item footer-block__info text-{{ text_align }}">
     <div class="item column-{{ footer_text.size }} clearfix">
         {%- for column in footer_text -%}
-            <div class="footer-block__column{% if show_separate_line %} separate-line{% endif %}{% if column.settings.show_social %} footer_social-media{% endif %}" {{ column.shopify_attributes }}>
+            <div class="footer-block__column{% if show_separate_line %} separate-line{% endif %}{% if column.settings.show_social %} footer_social-media{% endif %}">
                 {%- if column.settings.show_social -%}
                     {%- if column.settings.heading_social != blank -%}
                         <h2 class="footer-block__heading">
                             {{ column.settings.heading_social | escape }}
                         </h2>
                     {%- endif -%}
-                    {% render 'halo-social-media-icons',
-                        block: column,
-                        show_social: true,
-                        footer_layout: footer_layout
-                    %}
+                    {% render 'halo-social-media-icons' %}
                 {%- endif -%}
                 {%- if column.settings.heading != blank -%}
                     <h2 class="footer-block__heading">
@@ -27,11 +23,11 @@
             </div>
         {%- endfor -%}
     </div>
-    {%- if block.settings.show_payment -%}
+    {%- if show_payment and payment_position == 'top' -%}
         <div class="item footer__payment footer__payment-2">
             {% render 'footer-payment',
-                block: block,
-                payment_type: block.settings.payment_type
+                section: section,
+                payment_type: payment_type
             %}
         </div>
     {%- endif -%}

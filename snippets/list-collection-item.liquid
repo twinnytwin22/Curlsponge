@@ -44,9 +44,7 @@
         {%- endif -%}
 	</div>
 	{%- if show_collection_title or show_collection_product_count or block.settings.sub_title != blank or block.settings.block_title != blank or block.settings.link_title != blank -%}
-		<div class="content-box style-{{ content_style }} text-{{ align }}{% if bg_color != 'rgba(0,0,0,0)' and bg_color != blank %} content-box--bg{% endif %}"
-			style="--bg-color: {{ bg_color }};" 
-		>
+		<div class="content-box style-{{ content_style }} text-{{ align }}">
 			{%- if show_collection_title -%}
                 <h4 class="heading">
                     <a href="{{ link }}">

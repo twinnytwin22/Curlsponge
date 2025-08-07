@@ -15,10 +15,10 @@
     endfor
 -%}
 
-<div class="product-item product-item-custom" data-product-id="product-{{ product_card_product.id }}" data-json-product='{{ product_card_product | json | escape }}'>
+<div class="product-item product-item-custom" data-product-id="product-{{ product_card_product.id }}" data-json-product='{{ product_card_product | json }}'>
     <div class="card">
         <div class="card-product{% if product_card_product.featured_media == nil %} card--text-only card--soft{% endif %}">
-            <a class="card-media" href="{{ product_card_product.url }}">
+            <a class="card-media" href="{{ product_card_product.url | within: collection }}">
                 {%- if product_card_product.featured_media -%}
                     {%- if variant_img != blank -%}
                         {% assign image = variant_img %}
@@ -27,7 +27,7 @@
                     {%- endif -%}
                     <img srcset="{{ image | img_url: 'master' }}" 
                         src="{{ image | img_url: 'master' }}"
-                        sizes="95px"
+                        sizes="auto"
                         alt="{{ image.alt | escape }}"
                         loading="lazy"
                         class="motion-reduce"
@@ -67,7 +67,7 @@
                         </div>
                     {%- endif -%}
                 {%- endif -%}
-                <a class="card-title link-underline{% if settings.product_title_line_text != 'full' %} card-title-ellipsis{% endif %}{% if variant_selected != blank %} card-title-change{% endif %}" href="{{ product_card_product.url }}">
+                <a class="card-title link-underline{% if settings.product_title_line_text != 'full' %} card-title-ellipsis{% endif %}{% if variant_selected != blank %} card-title-change{% endif %}" href="{{ product_card_product.url | within: collection }}">
                     <span class="text">
                         {{ product_card_product.title | escape }}
                         {% if variant_selected != blank %}

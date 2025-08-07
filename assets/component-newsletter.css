@@ -40,7 +40,7 @@
 }
 
 .newsletter .newsletter-form__input{
-    font-size: var(--font-size);
+    font-size: calc(var(--font-size) + 1px);
     font-weight: var(--font-weight-normal);
     text-align: center;
     padding-top: 7px;
@@ -49,17 +49,11 @@
 }
 
 .newsletter .newsletter-form__button{
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    margin-top: 15px;
     padding-top: 7px;
     padding-bottom: 7px;
     border-radius: var(--image-border);
     min-height: unset;
-}
-
-.newsletter .form-field ~ .newsletter-form__button{ 
-    margin-top: 15px;
 }
 
 .newsletter-left {
@@ -138,49 +132,6 @@
     margin-bottom: 0;
 }
 
-.subscription-form > form{
-    display: block;
-    max-width: 600px;
-    padding-left: 15px;
-    padding-right: 15px;
-    margin: 0 auto;
-}
-
-.subscription-form .newsletter-form__field-wrapper{
-    display: flex;
-    align-items: stretch;
-    justify-content: space-between;
-    flex-wrap: nowrap;
-}
-
-.subscription-form .field__input,
-.subscription-form .newsletter-form__button {
-    padding-top: var(--btn-padding-top);
-    padding-bottom: var(--btn-padding-bottom);
-    background: transparent!important;
-    border-width: var(--btn-border-width);
-}
-
-.subscription-form .field__input{
-    border-right: 0;
-}
-
-.subscription-form .field__input::-webkit-input-placeholder { 
-    color: inherit;
-}
-
-.subscription-form .field__input:-ms-input-placeholder { 
-    color: inherit;
-}
-
-.subscription-form .field__input::placeholder {
-    color: inherit;
-}
-
-.subscription-form .newsletter-form__button{
-    max-width: 180px;
-}
-
 body.newsletter-show{
     overflow: hidden;
     height: 100%;
@@ -209,13 +160,6 @@ body.newsletter-message-show .halo-newsletter-message-popup{
     transform: translate3d(-50%,-50%,0);
 }
 
-.newsletter-style-5.newsletter-item__form .newsletter-form__button,
-.newsletter-style-4.newsletter-item__form .newsletter-form__button,
-.newsletter-style-10.newsletter-item__form .newsletter-form__button,
-.newsletter-style-1.newsletter-item__form .newsletter-form__button {
-    margin: 0;
-}
-
 @media (min-width: 768px){
     .newsletter .newsletter-form {
         flex-direction: row;
@@ -231,13 +175,10 @@ body.newsletter-message-show .halo-newsletter-message-popup{
     }
 
     .newsletter .newsletter-form__button{
+        margin-top: 20px;
         min-height: var(--btn-min-height);
         padding-top: var(--btn-padding-top);
         padding-bottom: var(--btn-padding-bottom);
-    }
-
-    .newsletter .form-field ~ .newsletter-form__button{ 
-        margin-top: 20px;
     }
 
     .newsletter-left {
@@ -253,14 +194,9 @@ body.newsletter-message-show .halo-newsletter-message-popup{
         padding-bottom: 50px;
     }
 
-    .newsletter.style-2,
-    .newsletter.style-4{
+    .newsletter.style-2{
         display: flex;
         align-items: center;
-    }
-
-    .newsletter.style-4{
-        flex-direction: row-reverse;
     }
 }
 

@@ -134,7 +134,6 @@
     --color-base-text2-rgb: {{ settings.colors_text2 | color_to_rgb | remove: 'rgb(' | remove: ')' }};
     --color-background: {{ settings.colors_bg }};
     --color-background-rgb: {{ settings.colors_bg | color_to_rgb | remove: 'rgb(' | remove: ')' }};
-    --color-background-hsl: {{ settings.colors_bg | color_to_hsl | remove: 'hsl(' | remove: ')' }};
     --color-background-overylay: {{ settings.colors_bg | color_modify: 'alpha', 0.9 }};
     --color-link: {{ settings.colors_link }};
     --color-link-hover: {{ settings.colors_link_hover }};
@@ -163,13 +162,6 @@
     --letter-spacing: {{ settings.letter_spacing | times: 0.001 | append: 'em' }};
 
     --header-font-size: {{ settings.type_header_font_size | append: 'px' }};
-    {% if settings.type_header_font_size >= 60 %}
-        --header-tablet-font-size: {{ settings.type_header_font_size | minus: 30 | append: 'px' }};
-        --header-sm-tablet-font-size: {{ settings.type_header_mobile_font_size | append: 'px' }};
-    {% else %}
-        --header-tablet-font-size: {{ settings.type_header_font_size | append: 'px' }};
-        --header-sm-tablet-font-size: {{ settings.type_header_font_size | append: 'px' }};
-    {% endif %}
     --header-mobile-font-size: {{ settings.type_header_mobile_font_size | append: 'px' }};
     --header-font-weight: {{ settings.type_header_font_weight }};
     --header-text-transform: {{ settings.type_header_text_transform }};
@@ -197,7 +189,7 @@
     --btn-padding-top: {{ settings.btn_padding_top | append: 'px' }};
     --btn-padding-bottom: {{ settings.btn_padding_bottom | append: 'px' }};
     --btn-box-shadow: {{ settings.btn_box_shadow }};
-    --btn-min-height: {{ settings.btn_min_height | append: 'px' }};
+    --btn-min-height: 60px;
     --btn-1-color: {{ settings.btn_1_color }};
     --btn-1-bg: {{ settings.btn_1_bg }};
     --btn-1-border: {{ settings.btn_1_border }};
@@ -228,17 +220,6 @@
     --btn-5-color-hover: {{ settings.btn_5_color_hover }};
     --btn-5-bg-hover: {{ settings.btn_5_bg_hover }};
     --btn-5-border-hover: {{ settings.btn_5_border_hover }};
-    --btn-6-color: {{ settings.btn_6_color }};
-    --btn-6-bg: {{ settings.btn_6_bg }};
-    --btn-6-color-hover: {{ settings.btn_6_color_hover }};
-    --btn-7-color: {{ settings.btn_7_color }};
-    --btn-7-bg: {{ settings.btn_7_bg }};
-    --btn-7-border: {{ settings.btn_7_border }};
-    --btn-7-color-hover: {{ settings.btn_7_color_hover }};
-    --btn-8-color: {{ settings.btn_8_color }};
-    --btn-8-bg: {{ settings.btn_8_bg }};
-    --btn-8-color-hover: {{ settings.btn_8_color_hover }};
-    --btn-8-bg-hover: {{ settings.btn_8_bg_hover }};
 
     --anchor-transition: all ease .3s;
     --bg-white: #ffffff;
@@ -249,7 +230,6 @@
     --duration-default: 250ms;
     --duration-long: 500ms;
     --duration-longer: 600ms;
-    --cubic: cubic-bezier(0.5, 1, 0.89, 1);
 
     --form-input-bg: #ffffff;
     --form-input-border: #c7c7c7;
@@ -290,10 +270,10 @@
     --product-vendor-font-weight : {{ settings.product_vendor_font_weight }};
     --product-vendor-text-transform : {{ settings.product_vendor_text_transform }};
     --product-vendor-color : {{ settings.product_vendor_color }};
-    --product-price-font-size : {{ settings.product_price_font_size | append: 'px' }};
-    --product-price-font-weight : {{ settings.product_price_font_weight }};
-    --product-price-compare-font-size : {{ settings.product_price_compare_font_size | append: 'px' }};
-    --product-price-compare-font-weight : {{ settings.product_price_compare_font_weight }};
+    --prodict-price-font-size : {{ settings.product_price_font_size | append: 'px' }};
+    --prodict-price-font-weight : {{ settings.product_price_font_weight }};
+    --prodict-price-compare-font-size : {{ settings.product_price_compare_font_size | append: 'px' }};
+    --prodict-price-compare-font-weight : {{ settings.product_price_compare_font_weight }};
     --product-price-color : {{ settings.product_price_color }};
     --product-sale-price-color : {{ settings.product_price_sale_color }};
     --product-compare-price-color : {{ settings.product_price_compare_color }};
@@ -375,13 +355,4 @@
     --blockquote-color: {{ settings.colors_blockquote_color }};
 
     --image-border: {{ settings.image_border_radius | append : 'px' }};
-
-    {% if settings.show_dark_mode %}
-        --dark-mode-color-background: {{ settings.dark_mode_colors_bg }};
-        --dark-mode-color-text: {{ settings.dark_mode_colors_text }};
-        --dark-mode-color-text2: {{ settings.dark_mode_colors_text2 }};
-        --dark-mode-header-color: {{ settings.dark_mode_colors_heading }};
-        --dark-mode-page-title-color: {{ settings.dark_mode_colors_page_title }};
-        --dark-mode-line: {{ settings.dark_mode_colors_text.red }}, {{ settings.dark_mode_colors_text.green }}, {{ settings.dark_mode_colors_text.blue }};
-    {% endif %}
 }

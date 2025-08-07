@@ -1,11 +1,20 @@
 class StickyAddToCart extends HTMLElement {
 	constructor() {
 		super();
-		this.anchor = document.getElementById('product-add-to-cart') || this.closest('.productView');
-        this.mark = document.querySelector('footer');
-        this.inner = this.querySelector('.sticky-inner');
-		this.toogle = this.querySelector('[data-toogle-content-sticky]');
-        this.toogle?.addEventListener('click', this.toggleEvent.bind(this));
+		this.sticky = this;
+		this.stickyBounds = document.getElementById('product-add-to-cart');
+		this.closeSticky = this.querySelector('[data-close-sticky-add-to-cart]');
+		this.expandSticky = this.querySelector('[data-expand-sticky-add-to-cart]');
+
+		this.closeSticky.addEventListener(
+            'click',
+            this.setCloseSticky.bind(this)
+        );
+
+        this.expandSticky.addEventListener(
+            'click',
+            this.setExpandSticky.bind(this)
+        );
 	}
 
 	connectedCallback(){
@@ -18,75 +27,598 @@ class StickyAddToCart extends HTMLElement {
     }
 
     onScroll() {
-        let observer = new IntersectionObserver((entries, observer) => { 
-            entries.forEach(entry => {
-                if(entry.isIntersecting){
-                    if(entry.boundingClientRect.top < 0) {
-                        requestAnimationFrame(this.hide.bind(this));
-                    }
-                    
-                    entry.target.src = entry.target.dataset.src;
-                    observer.unobserve(entry.target);
-                } else {
-                    if (this.anchor && this.check(this.anchor, 100)) {
-                        requestAnimationFrame(this.show.bind(this));
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const offsetScroll = $(this.stickyBounds).offset().top + $(this.stickyBounds).outerHeight(true) + 100;
 
-                        if(window.innerWidth > 550) {
-                            if(document.body.classList.contains('scroll-up')){
-                                let height = document.querySelector('.header-group').offsetHeight;
+        if (scrollTop > offsetScroll) {
+            requestAnimationFrame(this.show.bind(this));
 
-                                this.style.top = `${height}px`;
-                            } else if(document.body.classList.contains('scroll-down')) {
-                                this.style.top = 0;
-                            }
-                        } else {
-                            if(document.querySelector('#Toolbar-halo-toolbar-mobile')) {
-                                let height = document.querySelector('#Toolbar-halo-toolbar-mobile').offsetHeight;
+            if(document.body.classList.contains('scroll-up')){
+            	var height = document.querySelector('sticky-header').offsetHeight;
 
-                                this.style.bottom = `${height}px`;
-                            }
-                        }
-                    } else{
-                        requestAnimationFrame(this.hide.bind(this));
-                    }
-                }
-            });
-        }, {
-            threshold: [0, 1]
-        });
+            	this.sticky.style.top = `${height}px`;
+            } else if(document.body.classList.contains('scroll-down')) {
+            	this.sticky.style.top = 0;
+            }
+        } else{
+        	requestAnimationFrame(this.hide.bind(this));
+        }
 
-        observer.observe(this.mark);
-    }
-
-    check(element, threshold) {
-        let rect = element.getBoundingClientRect().y;
-        threshold = threshold ? threshold : 0;
-
-        return rect + threshold < 0
+        this.currentScrollTop = scrollTop;
     }
 
     hide() {
-    	this.classList.remove('show-sticky', 'full-sticky', 'animate');
-
-        if (this.inner.style.maxHeight) this.inner.style.maxHeight = null;
+    	this.sticky.classList.remove('show-sticky', 'hidden-sticky', 'full-sticky', 'animate');
     }
 
     show() {
-        this.classList.add('show-sticky', 'animate');
+        this.sticky.classList.add('show-sticky', 'animate');
     }
 
-    toggleEvent(event){
+    setCloseSticky(event){
     	event.preventDefault();
-        event.stopPropagation();
 
-        if (this.inner.style.maxHeight){
-            this.inner.style.maxHeight = null;
-        } else {
-            this.inner.style.maxHeight = `${this.inner.scrollHeight}px`;
+    	if(this.sticky.classList.contains('full-sticky')){
+            this.sticky.classList.remove('full-sticky');
+        } else{
+            this.sticky.classList.add('hidden-sticky');
         }
+    }
 
-    	this.classList.toggle('full-sticky');
+    setExpandSticky(event){
+    	event.preventDefault();
+
+    	this.sticky.classList.add('full-sticky');
     }
 }
 
 customElements.define('sticky-add-to-cart', StickyAddToCart);
+
+class VariantStickyAddToCart extends HTMLElement {
+	constructor() {
+        super();
+        this.item = this.closest('.productView');
+        this.variants = this.getVariantData();
+        this.sticky = this.closest('.productView-stickyCart');
+        this.addEventListener('change', this.onVariantChange.bind(this));
+    }
+
+    onVariantChange(event) {
+        this.updateOptions();
+        this.updateMasterId();
+        this.updatePickupAvailability();
+        this.updateMedia(200);
+        this.updateURL();
+        this.updateVariants(this.variants);
+        this.updateProductInfo();
+        this.updateAttribute(!this.currentVariant.available);
+    }
+
+    updateVariants(variants){
+        const options = Array.from(document.getElementById(`product-option-${this.dataset.product}`)?.querySelectorAll('.product-form__input'));
+        const type = document.getElementById(`product-option-${this.dataset.product}`)?.getAttribute('data-type');
+
+        let selectedOption1;
+        let selectedOption2;
+        let selectedOption3;
+
+        var selectedStickyOption1 = this.currentVariant?.option1,
+            selectedStickyOption2 = this.currentVariant?.option2,
+            selectedStickyOption3 = this.currentVariant?.option3;
+
+        if (variants) {
+            if (type == 'button') {
+                if (options[0]) {
+                    options[0].querySelector(`.product-form__radio[value="${selectedStickyOption1}"]`).checked = true;
+                    selectedOption1 = Array.from(options[0].querySelectorAll('input')).find((radio) => radio.checked).value;
+                    options[0].querySelector('[data-header-option]').textContent = selectedOption1;
+                }
+
+                if (options[1]) {
+                    options[1].querySelector(`.product-form__radio[value="${selectedStickyOption2}"]`).checked = true;
+                    selectedOption2 = Array.from(options[1].querySelectorAll('input')).find((radio) => radio.checked).value;
+                    options[1].querySelector('[data-header-option]').textContent = selectedOption2;
+                }
+
+                if (options[2]) {
+                    options[2].querySelector(`.product-form__radio[value="${selectedStickyOption3}"]`).checked = true;
+                    selectedOption3 = Array.from(options[2].querySelectorAll('input')).find((radio) => radio.checked).value;
+                    options[2].querySelector('[data-header-option]').textContent = selectedOption3;
+                }
+
+                var checkVariant = () => {
+                    var optionsSize = parseInt(options.length);
+
+                    if(optionsSize > 1){
+                        var variantList = variants.filter((variant) => {
+                            switch (optionsSize) {
+                                case 2: return variant.option2 === selectedOption2;
+                                case 3: return variant.option3 === selectedOption3;
+                            }
+                        });
+
+                        var input1List = options[0].querySelectorAll('.product-form__radio');
+
+                        input1List.forEach((input) => {
+                            var label = input.nextSibling;
+                            var optionSoldout = Array.from(variantList).find((variant) => {
+                                return variant.option1 == input.value && variant.available;
+                            });
+
+                            var optionUnavailable = Array.from(variantList).find((variant) => {
+                                return variant.option1 == input.value;
+                            });
+
+                            if(optionSoldout == undefined){
+                                if (optionUnavailable == undefined) {
+                                    label.classList.remove('available');
+                                    label.classList.remove('soldout');
+                                    label.classList.add('unavailable');
+                                } else {
+                                    label.classList.remove('available');
+                                    label.classList.remove('unavailable');
+                                    label.classList.add('soldout');
+                                }
+                            } else {
+                                label.classList.remove('soldout');
+                                label.classList.remove('unavailable');
+                                label.classList.add('available');
+                            }
+                        });
+                    }
+                };
+
+                var updateVariant = (optionSoldout, optionUnavailable, element, optionIndex) => {
+                    var label = element.nextSibling;
+
+                    if(optionSoldout == undefined){
+                        if (optionUnavailable == undefined) {
+                            label.classList.remove('available');
+                            label.classList.remove('soldout');
+                            label.classList.add('unavailable');
+                        } else {
+                            label.classList.remove('available');
+                            label.classList.remove('unavailable');
+                            label.classList.add('soldout');
+                        }
+                    } else {
+                        label.classList.remove('soldout');
+                        label.classList.remove('unavailable');
+                        label.classList.add('available');
+                    }
+                };
+
+                var renderVariant = (optionIndex, fieldset) => {
+                    const inputList = fieldset.querySelectorAll('.product-form__radio');
+
+                    inputList.forEach((input) => {
+                        const inputVal = input.value;
+
+                        const optionSoldout = variants.find((variant) => {
+                            switch (optionIndex) {
+                                case 0: return variant.option1 == inputVal && variant.available;
+                                case 1: return variant.option1 == selectedOption1 && variant.option2 == inputVal && variant.available;
+                                case 2: return variant.option1 == selectedOption1 && variant.option2 == selectedOption2 && variant.option3 == inputVal && variant.available;
+                            }
+                        });
+
+                        const optionUnavailable = variants.find((variant) => {
+                            switch (optionIndex) {
+                                case 0: return variant.option1 == inputVal;
+                                case 1: return variant.option1 == selectedOption1 && variant.option2 == inputVal;
+                                case 2: return variant.option1 == selectedOption1 && variant.option2 == selectedOption2 && variant.option3 == inputVal;
+                            }
+                        });
+
+                        updateVariant(optionSoldout, optionUnavailable, input, optionIndex);
+                    });
+                };
+            } else {
+                if (options[0]) {
+                    options[0].querySelector('select').value = selectedStickyOption1;
+                    selectedOption1 = selectedStickyOption1;
+                    options[0].querySelector('[data-header-option]').textContent = selectedOption1;
+                }
+
+                if (options[1]) {
+                    options[1].querySelector('select').value = selectedStickyOption2;
+                    selectedOption2 = selectedStickyOption2;
+                    options[1].querySelector('[data-header-option]').textContent = selectedOption2;
+                }
+
+                if (options[2]) {
+                    options[2].querySelector('select').value = selectedStickyOption3;
+                    selectedOption3 = selectedStickyOption3;
+                    options[2].querySelector('[data-header-option]').textContent = selectedOption3;
+                }
+
+                var checkVariant = () => {
+                    var optionsSize = parseInt(options.length);
+
+                    if(optionsSize > 1){
+                        var variantList = variants.filter((variant) => {
+                            switch (optionsSize) {
+                                case 2: return variant.option2 === selectedOption2;
+                                case 3: return variant.option3 === selectedOption3;
+                            }
+                        });
+
+                        var option1List = options[0].querySelectorAll('option');
+
+                        option1List.forEach((option) => {
+                            var optionSoldout = Array.from(variantList).find((variant) => {
+                                return variant.option1 == option.value && variant.available;
+                            });
+
+                            var optionUnavailable = Array.from(variantList).find((variant) => {
+                                return variant.option1 == option.value;
+                            });
+
+                            if(optionSoldout == undefined){
+                                if (optionUnavailable == undefined) {
+                                    option.classList.remove('available');
+                                    option.classList.remove('soldout');
+                                    option.classList.add('unavailable');
+                                    option.setAttribute('disabled','disabled');
+                                } else {
+                                    option.classList.remove('available');
+                                    option.classList.remove('unavailable');
+                                    option.classList.add('soldout');
+                                    option.removeAttribute('disabled');
+                                }
+                            } else {
+                                option.classList.remove('soldout');
+                                option.classList.remove('unavailable');
+                                option.classList.add('available');
+                                option.removeAttribute('disabled');
+                            }
+                        });
+                    }
+                };
+
+                var updateVariant = (optionSoldout, optionUnavailable, element) => {
+                    if(optionSoldout == undefined){
+                        if (optionUnavailable == undefined) {
+                            element.classList.remove('available');
+                            element.classList.remove('soldout');
+                            element.classList.add('unavailable');
+                            element.setAttribute('disabled','disabled');
+                        } else {
+                            element.classList.remove('available');
+                            element.classList.remove('unavailable');
+                            element.classList.add('soldout');
+                            element.removeAttribute('disabled');
+                        }
+                    } else {
+                        element.classList.remove('soldout');
+                        element.classList.remove('unavailable');
+                        element.classList.add('available');
+                        element.removeAttribute('disabled');
+                    }
+                };
+
+                var renderVariant = (optionIndex, select) => {
+                    const optionList = select.querySelectorAll('option');
+
+                    optionList.forEach((option) => {
+                        const optionVal = option.getAttribute('value');
+
+                        const optionSoldout = variants.find((variant) => {
+                            switch (optionIndex) {
+                                case 0: return variant.option1 == optionVal && variant.available;
+                                case 1: return variant.option1 == selectedOption1 && variant.option2 == optionVal && variant.available;
+                                case 2: return variant.option1 == selectedOption1 && variant.option2 == selectedOption2 && variant.option3 == optionVal && variant.available;
+                            }
+                        });
+
+                        const optionUnavailable = variants.find((variant) => {
+                            switch (optionIndex) {
+                                case 0: return variant.option1 == optionVal;
+                                case 1: return variant.option1 == selectedOption1 && variant.option2 == optionVal;
+                                case 2: return variant.option1 == selectedOption1 && variant.option2 == selectedOption2 && variant.option3 == optionVal;
+                            }
+                        });
+
+                        updateVariant(optionSoldout, optionUnavailable, option);
+                    });
+                };
+            }
+
+            options.forEach((fieldset) => {
+                const optionIndex = parseInt(fieldset.getAttribute('data-option-index'));
+
+                renderVariant(optionIndex, fieldset);
+                checkVariant();
+            });
+        }
+    }
+
+    updateOptions() {
+        this.options = Array.from(this.querySelectorAll('select'), (select) => select.value);
+    }
+
+    updateMasterId() {
+        this.currentVariant = this.getVariantData().find((variant) => {
+            return variant.id == this.options;
+        });
+    }
+
+    updateMedia(time) {
+        if (!this.currentVariant || !this.currentVariant?.featured_media) return;
+
+        const itemImage = this.sticky.querySelector('.sticky-image');
+        const newMedia = document.querySelector(
+            `[data-media-id="${this.dataset.section}-${this.currentVariant.featured_media.id}"]`
+        );
+
+        if (itemImage) {
+            itemImage.querySelector('img').setAttribute('src', this.currentVariant?.featured_image.src);
+            itemImage.querySelector('img').setAttribute('srcset', this.currentVariant?.featured_image.src);
+            itemImage.querySelector('img').setAttribute('alt', this.currentVariant?.featured_image.alt);
+        }
+
+        if (newMedia) { 
+            window.setTimeout(() => {
+                $(newMedia).trigger('click');
+            }, time);
+        }
+    }
+
+    updateURL() {
+        if (!this.currentVariant) return;
+
+        window.history.replaceState({ }, '', `${this.dataset.url}?variant=${this.currentVariant.id}`);
+    }
+
+    updatePickupAvailability() {
+        const pickUpAvailability = document.querySelector('pickup-availability');
+
+        if (!pickUpAvailability) return;
+
+        if (this.currentVariant?.available) {
+            pickUpAvailability.fetchAvailability(this.currentVariant.id);
+        } else {
+            pickUpAvailability.removeAttribute('available');
+            pickUpAvailability.innerHTML = '';
+        }
+    }
+
+    updateProductInfo() {
+        fetch(`${this.dataset.url}?variant=${this.currentVariant.id}&section_id=${this.dataset.section}`)
+            .then((response) => response.text())
+            .then((responseText) => {
+                const id = `product-price-${this.dataset.product}`;
+                const html = new DOMParser().parseFromString(responseText, 'text/html')
+                const destination = document.getElementById(id);
+                const source = html.getElementById(id);
+
+                if (source && destination) {
+                    destination.innerHTML = source.innerHTML;
+                }
+
+                if (this.checkNeedToConvertCurrency()) {
+                    let currencyCode = document.getElementById('currencies')?.querySelector('.active')?.getAttribute('data-currency');
+
+                    Currency.convertAll(window.shop_currency, currencyCode, 'span.money', 'money_format');
+                }
+
+                document.getElementById(`product-price-${this.dataset.product}`)?.classList.remove('visibility-hidden');
+        });
+    }
+
+    updateAttribute(disable = true){
+        this.quantityInput = this.item.querySelector('input[name="quantity"]');
+        this.inventoryProp = this.item.querySelector('[data-inventory]');
+        this.skuProp = this.item.querySelector('[data-sku]');
+        this.productMessage = this.item.querySelector('.productView-message');
+        this.notifyMe = this.item.querySelector('.productView-notifyMe');
+        this.hotStock = this.item.querySelector('.productView-hotStock');
+        const addButton = document.getElementById(`product-form-${this.dataset.product}`)?.querySelector('[name="add"]');
+        const stickyButton = document.getElementById(`product-form-sticky-${this.dataset.product}`)?.querySelector('[name="add"]');
+        const productForms = document.querySelectorAll(`#product-form-${this.dataset.product}, #product-form-installment-${this.dataset.product}, #product-form-sticky-${this.dataset.product}`);
+
+        let quantityInputValue = parseInt(this.quantityInput?.value),
+            quantityInputMaxValue,
+            alertText = window.inventory_text.max,
+            alertMessage = `<div class="alertBox alertBox--error"><p class="alertBox-message">${alertText}</p></div>`;
+
+        if (disable) {
+            let text = window.variantStrings.soldOut;
+
+            this.quantityInput.setAttribute('data-price', this.currentVariant?.price);
+            this.quantityInput.setAttribute('disabled', true);
+
+            addButton.setAttribute('disabled', true);
+            addButton.textContent = text;
+
+            stickyButton.setAttribute('disabled', true);
+            stickyButton.textContent = text;
+
+            if(this.notifyMe){
+                this.notifyMe.querySelector('input[name="halo-notify-product-variant"]').value = this.currentVariant.title;
+                this.notifyMe.querySelector('.notifyMe-text').innerHTML = '';
+                this.notifyMe.style.display = 'block';
+            }
+
+            if(this.productMessage) {
+                this.productMessage.style.display = 'none';
+            }
+
+            if(this.hotStock){
+                this.hotStock.style.display = 'none';
+            }
+        } else{
+            let text,
+                inventory = this.currentVariant?.inventory_management,
+                arrayInVarName,
+                inven_array,
+                inven_num, 
+                inventoryQuantity;
+
+            if(inventory != null) {
+                arrayInVarName = `product_inven_array_${this.dataset.product}`;
+                inven_array = window[arrayInVarName];
+
+                if(inven_array != undefined) {
+                    inven_num = inven_array[this.currentVariant.id];
+                    inventoryQuantity = parseInt(inven_num);
+
+                    if (typeof inventoryQuantity != 'undefined'){
+                        if(inventoryQuantity > 0) {
+                            this.quantityInput.setAttribute('data-inventory-quantity', inventoryQuantity);
+                        } else {
+                            this.quantityInput.removeAttribute('data-inventory-quantity');
+                        }
+                    } else {
+                        this.quantityInput.setAttribute('data-inventory-quantity', inventoryQuantity);
+                    }
+                }
+            }
+
+            if(window.subtotal.show) {
+                let price = this.currentVariant?.price,
+                    subTotal = 0;
+
+                subTotal = quantityInputValue * price;
+                subTotal = Shopify.formatMoney(subTotal, window.money_format);
+
+                if(window.subtotal.layout == '1') {
+                    if (typeof inventoryQuantity != 'undefined'){
+                        if(inventoryQuantity > 0) {
+                            text = window.subtotal.text.replace('[value]', subTotal);
+                        } else {
+                            text = window.subtotal.text_2.replace('[value]', subTotal);
+                        }
+                    } else {
+                        text = window.subtotal.text.replace('[value]', subTotal);
+                    }
+                } else {
+                    const subtotalLabel = document.getElementById(`product-form-${this.dataset.product}`)?.querySelector('[data-product-subtotal]');
+
+                    subtotalLabel.innerHTML = subTotal;
+
+                    if (subtotalLabel.closest('.productView-subTotal').style.display === 'none') {
+                        subtotalLabel.closest('.productView-subTotal').style.display = 'block';
+                    }
+
+                    if (typeof inventoryQuantity != 'undefined'){
+                        if(inventoryQuantity > 0) {
+                            text = window.variantStrings.addToCart;
+                        } else  {
+                            text = window.variantStrings.preOrder;
+                        }
+                    } else{
+                        text = window.variantStrings.addToCart;
+                    }
+                }
+            } else {
+                if (typeof inventoryQuantity != 'undefined'){
+                    if(inventoryQuantity > 0) {
+                        text = window.variantStrings.addToCart;
+                    } else  {
+                        text = window.variantStrings.preOrder;
+                    }
+                } else{
+                    text = window.variantStrings.addToCart;
+                }
+            }
+
+            this.quantityInput.setAttribute('data-price', this.currentVariant?.price);
+            this.quantityInput.removeAttribute('disabled');
+
+            addButton.innerHTML = text;
+            stickyButton.removeAttribute('disabled');
+
+            if(inventoryQuantity > 0) {
+                addButton.classList.remove('button-text-pre-order');
+
+                quantityInputMaxValue = parseInt(this.quantityInput?.getAttribute('data-inventory-quantity'));
+                if(quantityInputValue > quantityInputMaxValue){
+                    addButton.setAttribute('disabled', true);
+
+                    if(this.productMessage) {
+                        this.productMessage.innerHTML = alertMessage;
+                        this.productMessage.style.display = 'block';
+                    }
+                } else {
+                    addButton.removeAttribute('disabled');
+
+                    if(this.productMessage) {
+                        this.productMessage.innerHTML = '';
+                        this.productMessage.style.display = 'none';
+                    }
+                }
+
+                if(this.inventoryProp){
+                    this.inventoryProp.querySelector('.productView-info-value').textContent = window.inventory_text.inStock;
+                }
+
+                if(this.hotStock){
+                    let maxStock = parseInt(this.hotStock.getAttribute('data-hot-stock'));
+
+                   if(0 < inventoryQuantity && inventoryQuantity <= maxStock){
+                        let textStock = window.inventory_text.hotStock.replace('[inventory]', inventoryQuantity);
+
+                        this.hotStock.innerHTML = textStock;
+                        this.hotStock.style.display = 'block';
+                    } else {
+                        this.hotStock.innerHTML = '';
+                        this.hotStock.style.display = 'none';
+                    }
+                }
+
+                stickyButton.textContent = window.variantStrings.addToCart;
+            } else{
+                addButton.removeAttribute('disabled');
+                addButton.classList.add('button-text-pre-order');
+
+                if(this.inventoryProp){
+                    this.inventoryProp.querySelector('.productView-info-value').textContent = window.inventory_text.inStock;
+                }
+
+                if(this.hotStock){
+                    this.hotStock.style.display = 'none';
+                }
+
+                if(this.productMessage) {
+                    this.productMessage.innerHTML = '';
+                    this.productMessage.style.display = 'none';
+                }
+
+                stickyButton.textContent = window.variantStrings.preOrder;
+            }
+
+            if(this.notifyMe){
+                this.notifyMe.style.display = 'none';
+            }
+
+            if (this.checkNeedToConvertCurrency()) {
+                let currencyCode = document.getElementById('currencies')?.querySelector('.active')?.getAttribute('data-currency');
+
+                Currency.convertAll(window.shop_currency, currencyCode, 'span.money', 'money_format');
+            }
+        }
+
+        if(this.skuProp && this.currentVariant.sku){
+            this.skuProp.querySelector('.productView-info-value').textContent = this.currentVariant.sku;
+        }
+    
+        productForms.forEach((productForm) => {
+            const input = productForm.querySelector('input[name="id"]');
+
+            input.value = this.currentVariant.id;
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+    }
+
+    getVariantData() {
+        this.variantData = this.variantData || JSON.parse(this.querySelector('[type="application/json"]').textContent);
+        return this.variantData;
+    }
+
+    checkNeedToConvertCurrency() {
+        return (window.show_multiple_currencies && Currency.currentCurrency != shopCurrency) || window.show_auto_currency;
+    }
+}
+
+customElements.define('variant-sticky-selects', VariantStickyAddToCart);

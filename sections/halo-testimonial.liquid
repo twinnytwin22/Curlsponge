@@ -1,4 +1,10 @@
-{%- if section.settings.show_testimonial and section.blocks.size > 0 -%}
+{%- liquid
+    assign show_section = false
+    if section.blocks.size > 0 and section.settings.show_testimonial
+        assign show_section = true
+    endif
+-%}
+{%- if show_section -%}
 	{%- liquid
         assign padding_top = section.settings.padding_top | append: 'px'
         assign padding_bottom = section.settings.padding_bottom | append: 'px'
@@ -17,14 +23,27 @@
         assign image_border_radius = settings.image_border_radius
         assign image_effect = settings.image_effect
     -%}
-    <div class="halo-block halo-testimonial halo-block-padding" id="halo-testimonial-{{ section.id }}" data-testimonial-block data-loader-script="{{ 'halo.slide-testimonial.js' | asset_url }}"
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};"
-    >
+    <style type="text/css" media="screen">
+        #halo-testimonial-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        @media (max-width: 1024px) {
+            #halo-testimonial-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #halo-testimonial-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+    </style>
+    <div class="halo-block halo-testimonial" id="halo-testimonial-{{ section.id }}" data-testimonial-block data-loader-script="{{ 'halo.slide-testimonial.js' | asset_url }}">
     	<div class="container container-{{ container }}">
     		{%- if block_title != blank -%}
                 <div class="halo-block-header">
@@ -78,15 +97,11 @@
                             assign position = block.settings.position
 	                    -%}
             			<div class="halo-row-item item item-{{ block.id }}">
-            				<div class="banner-item">
+            				<div class="collections-item">
             					<div class="img-box">
             						{%- if image != blank -%}
 							            <div class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-adapt" style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
-							            	<img srcset="{{ image | img_url: 'master' }} 1x, 
-                                                {{ image | img_url: 'master', scale: 2 }} 2x" 
-                                                src="{{ image | img_url: 'master' }}" 
-                                                alt="{{ image.alt | default: shop.name | escape }}" 
-                                                loading="lazy">
+							            	<img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x" src="{{ image | img_url: 'master' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
 							            </div>
 						            {%- else -%}
 						            	<div class="image">
@@ -118,7 +133,7 @@
 {%- endif -%}
 {% schema %}
 	{
-		"name": "t:sections.testimonial.presets.name",
+		"name": "t:sections.testimonial.name",
 		"settings": [
 			{
                 "type": "header",
@@ -370,9 +385,6 @@
                     }
                 ]
             }
-        ],
-        "disabled_on": {
-            "groups": ["header", "footer"]
-        }
+        ]
 	}
 {% endschema %}

@@ -48,10 +48,6 @@
     padding: 0 0 80px 0;
 }
 
-.halo-product-review.layout-3 .productView-review .spr-container{
-    padding-bottom: 60px;
-}
-
 .productView-review .spr-header-title{
     display: none;
 }
@@ -349,7 +345,7 @@
     padding: 10px 15px 15px 15px;
     border: 0;
     width: 100%;
-    background: var(--bg-color);
+    background-color: var(--bg-white);
     position: relative;
 }
 
@@ -369,7 +365,7 @@
     font-weight: var(--font-weight-bold);
     letter-spacing: var(--letter-spacing);
     line-height: var(--line-height);
-    color: var(--title-color);
+    color: var(--color-text);
     text-transform: capitalize;
     margin: 0 0 4px 0;
 }
@@ -381,9 +377,13 @@
     font-style: normal;
     letter-spacing: var(--letter-spacing);
     line-height: var(--line-height);
-    color: var(--text-color-2);
+    color: var(--color-grey);
     margin: 0 0 5px 0;
     opacity: 1;
+}
+
+.productView-review .spr-review .spr-review-header-byline strong{
+    font-weight: var(--font-weight-normal);
 }
 
 .productView-review .spr-review .spr-review-content{
@@ -395,7 +395,7 @@
     font-weight: var(--font-weight-normal);
     letter-spacing: var(--letter-spacing);
     line-height: var(--line-height);
-    color: var(--text-color-1);
+    color: var(--color-text2);
 }
 
 .productView-review .spr-review .spr-review-reportreview{
@@ -407,7 +407,7 @@
     font-style: normal;
     letter-spacing: var(--letter-spacing);
     line-height: var(--line-height);
-    color: var(--text-color-2);
+    color: var(--color-text2);
     text-decoration: underline;
     text-underline-offset: 0.3rem;
 }
@@ -441,20 +441,6 @@
     text-align: center;
 }
 
-.productView-review.layout-3 .spr-pagination-prev,
-.productView-review.layout-3 .spr-pagination-page,
-.productView-review.layout-3 .spr-pagination-next {
-    border-radius: 5px;
-    min-width: 50px;
-    padding: 12px 5px;
-}
-
-.productView-review.layout-3 .spr-pagination-prev a,
-.productView-review.layout-3 .spr-pagination-page a,
-.productView-review.layout-3 .spr-pagination-next a {
-    padding: 15px 14px;
-}
-
 .productView-review .spr-pagination-prev{
     margin-left: 0;
 }
@@ -468,12 +454,6 @@
     bottom: unset;
     padding-left: 15px;
     padding-right: 15px;
-}
-
-.productView-review.layout-3 .spr-pagination-prev,
-.productView-review.layout-3 .spr-pagination-next {
-    padding-left: 20px;
-    padding-right: 20px;
 }
 
 .productView-review .spr-pagination-prev a,
@@ -499,22 +479,7 @@
     margin-top: 15px!important;
 }
 
-.halo-product-review.layout-3 .halo-block-header {
-    margin-bottom: 40px;
-}
-
-.halo-product-review.layout-3 .halo-block-header .banner-link {
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-transform: uppercase;
-}
-
-.productView-review.layout-3 .spr-header {
-    display: none;
-}
-
-.productView-review.layout-2 .spr-review,
-.productView-review.layout-3 .spr-review{
+.productView-review.layout-2 .spr-review{
     width: 100%!important;
     margin-bottom: 0!important;
     background-color: transparent!important;
@@ -524,8 +489,7 @@
     padding-right: 0!important;
 }
 
-.productView-review.layout-2 .spr-review .spr-review-header-byline,
-.productView-review.layout-3 .spr-review .spr-review-header-byline{
+.productView-review.layout-2 .spr-review .spr-review-header-byline{
     position: relative!important;
     top: unset!important;
     left: unset!important;
@@ -535,21 +499,12 @@
     color: var(--color-text2);
 }
 
-.productView-review.layout-2 .spr-review .spr-review-footer,
-.productView-review.layout-3 .spr-review .spr-review-footer{
+.productView-review.layout-2 .spr-review .spr-review-footer{
     display: none!important;
 }
 
 .productView-review.layout-2 .spr-review + .spr-review{
     border-top: 1px solid #d8d8d8;
-}
-
-.productView-review.layout-3 .spr-review {
-    border-bottom: 1px solid var(--header-color);
-}
-
-.productView-review.layout-3 .spr-review:first-child {
-    border-top: 1px solid var(--header-color);
 }
 
 .halo-product-review .productView-review{
@@ -567,84 +522,10 @@
 
 .halo-product-review .productView-review.layout-2 .spr-review,
 .halo-product-review .productView-review.layout-2 .spr-review:nth-child(even),
-.halo-product-review .productView-review.layout-2 .spr-review:nth-child(odd),
-.halo-product-review .productView-review.layout-3 .spr-review,
-.halo-product-review .productView-review.layout-3 .spr-review:nth-child(even),
-.halo-product-review .productView-review.layout-3 .spr-review:nth-child(odd){
+.halo-product-review .productView-review.layout-2 .spr-review:nth-child(odd){
     margin-left: 0!important;
     margin-right: 0!important;
     margin-bottom: 0!important;
-}
-
-.halo-product-review .productView-review.layout-3 .spr-review {
-    padding: 20px 0 20px;
-}
-
-.productView-review.layout-3 .spr-review .spr-starratings {
-    margin: 0 0 8px;
-}
-
-.productView-review.layout-3 .spr-icon {
-    padding-left: 4px;
-}
-
-.productView-review.layout-3 .spr-icon:first-child {
-    padding-left: 0;
-}
-
-.productView-review.layout-3 .spr-review .spr-icon:before {
-    font-size: 24px;
-}
-
-.productView-review.layout-3 .spr-review .spr-review-header-title {
-    margin: 8px 0 14px;
-}
-
-body.dark-mode .productView-review .spr-icon.spr-icon-star:before {
-    color: #fac318;
-}
-
-body.dark-mode .productView-review .spr-summary-actions-newreview {
-    background-color: var(--bg-black);
-}
-
-body.dark-mode .productView-review .spr-pagination-prev,
-body.dark-mode .productView-review .spr-pagination-page,
-body.dark-mode .productView-review .spr-pagination-next{
-    background-color: var(--color-background);
-    color: var(--color-text);
-}
-
-body.dark-mode .productView-review .spr-pagination-page.is-active {
-    background-color: #484848;
-    border-color: #484848;
-}
-
-body.dark-mode .productView-review.layout-3 .spr-pagination-page.is-active {
-    background-color: var(--bg-white);
-    border-color: var(--bg-white);
-    color: var(--color-black);
-}
-
-body.dark-mode .productView-review.dark-mode .spr-review .spr-review-header-title,
-body.dark-mode .productView-review.dark-mode .spr-review .spr-review-content-body {
-    filter: invert(1);
-}
-
-body.dark-mode .productView-review.dark-mode .spr-review {
-    background: var(--bg-black);
-}
-
-body.dark-mode .productView-review:not(.dark-mode) .spr-review {
-    background: var(--dark-mode-bg-color);
-}
-
-body.dark-mode .productView-review.layout-3 .spr-review .spr-icon:before {
-    color: #faa900;
-}
-
-body.dark-mode .productView-review .spr-form-input.spr-form-input-textarea {
-    background: transparent;
 }
 
 @media (min-width: 551px){
@@ -660,19 +541,21 @@ body.dark-mode .productView-review .spr-form-input.spr-form-input-textarea {
         margin-top: 30px!important;
     }
 
-    .productView-review.layout-2 .spr-review .spr-review-header,
-    .productView-review.layout-3 .spr-review .spr-review-header{
+    .productView-review.layout-2 .spr-review .spr-review-header{
         display: inline-block;
         vertical-align: top;
         width: 210px;
         padding: 0 20px 0 0;
     }
 
-    .productView-review.layout-2 .spr-review .spr-review-content,
-    .productView-review.layout-3 .spr-review .spr-review-content{
+    .productView-review.layout-2 .spr-review .spr-review-content{
         display: inline-block;
         vertical-align: top;
         width: calc(100% - 210px);
+    }
+
+    .halo-product-review .productView-review .spr-container{
+        padding-bottom: 60px;
     }
 
     .halo-product-review .productView-review .spr-reviews{
@@ -715,18 +598,6 @@ body.dark-mode .productView-review .spr-form-input.spr-form-input-textarea {
     .halo-product-review .productView-review .spr-pagination{
         margin-top: 0;
     }
-
-    .halo-product-review.layout-3 .halo-block-header {
-        margin-bottom: 57px;
-    }
-
-    .halo-product-review .productView-review.layout-3 .spr-pagination{
-        margin-top: 49px;
-    }
-
-    .halo-product-review .productView-review.layout-3 .spr-review {
-        padding: 35px 0 73px;
-    }
 }
 
 @media (min-width: 551px) and (max-width: 991px){
@@ -748,17 +619,8 @@ body.dark-mode .productView-review .spr-form-input.spr-form-input-textarea {
         padding-right: 30px;
     }
 
-    .productView-review.layout-3 .spr-review .spr-review-header{
-        width: 510px;
-        padding-right: 90px;
-    }
-
     .productView-review.layout-2 .spr-review .spr-review-content{
         width: calc(100% - 220px);
-    }
-
-    .productView-review.layout-3 .spr-review .spr-review-content{
-        width: calc(100% - 510px);
     }
 
     .halo-product-review .productView-review .spr-review{

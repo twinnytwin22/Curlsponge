@@ -1,4 +1,7 @@
-{%- if section.settings.show_custom_map -%}
+{%- liquid
+    assign show_section = section.settings.show_custom_map
+-%}
+{%- if show_section -%}
 	{%- liquid
         assign padding_top = section.settings.padding_top | append: 'px'
         assign padding_bottom = section.settings.padding_bottom | append: 'px'
@@ -12,14 +15,31 @@
         assign block_title_align = section.settings.block_title_align
         assign block_content = section.settings.block_content
     -%}
-    <div class="halo-block custom-map halo-block-padding" id="halo-custom-map-{{ section.id }}"
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};"
-    >
+    <style type="text/css" media="screen">
+        #halo-custom-map-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        #halo-custom-map-{{ section.id }} iframe{
+            width: 100%!important;
+        }
+
+        @media (max-width: 1024px) {
+            #halo-custom-map-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #halo-custom-map-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+    </style>
+    <div class="halo-block custom-map" id="halo-custom-map-{{ section.id }}">
     	<div class="container container-{{ container }}">
     		{%- if block_title != blank -%}
                 <div class="halo-block-header">
@@ -205,9 +225,6 @@
             {
                 "name": "t:sections.custom-map.presets.name"
             }
-        ],
-        "disabled_on": {
-            "groups": ["header", "footer"]
-        }
+        ]
 	}
 {% endschema %}

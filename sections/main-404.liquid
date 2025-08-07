@@ -10,6 +10,7 @@
     assign breadcrumb_alignment = section.settings.breadcrumb_alignment
     assign show_page_title = section.settings.show_page_title
     assign page_title_alignment = section.settings.page_title_alignment
+    assign btn = section.settings.btn
     assign show_product_block = section.settings.show_product_block
     assign collection = section.settings.block_collection
     assign limit = section.settings.block_limit
@@ -18,14 +19,41 @@
     assign portrait_aspect_ratio = section.settings.portrait_aspect_ratio
     assign show_add_to_cart = section.settings.show_add_to_cart
 -%}
-<div data-section-id="{{ section.id }}" data-section-type="404" id="NotFoundSection-{{ section.id }}" data-section="{{ section.id }}" class="halo-page-padding"
-    style="--padding-top: {{ padding_top }};
-        --padding-bottom: {{ padding_bottom }};
-        --padding-top-tablet: {{ padding_top_tablet }};
-        --padding-bottom-tablet: {{ padding_bottom_tablet }};
-        --padding-top-mobile: {{ padding_top_mobile }};
-        --padding-bottom-mobile: {{ padding_bottom_mobile }};"
->
+
+<style type="text/css" media="screen">
+    #NotFoundSection-{{ section.id }}{
+        padding-top: {{ padding_top }};
+        padding-bottom: {{ padding_bottom }};
+    }
+
+    #NotFoundSection-{{ section.id }} .page-header{
+        padding-bottom: 21px;
+    }
+
+    #NotFoundSection-{{ section.id }} .page-desc{
+        padding-bottom: 54px;
+    }
+
+    #NotFoundSection-{{ section.id }} .halo-page-footer .button{
+        margin-top: 60px;
+    }
+
+    @media (max-width: 1024px) {
+        #NotFoundSection-{{ section.id }}{
+            padding-top: {{ padding_top_tablet }};
+            padding-bottom: {{ padding_bottom_tablet }};
+        }
+    }
+
+    @media (max-width: 550px) {
+        #NotFoundSection-{{ section.id }}{
+            padding-top: {{ padding_top_mobile }};
+            padding-bottom: {{ padding_bottom_mobile }};
+        }
+    }
+</style>
+
+<div data-section-id="{{ section.id }}" data-section-type="404" id="NotFoundSection-{{ section.id }}" data-section="{{ section.id }}">
     <div class="container container-{{ container }}">
         {%- if show_breadcrumb -%}
             {% render 'breadcrumb', alignment: breadcrumb_alignment %}
@@ -89,6 +117,11 @@
                 </div>
             </div>
         {%- endif -%}
+        <div class="halo-page-footer">
+            <a href="{{ routes.root_url }}" class="button button-{{ btn }}">
+                {{ 'templates.404.button' | t }}
+            </a>
+        </div>
     </div>
 </div>
 
@@ -253,6 +286,33 @@
         "step": 1,
         "unit": "t:sections.general.settings.padding.unit",
         "default": 30
+    },
+    {
+        "type": "select",
+        "id": "btn",
+        "label": "t:sections.general.settings.button.label__1",
+        "default": "5",
+        "options": [
+        {
+            "value": "1",
+            "label": "t:sections.general.settings.button.options__1"
+        },
+        {
+            "value": "2",
+            "label": "t:sections.general.settings.button.options__2"
+        },
+        {
+            "value": "3",
+            "label": "t:sections.general.settings.button.options__3"
+        },
+        {
+            "value": "4",
+            "label": "t:sections.general.settings.button.options__4"
+        },
+        {
+            "value": "5",
+            "label": "t:sections.general.settings.button.options__5"
+        }]
     },
     {
         "type": "header",

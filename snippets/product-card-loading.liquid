@@ -19,7 +19,7 @@
     endif
 -%}
 
-<div class="product-item{% if settings.product_card_style == '4' %} product-item--box-shadow{% elsif settings.product_card_style == '7' or settings.product_card_style == '12' %} product-item--border product-item--box-shadow{% endif %}" {% if settings.product_card_style == '4' %} style="padding-bottom: {{ padding_bottom }}"{% endif %}>
+<div class="product-item{% if settings.product_card_style == '4' %} product-item--box-shadow{% elsif settings.product_card_style == '7' %} product-item--border product-item--box-shadow{% endif %}" {% if settings.product_card_style == '4' %} style="padding-bottom: {{ padding_bottom }}"{% endif %}>
     <div class="card style-{{ settings.product_card_style }}">
         <div class="card-product{% if product_card_product.featured_media == nil %} card--text-only card--soft{% endif %}">
             <div class="card-product__wrapper">
@@ -112,10 +112,10 @@
                     {%- endif -%}
                 {%- endif -%}
 
-                {%- if settings.product_card_style == '7' or settings.product_card_style == '12' -%}
+                {%- if settings.product_card_style == '7' -%}
                     <div class="card-price">
                     {%- liquid
-                        if use_variant
+                         if use_variant
                             assign target = product_card_product.selected_or_first_available_variant
                         else
                             assign target = product_card_product
@@ -169,7 +169,7 @@
                     </div>
                 {%- endif -%}
                 
-                <a class="card-title link-underline{% if settings.product_title_line_text != 'full' %} card-title-ellipsis{% endif %}" href="{{ product_card_product.url }}">
+                <a class="card-title link-underline{% if settings.product_title_line_text != 'full' %} card-title-ellipsis{% endif %}" href="{{ product_card_product.url | within: collection }}">
                     <span class="text">
                         {{ product_card_product.title | escape }}
                     </span>
@@ -184,7 +184,7 @@
                     {%- endif -%}
                 {%- endif -%}
 
-                {%- if settings.product_card_style != '7' or settings.product_card_style != '12' -%}
+                {%- if settings.product_card_style != '7' -%}
                     <div class="card-price">
                         {%- liquid
                              if use_variant
@@ -241,7 +241,7 @@
                     </div>
                 {%- endif -%}
 
-                {%- if settings.product_card_style == '6' or settings.product_card_style == '7' or settings.product_card_style == '12' -%}
+                {%- if settings.product_card_style == '6' or settings.product_card_style == '7' -%}
                     {%- if settings.show_review -%}
                         {% render 'product-card-review',
                             product: product_card_product,

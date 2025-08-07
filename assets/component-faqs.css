@@ -390,24 +390,6 @@ body.faqs-popup-show .halo-faqs-popup{
     max-height: 80vh;
 }
 
-body.dark-mode .faqs-filterDropdown-menu {
-    background-color: var(--bg-black);
-    box-shadow: 0 6px 27px 0 rgba(255, 255, 255, 0.2);
-}
-
-body.dark-mode .faqs-2 .faqs-item .card-header .title,
-body.dark-mode .faqs-2 .faqs-item .halo-text-format {
-    background-color: var(--bg-black);
-}
-
-body.dark-mode .faqs-form .form-input {
-    background-color: var(--bg-black);
-}
-
-body.dark-mode .faqs-3 .faqs-item .card-header .title:before {
-    filter: invert(1);
-}
-
 @media (max-width: 1024px){
     .faqs-banner--parallax{
         background-image: unset;
@@ -471,11 +453,6 @@ body.dark-mode .faqs-3 .faqs-item .card-header .title:before {
         left: 30px;
         opacity: 1;
         visibility: visible;
-    }
-
-    body.dark-mode .faqs-3 .faqs-item .card-header.is-active .title,
-    body.dark-mode .faqs-3 .faqs-item .card-header:hover .title {
-        background-color: var(--bg-black);
     }
 }
 

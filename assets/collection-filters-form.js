@@ -80,12 +80,15 @@ class CollectionFiltersForm extends HTMLElement {
 
         document.getElementById('CollectionProductGrid').querySelector('.collection').innerHTML = innerHTML;
 
-        if(document.querySelector('[data-view-as]')){
+        if(document.querySelector('[data-toolbar]')){
             this.setActiveViewModeMediaQuery(true);
         }
 
         if(window.compare.show){
-            Shopify.ProductCompare.setLocalStorageProductForCompare();
+            Shopify.ProductCompare.setLocalStorageProductForCompare({
+                link: $('a[data-compare-link]'),
+                onComplete: null
+            });
         }
 
         if(window.wishlist.show){
@@ -373,11 +376,9 @@ class PriceRange extends HTMLElement {
     constructor() {
         super();
         this.rangeSliderPrice();
-
         this.querySelectorAll('input').forEach((element) => {
             element.addEventListener('change', this.onRangeChange.bind(this))
         });
-
         this.setMinAndMaxValues();
     }
 
@@ -407,77 +408,39 @@ class PriceRange extends HTMLElement {
     }
 
     rangeSliderPrice(){
-        const rangeInput = this.querySelectorAll('input[type=range]'),
-            priceInput = this.querySelectorAll('input[type=number]'),
-            progress = this.querySelector('.price-range__progress .progress');
-
-        let priceGap = 0;
-
-        if(!rangeInput.length) return;
+        var rangeS = this.querySelectorAll("input[type=range]"),
+            numberS = this.querySelectorAll("input[type=number]");
         
-        priceInput.forEach((element) => {
-            element.oninput = (event) => {
-                let minPrice = parseInt(priceInput[0].value),
-                    maxPrice = parseInt(priceInput[1].value);
+        rangeS.forEach((element) => {
+            element.oninput = () => {
+                var slide1 = parseFloat(rangeS[0].value),
+                    slide2 = parseFloat(rangeS[1].value);
 
-                if((maxPrice - minPrice >= priceGap) && maxPrice <= rangeInput[1].max){
-                    if(event.target.classList.contains('filter__price_min')){
-                        rangeInput[0].value = minPrice;
-                        if($("body").hasClass("rtl")) {
-                            progress.style.right = ((minPrice / rangeInput[0].max) * 100) + "%";
-                        } else {
-                            progress.style.left = ((minPrice / rangeInput[0].max) * 100) + "%";
-                        }
-                    } else{
-                        rangeInput[1].value = maxPrice;
-                        if($("body").hasClass("rtl")) {
-                            progress.style.left = 100 - (maxPrice / rangeInput[1].max) * 100 + "%";
-                        } else {
-                            progress.style.right = 100 - (maxPrice / rangeInput[1].max) * 100 + "%";
-                        }
-                    }
+                if (slide1 > slide2) {
+                    [slide1, slide2] = [slide2, slide1];
                 }
+
+                numberS[0].value = slide1;
+                numberS[1].value = slide2;
             }
         });
 
-        if(rangeInput.length) {
-            rangeInput.forEach((element) => {
-                let defaultMin = parseInt(rangeInput[0].value),
-                    defaultMax = parseInt(rangeInput[1].value);
+        numberS.forEach((element) => {
+            element.oninput = () => {
+                var number1 = parseFloat(numberS[0].value),
+					checkValue1 = number1 != number1,
+                    number2 = parseFloat(numberS[1].value),
+ 					checkValue2 = number2 != number2;
 
-                if($("body").hasClass("rtl")) {
-                    progress.style.right = ((defaultMin / rangeInput[0].max) * 100) + "%";
-                    progress.style.left = 100 - (defaultMax / rangeInput[1].max) * 100 + "%";
-                } else {
-                    progress.style.left = ((defaultMin / rangeInput[0].max) * 100) + "%";
-                    progress.style.right = 100 - (defaultMax / rangeInput[1].max) * 100 + "%";
+                if(!checkValue1){
+                	rangeS[0].value = number1;
                 }
 
-                element.oninput = (event) => {
-                    let minVal = parseInt(rangeInput[0].value),
-    					maxVal = parseInt(rangeInput[1].value);
-
-                    if((maxVal - minVal) < priceGap){
-                        if(event.target.classList.contains('filter__price_min')){
-                            rangeInput[0].value = maxVal - priceGap
-                        } else{
-                            rangeInput[1].value = minVal + priceGap;
-                        }
-                    } else {
-                        priceInput[0].value = minVal;
-                        priceInput[1].value = maxVal;
-
-                        if($("body").hasClass("rtl")) {
-                            progress.style.right = ((minVal / rangeInput[0].max) * 100) + "%";
-                            progress.style.left = 100 - (maxVal / rangeInput[1].max) * 100 + "%";
-                        } else {
-                            progress.style.left = ((minVal / rangeInput[0].max) * 100) + "%";
-                            progress.style.right = 100 - (maxVal / rangeInput[1].max) * 100 + "%";
-                        }
-                    }
-                }
-            });
-        }
+                if(!checkValue2){
+                	rangeS[1].value = number2;
+                }   
+            }
+        });
     }
 }
 

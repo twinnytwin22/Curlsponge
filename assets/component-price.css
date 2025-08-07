@@ -25,15 +25,11 @@
 }
 
 .price dd {
-    margin: 0 5px 0 0;
-}
-
-.productView-5 .price dd {
-    margin: 0 20px 0 0;
+    margin: 0 10px 0 0;
 }
 
 .price .price__last:last-of-type {
-    margin: 0!important;
+    margin: 0;
 }
 
 .price__availability,
@@ -54,7 +50,6 @@
     flex-direction: row;
     flex-wrap: wrap;
     align-items: flex-end;
-    justify-content: center;
 }
 
 .price--center {
@@ -65,8 +60,8 @@
 .price-item{
     display: inline-block;
     vertical-align: middle;
-    font-size: var(--product-price-font-size);
-    font-weight: var(--product-price-font-weight);
+    font-size: var(--prodict-price-font-size);
+    font-weight: var(--prodict-price-font-weight);
     line-height: 1;
     letter-spacing: var(--letter-spacing);
 }
@@ -78,18 +73,13 @@
 .price-item .text{
     display: inline-block;
     vertical-align: middle;
-    margin: 0 3px 0 0;
-}
-
-.card.style-8 .price-item .text{
-    text-transform: lowercase;
-    margin-right: 0;
+    margin: 0 10px 0 0;
 }
 
 .price-item .text,
 .unit-price{
-    font-size: var(--product-price-compare-font-size);
-    font-weight: var(--product-price-compare-font-weight);
+    font-size: var(--prodict-price-compare-font-size);
+    font-weight: var(--prodict-price-compare-font-weight);
     color: var(--product-compare-price-color);
     line-height: 1;
     letter-spacing: var(--letter-spacing);
@@ -113,8 +103,8 @@
 }
 
 .price.price--on-sale .price-item--regular {
-    font-size: var(--product-price-compare-font-size)!important;
-    font-weight: var(--product-price-compare-font-weight)!important;
+    font-size: var(--prodict-price-compare-font-size)!important;
+    font-weight: var(--prodict-price-compare-font-weight)!important;
     color: var(--product-compare-price-color);
     text-decoration: line-through;
 }
@@ -124,26 +114,18 @@
 }
 
 .price.price--large .price-item {
-    font-size: calc(var(--product-price-font-size) + 12px)!important;
-    font-weight: var(--product-price-font-weight);
-}
-
-.skin-11 .price.price--large .price-item{
-    font-size: calc(var(--product-price-font-size) + 4px)!important;
-    font-weight: var(--font-weight-bold);
+    font-size: calc(var(--prodict-price-font-size) + 12px)!important;
+    font-weight: var(--prodict-price-font-weight);
 }
 
 .price.price--large.price--on-sale .price__sale{
     align-items: center;
 }
 
-body.dark-mode .price.price--on-sale .price-item--sale .money{
-    filter: invert(1);
-    color: #b60b32;
+.skin-2 .price-item{
+    font-family: var(--font-2-family);
 }
 
-body.dark-mode .productView .price.price--on-sale .price-item--sale .money,
-body.dark-mode .halo-recently-viewed-popup .price.price--on-sale .price-item--sale .money,
-body.dark-mode .product-edit-item .price.price--on-sale .price-item--sale .money{
-    filter: invert(0);
+.skin-4 .price dd{
+    margin-right: 8px;
 }

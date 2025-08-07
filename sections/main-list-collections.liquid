@@ -31,7 +31,7 @@
     assign show_collection_product_count = section.settings.show_collection_product_count
     assign bg_color = section.settings.bg_color
     assign title_font = section.settings.title_font
-    assign title_font_size = section.settings.title_font_size | append: 'px'
+    assign title_font_size = section.settings.title_font_size
     assign title_font_weight = section.settings.title_font_weight
     assign title_text_transform = section.settings.title_text_transform
     assign title_color = section.settings.title_color
@@ -40,38 +40,70 @@
     assign image_effect = settings.image_effect
 -%}
 
-{% if colors_bg != 'rgba(0,0,0,0)' and colors_bg != blank %}
-    <style type="text/css" media="screen">
-        :root {
-            --body-bg: {{ colors_bg }};
-        }
-
-        body{
-            background-color: var(--body-bg);
-        }
-    </style>
-{% endif %}
-
-<div data-section-id="{{ section.id }}" data-section-type="cart" id="CollectionListSection-{{ section.id }}" data-section="{{ section.id }}" class="halo-page-padding"
-    style="--padding-top: {{ padding_top }};
-        --padding-bottom: {{ padding_bottom }};
-        --padding-top-tablet: {{ padding_top_tablet }};
-        --padding-bottom-tablet: {{ padding_bottom_tablet }};
-        --padding-top-mobile: {{ padding_top_mobile }};
-        --padding-bottom-mobile: {{ padding_bottom_mobile }};
+<style type="text/css" media="screen">
+    :root {
         {% if title_font == 'font_1' %}
-            --title-font: var(--font-1-family);
+            --title-font-{{ section.id }}: var(--font-1-family);
         {% elsif title_font == 'font_2' %}
-            --title-font: var(--font-2-family);
+            --title-font-{{ section.id }}: var(--font-2-family);
         {% elsif title_font == 'font_3' %}
-            --title-font: var(--font-3-family);
+            --title-font-{{ section.id }}: var(--font-3-family);
         {% endif %}
-        --title-font-size: {{ title_font_size }};
-        --title-font-weight: {{ title_font_weight }};
-        --title-text-transform: {{ title_text_transform }};
-        --title-color: {{ title_color }};
-        --text-color: {{ text_color }};"
->
+        {% if colors_bg != 'rgba(0,0,0,0)' and colors_bg != blank %}
+            --body-bg: {{ colors_bg }};
+        {% endif %}
+    }
+
+    {% if colors_bg != 'rgba(0,0,0,0)' and colors_bg != blank %}
+        body{
+            background: var(--body-bg);
+        }
+    {% endif %}
+
+    #CollectionListSection-{{ section.id }}{
+        padding-top: {{ padding_top }};
+        padding-bottom: {{ padding_bottom }};
+    }
+
+    {% if bg_color != 'rgba(0,0,0,0)' and bg_color != blank %}
+        #CollectionListSection-{{ section.id }} .content-box{
+            background: {{ bg_color }};
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+    {% endif %}
+
+    #CollectionListSection-{{ section.id }} .content-box .heading,
+    #CollectionListSection-{{ section.id }} .collection-list-item .custom-content .title{
+        font-family: var(--title-font-{{ section.id }});
+        font-size: {{ title_font_size | append: 'px' }};
+        font-weight: {{ title_font_weight }};
+        text-transform: {{ title_text_transform }};
+        color: {{ title_color }};
+    }
+
+    #CollectionListSection-{{ section.id }} .content-box .count,
+    #CollectionListSection-{{ section.id }} .custom-content .subtitle,
+    #CollectionListSection-{{ section.id }} .custom-content .link{
+        color: {{ text_color }};
+    }
+
+    @media (max-width: 1024px) {
+        #CollectionListSection-{{ section.id }}{
+            padding-top: {{ padding_top_tablet }};
+            padding-bottom: {{ padding_bottom_tablet }};
+        }
+    }
+
+    @media (max-width: 550px) {
+        #CollectionListSection-{{ section.id }}{
+            padding-top: {{ padding_top_mobile }};
+            padding-bottom: {{ padding_bottom_mobile }};
+        }
+    }
+</style>
+
+<div data-section-id="{{ section.id }}" data-section-type="cart" id="CollectionListSection-{{ section.id }}" data-section="{{ section.id }}">
     <div class="container container-{{ container }}">
         {%- if show_breadcrumb -%}
             {%- if container == 'full' -%}
@@ -116,7 +148,6 @@
                                     align: align,
                                     image_border_radius: image_border_radius,
                                     image_effect: image_effect,
-                                    bg_color: bg_color
                                 %}
                             </div>
                         {%- endif -%}
@@ -134,10 +165,9 @@
                                 show_collection_title: show_collection_title,
                                 show_collection_product_count: show_collection_product_count,
                                 content_style: content_style,
-                                align: align,
+                                align:align,
                                 image_border_radius: image_border_radius,
                                 image_effect: image_effect,
-                                bg_color: bg_color
                             %}
                         </div>
                     {%- endfor -%}

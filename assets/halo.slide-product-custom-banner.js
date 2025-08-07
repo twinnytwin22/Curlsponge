@@ -22,7 +22,6 @@
                                 dots: true,
                                 slidesToShow: 1,
                                 slidesToScroll: 1,
-                                rtl: window.rtl_slick,
                                 nextArrow: '<button type="button" class="slick-arrow slick-next" aria-label="'+ window.accessibility.next_slide +'">' + window.slick.nextArrow + '</button>',
                                 prevArrow: '<button type="button" class="slick-arrow slick-prev" aria-label="'+ window.accessibility.previous_slide +'">' + window.slick.prevArrow + '</button>',
                                 responsive: [
@@ -48,7 +47,6 @@
                                     dots: true,
                                     slidesToShow: 1,
                                     slidesToScroll: 1,
-                                    rtl: window.rtl_slick,
                                     nextArrow: '<button type="button" class="slick-arrow slick-next" aria-label="'+ window.accessibility.next_slide +'">' + window.slick.nextArrow + '</button>',
                                     prevArrow: '<button type="button" class="slick-arrow slick-prev" aria-label="'+ window.accessibility.previous_slide +'">' + window.slick.prevArrow + '</button>',
                                     responsive: [

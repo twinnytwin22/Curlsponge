@@ -11,37 +11,9 @@
                     itemAutoPlay = slider.data('item-autoplay'),
                     itemTime = slider.data('item-time'),
                     itemFade = slider.data('item-fade');
-
+                    
                 if(slider.length > 0){
                     if(!slider.hasClass('slick-initialized')){
-                        if (slider.find('.heroCarousel-slide--first [data-mp4-video]').length > 0){
-                            slider.on('init', (event, slick) => {
-                                var firstSlide = slider.find('.heroCarousel-slide--first'),
-                                    player = firstSlide.find('video').get(0);
-
-                                if (player != undefined) {
-                                    slider.addClass('slick-slider--playvideo');
-                                    player.play();
-                                }
-                            });
-                        }
-
-                        if (slider.find('.heroCarousel-slide--first [data-vimeo-video]').length > 0){
-                            slider.on('init', (event, slick) => {
-                                var firstSlide = slider.find('.heroCarousel-slide--first'),
-                                    player = firstSlide.find('iframe').get(0),
-                                    command = {
-                                        'method': 'play',
-                                        'value': 'true'
-                                    };
-
-                                if (player != undefined) {
-                                    slider.addClass('slick-slider--playvideo');
-                                    player.contentWindow.postMessage(JSON.stringify(command), '*');
-                                }
-                            });
-                        }
-
                         slider.slick({
                             mobileFirst: true,
                             adaptiveHeight: false,
@@ -53,7 +25,6 @@
                             fade: itemFade,
                             autoplay: itemAutoPlay,
                             autoplaySpeed: itemTime,
-                            rtl: window.rtl_slick,
                             nextArrow: '<button type="button" class="slick-arrow slick-next" aria-label="'+ window.accessibility.next_slide +'">' + window.slick.nextArrow + '</button>',
                             prevArrow: '<button type="button" class="slick-arrow slick-prev" aria-label="'+ window.accessibility.previous_slide +'">' + window.slick.prevArrow + '</button>',
                             customPaging : (slider, i) => {
@@ -86,21 +57,27 @@
 
                         if (slider.find('[data-mp4-video]').length > 0){
                             slider.on('beforeChange', (event, slick) => {
-                                var currentSlide = $(slick.$slider).find('.slick-current'),
-                                    player = currentSlide.find('video').get(0);
+                                var currentSlide,
+                                    player;
+
+                                currentSlide = $(slick.$slider).find('.slick-current');
+                                player = currentSlide.find('video').get(0);
 
                                 if (player != undefined) {
-                                    slider.removeClass('slick-slider--playvideo');
+                                    currentSlide.removeClass('slick-slider--playvideo');
                                     player.pause();
                                 }
                             });
 
                             slider.on('afterChange', (event, slick) => {
-                                var currentSlide = $(slick.$slider).find('.slick-current'),
-                                    player = currentSlide.find('video').get(0);
+                                var currentSlide,
+                                    player;
+
+                                currentSlide = $(slick.$slider).find('.slick-current');
+                                player = currentSlide.find('video').get(0);
 
                                 if (player != undefined) {
-                                    slider.addClass('slick-slider--playvideo');
+                                    currentSlide.addClass('slick-slider--playvideo');
                                     player.play();
                                 }
                             });
@@ -108,37 +85,41 @@
 
                         if (slider.find('[data-vimeo-video]').length > 0){
                             slider.on('beforeChange', (event, slick) => {
-                                var currentSlide = $(slick.$slider).find('.slick-current'),
-                                    player = currentSlide.find('iframe').get(0),
-                                    command = {
-                                        'method': 'pause',
-                                        'value': 'true'
-                                    };
+                                var currentSlide,
+                                    player,
+                                    command;
+
+                                currentSlide = $(slick.$slider).find('.slick-current');
+                                player = currentSlide.find('iframe').get(0);
+
+                                command = {
+                                    'method': 'pause',
+                                    'value': 'true'
+                                };
 
                                 if (player != undefined) {
-                                    slider.removeClass('slick-slider--playvideo');
+                                    currentSlide.removeClass('slick-slider--playvideo');
                                     player.contentWindow.postMessage(JSON.stringify(command), '*');
                                 }
                             });
 
                             slider.on('afterChange', (event, slick) => {
-                                var currentSlide = $(slick.$slider).find('.slick-current'),
-                                    player = currentSlide.find('iframe').get(0),
-                                    command = {
-                                        'method': 'play',
-                                        'value': 'true'
-                                    };
+                                var currentSlide,
+                                    player,
+                                    command;
+
+                                currentSlide = $(slick.$slider).find('.slick-current');
+                                player = currentSlide.find('iframe').get(0);
+
+                                command = {
+                                    'method': 'play',
+                                    'value': 'true'
+                                };
 
                                 if (player != undefined) {
-                                    slider.addClass('slick-slider--playvideo');
+                                    currentSlide.addClass('slick-slider--playvideo');
                                     player.contentWindow.postMessage(JSON.stringify(command), '*');
                                 }
-                            });
-                        }
-
-                        if(itemAutoPlay && slider.find('lookbook-point').length > 0) {
-                            slider.on('beforeChange', (event, slick) => {
-                                slider.closest('.lookbook-box').find('lookbook-popup').removeAttr('open');
                             });
                         }
                     }
@@ -147,25 +128,26 @@
         },
 
         initYoutubeCarousel: (carousel) => {
-            carousel.each((index, slick) => {
+            carousel.each((index, slick, currentSlide) => {
                 const $slick = $(slick);
 
                 if ($slick.find('[data-youtube-video]').length > 0) {
                     $slick.addClass('slick-slider--video');
 
-                    halo.initYoutubeCarouselEvent($slick);
+                    halo.initYoutubeCarouselEvent(slick);
                 }
             });
         },
 
-        initYoutubeCarouselEvent: ($slick) => {
-            var $videos = $slick.find('[data-youtube-video]');
+        initYoutubeCarouselEvent: (slick) => {
+            var $slick = $(slick),
+                $videos = $slick.find('[data-youtube-video]');
 
-            bindEvents();
+            bindEvents(slick);
 
             function bindEvents() {
                 if ($slick.hasClass('slick-initialized')) {
-                    onSlickInit();
+                    onSlickInit($slick, $videos);
                 }
 
                 $slick.on('init', onSlickInit);
@@ -208,13 +190,14 @@
 
             function onSlickInit() {
                 $videos.each((index, video) => {
+                    const $video = $(video);
                     const id = `youtube_player_${Math.floor(Math.random() * 100)}`;
 
-                    video.setAttribute('id', id);
+                    $video.attr('id', id);
 
                     const player = new YT.Player(id, {
                         host: 'http://www.youtube.com',
-                        videoId: video.getAttribute('data-youtube-video'),
+                        videoId: $video.data('youtube-video'),
                         wmode: 'transparent',
                         playerVars: {
                             controls: 0,

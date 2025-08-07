@@ -1,19 +1,20 @@
 {%- if countdown_type == 'all_product' -%}
-    <div class="productView-countDown halo-countDown countdown_{{ product.id }} style-{{ countdown_style }} text-left clearfix element-spacing"
-        {{ block.shopify_attributes }}
-        style="--countdown-bg: {{ countdown_bg }};
-        --countdown-color: {{ countdown_color }};
-        --countdown-number-color: {{ countdown_number_color }};
-        --spacing-top: {{ padding_top | append: 'px' }};
-        --spacing-bottom: {{ padding_bottom | append: 'px' }};
-        --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
-        --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
-        --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
-        --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};" 
-    >
-        <count-down class="countdown-wrapper" data-countdown="{{ countdown_time }}" data-type="product">
-            <div class="countdown-coundtdown"></div>
-        </count-down>
+    <div class="productView-countDown halo-countDown countdown_{{ product.id }} style-{{ countdown_style }} text-left clearfix" data-countdown-id="{{ product.id }}" data-countdown="{{ countdown_time }}">
+        <span class="text animated-loading">
+            <span>{{ 'countdown.general.text' | t }}</span>
+        </span>
+        <span class="num animated-loading">
+            <span>151<span>D</span></span>
+        </span>
+        <span class="num animated-loading">
+            <span>8<span>H</span></span>
+        </span>
+        <span class="num animated-loading">
+            <span>23<span>M</span></span>
+        </span>
+        <span class="num animated-loading">
+            <span>00<span>S</span></span>
+        </span>
     </div>
 {%- elsif countdown_type == 'collection_product' -%}
     {%- liquid
@@ -28,41 +29,43 @@
         endif
     -%}
     {%- if hasCountdown -%}
-        <div class="productView-countDown halo-countDown countdown_{{ product.id }} style-{{ countdown_style }} text-left clearfix element-spacing"
-            {{ block.shopify_attributes }}
-            style="--countdown-bg: {{ countdown_bg }};
-            --countdown-color: {{ countdown_color }};
-            --countdown-number-color: {{ countdown_number_color }};
-            --spacing-top: {{ padding_top | append: 'px' }};
-            --spacing-bottom: {{ padding_bottom | append: 'px' }};
-            --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
-            --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
-            --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
-            --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};" 
-        >
-            <count-down class="countdown-wrapper" data-countdown="{{ countdown_time }}" data-type="product">
-                <div class="countdown-coundtdown"></div>
-            </count-down>
+        <div class="productView-countDown halo-countDown countdown_{{ product.id }} style-{{ countdown_style }} text-left clearfix" data-countdown-id="{{ product.id }}" data-countdown="{{ countdown_time }}">
+            <span class="text animated-loading">
+                <span>{{ 'countdown.general.text' | t }}</span>
+            </span>
+            <span class="num animated-loading">
+                <span>151<span>D</span></span>
+            </span>
+            <span class="num animated-loading">
+                <span>8<span>H</span></span>
+            </span>
+            <span class="num animated-loading">
+                <span>23<span>M</span></span>
+            </span>
+            <span class="num animated-loading">
+                <span>00<span>S</span></span>
+            </span>
         </div>
     {%- endif -%}
 {%- else -%}
     {%- if product.metafields.c_f.countdown -%}
         {% assign countdown_type = product.metafields.c_f.countdown %}
-        <div class="productView-countDown halo-countDown countdown_{{ product.id }} style-{{ countdown_style }} text-left clearfix element-spacing"
-            {{ block.shopify_attributes }}
-            style="--countdown-bg: {{ countdown_bg }};
-            --countdown-color: {{ countdown_color }};
-            --countdown-number-color: {{ countdown_number_color }};
-            --spacing-top: {{ padding_top | append: 'px' }};
-            --spacing-bottom: {{ padding_bottom | append: 'px' }};
-            --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
-            --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
-            --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
-            --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};" 
-        >
-            <count-down class="countdown-wrapper" data-countdown="{{ countdown_time }}" data-type="product">
-                <div class="countdown-coundtdown"></div>
-            </count-down>
+        <div class="productView-countDown halo-countDown countdown_{{ product.id }} style-{{ countdown_style }} text-left clearfix" data-countdown-id="{{ product.id }}" data-countdown="{{ countdown_type }}">
+            <span class="text animated-loading">
+                <span>{{ 'countdown.general.text' | t }}</span>
+            </span>
+            <span class="num animated-loading">
+                <span>151<span>D</span></span>
+            </span>
+            <span class="num animated-loading">
+                <span>8<span>H</span></span>
+            </span>
+            <span class="num animated-loading">
+                <span>23<span>M</span></span>
+            </span>
+            <span class="num animated-loading">
+                <span>00<span>S</span></span>
+            </span>
         </div>
     {%- endif -%}
 {%- endif -%}

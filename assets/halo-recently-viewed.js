@@ -2,49 +2,36 @@ class RecentlyViewed extends HTMLElement {
 	constructor() {
 		super();
 
-        this.expireDay = this.getAttribute('data-expire-day');
-        this.limit = this.getAttribute('data-product-to-show');
-        this.icon = this.querySelectorAll('.recently-viewed-icon');
-        this.tab = this.querySelectorAll('.recently-viewed-tab');
+		this.popup = this;
+        this.expireDay = this.popup.getAttribute('data-expire-day');
+        this.limit = this.popup.getAttribute('data-product-to-show');
+        this.icon = this.getElementsByClassName('recently-viewed-icon');
+        this.tab = this.getElementsByClassName('recently-viewed-tab');
+        this.noProduct = this.getElementsByClassName('no-products')[0];
 
-        var popup = this;
-        var shownSection = 0;
+        Shopify.Products.recordRecentlyViewed();
 
-        Shopify.Products.record({
-            name: 'shopify_recently_viewed_popup',
-            expire: this.expireDay,
-            max: 10
-        });
+        var cookieValue = $.cookie('shopify_recently_viewed');
 
-        var list = Shopify.Products.show({
-            name: 'shopify_recently_viewed_popup'
-        });
+        if (!(cookieValue !== null && cookieValue !== undefined && cookieValue !== "")){
+            this.noProduct.style.display = 'flex';
+            this.popup.classList.add('is-show');
+        } else {
+            var recentlyViewed = $(this.popup);
 
-        var doAlong = function () {
-            if (list.length == 0){
-                $(popup).addClass('is-show');
-                $(popup).find('.no-products').css("display", "flex");
-            } else {
-                $(popup).find('.no-products').remove();
-                var productHandleQueue = list;
-                var url = window.routes.root + '/products/' + productHandleQueue[shownSection] + '?view=ajax_recently_viewed';
+            var limit = this.limit,
+                expireDay = this.expireDay;
 
-                if (productHandleQueue.length && shownSection < productHandleQueue.length && shownSection < Number(popup.getAttribute('data-product-to-show'))) { 
-                    $.ajax({
-                        type: 'get',
-                        url: url,
-                        cache: false,
-                        success: function (product) {
-                            $(popup).find('.products-grid').append(product);
-                            shownSection++;
-                            doAlong();
-                        }
-                    });
-                } else {
-                    var recentlyGrid = $(popup).find('.products-grid'),
-                        productGrid = recentlyGrid.find('.item'),
-                        iconNextArrow = '<button type="button" class="slick-next"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"><title>ic-arrow-right</title><path d="M15.111 12L8 4.889 8.889 4l8 8-8 8L8 19.111z"></path></svg></button>',
-                        iconPrevArrow = '<button type="button" class="slick-prev"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"><title>ic-arrow-left</title><path d="M8.778 12l7.111-7.111L15 4l-8 8 8 8 .889-.889z"></path></svg></button>';
+            Shopify.Products.showRecentlyViewed({ 
+                howManyToShow: limit,
+                wrapperId: 'recently-viewed-products-list', 
+                templateId: 'recently-viewed-product-popup',
+                onComplete: function() {
+                    recentlyViewed.find('.no-products').remove();
+                    recentlyViewed.addClass('is-show');
+
+                    var recentlyGrid = recentlyViewed.find('.products-grid'),
+                        productGrid = recentlyGrid.find('.item');
 
                     if (productGrid.length > 0){
                         if(recentlyGrid.is(':visible')) {
@@ -71,8 +58,8 @@ class RecentlyViewed extends HTMLElement {
                                 vertical: true,
                                 slidesToScroll: 1,
                                 adaptiveHeight: true,
-                                nextArrow: iconNextArrow, 
-                                prevArrow: iconPrevArrow,
+                                nextArrow: '<button type="button" class="slick-next"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"><title>ic-arrow-right</title><path d="M15.111 12L8 4.889 8.889 4l8 8-8 8L8 19.111z"></path></svg></button>', 
+                                prevArrow: '<button type="button" class="slick-prev"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"><title>ic-arrow-left</title><path d="M8.778 12l7.111-7.111L15 4l-8 8 8 8 .889-.889z"></path></svg></button>',
                                 responsive: [
                                     {
                                         breakpoint: 768,
@@ -93,8 +80,8 @@ class RecentlyViewed extends HTMLElement {
                                 vertical: true,
                                 slidesToScroll: 1,
                                 adaptiveHeight: true,
-                                nextArrow: iconNextArrow, 
-                                prevArrow: iconPrevArrow,
+                                nextArrow: '<button type="button" class="slick-next"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"><title>ic-arrow-right</title><path d="M15.111 12L8 4.889 8.889 4l8 8-8 8L8 19.111z"></path></svg></button>', 
+                                prevArrow: '<button type="button" class="slick-prev"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"><title>ic-arrow-left</title><path d="M8.778 12l7.111-7.111L15 4l-8 8 8 8 .889-.889z"></path></svg></button>',
                                 responsive: [
                                     {
                                         breakpoint: 768,
@@ -109,8 +96,6 @@ class RecentlyViewed extends HTMLElement {
                     
                         recentlyGrid.prepend('<div class="product-info"></div>');
                     }
-
-                    popup.classList.add('is-show');
 
                     recentlyGrid.on('mouseenter', '.item', (event) => {
                         event.preventDefault();
@@ -134,25 +119,27 @@ class RecentlyViewed extends HTMLElement {
 
                     recentlyGrid.on('click', 'a[data-mobile-click]', (event) => {
                         if (window.innerWidth < 768) {
-                            event.preventDefault();
+                           event.preventDefault();
                         }
                     });
-                }
-            }
-        }
-		doAlong();
 
-        if(this.icon.length > 0) {
-            this.icon.forEach((icon) => {
-                icon.addEventListener('click', this.iconClick.bind(this));
+                    if (window.location.pathname.indexOf('/products/') !== -1) {
+                        $.cookie('shopify_recently_viewed', cookieValue, { expires: expireDay, path: "/", domain: window.location.hostname });
+                    }
+                }
             });
+        }
+		
+        for (var i = 0; i < this.icon.length; i++) {
+            this.icon[i].addEventListener('click', this.popup.iconClick.bind(this));
         }
 
         document.body.addEventListener('click', this.onBodyClickEvent.bind(this));
 	}
 
     iconClick(event){
-        var $currTarget = event.currentTarget;
+        var $currTarget = event.currentTarget,
+            $recentlyViewed = this.popup;
 
         if($currTarget.classList.contains('open-popup')){
             var currPopup = $currTarget.getAttribute('data-target');
@@ -166,7 +153,7 @@ class RecentlyViewed extends HTMLElement {
                 $currTarget.classList.add('is-open');
                 document.getElementById(currPopup).classList.add('is-visible');
             }
-        } else if ($currTarget.classList.contains('scroll-top')) {
+        } else {
             this.closeTab();
 
             $('html, body').animate({
@@ -176,16 +163,12 @@ class RecentlyViewed extends HTMLElement {
     }
 
     closeTab(){
-        if(this.icon.length > 0) {
-            this.icon.forEach((icon) => {
-                icon.classList.remove('is-open');
-            });
+        for (var i = 0; i < this.icon.length; i++) {
+            this.icon[i].classList.remove('is-open');
         }
 
-        if(this.tab.length > 0) {
-            this.tab.forEach((tab) => {
-                tab.classList.remove('is-visible');
-            });
+        for (var i = 0; i < this.tab.length; i++) {
+            this.tab[i].classList.remove('is-visible');
         }
     }
 
@@ -194,64 +177,6 @@ class RecentlyViewed extends HTMLElement {
             this.closeTab();
         }
     }
-
-    addMediaSize(data, limit) {
-        let htmlMedia = document.createElement('div');
-        htmlMedia.innerHTML = data;
-
-        // Limit
-        $(htmlMedia).find(`.item:nth-child(n+${Number(limit) + 1})`).remove();
-
-        return $(htmlMedia).html();
-    }
 }
 
 customElements.define('recently-viewed-popup', RecentlyViewed);
-
-class RecentlyDarkMode extends HTMLElement {
-    constructor() {
-        super();
-        this.darkMode = this.querySelector('.recently-dark-mode');
-
-        this.checkDarkMode();
-        this.darkMode.addEventListener('click', this.toggleEvent.bind(this));
-    }
-
-    toggleEvent(event){
-        event.preventDefault();
-        event.stopPropagation();
-
-        var $this = event.currentTarget;
-        if(!$this.classList.contains('default-dark-mode')){
-            if(!$this.classList.contains('active')){
-                $this.classList.add('active');
-                document.body.classList.add('dark-mode');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                $this.classList.remove('active');
-                document.body.classList.remove('dark-mode');
-                localStorage.removeItem('theme');
-            }
-        } else {
-            if($this.classList.contains('active')){
-                $this.classList.remove('active');
-                document.body.classList.remove('dark-mode');
-                localStorage.setItem('theme', 'light');
-            } else {
-                $this.classList.add('active');
-                document.body.classList.add('dark-mode');
-                localStorage.removeItem('theme');
-            }
-        }
-    }
-
-    checkDarkMode() {
-        if(!this.darkMode.classList.contains('default-dark-mode')){
-            localStorage.getItem('theme') === 'dark' ? this.darkMode.classList.add('active') : this.darkMode.classList.remove('active');
-        } else {
-            localStorage.getItem('theme') === 'light' ? this.darkMode.classList.remove('active') : this.darkMode.classList.add('active');
-        }
-    }
-}
-
-customElements.define('dark-mode', RecentlyDarkMode);

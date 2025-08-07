@@ -5,22 +5,27 @@ class ProductTabs extends HTMLElement {
         this.tab = this.querySelectorAll('.tab-title');
         this.tabContent = this.querySelectorAll('.tab-content');
         this.link = this.querySelectorAll('.toggleLink');
+        this.readMore = this.querySelectorAll('[data-description-toogle]');
 
-        if (this.querySelector('.tabs-horizontal')) {
-            this.tab[0].classList.add('is-open');
-            this.tabContent[0].classList.add('is-active');
+        for (var i = 0; i < this.tab.length; i++) {
+            this.tab[i].addEventListener(
+                'click',
+                this.tabActive.bind(this)
+            );
         }
 
-        if(this.tab.length > 0) {
-            this.tab.forEach((tab) => {
-                tab.addEventListener('click', this.tabActive.bind(this));
-            });
+        for (var i = 0; i < this.link.length; i++) {
+            this.link[i].addEventListener(
+                'click',
+                this.tabToggle.bind(this)
+            );
         }
 
-        if(this.link.length > 0) {
-            this.link.forEach((link) => {
-                link.addEventListener('click', this.tabToggle.bind(this));
-            });
+        for (var i = 0; i < this.readMore.length; i++) {
+            this.readMore[i].addEventListener(
+                'click',
+                this.readMoreReadLess.bind(this)
+            );
         }
 	}
 
@@ -60,6 +65,32 @@ class ProductTabs extends HTMLElement {
         } else {
             $this.classList.add('is-open');
             $($content).slideDown('slow');
+        }
+    }
+
+    readMoreReadLess(event){
+        event.preventDefault();
+        event.stopPropagation();
+
+        var $this = event.target,
+            $parent = event.target.closest('.tab-descriptionShowmore'),
+            id = $this.getAttribute('href').replace('#', ''),
+            textShowMore = $this.getAttribute('data-show-more-text'),
+            textShowLess = $this.getAttribute('data-show-less-text'),
+            content = document.getElementById(`${id}`);
+
+        if($this.classList.contains('is-less')) {
+            $parent.classList.remove('full');
+            $this.classList.remove('is-less');
+            $this.classList.add('is-show');
+            $this.innerText = textShowMore;
+            content.style.maxHeight = '300px';
+        } else {
+            $this.classList.remove('is-show');
+            $parent.classList.add('full');
+            $this.classList.add('is-less');
+            $this.innerText = textShowLess;
+            content.style.maxHeight = 'unset';
         }
     }
 }

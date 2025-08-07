@@ -3,11 +3,11 @@
 <toolbar-item class="toolbar" data-toolbar data-id="{{ section.id }}">
     {%- if has_sidebar -%}
         <div class="toolbar-wrapper toolbar-mobile">
-            <mobile-sidebar-button class="toolbar-item toolbar-sidebar" data-sidebar>
+            <div class="toolbar-item toolbar-sidebar" data-sidebar>
                 <span class="toolbar-icon icon-filter">
                     {% render 'icon-sidebar' %}
                 </span>
-            </mobile-sidebar-button>
+            </div>
         </div>
     {%- endif -%}
     <div class="toolbar-wrapper{% unless has_sidebar %} toolbar-wrapper--flex{% endunless %}">

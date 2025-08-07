@@ -1,6 +1,11 @@
-{%- if section.settings.show_testimonial and section.blocks.size > 0 -%}
+{%- liquid
+    assign show_section = false
+    if section.blocks.size > 0 and section.settings.show_testimonial
+        assign show_section = true
+    endif
+-%}
+{%- if show_section -%}
 	{%- liquid
-        assign layout_style = section.settings.layout_style
         assign padding_top = section.settings.padding_top | append: 'px'
         assign padding_bottom = section.settings.padding_bottom | append: 'px'
         assign padding_top_tablet = section.settings.padding_top_tablet | append: 'px'
@@ -22,83 +27,106 @@
         assign title_text_transform = section.settings.title_text_transform
         assign show_bg_img = section.settings.show_bg_img
         if show_bg_img
-            assign block_bg_img = section.settings.block_bg_img
+            assign block_bg_img = section.settings.block_bg_img | img_url: 'master'
             assign block_bg_position_x = section.settings.block_bg_position_x
             assign block_bg_position_y = section.settings.block_bg_position_y
             assign block_bg_repeat = section.settings.block_bg_repeat
             assign block_bg_attachment = section.settings.block_bg_attachment
             assign block_bg_size = section.settings.block_bg_size
         endif
-        assign block_bg_mobile_img = section.settings.block_bg_mobile_img
         assign position = section.settings.position
         assign align = section.settings.align
     	assign dots = section.settings.block_dots
         assign arrows = section.settings.block_arrows
     -%}
-    {%- if settings.show_dark_mode -%}
-        <style type="text/css" media="screen">
-            body.dark-mode .halo-testimonial-2 .slick-arrow svg{fill: var(--item-text-color);stroke: transparent;color: var(--item-text-color)}
-        </style>
-    {%- endif -%}
-    <div class="halo-block halo-testimonial-2 halo-block-padding" id="halo-testimonial-2-{{ section.id }}" data-testimonial-2-block data-loader-script="{{ 'halo.slide-testimonial.js' | asset_url }}"
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};"
-    >
-        <div class="halo-block-content testimonial-2 style-{{ layout_style }}{% if show_bg_img and block_bg_img != blank %} has-background{% endif %}"
-            style="--bg-color: {{ background_color }};
+    <style type="text/css" media="screen">
+        :root {
+            {% if text_font == 'font_1' %}
+                --text-font-{{ section.id }}: var(--font-1-family);
+            {% elsif text_font == 'font_2' %}
+                --text-font-{{ section.id }}: var(--font-2-family);
+            {% elsif text_font == 'font_3' %}
+                --text-font-{{ section.id }}: var(--font-3-family);
+            {% endif %}
+            {% if title_font == 'font_1' %}
+                --title-font-{{ section.id }}: var(--font-1-family);
+            {% elsif title_font == 'font_2' %}
+                --title-font-{{ section.id }}: var(--font-2-family);
+            {% elsif title_font == 'font_3' %}
+                --title-font-{{ section.id }}: var(--font-3-family);
+            {% endif %}
+        }
+
+        #halo-testimonial-2-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        #halo-testimonial-2-{{ section.id }} .halo-block-content{
+            background: {{ background_color }};
             {% if show_bg_img and block_bg_img != blank %}
-                --bg-block-img: url({{ block_bg_img | img_url: 'master' }}); 
-                --bg-block-img-position-x: {{ block_bg_position_x }};
-                --bg-block-img-position-y: {{ block_bg_position_y }};
-                --bg-block-img-repeat: {{ block_bg_repeat }};
-                --bg-block-img-attachment: {{ block_bg_attachment }};
-                --bg-block-img-size: {{ block_bg_size }};
-            {% endif %}" 
-        >
-            <div class="halo-img img-box">
-                <div class="image image-bg image-adapt">
-                    {%- if show_bg_img and block_bg_mobile_img != blank -%}
-                        <img srcset="{{ block_bg_mobile_img | img_url: '1920x' }} 1x, {{ block_bg_mobile_img | img_url: '1920x', scale: 2 }} 2x" src="{{ block_bg_mobile_img | img_url: '1920x', crop: 'center' }}" alt="{{ block_bg_mobile_img.alt | default: shop.name | escape }}" loading="lazy">
-                    {%- elsif show_bg_img and block_bg_mobile_img == blank and block_bg_img != blank -%}
-                        <img srcset="{{ block_bg_img | img_url: '1920x' }} 1x, {{ block_bg_img | img_url: '1920x', scale: 2 }} 2x" src="{{ block_bg_img | img_url: '1920x', crop: 'center' }}" alt="{{ block_bg_img.alt | default: shop.name | escape }}" loading="lazy">
-                    {%- else -%}
-                        {% capture current %}{% cycle 1, 2 %}{% endcapture %}
-                        {{ 'lifestyle-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}   
-                    {%- endif -%}
-                </div>   
-            </div>
+                background-image: url({{ block_bg_img }});
+                background-position: {{ block_bg_position_x }} {{ block_bg_position_y }};
+                background-repeat: {{ block_bg_repeat }};
+                background-attachment: unset;
+                background-size: {{ block_bg_size }};
+            {% endif %}
+        }
+
+        #halo-testimonial-2-{{ section.id }} .title{
+            font-family: var(--title-font-{{ section.id }});
+            font-size: {{ title_mobile_font_size }};
+            font-weight: {{ title_font_weight }};
+            text-transform: {{ title_text_transform }};
+            color: {{ title_color }}
+        }
+
+        #halo-testimonial-2-{{ section.id }} .desc{
+            font-family: var(--text-font-{{ section.id }});
+            font-size: {{ text_mobile_font_size }};
+            font-weight: {{ text_font_weight }};
+            text-transform: {{ text_text_transform }};
+            color: {{ desc_color }};
+        }
+
+        @media (max-width: 1024px) {
+            #halo-testimonial-2-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #halo-testimonial-2-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+
+        @media (min-width: 551px){
+            #halo-testimonial-2-{{ section.id }} .title{
+                font-size: {{ title_font_size }};
+            }
+
+            #halo-testimonial-2-{{ section.id }} .desc{
+                font-size: {{ text_font_size }};
+            }
+        }
+
+        {% if show_bg_img and block_bg_img != blank %}
+            @media (min-width: 1025px){
+                #halo-testimonial-2-{{ section.id }} .halo-block-content{
+                    background-attachment: {{ block_bg_attachment }};
+                }
+            }
+        {% endif %}
+    </style>
+    <div class="halo-block halo-testimonial-2" id="halo-testimonial-2-{{ section.id }}" data-testimonial-2-block data-loader-script="{{ 'halo.slide-testimonial.js' | asset_url }}" >
+        <div class="halo-block-content testimonial-2">
             <div class="halo-panel halo-panel-carousel content-box content-box--absolute content-box--full content-box--{{ position }} text-{{ align }}" 
                 data-testimonial-content
                 data-item-dots="{{ dots }}"
                 data-item-arrows="{{ arrows }}"
-                style="{% if text_font == 'font_1' %}
-                    --item-text-font: var(--font-1-family);
-                {% elsif text_font == 'font_2' %}
-                    --item-text-font: var(--font-2-family);
-                {% elsif text_font == 'font_3' %}
-                    --item-text-font: var(--font-3-family);
-                {% endif %}
-                --item-text-font-size: {{ text_font_size }};
-                --item-text-mobile-font-size: {{ text_mobile_font_size }};
-                --item-text-font-weight: {{ text_font_weight }};
-                --item-text-transform: {{ text_text_transform }};
-                --item-text-color: {{ desc_color }};
-                {% if title_font == 'font_1' %}
-                    --item-title-font: var(--font-1-family);
-                {% elsif title_font == 'font_2' %}
-                    --item-title-font: var(--font-2-family);
-                {% elsif title_font == 'font_3' %}
-                    --item-title-font: var(--font-3-family);
-                {% endif %}
-                --item-title-font-size: {{ title_font_size }};
-                --item-title-mobile-font-size: {{ title_mobile_font_size }};
-                --item-title-font-weight: {{ title_font_weight }};
-                --item-title-transform: {{ title_text_transform }};
-                --item-title-color: {{ title_color }};"
             >
                 {%- for block in section.blocks -%}
                     {%- liquid
@@ -136,7 +164,7 @@
 {%- endif -%}
 {% schema %}
 	{
-		"name": "t:sections.testimonial.presets.name__2",
+		"name": "t:sections.testimonial.name",
 		"settings": [
 			{
                 "type": "header",
@@ -147,21 +175,6 @@
                 "id": "show_testimonial",
                 "label": "t:sections.testimonial.settings.general.label__1",
                 "default": true
-            },
-            {
-                "type": "select",
-                "id": "layout_style",
-                "label": "t:sections.general.settings.style.label__1",
-                "default": "1",
-                "options": [
-                {
-                    "value": "1",
-                    "label": "1"
-                },
-                {
-                    "value": "2",
-                    "label": "2"
-                }]
             },
             {
                 "type": "paragraph",
@@ -245,12 +258,6 @@
                 "type": "image_picker",
                 "id": "block_bg_img",
                 "label": "t:sections.general.settings.background-image.label__2"
-            },
-            {
-                "type": "image_picker",
-                "id": "block_bg_mobile_img",
-                "label": "t:sections.general.settings.image.label__2",
-                "info": "t:sections.testimonial.settings.general.info"
             },
             {
                 "type": "select",
@@ -700,9 +707,6 @@
                     }
                 ]
             }
-        ],
-        "disabled_on": {
-            "groups": ["header", "footer"]
-        }
+        ]
 	}
 {% endschema %}

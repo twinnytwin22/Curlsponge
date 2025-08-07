@@ -161,6 +161,14 @@
     display: inline;
 }
 
+.bundle-product-checkbox input[type="checkbox"] + label:before{
+	top: 3px;
+}
+
+.bundle-product-checkbox input[type="checkbox"] + label:after{
+	top: 6px;
+}
+
 .bundle-product-checkbox input[type="checkbox"]:checked + label{
     font-weight: var(--font-weight-normal);
 }
@@ -503,6 +511,15 @@
  	padding: 0 20px 20px 20px;
 }
 
+.bundle-hotStock{
+	font-size: var(--font-size);
+    font-weight: var(--font-weight-normal);
+    color: var(--color-global);
+    letter-spacing: var(--letter-spacing);
+    line-height: var(--line-height);
+    padding: 10px 0 0 0;
+}
+
 .bundle-product-item.is-open .bundle-product-options{
     display: block;
 }
@@ -608,7 +625,6 @@
     font-style: italic;
     line-height: var(--line-height);
     letter-spacing: var(--letter-spacing);
-    color: var(--discount-color);
     margin: 2px 0 16px 0;
 }
 
@@ -620,9 +636,6 @@
 
 .bundle-product-action .button{
     border-radius: 0;
-    background: var(--btn-bg);
-    color: var(--btn-color);
-    border-color: var(--btn-border);
 }
 
 .bundle-product-options .selector-wrapper{
@@ -634,70 +647,22 @@
     letter-spacing: 0;
 }
 
-body.dark-mode .halo-product-bundle:not(.dark-mode) {
-    background: var(--dark-mode-bg-color);
-}
-
-body.dark-mode .halo-product-bundle.dark-mode {
-    background: var(--color-background);
-}
-
-body.dark-mode .halo-product-bundle:not(.dark-mode) .halo-block-header .title,
-body.dark-mode .halo-product-bundle:not(.dark-mode) .halo-block-header .desc {
-    filter: invert(1);
-}
-
-body.dark-mode .halo-product-bundle.dark-mode .bundle-product-checkbox .product-title,
-body.dark-mode .halo-product-bundle.dark-mode .bundle-product-price,
-body.dark-mode .halo-product-bundle.dark-mode .bundle-product-price .special-price,
-body.dark-mode .halo-product-bundle.dark-mode .bundle-product-vendor {
-    filter: invert(1);
-}
-
-body.dark-mode .halo-product-bundle.dark-mode .bundle-product-toogle {
-    background-color: var(--bg-black);
-    border-color: var(--bg-white);
-    color: var(--color-white);
-}
-
-body.dark-mode .halo-product-bundle.dark-mode .bundle-product-checkbox input[type="checkbox"]:checked + label:before {
-    background-color: var(--bg-black);
-    border-color: var(--bg-white);
-
-}
-
-body.dark-mode .halo-product-bundle.dark-mode .bundle-product-options {
-    background: var(--bg-black);
-    box-shadow: 0 3px 7px rgba(255, 255, 255, 0.2);
-}
-
-body.dark-mode .halo-product-bundle.dark-mode .bundle-product-options .halo-popup-header {
-    background-color: #0A0A0A;
-}
-
-body.dark-mode .halo-product-bundle:not(.dark-mode) .bundle-product-totalPrice .text
-body.dark-mode .halo-product-bundle:not(.dark-mode) .bundle-product-checkbox input[type=checkbox]:checked + label,
-body.dark-mode .halo-product-bundle:not(.dark-mode) .bundle-product-title .product-title,
-body.dark-mode .halo-product-bundle:not(.dark-mode) .bundle-product-item .bundle-product-toogle {
-    color: var(--color-black);
-}
-
 @media (min-width: 375px){
 	.bundle-product-options{
-        min-width: 320px;
+        width: 320px;
     }
 }
 
 @media (min-width: 551px){
-	.bundle-product-item.style-1 .bundle-product-checkbox label{
-        padding-right: 110px;
+	.bundle-product-checkbox label{
+        padding-right: 90px;
     }
 
     .bundle-product-checkbox .spr-badge{
         position: absolute;
         top: 0;
         right: 0;
-        width: 110px;
+        width: 90px;
         margin-top: 0;
         text-align: right;
     }
@@ -771,12 +736,6 @@ body.dark-mode .halo-product-bundle:not(.dark-mode) .bundle-product-item .bundle
 		padding-bottom: 30px;
 	}
 
-    .bundle-product-action .button:hover{
-        background: var(--btn-bg-hover);
-        color: var(--btn-color-hover);
-        border-color: var(--btn-border-hover);
-    }
-
     .halo-product-bundle.layout-2 .bundle-product-wrapper,
     .halo-product-bundle.layout-3 .bundle-product-wrapper{
         align-items: inherit;
@@ -815,14 +774,6 @@ body.dark-mode .halo-product-bundle:not(.dark-mode) .bundle-product-item .bundle
         align-items: center;
         justify-content: center;
         border: 5px solid #e9e9e9;
-    }
-
-    body.dark-mode .halo-product-bundle.layout-2 .bundle-product-right {
-        background-color: #141412;
-    }
-
-    body.dark-mode .halo-product-bundle.layout-3 .bundle-product-right {
-        border: 5px solid #161616;
     }
 }
 

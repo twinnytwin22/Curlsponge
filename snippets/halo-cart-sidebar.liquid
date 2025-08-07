@@ -1,11 +1,13 @@
+<link rel="stylesheet" href="{{ 'component-quick-cart.css' | asset_url }}" media="print" onload="this.media='all'">
+
 <noscript>{{ 'component-quick-cart.css' | asset_url | stylesheet_tag }}</noscript>
 
-<div class="halo-sidebar halo-sidebar-right halo-cart-sidebar" id="halo-cart-sidebar" data-url-style-cart-sidebar="{{ 'component-quick-cart.css' | asset_url }}">
+<div class="halo-sidebar halo-sidebar-right halo-cart-sidebar" id="halo-cart-sidebar">
 	{%- if settings.quick_cart_sidebar_style == '1' -%}
-	    <button type="button" class="halo-sidebar-close" data-close-cart-sidebar aria-label="{{ 'general.common.close' | t }}">
+	    <a href="#" class="halo-sidebar-close" data-close-cart-sidebar role="button">
 	    	<span class="visually-hidden">{{ 'general.common.close' | t }}</span>
 	        {% render 'icon-close' %}
-	    </button>
+	    </a>
 	{%- endif -%}
     <div class="halo-sidebar-header style-{{ settings.quick_cart_sidebar_style }}{% if settings.quick_cart_sidebar_style == '1' %} text-left{% else %} text-center{% endif %}">
 		<span class="title">
@@ -19,10 +21,5 @@
 		    </a>
 		{%- endif -%}
 	</div>
-    <div class="halo-sidebar-wrapper custom-scrollbar">
-    	<quick-cart-items data-view="ajax_side_cart" data-section="Sidebar" data-add-class="false" data-empty-cart="false">
-    		<div class="halo-block-loader"></div>
-    		<div id="Cart-Content-Sidebar"></div>
-    	</quick-cart-items>
-    </div>
+    <div class="halo-sidebar-wrapper custom-scrollbar"></div>
 </div>

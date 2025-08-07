@@ -2,22 +2,15 @@
 	font-size: 0;
     letter-spacing: 0;
     overflow: hidden;
-    padding: 10px;
 }
 
 .product-added .product-image{
 	display: inline-block;
     vertical-align: top;
     width: 90px;
-    height: 100%;
+    height: 135px;
     position: relative;
     overflow: hidden;
-}
-
-.product-added .product-image:after{
-    content: '';
-    display: block;
-    padding-bottom: var(--image-ratio);
 }
 
 .product-added .product-image img{
@@ -47,11 +40,26 @@
     pointer-events: none;
 }
 
+.product-added .product-image:before{
+	content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    opacity: 0;
+    visibility: hidden;
+    background: rgba(0,0,0,.3);
+    transition: var(--anchor-transition);
+}
+
 .product-added .product-info{
 	width: calc(100% - 90px);
     display: inline-block;
     vertical-align: top;
-    padding: 0 25px 0 15px;
+    padding: 10px 35px 10px 19px;
 }
 
 .product-added .product-title{
@@ -152,13 +160,6 @@
 	top: 0;
 	left: 0;
 	transform: translate3d(0,-10px,0);
-}
-
-.halo-add-to-cart-popup[open]{
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: translate3d(0,0,0);
 }
 
 .previewModal{
@@ -345,6 +346,33 @@
 	margin-top: 10px;
 }
 
+body.add-to-cart-show .halo-add-to-cart-popup{
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+	transform: translate3d(0,0,0);
+}
+
+body.cart-upsell-show{
+	overflow: hidden;
+	height: 100%;
+}
+
+body.cart-upsell-show .background-overlay{
+	display: block;
+}
+
+body.cart-upsell-show .halo-upsell-popup{
+	opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translate3d(-50%,-50%,0);
+}
+
+body.cart-upsell-show .halo-upsell-popup.halo-popup-topDown{
+	transform: translate3d(-50%,0,0);
+}
+
 @media (min-width: 551px){
 	.halo-add-to-cart-popup{
 		top: 15px;
@@ -354,6 +382,13 @@
 }
 
 @media (min-width: 1025px) {
+	.product-added .product-image:hover svg,
+	.product-added .product-image:hover:before{
+		opacity: 1;
+		visibility: visible;
+		pointer-events: auto;
+	}
+
 	.product-added .product-action .link .text{
 		display: block;
 	}
@@ -392,4 +427,8 @@
 		width: calc(100% - 260px);
     	padding: 0 0 0 30px;
 	}
+
+    body.cart-upsell-show{
+        padding-right: 10px;
+    }
 }

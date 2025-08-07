@@ -8,50 +8,43 @@
         assign padding_bottom_mobile = section.settings.padding_bottom_mobile | append: 'px'
         assign container = section.settings.container
     -%}
-    <div data-section-id="{{ section.id }}" data-section-type="footer-collection" id="FooterCollectionSection-{{ section.id }}" data-section="{{ section.id }}" class="halo-page-padding"
-        style="--padding-top: {{ padding_top }};
-        --padding-bottom: {{ padding_bottom }};
-        --padding-top-tablet: {{ padding_top_tablet }};
-        --padding-bottom-tablet: {{ padding_bottom_tablet }};
-        --padding-top-mobile: {{ padding_top_mobile }};
-        --padding-bottom-mobile: {{ padding_bottom_mobile }};"
-    >
+    <style type="text/css" media="screen">
+        #FooterCollectionSection-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        @media (max-width: 1024px) {
+            #FooterCollectionSection-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #FooterCollectionSection-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+    </style>
+    <div data-section-id="{{ section.id }}" data-section-type="footer-collection" id="FooterCollectionSection-{{ section.id }}" data-section="{{ section.id }}">
         <div class="container container-{{ container }}">
             <div class="collection-content">
                 {%- for block in section.blocks -%}
                     {%- liquid
                         assign align = block.settings.collection_description_align
-                        assign show_read_more_read_less = block.settings.show_read_more_read_less
-                        if block.type == 'description'
-                            assign content = collection.description
-                        else
-                            assign content = block.settings.text
-                        endif
                     -%}
-                    {%- if content != blank -%}
-                        <{% if show_read_more_read_less %}more-less-content{% else %}div{% endif %} class="collection-description halo-text-format text-{{ align }}" data-show-more-text="{{ 'sections.collection_template.read_more' | t }}" data-show-less-text="{{ 'sections.collection_template.read_less' | t }}">
-                            {%- if show_read_more_read_less -%}
-                                <div class="short-description">
-                                    {%- liquid
-                                        assign desc = content | strip_html
-                                        assign word_number = 400
-                                    -%}
-
-                                    {{ desc | truncate: word_number }}
-                                </div>
-                                <div class="full-description">
-                                    {{ content }}
-                                </div>
-                                {%- if desc.size > 400 -%}
-                                    <button type="button" class="link link-underline read-description more">
-                                        <span class="text">{{ 'sections.collection_template.read_more' | t }}</span>
-                                    </button>
-                                {%- endif -%}
-                            {%- else -%}
-                                {{ content }}
-                            {%- endif -%}
-                        </{% if show_read_more_read_less %}more-less-content{% else %}div{% endif %}>
-                    {%- endif -%}
+                    <div class="collection-description halo-text-format text-{{ align }}">
+                    {%- if block.type == 'description'-%}
+                        {{ collection.description }}
+                    {%- else -%}
+                        {%- liquid
+                            assign text = block.settings.text
+                        -%}
+                        {{ text }}
+                    {%- endif-%}
+                    </div>
                 {%- endfor -%}
             </div>
         </div>
@@ -61,202 +54,200 @@
 {% schema %}
     {
         "name": "t:sections.main-footer-collection.name",
-        "settings": [
-        {
-            "type": "header",
-            "content": "t:sections.main-footer-collection.settings.header__1.content"
-        },
-        {
-            "type": "checkbox",
-            "id": "show_bottom_content",
-            "default": false,
-            "label": "t:sections.main-footer-collection.settings.general.label__1"
-        },
-        {
-            "type": "select",
-            "id": "container",
-            "label": "t:sections.general.settings.container.label__1",
-            "default": "1770",
-            "options": [
-            {
-                "value": "1170",
-                "label": "t:sections.general.settings.container.options__1"
-            },
-            {
-                "value": "1370",
-                "label": "t:sections.general.settings.container.options__2"
-            },
-            {
-                "value": "1570",
-                "label": "t:sections.general.settings.container.options__3"
-            },
-            {
-                "value": "1770",
-                "label": "t:sections.general.settings.container.options__4"
-            },
-            {
-                "value": "1860",
-                "label": "t:sections.general.settings.container.options__5"
-            },
-            {
-                "value": "full",
-                "label": "t:sections.general.settings.container.options__6"
-            }],
-            "info": "t:sections.general.settings.container.info"
-        },
-        {
-            "type": "paragraph",
-            "content": "t:sections.general.settings.padding.paragraph__1.content"
-        },
-        {
-            "type": "range",
-            "id": "padding_top",
-            "label": "t:sections.general.settings.padding.label__1",
-            "min": 0,
-            "max": 100,
-            "step": 1,
-            "unit": "t:sections.general.settings.padding.unit",
-            "default": 0
-        },
-        {
-            "type": "range",
-            "id": "padding_bottom",
-            "label": "t:sections.general.settings.padding.label__2",
-            "min": 0,
-            "max": 100,
-            "step": 1,
-            "unit": "t:sections.general.settings.padding.unit",
-            "default": 0
-        },
-        {
-            "type": "paragraph",
-            "content": "t:sections.general.settings.padding.paragraph__2.content"
-        },
-        {
-            "type": "range",
-            "id": "padding_top_tablet",
-            "label": "t:sections.general.settings.padding.label__1",
-            "min": 0,
-            "max": 100,
-            "step": 1,
-            "unit": "t:sections.general.settings.padding.unit",
-            "default": 40
-        },
-        {
-            "type": "range",
-            "id": "padding_bottom_tablet",
-            "label": "t:sections.general.settings.padding.label__2",
-            "min": 0,
-            "max": 100,
-            "step": 1,
-            "unit": "t:sections.general.settings.padding.unit",
-            "default": 40
-        },
-        {
-            "type": "paragraph",
-            "content": "t:sections.general.settings.padding.paragraph__3.content"
-        },
-        {
-            "type": "range",
-            "id": "padding_top_mobile",
-            "label": "t:sections.general.settings.padding.label__1",
-            "min": 0,
-            "max": 100,
-            "step": 1,
-            "unit": "t:sections.general.settings.padding.unit",
-            "default": 30
-        },
-        {
-            "type": "range",
-            "id": "padding_bottom_mobile",
-            "label": "t:sections.general.settings.padding.label__2",
-            "min": 0,
-            "max": 100,
-            "step": 1,
-            "unit": "t:sections.general.settings.padding.unit",
-            "default": 30
-        }],
-        "blocks": [
-        {
-            "type": "description",
-            "name": "t:sections.main-footer-collection.blocks.description.name",
-            "limit": 1,
-            "settings": [
+        "settings":
+        [
             {
                 "type": "header",
-                "content": "t:sections.main-footer-collection.blocks.description.settings.header__1.content"
+                "content": "t:sections.main-footer-collection.settings.header__1.content"
             },
             {
                 "type": "checkbox",
-                "id": "show_read_more_read_less",
-                "label": "t:sections.main-header-collection.blocks.description.settings.description.label__2"
+                "id": "show_bottom_content",
+                "default": false,
+                "label": "t:sections.main-footer-collection.settings.general.label__1"
             },
             {
                 "type": "select",
-                "id": "collection_description_align",
-                "label": "t:sections.general.settings.aligmnent.label__1",
+                "id": "container",
+                "label": "t:sections.general.settings.container.label__1",
+                "default": "1770",
                 "options": [
                 {
-                    "value": "left",
-                    "label": "t:sections.general.settings.aligmnent.options__1"
+                    "value": "1170",
+                    "label": "t:sections.general.settings.container.options__1"
                 },
                 {
-                    "value": "center",
-                    "label": "t:sections.general.settings.aligmnent.options__2"
+                    "value": "1370",
+                    "label": "t:sections.general.settings.container.options__2"
                 },
                 {
-                    "value": "right",
-                    "label": "t:sections.general.settings.aligmnent.options__3"
+                    "value": "1570",
+                    "label": "t:sections.general.settings.container.options__3"
                 },
                 {
-                    "value": "justify",
-                    "label": "t:sections.general.settings.aligmnent.options__4"
+                    "value": "1770",
+                    "label": "t:sections.general.settings.container.options__4"
+                },
+                {
+                    "value": "1860",
+                    "label": "t:sections.general.settings.container.options__5"
+                },
+                {
+                    "value": "full",
+                    "label": "t:sections.general.settings.container.options__6"
                 }],
-                "default": "center"
-            }]
-        },
-        {
-            "type": "content",
-            "name": "t:sections.main-footer-collection.blocks.custom-content.name",
-            "settings": [
-            {
-                "type": "header",
-                "content": "t:sections.main-footer-collection.blocks.custom-content.settings.header__1.content"
+                "info": "t:sections.general.settings.container.info"
             },
             {
-                "type": "richtext",
-                "id": "text",
-                "default": "<p>Share information about your brand with your customers. Describe a product, make announcements, or welcome customers to your store.</p>",
-                "label": "t:sections.main-footer-collection.blocks.custom-content.settings.content.label__1"
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__1.content"
             },
             {
-                "type": "checkbox",
-                "id": "show_read_more_read_less",
-                "label": "t:sections.main-header-collection.blocks.description.settings.description.label__2"
+                "type": "range",
+                "id": "padding_top",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 0
             },
             {
-                "type": "select",
-                "id": "collection_description_align",
-                "label": "t:sections.general.settings.aligmnent.label__1",
-                "options": [
-                {
-                    "value": "left",
-                    "label": "t:sections.general.settings.aligmnent.options__1"
-                },
-                {
-                    "value": "center",
-                    "label": "t:sections.general.settings.aligmnent.options__2"
-                },
-                {
-                    "value": "right",
-                    "label": "t:sections.general.settings.aligmnent.options__3"
-                },
-                {
-                    "value": "justify",
-                    "label": "t:sections.general.settings.aligmnent.options__4"
-                }],
-                "default": "center"
-            }]
-        }]
+                "type": "range",
+                "id": "padding_bottom",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 0
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__2.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top_tablet",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 40
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom_tablet",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 40
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__3.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top_mobile",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 30
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom_mobile",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 30
+            }
+        ],
+        "blocks":
+        [
+            {
+                "type": "description",
+                "name": "t:sections.main-footer-collection.blocks.description.name",
+                "limit": 1,
+                "settings":
+                [
+                    {
+                        "type": "header",
+                        "content": "t:sections.main-footer-collection.blocks.description.settings.header__1.content"
+                    },
+                    {
+                        "type": "select",
+                        "id": "collection_description_align",
+                        "label": "t:sections.general.settings.aligmnent.label__1",
+                        "options": [
+                        {
+                            "value": "left",
+                            "label": "t:sections.general.settings.aligmnent.options__1"
+                        },
+                        {
+                            "value": "center",
+                            "label": "t:sections.general.settings.aligmnent.options__2"
+                        },
+                        {
+                            "value": "right",
+                            "label": "t:sections.general.settings.aligmnent.options__3"
+                        },
+                        {
+                            "value": "justify",
+                            "label": "t:sections.general.settings.aligmnent.options__4"
+                        }],
+                        "default": "center"
+                    }
+                ]
+            },
+            {
+                "type": "content",
+                "name": "t:sections.main-footer-collection.blocks.custom-content.name",
+                "settings":
+                [
+                    {
+                        "type": "header",
+                        "content": "t:sections.main-footer-collection.blocks.custom-content.settings.header__1.content"
+                    },
+                    {
+                        "type": "richtext",
+                        "id": "text",
+                        "default": "<p>Share information about your brand with your customers. Describe a product, make announcements, or welcome customers to your store.</p>",
+                        "label": "t:sections.main-footer-collection.blocks.custom-content.settings.content.label__1"
+                    },
+                    {
+                        "type": "select",
+                        "id": "collection_description_align",
+                        "label": "t:sections.general.settings.aligmnent.label__1",
+                        "options": [
+                        {
+                            "value": "left",
+                            "label": "t:sections.general.settings.aligmnent.options__1"
+                        },
+                        {
+                            "value": "center",
+                            "label": "t:sections.general.settings.aligmnent.options__2"
+                        },
+                        {
+                            "value": "right",
+                            "label": "t:sections.general.settings.aligmnent.options__3"
+                        },
+                        {
+                            "value": "justify",
+                            "label": "t:sections.general.settings.aligmnent.options__4"
+                        }],
+                        "default": "center"
+                    }
+                ]
+            }
+        ]
     }
 {% endschema %}

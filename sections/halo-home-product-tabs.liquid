@@ -1,6 +1,5 @@
 {%- if section.settings.show_product_tabs_block and section.blocks.size > 0 -%}
     {%- liquid
-        assign layout_style = section.settings.layout_style
         assign padding_top = section.settings.padding_top | append: 'px'
         assign padding_bottom = section.settings.padding_bottom | append: 'px'
         assign padding_top_tablet = section.settings.padding_top_tablet | append: 'px'
@@ -26,28 +25,42 @@
         assign show_add_to_cart = section.settings.show_add_to_cart
         assign title_color = section.settings.title_color
         assign title_color_active = section.settings.title_color_active
-        assign title_tab_font = section.settings.title_tab_font
         assign title_tab_font_size = section.settings.title_tab_font_size | append: 'px'
         assign title_tab_font_weight = section.settings.title_tab_font_weight
         assign title_tab_transform = section.settings.title_tab_transform
     -%}
-    {%- if settings.show_dark_mode -%}
-        <style type="text/css" media="screen">
-            body.dark-mode .halo-product-tabs .product-tabs-list > .tab-links {
-                color: var(--color-grey) !important;
+    <style type="text/css" media="screen">
+        #halo-product-block-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        #halo-product-block-{{ section.id }} .halo-block-header .tab-links{
+            font-size: {{ title_tab_font_size }};
+            text-transform: {{ title_tab_transform }};
+            font-weight: {{title_tab_font_weight}};
+            color: {{ title_color }}!important;
+        }
+
+        #halo-product-block-{{ section.id }} .halo-block-header .tab-links.active{
+            color: {{ title_color_active }}!important;
+        }
+
+        @media (max-width: 1024px) {
+            #halo-product-block-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
             }
-            
-            body.dark-mode .halo-product-tabs .product-tabs-list > .tab-links.active {
-                color: var(--color-white) !important;
+        }
+
+        @media (max-width: 550px) {
+            #halo-product-block-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
             }
-            
-            body.dark-mode .halo-product-tabs .product-tabs-list li .tab-links,
-            body.dark-mode .halo-product-tabs .product-tabs-list li .tab-links.active {
-                filter: invert(1);
-            }
-        </style>
-    {%- endif -%}
-    <div class="halo-block halo-product-block halo-product-tabs style-{{ layout_style }}{% if block_title == blank %} content-style--{{ layout }}{% endif %}{% if layout_style == '2' and layout == 'slider' %} halo-block--customSlider{% endif %} halo-block-padding" id="halo-product-block-{{ section.id }}"
+        }
+    </style>
+    <div class="halo-block halo-product-block halo-product-tabs" id="halo-product-block-{{ section.id }}"
         data-product-tabs
         data-limit="{{ limit }}"
         data-layout="{{ layout }}"
@@ -55,46 +68,22 @@
         data-show-add-to-cart="{{ show_add_to_cart }}"
         data-ratio="{{ portrait_aspect_ratio }}"
         sectionId="{{ section.id }}"
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};
-            {% if title_tab_font == 'font_1' %}
-                --tab-title-font: var(--font-1-family);
-            {% elsif title_tab_font == 'font_2' %}
-                --tab-title-font: var(--font-2-family);
-            {% elsif title_tab_font == 'font_3' %}
-                --tab-title-font: var(--font-3-family);
-            {% endif %}
-            --tab-font-size: {{ title_tab_font_size }};
-            --tab-font-weight: {{ title_tab_font_weight }};
-            --tab-text-transform: {{ title_tab_transform }};
-            --tab-color: {{ title_color }};
-            --tab-color-active: {{ title_color_active }};
-            {%- if layout_style == '2' and layout == 'slider' -%}
-                --cus-pro-container: {{ container }}px;
-            {%- endif -%}
-        "
     >
         <div class="container container-{{ container }}">
-            <div class="halo-block-header list-product-tabs{% if layout_style == '2' %} product-tabs-arrow-header{% endif %} text-{{ block_title_align }}">
-                {%- if layout_style == '2' -%}
-                    <div class="product-tabs-title">
-                        {%- if block_title != blank -%}
-                            <h3 class="title text-{{ block_title_align }}">
-                                <span class="text">
-                                    {{ block_title | escape }}
-                                </span>
-                            </h3>
-                            {%- if block_text != blank -%}
-                                <span class="desc text-{{ block_title_align }}">
-                                    {{ block_text }}
-                                </span>
-                            {%- endif -%}
+            <div class="halo-block-header list-product-tabs text-{{ block_title_align }}">
+                {%- if settings.layout != '2' -%}
+                    {%- if block_title != blank -%}
+                        <h3 class="title text-{{ block_title_align }}">
+                            <span class="text">
+                                {{ block_title | escape }}
+                            </span>
+                        </h3>
+                        {%- if block_text != blank -%}
+                            <span class="desc text-{{ block_title_align }}">
+                                {{ block_text }}
+                            </span>
                         {%- endif -%}
-                    </div>
+                    {%- endif -%}
                     <ul class="product-tabs-list list-unstyled disable-scrollbar">
                         {%- for block in section.blocks -%}
                             {%- liquid
@@ -110,67 +99,29 @@
                             </li>
                         {%- endfor -%}
                     </ul>
-                    {%- if arrows -%}
-                        <div class="product-tabs-arrow text-{{ block_title_align }}">
-                            {%- for block in section.blocks -%}
-                                <div class="arrows arrows-style-2{% if forloop.first %} active{% endif %}" data-target="#product-tab-{{ block.id }}" data-product-tabs-arrow data-collection="{{ collection }}"></div>
-                            {%- endfor -%}
-                        </div>
-                    {%- endif -%}
                 {%- else -%}
-                    {%- if settings.layout != '2' -%}
-                        {%- if block_title != blank -%}
-                            <h3 class="title text-{{ block_title_align }}">
+                    <h3 class="title product-tabs-list disable-scrollbar">
+                        {%- for block in section.blocks -%}
+                            {%- liquid
+                                assign title = block.settings.title
+                                assign collection = block.settings.collection
+                            -%}
+                            <a href="#" data-target="product-tab-{{ block.id }}" data-product-tabs-title data-collection="{{ collection }}" class="tab-links{% if forloop.first %} active{% endif %}" role="button">
                                 <span class="text">
-                                    {{ block_title | escape }}
+                                    {{ title | escape }}
                                 </span>
-                            </h3>
-                            {%- if block_text != blank -%}
-                                <span class="desc text-{{ block_title_align }}">
-                                    {{ block_text }}
-                                </span>
-                            {%- endif -%}
-                        {%- endif -%}
-                        <ul class="product-tabs-list list-unstyled disable-scrollbar">
-                            {%- for block in section.blocks -%}
-                                {%- liquid
-                                    assign title = block.settings.title
-                                    assign collection = block.settings.collection
-                                -%}
-                                <li>
-                                    <a href="#" data-target="#product-tab-{{ block.id }}" data-product-tabs-title data-collection="{{ collection }}" class="tab-links{% if forloop.first %} active{% endif %}" role="button">
-                                        <span class="text">
-                                            {{ title | escape }}
-                                        </span>
-                                    </a>
-                                </li>
-                            {%- endfor -%}
-                        </ul>
-                    {%- else -%}
-                        <h3 class="title product-tabs-list disable-scrollbar">
-                            {%- for block in section.blocks -%}
-                                {%- liquid
-                                    assign title = block.settings.title
-                                    assign collection = block.settings.collection
-                                -%}
-                                <a href="#" data-target="product-tab-{{ block.id }}" data-product-tabs-title data-collection="{{ collection }}" class="tab-links{% if forloop.first %} active{% endif %}" role="button">
-                                    <span class="text">
-                                        {{ title | escape }}
-                                    </span>
-                                </a>
-                            {%- endfor -%}
-                        </h3>
-                    {%- endif -%}
+                            </a>
+                        {%- endfor -%}
+                    </h3>
                 {%- endif -%}
             </div>
-        {%- if layout_style == '2' and layout == 'slider' -%}</div>{%- endif -%}
             <div class="halo-block-content product-tabs-content">
                 {%- for block in section.blocks -%}
                     <div class="tab-content{% if forloop.first %} active{% endif %}" data-product-TabContent id="product-tab-{{ block.id }}">
-                        {%- if layout == 'grid' -%}
-                            <div class="products-content products-grid column-{{ column | handle }} col-{{ col }}" data-products-to-show="{{ limit }}">
+                        {%- if layout== 'grid' -%}
+                            <div class="products-content products-grid column-{{ column }} col-{{ col }}" data-products-to-show="{{ limit }}">
                         {%- elsif layout == 'slider' -%}
-                            <div class="products-content products-carousel column-{{ column | handle }} col-{{ col }}{% if layout_style == '2' and layout == 'slider' %} halo-customArrow{% endif %}"
+                            <div class="products-content products-carousel column-{{ column }} col-{{ col }}"
                                 data-item-to-show="{{ column }}"
                                 data-item-dots="{{ dots }}"
                                 data-item-arrows="{{ arrows }}"
@@ -203,7 +154,7 @@
                     </div>
                 {%- endfor -%}
             </div>
-        {%- unless layout_style == '2' and layout == 'slider' -%}</div>{%- endunless -%}
+        </div>
     </div>
 {%- endif -%}
 {% schema %}
@@ -220,21 +171,6 @@
                 "id": "show_product_tabs_block",
                 "label": "t:sections.product-tabs-block.settings.general.label__1",
                 "default": true
-            },
-            {
-                "type": "select",
-                "id": "layout_style",
-                "label": "t:sections.general.settings.style.label__1",
-                "default": "1",
-                "options": [
-                {
-                    "value": "1",
-                    "label": "1"
-                },
-                {
-                    "value": "2",
-                    "label": "2"
-                }]
             },
             {
                 "type": "select",
@@ -455,25 +391,6 @@
                 "content": "t:sections.product-tabs-block.settings.header__4.content"
             },
             {
-                "type": "select",
-                "id": "title_tab_font",
-                "label": "t:settings_schema.typography.settings.font.label",
-                "options": [
-                {
-                    "value": "font_1",
-                    "label": "t:settings_schema.typography.settings.font.options__1"
-                },
-                {
-                    "value": "font_2",
-                    "label": "t:settings_schema.typography.settings.font.options__2"
-                },
-                {
-                    "value": "font_3",
-                    "label": "t:settings_schema.typography.settings.font.options__3"
-                }],
-                "default": "font_2"
-            },
-            {
                 "type": "range",
                 "id": "title_tab_font_size",
                 "label": "t:settings_schema.typography.settings.font_size.label",
@@ -594,10 +511,6 @@
                     "label": "3"
                 },
                 {
-                    "value": "3.6",
-                    "label": "3.6"
-                },
-                {
                     "value": "4",
                     "label": "4"
                 },
@@ -651,9 +564,6 @@
                     }
                 ]
             }
-        ],
-        "disabled_on": {
-            "groups": ["header", "footer"]
-        }
+        ]
     }
 {% endschema %}

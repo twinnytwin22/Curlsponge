@@ -16,14 +16,14 @@
         assign has_popup = true
     endif
 -%}
-<form action="{{ routes.cart_url }}/add" method="post" class="variants{% if actionType == 'link' %} text-center{% endif %}" id="{{ id }}-{{ product.id }}-{{ sectionId }}" data-product-id="{{ product.id }}" enctype="multipart/form-data">
+<form action="{{ routes.cart_url }}/add" method="post" class="variants" id="{{ id }}-{{ product.id }}-{{ sectionId }}" data-product-id="{{ product.id }}" enctype="multipart/form-data">
     {%- if sold_out -%}
         {%- if settings.show_notify_form -%}
-            <a class="button button-ATC is-notify-me{% if actionType == 'link' %} button-link{% endif %}" href="{{ product.url }}" data-btn-addToCart role="button">
+            <a class="button button-ATC is-notify-me" href="{{ product.url }}" data-btn-addToCart role="button">
                 {{ 'notify_form.general.label' | t }}
             </a>
         {%- else -%}
-            <a class="button button-ATC{% if actionType == 'link' %} button-link{% endif %}" href="{{ product.url }}" disabled="disabled" role="button">
+            <a class="button button-ATC" href="{{ product.url }}" disabled="disabled" role="button">
                 {{ 'products.product.out_of_stock' | t }}
             </a>
         {%- endif -%}
@@ -39,7 +39,7 @@
                 <input type="hidden" name="id" value="{{ current_variant_grid.id }}" />
                 <input type="hidden" name="quantity" value="1" />
                 <button
-                    class="button button-ATC{% if sold_out %}{% if settings.show_notify_form %} is-notify-me{% endif %}{% endif %}{% if actionType == 'link' %} button-link{% endif %}"
+                    class="button button-ATC{% if sold_out %}{% if settings.show_notify_form %} is-notify-me{% endif %}{% endif %}"
                     type="submit"
                     data-form-id="#{{ id }}-{{ product.id }}-{{ sectionId }}"
                     data-btn-addToCart
@@ -55,11 +55,11 @@
                 </button>
             {%- else -%}
                 {%- if settings.show_quick_shop -%}
-                    <a class="button button-ATC{% if actionType == 'link' %} button-link{% endif %}" href="{{ product.url }}" {% if settings.quick_shop_type == '3' %} data-open-quick-view-popup data-product-handle="{{ product.handle }}"{% else %} data-quickshop-popup{% endif %} role="button">
+                    <a class="button button-ATC" href="{{ product.url }}" data-quickshop-popup role="button">
                         {{ 'products.product.quick_shop' | t }}
                     </a>
                 {%- else -%}
-                    <a class="button button-ATC{% if actionType == 'link' %} button-link{% endif %}" href="{{ product.url }}" role="button">
+                    <a class="button button-ATC" href="{{ product.url }}" role="button">
                         {{ 'products.product.select_options' | t }}
                     </a>
                 {%- endif -%}
@@ -71,63 +71,50 @@
             -%}
             <input type="hidden" name="id" value="{{ current_variant_grid.id }}" />
             <input type="hidden" name="quantity" value="1" />
-            {%- if current_variant_grid.inventory_management -%}
-                {%- if first_inventory_grid > 0 -%}
-                    <button
-                        class="button button-ATC{% if actionType == 'link' %} button-link{% endif %}"
-                        type="submit"
-                        data-form-id="#{{ id }}-{{ product.id }}-{{ sectionId }}"
-                        data-btn-addToCart
-                    >
-                        {{ 'products.product.add_to_cart' | t }}
-                    </button>
-                {%- else -%}
-                    <button
-                        class="button button-ATC{% if actionType == 'link' %} button-link{% endif %}"
-                        type="submit"
-                        data-form-id="#{{ id }}-{{ product.id }}-{{ sectionId }}"
-                        data-btn-addToCart
-                    >
-                        {{ 'products.product.pre_order' | t }}
-                    </button>
-                {%- endif -%}
-            {%- else -%}
+            {%- if first_inventory_grid > 0 -%}
                 <button
-                    class="button button-ATC{% if actionType == 'link' %} button-link{% endif %}"
+                    class="button button-ATC"
                     type="submit"
                     data-form-id="#{{ id }}-{{ product.id }}-{{ sectionId }}"
                     data-btn-addToCart
                 >
                     {{ 'products.product.add_to_cart' | t }}
                 </button>
-            {%- endif -%}
+            {%- else -%}
+                <button
+                    class="button button-ATC"
+                    type="submit"
+                    data-form-id="#{{ id }}-{{ product.id }}-{{ sectionId }}"
+                    data-btn-addToCart
+                >
+                    {{ 'products.product.pre_order' | t }}
+                </button>
+            {%- endif -%} 
         {%- endif -%}
     {%- endif -%}
 </form>
-{%- if settings.show_quick_shop -%}
-    {%- if settings.quick_shop_type != '3' -%}
-        {%- if positionQuick == 'bottom' and product.available -%}
-            {%- if variantCount > 0 and product.variants.first.title != 'Default Title' -%}
-                {%- if has_popup -%}
-                    {%- liquid
-                        assign line_height = settings.line_height | plus: 0
-                        assign border = settings.btn_border_width | times: 2
-                        if settings.layout == '3'
-                            assign bottom = settings.product_action_font_size | times: line_height | plus: 6 | plus: border | append: 'px'
-                        else
-                            assign bottom = settings.product_action_font_size | times: line_height | plus: settings.btn_padding_top | plus: settings.btn_padding_bottom | plus: border | append: 'px'
-                        endif
-                    -%}
-                    <div class="variants-popup custom-scrollbar" style="bottom: {{ bottom }}; max-height: calc(100% - {{ bottom }});">
-                        {% render 'product-quick-shop-popup',
-                            product: product,
-                            id: id,
-                            list: list,
-                            position: position,
-                            sectionId: sectionId 
-                        %}
-                    </div>
-                {%- endif -%}
+{%- if settings.product_card_style != '5' -%}
+    {%- if settings.show_quick_shop and settings.quick_shop_position == 'bottom' and product.available -%}
+        {%- if variantCount > 0 and product.variants.first.title != 'Default Title' -%}
+            {%- if has_popup -%}
+                {%- liquid
+                    assign line_height = settings.line_height | plus: 0
+                    assign border = settings.btn_border_width | times: 2
+                    if settings.layout == '3'
+                        assign bottom = settings.product_action_font_size | times: line_height | plus: 6 | plus: border | append: 'px'
+                    else
+                        assign bottom = settings.product_action_font_size | times: line_height | plus: settings.btn_padding_top | plus: settings.btn_padding_bottom | plus: border | append: 'px'
+                    endif
+                -%}
+                <div class="variants-popup custom-scrollbar" style="bottom: {{ bottom }}; max-height: calc(100% - {{ bottom }});">
+                    {% render 'product-quick-shop-popup',
+                        product: product,
+                        id: id,
+                        list: list,
+                        position: position,
+                        sectionId: sectionId 
+                    %}
+                </div>
             {%- endif -%}
         {%- endif -%}
     {%- endif -%}

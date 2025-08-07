@@ -1,4 +1,10 @@
-{%- if section.blocks.size > 0 and section.settings.show_featured_article -%}
+{%- liquid
+    assign show_section = false
+    if section.blocks.size > 0 and section.settings.show_featured_article
+        assign show_section = true
+    endif
+-%}
+{%- if show_section -%}
     {%- liquid
         assign padding_top = section.settings.padding_top | append: 'px'
         assign padding_bottom = section.settings.padding_bottom | append: 'px'
@@ -32,73 +38,136 @@
         assign show_date = section.settings.show_date
         assign show_read_more = section.settings.show_read_more
         assign show_featured_article_absolute = section.settings.show_featured_article_absolute
+        assign show_featured_article_style = section.settings.show_featured_article_style
         assign align = section.settings.text_align
-        assign background_color = section.settings.background_color
-        assign title_color = section.settings.title_color
-        assign text_color = section.settings.text_color
-        assign title_font = section.settings.title_font
-        assign title_font_size = section.settings.title_font_size | append: 'px'
-        assign title_mobile_font_size = section.settings.title_mobile_font_size | append: 'px'
-        assign title_font_weight = section.settings.title_font_weight
-        assign title_text_transform = section.settings.title_text_transform
-        assign text_font_size = section.settings.text_font_size | append: 'px'
-        assign text_font_weight = section.settings.text_font_weight
-        assign text_text_transform = section.settings.text_text_transform
-        assign show_background_overlay = section.settings.show_background_overlay
-        if show_background_overlay
-            assign background_overlay = section.settings.background_overlay
+        if show_featured_article_style
+            assign show_background_overlay = section.settings.show_background_overlay
+            assign background_color = section.settings.background_color
+            assign title_color = section.settings.title_color
+            assign text_color = section.settings.text_color
+            assign title_font = section.settings.title_font
+            assign title_font_size = section.settings.title_font_size | append: 'px'
+            assign title_mobile_font_size = section.settings.title_mobile_font_size | append: 'px'
+            assign title_font_weight = section.settings.title_font_weight
+            assign title_text_transform = section.settings.title_text_transform
+            assign text_font_size = section.settings.text_font_size | append: 'px'
+            assign text_font_weight = section.settings.text_font_weight
+            assign text_text_transform = section.settings.text_text_transform
+            if show_background_overlay
+                assign background_overlay = section.settings.background_overlay
+            endif
         endif
         assign image_border_radius = settings.image_border_radius
         assign image_effect = settings.image_effect
-
-        if settings.show_dark_mode
-            assign dark_mode = false
-            unless background_color == blank or background_color == '#fff' or background_color == '#FFF' or background_color == '#ffffff' or background_color == '#FFFFFF' or background_color == 'rgb(255,255,255)' or background_color == 'rgba(255,255,255,1)' or background_color == 'rgba(0,0,0,0)' or background_color == 'rgb(0,0,0,0)'
-                assign dark_mode = true
-                assign dark_mode_background_color = section.settings.background_color
-            endunless
-        endif
     -%}
-    {%- if background_overlay != 'rgba(0,0,0,0)' and background_overlay != blank -%}
-        <style type="text/css" media="screen">
-            #halo-featured-article-{{ section.id }} .img-box .image:before{
-                content: '';
-                display: block;
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: 0 0;
-                z-index: 2;
-                background-color: {{ background_overlay | color_modify: 'alpha', 0.3 }};
+    <style type="text/css" media="screen">
+        #halo-featured-article-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        {% if show_featured_article_style %}
+            :root {
+                {% if title_font == 'font_1' %}
+                    --title-font-{{ section.id }}: var(--font-1-family);
+                {% elsif title_font == 'font_2' %}
+                    --title-font-{{ section.id }}: var(--font-2-family);
+                {% elsif title_font == 'font_3' %}
+                    --title-font-{{ section.id }}: var(--font-3-family);
+                {% endif %}
             }
-        </style>
-    {%- endif -%}
-    <div class="halo-block halo-banner halo-article halo-article-1 style-{{ layout_style }} halo-block-padding" id="halo-featured-article-{{ section.id }}" {% if layout == 'slider' or mobile_layout == 'slider' %}data-article-block data-loader-script="{{ 'halo.slide-article.js' | asset_url }}"{% endif %}
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};
-            {% if title_font == 'font_1' %}
-            --blog-title-font: var(--font-1-family);
-            {% elsif title_font == 'font_2' %}
-                --blog-title-font: var(--font-2-family);
-            {% elsif title_font == 'font_3' %}
-                --blog-title-font: var(--font-3-family);
+
+            {% if background_color != 'rgba(0,0,0,0)' and background_color != blank and layout_style == '1' %}
+                #halo-featured-article-{{ section.id }} .content-box{
+                    background-color: {{ background_color }};
+                    padding-left: 15px;
+                    padding-right: 15px;
+                    padding-bottom: 15px;
+                }
+
+                #halo-featured-article-{{ section.id }} .content-box--absolute{
+                    padding-top: 15px;
+                }
             {% endif %}
-            --blog-title-font-size: {{ title_font_size }};
-            --blog-title-mobile-font-size: {{ title_mobile_font_size }};
-            --blog-title-font-weight: {{ title_font_weight }};
-            --blog-title-text-transform: {{ title_text_transform }};
-            --blog-title-color: {{ title_color }};
-            --blog-text-font-size: {{ text_font_size }};
-            --blog-text-font-weight: {{ text_font_weight }};
-            --blog-text-text-transform: {{ text_text_transform }};
-            --blog-text-color: {{ text_color }};"
-    >
+
+            {% if layout_style == '2' %}
+                #halo-featured-article-{{ section.id }} .article-item{
+                    background: {{ background_color }};  
+                }
+            {% endif %}
+
+            {% if background_overlay != 'rgba(0,0,0,0)' and background_overlay != blank %}
+                #halo-featured-article-{{ section.id }} .img-box .image:before{
+                    content: '';
+                    display: block;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: 0 0;
+                    z-index: 2;
+                    background-color: {{ background_overlay | color_modify: 'alpha', 0.3 }};
+                }
+            {% endif %}
+
+            #halo-featured-article-{{ section.id }} .banner-title{
+                font-family: var(--title-font-{{ section.id }});
+                font-size: {{ title_mobile_font_size }};
+                font-weight: {{ title_font_weight }};
+                text-transform: {{ title_text_transform }};
+                color: {{ title_color }};
+            }
+
+            #halo-featured-article-{{ section.id }} .banner-summary,
+            #halo-featured-article-{{ section.id }} .banner-info{
+                font-size: {{ text_font_size }};
+                font-weight: {{ text_font_weight }};
+                text-transform: {{ text_text_transform }};
+            }
+
+            #halo-featured-article-{{ section.id }} .banner-subtitle,
+            #halo-featured-article-{{ section.id }} .banner-info,
+            #halo-featured-article-{{ section.id }} .banner-summary,
+            #halo-featured-article-{{ section.id }} .banner-link{
+                color: {{ text_color }};
+            }
+
+            {% if layout_style == '2' %}
+                #halo-featured-article-{{ section.id }} .banner-subtitle,
+                #halo-featured-article-{{ section.id }} .banner-link{
+                    color: {{ title_color }};
+                }
+
+                #halo-featured-article-{{ section.id }}.style-2 .banner-link span:before{
+                    background-color: {{ title_color }};
+                }
+            {% endif %}
+        {% endif %}
+
+        @media (max-width: 1024px) {
+            #halo-featured-article-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #halo-featured-article-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+
+        @media (min-width: 551px){
+            {% if show_featured_article_style %}
+                #halo-featured-article-{{ section.id }} .banner-title{
+                    font-size: {{ title_font_size }};
+                }
+            {% endif %}
+        }
+    </style>
+    <div class="halo-block halo-banner halo-article style-{{ layout_style }}" id="halo-featured-article-{{ section.id }}" {% if layout == 'slider' or mobile_layout == 'slider' %}data-article-block data-loader-script="{{ 'halo.slide-article.js' | asset_url }}"{% endif %}>
         <div class="container container-{{ container }}{% if mobile_layout == 'swipe' %} container-no-padding{% endif %}">
             {%- if block_title != blank -%}
                 <div class="halo-block-header">
@@ -129,66 +198,76 @@
                             assign image_position = block.settings.image_position
                         -%}
                         <div class="halo-row-item item item-{{ block.id }}">
-                            <div class="article-item banner-item image-{{ image_effect }} image-border-{{ image_border_radius }} banner-item--large image-postion--{{ image_position }}{% unless dark_mode %} dark-mode{% endunless %}"
-                                {% if layout_style == '2' %}
-                                    style="{% if dark_mode %}
-                                            background: {{ dark_mode_background_color }};
-                                        {% else %}
-                                            background: {{ background_color }};
-                                        {% endif %}" 
-                                {% endif %}
-                            >
+                            <div class="article-item banner-item image-{{ image_effect }} image-border-{{ image_border_radius }} banner-item--large image-postion--{{ image_position }}">
                                 {%- if article != blank -%}
                                     {%- liquid
                                         assign image = article.image
                                         assign link = article.url
                                         assign title = article.title
                                         assign author = article.author
-                                        if layout_style == '1'
-                                            assign summary = article.excerpt_or_content | strip_html | truncatewords: 14
+                                        if layout_style == 1
+                                            assign summary = article.excerpt_or_content | strip_html | truncatewords: 20
                                         else
                                             assign summary = article.excerpt_or_content | strip_html | truncatewords: 30
                                         endif
                                     -%}
                                     <div class="img-box">
-                                        <loading-banner class="loading-banner">
-                                            {%- if article.image -%}
-                                                <a class="image image-{{ media_size }}" href="{{ link }}"
-                                                    {% if media_size == 'adapt' %}
-                                                        style="padding-bottom: {{ 1 | divided_by: image.aspect_ratio | times: 100 }}%;"
-                                                    {% elsif media_size == 'square' %}
-                                                        style="padding-bottom: 100%;"
-                                                    {% elsif media_size == 'portrait' %}
-                                                        {% if portrait_aspect_ratio != blank %}
-                                                            style="padding-bottom: {{ portrait_aspect_ratio }};"
-                                                        {% endif %}
+                                        {%- if article.image -%}
+                                            <a class="image image-{{ media_size }}" href="{{ link }}"
+                                                {% if media_size == 'adapt' %}
+                                                    style="padding-bottom: {{ 1 | divided_by: image.aspect_ratio | times: 100 }}%;"
+                                                {% elsif media_size == 'square' %}
+                                                    style="padding-bottom: 100%;"
+                                                {% elsif media_size == 'portrait' %}
+                                                    {% if portrait_aspect_ratio != blank %}
+                                                        style="padding-bottom: {{ portrait_aspect_ratio }};"
                                                     {% endif %}
-                                                >
-                                                    <img {% render 'lazyload', preview_img: image %}>
-                                                    {%- if image_effect == 'liquid' -%}
-                                                        <span class="hover"></span>
+                                                {% endif %}
+                                            >
+                                                <img srcset="
+                                                    {%- if image.width >= 165 -%}
+                                                        {{ image | img_url: '165x' }} 165w,
                                                     {%- endif -%}
-                                                </a>
-                                            {%- else -%}
-                                                <a class="image" href="{{ link }}">
-                                                    {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-                                                </a>
-                                            {%- endif -%}
-                                        </loading-banner>
+                                                    {%- if image.width >= 360 -%}
+                                                        {{ image | img_url: '360x' }} 360w,
+                                                    {%- endif -%}
+                                                    {%- if image.width >= 533 -%}
+                                                        {{ image | img_url: '533x' }} 533w,
+                                                    {%- endif -%}
+                                                    {%- if image.width >= 720 -%}
+                                                        {{ image | img_url: '720x' }} 720w,
+                                                    {%- endif -%}
+                                                    {%- if image.width >= 940 -%}
+                                                        {{ image | img_url: '940x' }} 940w,
+                                                    {%- endif -%}
+                                                    {%- if image.width >= 1066 -%}
+                                                        {{ image | img_url: '1066x' }} 1066w
+                                                    {%- endif -%}"
+                                                    src="{{ image | img_url: '533x' }}"
+                                                    alt="{{ image.alt | default: shop.name | escape }}"
+                                                    sizes="(min-width: 1100px) 535px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)"
+                                                    loading="lazy"
+                                                >
+                                            </a>
+                                        {%- else -%}
+                                            <a class="image" href="{{ link }}">
+                                                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                                            </a>
+                                        {%- endif -%}
                                     </div>
-                                    <div class="content-box{% if show_featured_article_absolute and layout_style == '1' %} content-box--absolute{% endif %} text-{{ align }}{% if background_color != 'rgba(0,0,0,0)' and background_color != blank and layout_style == '1' %} content-box--bg{% endif %}">
+                                    <div class="content-box{% if show_featured_article_absolute and layout_style == '1' %} content-box--absolute{% endif %} text-{{ align }}">
                                         {%- if show_subtitle -%}
                                             {%- if article.tags != blank -%}
-                                                <span class="banner-subtitle text-underline">
+                                                <span class="banner-subtitle">
                                                     {% assign first_tag = article.tags | first | escape %}
-                                                    <span class="text">{{ first_tag | escape }}</span>
+                                                    {{ first_tag | escape }}
                                                 </span>
                                             {%- endif -%}
                                         {%- endif -%}
                                         {%- if title != blank -%}
                                             <h4 class="banner-title">
-                                                <a href="{{ link }}" class="link-underline">  
-                                                    <span class="text">{{ title | escape }}</span>
+                                                <a href="{{ link }}">  
+                                                    {{ title | escape }}
                                                 </a>
                                             </h4>
                                         {%- endif -%}
@@ -214,7 +293,7 @@
                                             {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
                                         </div>
                                     </div>
-                                    <div class="content-box{% if show_featured_article_absolute %} content-box--absolute{% endif %} text-{{ align }}{% if background_color != 'rgba(0,0,0,0)' and background_color != blank and layout_style == '1' %} content-box--bg{% endif %}">
+                                    <div class="content-box{% if show_featured_article_absolute %} content-box--absolute{% endif %} text-{{ align }}">
                                         <h4 class="banner-title">
                                             <a href="#">  
                                                 Article Title
@@ -615,6 +694,12 @@
             },
             {
                 "type": "checkbox",
+                "id": "show_featured_article_style",
+                "label": "t:sections.general.settings.style.label__3",
+                "default": true
+            },
+            {
+                "type": "checkbox",
                 "id": "show_background_overlay",
                 "label": "t:sections.general.settings.background-overlay.label__1",
                 "default": true
@@ -858,9 +943,6 @@
                     }
                 ]
             }
-        ],
-        "disabled_on": {
-            "groups": ["header", "footer"]
-        }
+        ]
     }
 {% endschema %}

@@ -1,5 +1,4 @@
 .halo-bulk-editor{
-    display: block;
 	padding: 0 0 40px 0;
 }
 
@@ -107,6 +106,14 @@
     margin: 0 0 15px 0;
 }
 
+.content-item input[type=checkbox]+.form-label--checkbox:before{
+	top: 3px;
+}
+
+.content-item input[type=checkbox]+.form-label--checkbox:after{
+	top: 6px;
+}
+
 .bulk-editor-action{
 	padding: 40px 0 0 0;
 }
@@ -117,11 +124,6 @@
 
 .bulk-editor-sidebar + .bulk-editor-main{
     margin-top: 30px;
-}
-
-body.dark-mode .bulk-editor-selector ul {
-    background: var(--color-background);
-    box-shadow: 0 6px 27px 0 rgba(255, 255, 255, 0.2);
 }
 
 @media (min-width: 375px){

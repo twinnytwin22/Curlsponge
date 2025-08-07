@@ -20,39 +20,80 @@
         assign show_add_to_cart = section.settings.show_add_to_cart
         assign show_bottom_border = section.settings.show_bottom_border
     -%}
-    <div class="halo-block halo-product-block halo-product-block-2{% unless show_bottom_border %} halo-block-padding{% endunless %}" id="halo-product-block-{{ section.id }}" data-product-block data-limit="{{ limit }}" data-layout="{{ layout }}" sectionId="{{ section.id }}"
+    <style type="text/css" media="screen">
+        {% if show_bottom_border %}
+            #halo-product-block-{{ section.id }}{
+                padding-top: {{ padding_top }};
+            }
+
+            #halo-product-block-{{ section.id }} .halo-block-content--border{
+                padding-bottom: {{ padding_bottom }};
+            }
+        {% else %}
+            #halo-product-block-{{ section.id }}{
+                padding-top: {{ padding_top }};
+                padding-bottom: {{ padding_bottom }};
+            }
+        {% endif %}
+
+        @media (max-width: 1024px) {
+            {% if show_bottom_border %}
+                #halo-product-block-{{ section.id }}{
+                    padding-top: {{ padding_top_tablet }};
+                }
+
+                #halo-product-block-{{ section.id }} .halo-block-content--border{
+                    padding-bottom: {{ padding_bottom_tablet }};
+                }
+            {% else %}
+                #halo-product-block-{{ section.id }}{
+                    padding-top: {{ padding_top_tablet }};
+                    padding-bottom: {{ padding_bottom_tablet }};
+                }
+            {% endif %}
+        }
+
+        @media (max-width: 550px) {
+            {% if show_bottom_border %}
+                #halo-product-block-{{ section.id }}{
+                    padding-top: {{ padding_top_mobile }};
+                }
+
+                #halo-product-block-{{ section.id }} .halo-block-content--border{
+                    padding-bottom: {{ padding_bottom_mobile }};
+                }
+            {% else %}
+                #halo-product-block-{{ section.id }}{
+                    padding-top: {{ padding_top_mobile }};
+                    padding-bottom: {{ padding_bottom_mobile }};
+                }
+            {% endif %}
+        }
+    </style>
+    <div class="halo-block halo-product-block halo-product-block-2" id="halo-product-block-{{ section.id }}" data-product-block data-limit="{{ limit }}" data-layout="{{ layout }}" sectionId="{{ section.id }}"
         {% if collection != blank %}
             data-collection="{{ collection }}"
             data-image-ratio="{{ image_ratio }}"
             data-show-add-to-cart="{{ show_add_to_cart }}"
             data-ratio="{{ portrait_aspect_ratio }}"
         {% endif %}
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};"
     >
         <div class="container container-{{ container }}">
-            {% if show_bottom_border %}
-                <div class="halo-block-padding halo-block-content--border">
-            {% endif %}
-                {%- if block_title != blank -%}
-                    <div class="halo-block-header">
-                        <h3 class="title text-{{ block_title_align }}">
-                            <span class="text">
-                                {{ block_title | escape }}
-                            </span>
-                        </h3>
-                        {%- if block_text != blank -%}
-                            <span class="desc text-{{ block_title_align }}">
-                                {{ block_text }}
-                            </span>
-                        {%- endif -%}
-                    </div>
-                {%- endif -%}
-                <div class="halo-block-content">
+            {%- if block_title != blank -%}
+                <div class="halo-block-header">
+                    <h3 class="title text-{{ block_title_align }}">
+                        <span class="text">
+                            {{ block_title | escape }}
+                        </span>
+                    </h3>
+                    {%- if block_text != blank -%}
+                        <span class="desc text-{{ block_title_align }}">
+                            {{ block_text }}
+                        </span>
+                    {%- endif -%}
+                </div>
+            {%- endif -%}
+            <div class="halo-block-content{% if show_bottom_border %} halo-block-content--border{% endif %}">
                 {%- if layout == 'grid' -%}
                     {%- liquid
                         assign product_limit = 0
@@ -119,9 +160,6 @@
                     {%- endif -%}
                 {%- endif -%}
             </div>
-            {% if show_bottom_border %}
-                </div>
-            {% endif %}
         </div>
     </div>
 {%- endif -%}
@@ -434,9 +472,6 @@
             {
                 "name": "t:sections.product-block.presets.name__2"
             }
-        ],
-        "disabled_on": {
-            "groups": ["header", "footer"]
-        }
+        ]
     }
 {% endschema %}

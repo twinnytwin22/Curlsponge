@@ -30,7 +30,7 @@ portfolio-item{
 }
 
 .portfolio-item .image.style-2 svg:not(.placeholder-svg){
-    top: 40%;
+    top: 50%;
     left: 50%;
     right: auto;
     bottom: auto;
@@ -101,21 +101,6 @@ portfolio-item{
     border-color: var(--bg-black);
     color: var(--color-white);
 }
-
-body.dark-mode .portfolio-tabs .tab.is-active .tab-title {
-    background-color: var(--bg-white);
-    border-color: var(--bg-white);
-    color: var(--color-black);
-}
-
-body.dark-mode .portfolio-tabs .tab-title {
-    background-color: var(--bg-black);
-}
-
-body.dark-mode .portfolio-item .image svg:not(.placeholder-svg) {
-    background-color: var(--bg-black);
-}
-
 @media(max-width: 1024px){
     .portfolio .portfolio-title{
         text-align: left;
@@ -261,10 +246,6 @@ body.dark-mode .portfolio-item .image svg:not(.placeholder-svg) {
 
     .portfolio-tabs--vertical .tab.is-active .tab-title{
         color: var(--color-text);
-    }
-
-    body.dark-mode .portfolio-tabs--vertical .tab.is-active .tab-title {
-        color: var(--color-white);
     }
 }
 

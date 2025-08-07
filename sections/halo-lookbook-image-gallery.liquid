@@ -1,4 +1,10 @@
-{%- if section.blocks.size > 0 and section.settings.show_image_gallery -%}
+{%- liquid
+    assign show_section = false
+    if section.blocks.size > 0 and section.settings.show_image_gallery
+        assign show_section = true
+    endif
+-%}
+{%- if show_section -%}
 	{%- liquid
         assign padding_top = section.settings.padding_top | append: 'px'
         assign padding_bottom = section.settings.padding_bottom | append: 'px'
@@ -23,18 +29,32 @@
         	assign dots = section.settings.block_dots
             assign arrows = section.settings.block_arrows
         endif
+        assign lookbook_type = section.settings.lookbook_type
         assign lookbook_style = section.settings.lookbook_style
         assign image_border_radius = settings.image_border_radius
         assign image_effect = settings.image_effect
     -%}
-	<div class="halo-block halo-banner image-gallery halo-block-padding" id="halo-image-gallery-{{ section.id }}" {% if layout == 'slider' or mobile_layout == 'slider' %}data-image-gallery-block data-loader-script="{{ 'halo.slide-image-gallery.js' | asset_url }}"{% endif %}
-        style="--padding-top: {{ padding_top }};
-                --padding-bottom: {{ padding_bottom }};
-                --padding-top-tablet: {{ padding_top_tablet }};
-                --padding-bottom-tablet: {{ padding_bottom_tablet }};
-                --padding-top-mobile: {{ padding_top_mobile }};
-                --padding-bottom-mobile: {{ padding_bottom_mobile }};"
-    >
+    <style type="text/css" media="screen">
+        #halo-image-gallery-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        @media (max-width: 1024px) {
+            #halo-image-gallery-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #halo-image-gallery-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+    </style>
+	<div class="halo-block halo-banner image-gallery" id="halo-image-gallery-{{ section.id }}" {% if layout == 'slider' or mobile_layout == 'slider' %}data-image-gallery-block data-loader-script="{{ 'halo.slide-image-gallery.js' | asset_url }}"{% endif %}>
 		<div class="container container-{{ container }}{% if mobile_layout == 'swipe' %} container-no-padding{% endif %}">
 			{%- if block_title != blank -%}
                 <div class="halo-block-header">
@@ -50,7 +70,7 @@
 	                {%- endif -%}
                 </div>
             {%- endif -%}
-			<div class="halo-block-content lookbook-box">
+			<div class="halo-block-content{% if lookbook_type == 'popup_card' %} halo-lookbook-box{% endif %}">
 				<div class="halo-row halo-row--{{ col }} halo-row--{{ mobile_layout }} column-{{ column }} disable-scrollbar{% if layout == 'slider' %} halo-row-carousel{% if mobile_layout == 'slider' %} halo-row-carousel--mobile{% endif %}{% elsif mobile_layout == 'slider' %} halo-row-carousel--mobile{% endif %}"
             		{% if layout == 'slider' %}
             			data-item-to-show="{{ column }}"
@@ -67,20 +87,31 @@
 	                    <div class="halo-row-item item item-{{ block.id }}">
 	                    	<div class="image-gallery-item banner-item{% if section.blocks.size < 4 %} banner-item--large{% endif %}">
 	                    		<div class="img-box">
-                                    <loading-banner class="loading-banner">
-                                        {%- if image != blank -%}
-                                            <{% if link != blank %}a{% else %}div{% endif %} class="image image-adapt image-border-{{ image_border_radius }}" {% if block_action == 'link' %}{% if link != blank %} href="{{ link }}"{% endif %}{% else %} rel="gallery1" href="{{ image | img_url: 'master' }}" data-fancybox="instagram-image1"{% endif %} style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
-                                                <img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x" src="{{ image | img_url: 'master' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
-                                                {%- if image_effect == 'liquid' -%}
-                                                    <span class="hover"></span>
-                                                {%- endif -%}
-                                            </{% if link != blank %}a{% else %}div{% endif %}>
+                                    {%- if image != blank -%}
+                                        {%- if link != blank -%}
+                                            <a class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-adapt" href="{{ link }}" style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
                                         {%- else -%}
-                                            <{% if link != blank %}a{% else %}div{% endif %} class="image" href="{{ link }}">
-                                                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-                                            </{% if link != blank %}a{% else %}div{% endif %}>
+                                            <div class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-adapt" style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
                                         {%- endif -%}
-                                    </loading-banner>
+                                            <img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x" src="{{ image | img_url: 'master' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
+                                        {%- if link != blank -%}
+                                            </a>
+                                        {%- else -%}
+                                            </div>
+                                        {%- endif -%}
+                                    {%- else -%}
+                                        {%- if link != blank -%}
+                                            <a class="image" href="{{ link }}">
+                                        {%- else -%}
+                                            <div class="image">
+                                        {%- endif -%}
+                                            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                                        {%- if link != blank -%}
+                                            </a>
+                                        {%- else -%}
+                                            </div>
+                                        {%- endif -%}
+                                    {%- endif -%}
                                 </div>
                                 {%- if lookbook -%}
                                     {%- for i in (1..5) -%}
@@ -94,40 +125,13 @@
                                             assign point_x = block.settings[cap_point_x]
                                         -%}
                                         {%- if product != blank -%}
-                                            <lookbook-point class="point-box style-{{ lookbook_style }}" data-popup="#LOOKBOOK-{{ block.id }}-{{ product.id }}-{{ forloop.index }}"
-                                            style="top: {{ point_y | append: '%' }};
-                                                left: {{ point_x | append: '%' }};"
-                                            >
-                                                <a href="{{ product.url }}" class="point-icon">
+                                            <div class="point-box style-{{ lookbook_style }}" style="top: {{ point_y }}%; left: {{ point_x }}%;">
+                                                <div class="point-icon" {% if lookbook_type == 'popup_quickview' %} data-open-quick-view-popup{% else %} data-open-lookbook-popup{% endif %} data-product-handle="{{ product.handle }}" role="button" tabindex="0">
                                                     <span class="text{% if lookbook_style == '3' %} visually-hidden{% endif %}">
-                                                        {%- if lookbook_style == '4' or lookbook_style == '6' -%}
-                                                            {% render 'icon-plus' %}
-                                                        {%- else -%}
-                                                            {{ forloop.index }}
-                                                        {%- endif -%}
+                                                        {{ forloop.index }}
                                                     </span>
-                                                </a>
-                                            </lookbook-point>
-                                            <lookbook-popup class="popup-box{% if lookbook_style == '6' %} style-6{% endif %}" id="LOOKBOOK-{{ block.id }}-{{ product.id }}-{{ forloop.index }}">
-                                                {%- liquid
-                                                    assign target = product.selected_or_first_available_variant
-                                                    assign compare_at_price = target.compare_at_price
-                                                    assign price = target.price
-                                                -%}
-                                                <div class="popup-box__wrapper">
-                                                    <a href="{{ product.url }}" class="link-with-arrow">
-                                                        <span class="text">{{ product.title }}</span>
-                                                        <span class="info">
-                                                            {%- if compare_at_price > price %}
-                                                                <span class="price old-price">{{ compare_at_price | money }}</span>
-                                                                <span class="price">{{ price | money }}</span>
-                                                            {%- else -%}
-                                                                <span class="price">{{ price | money }}</span>
-                                                            {%- endif -%}
-                                                        </span>
-                                                    </a>
                                                 </div>
-                                            </lookbook-popup>
+                                            </div>
                                         {%- endif -%}
                                     {%- endfor -%}
                                 {%- endif -%}
@@ -135,6 +139,15 @@
 	                    </div>
             		{%- endfor -%}
             	</div>
+                {%- if lookbook_type == 'popup_card' -%}
+                    <div class="halo-lookbook-popup">
+                        <a href="#" class="close" data-close-lookbook-popup role="button">
+                            <span class="visually-hidden">{{ 'general.common.close' | t }}</span>
+                            {% render 'icon-close' %}
+                        </a>
+                        <div class="content"></div>
+                    </div>
+                {%- endif -%}
 			</div>
 		</div>
 	</div>
@@ -401,6 +414,21 @@
             },
             {
                 "type": "select",
+                "id": "lookbook_type",
+                "label": "t:sections.general.settings.lookbook.label__2",
+                "default": "popup_quickview",
+                "options": [
+                {
+                    "value": "popup_quickview",
+                    "label": "t:sections.general.settings.lookbook.options__1"
+                },
+                {
+                    "value": "popup_card",
+                    "label": "t:sections.general.settings.lookbook.options__2"
+                }]
+            },
+            {
+                "type": "select",
                 "id": "lookbook_style",
                 "label": "t:sections.general.settings.lookbook.label__3",
                 "default": "1",
@@ -416,18 +444,6 @@
                 {
                     "value": "3",
                     "label": "3"
-                },
-                {
-                    "value": "4",
-                    "label": "4"
-                },
-                {
-                    "value": "5",
-                    "label": "5"
-                },
-                {
-                    "value": "6",
-                    "label": "6"
                 }]
             }
 		],
@@ -627,9 +643,6 @@
                     }
                 ]
             }
-        ],
-        "disabled_on": {
-            "groups": ["header", "footer"]
-        }
+        ]
 	}
 {% endschema %}

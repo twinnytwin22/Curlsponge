@@ -1,15 +1,8 @@
-{%- liquid
-	assign product_compare_type = settings.product_compare_type
-	if settings.product_card_style == '7' or settings.product_card_style == '12'
-		assign product_compare_type = 'icon'
-	endif
--%}
-
 <div class="{{ class }}" data-product-compare data-product-compare-handle="{{ product.handle }}" data-product-compare-id="{{ product.id }}">
 	{%- if settings.product_card_style == '5' -%}
 		{% assign compare_class = 'compare-button' %}
 	{%- else -%}
-		{%- if product_compare_type == 'default' -%}
+		{%- if settings.product_compare_type == 'default' -%}
 			{% assign compare_class = 'compare-button' %}
 		{%- else -%}
 			{% assign compare_class = 'compare-icon' %}
@@ -28,7 +21,7 @@
 	    	value="{{ product.handle }}"
 	    >
 	    <label
-	    	class="compare-label{% if settings.product_card_style == '5' %} form-label--checkbox{% else %}{% if product_compare_type == 'default' %} form-label--checkbox{% endif %}{% endif %}"
+	    	class="compare-label{% if settings.product_card_style == '5' %} form-label--checkbox{% else %}{% if settings.product_compare_type == 'default' %} form-label--checkbox{% endif %}{% endif %}"
 	    	{% if sectionId %}
 	    		for="compare-{{ product.id }}-{{ sectionId }}"
 	    	{% else %}
@@ -39,7 +32,7 @@
 	    	{%- if settings.product_card_style == '5' -%}
 	    		{{ 'compare.general.add' | t }}
 	    	{%- else -%}
-		    	{%- if product_compare_type == 'icon' -%}
+		    	{%- if settings.product_compare_type == 'icon' -%}
 		    		{%- if show_text -%}
 			    		<span class="text">
 			    			{{ 'compare.general.add' | t }}

@@ -49,10 +49,8 @@ class NewsletterPopup extends HTMLElement {
     }
 
     onBodyClickEvent(event){
-        if(document.body.classList.contains('newsletter-show')){ 
-            if ((!this.contains(event.target)) && (!(event.target).closest('[data-open-newsletter-popup]')) && (!(event.target).closest('[data-newsletter-popup]'))){
-                this.setClosePopup();
-            }
+        if ((!this.contains(event.target)) && ($(event.target).closest('[data-open-newsletter-popup]').length === 0) && document.querySelector('body').classList.contains('newsletter-show')){
+            this.setClosePopup();
         }
     }
 }

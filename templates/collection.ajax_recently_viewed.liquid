@@ -3,8 +3,6 @@
 {%- for tag in current_tags -%}
     {%- if tag contains 'list_handle=' -%}
         {%- assign list_handle = tag | remove: 'list_handle=' -%}
-    {%- elsif tag contains 'template=' -%}
-        {%- assign template = tag | remove: 'template=' -%}
     {%- elsif tag contains 'limit=' -%}
         {%- assign limit = tag | remove: 'limit=' -%}
     {%- elsif tag contains 'sectionId=' -%}
@@ -21,56 +19,21 @@
 {%- if list_handle != blank -%}
     {%- assign list_handle = list_handle | split: '%2C' -%}
     {%- for handle in list_handle limit: limit -%}
-        {% assign handle_decode = handle | url_decode %}
-        {% assign product = all_products[handle_decode] %}
+        {% assign product = all_products[handle] %}
         {%- if product != blank -%}
-            {%- if template == 'section' -%}
-                <div class="product">
-                    {% render 'product-card',
-                        product_card_product: product,
-                        media_size: image_ratio,
-                        portrait_aspect_ratio: portrait_aspect_ratio,
-                        serial: forloop.index,
-                        show_add_to_cart: show_add_to_cart,
-                        sectionId: sectionId,
-                        list: false,
-                        wishlist_add: false,
-                        loading: true
-                    %}
-                </div>
-            {%- else -%}
-                <div class="item {{ template }}">
-                    <a class="first-info" href="{{ product.url }}" data-mobile-click>
-                        {%- if product.featured_media -%}
-                            {% render 'icon-external-link' %}
-                            <img srcset="{{ product.featured_media | img_url: '100x' }}" src="{{ product.featured_media | img_url: '100x' }}" alt="{{ product.featured_media.alt }}" loading="lazy" class="motion-reduce" sizes="100px"/>
-                        {%- else -%}
-                            {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
-                            {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
-                        {%- endif -%}
-                    </a>
-                    <div class="second-info">
-                        <div class="first product-item" data-product-id="{{ product.id }}">
-                            {%- if settings.show_vendor -%}
-                                <div class="product-vendor">
-                                    <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
-                                    {{ product.vendor | link_to_vendor }}           
-                                </div>
-                            {%- endif -%}   
-                            <a class="product-title link-underline" href="{{ product.url }}">
-                                <span class="text">{{ product.title | escape }}</span>
-                            </a>
-                             <div class="product-price">
-                                {% render 'price',
-                                    product: product,
-                                    price_class: ''
-                                %}
-                            </div>
-                        </div>
-                        <a class="second" href="{{ product.url }}"></a>
-                    </div>
-                </div>
-            {%- endif -%}
+            <div class="product">
+                {% render 'product-card',
+                    product_card_product: product,
+                    media_size: image_ratio,
+                    portrait_aspect_ratio: portrait_aspect_ratio,
+                    serial: forloop.index,
+                    show_add_to_cart: show_add_to_cart,
+                    sectionId: sectionId,
+                    list: false,
+                    wishlist_add: false,
+                    loading: true
+                %}
+            </div>
         {%- endif -%}
     {%- endfor -%}
 {%- endif -%}

@@ -38,10 +38,10 @@
                         {{ 'customer.account.welcome' | t : name : customer.name }}
                     </div>
                     <div class="auth-actions">
-                        <a class="button button-{{ btn_1 }}" href="{{ routes.account_url }}" role="button">
+                        <a class="button button-{{ btn_1 }}" href="{{ routes.account_url }}">
                             {{ 'customer.account.title' | t }}
                         </a>
-                        <a class="button button-{{ btn_2 }}" href="{{ routes.account_logout_url }}" role="button">
+                        <a class="button button-{{ btn_2 }}" href="{{ routes.account_logout_url }}">
                             {{ 'customer.log_out' | t }}
                         </a>
                     </div>
@@ -63,10 +63,10 @@
                         </div>
                         <div class="form-actions auth-actions text-center">
                             <input type="submit" class="button button-height button-{{ btn_1 }} button-login" value="{{ 'customer.log_in' | t }}">
-                            <a href="{{ routes.account_register_url }}" class="button button-height flex align-center justify-center button-{{ btn_2 }} button-register" role="button">
+                            <a href="{{ routes.account_register_url }}" class="button button-height flex align-center justify-center button-{{ btn_2 }} button-register">
                                 {{ 'customer.register.register' | t }}
                             </a>
-                            <a class="auth-link link link-underline{% if settings.layout == '8' %} text-underline{% endif %}" href="{{ routes.account_login_url }}#recover" role="button">
+                            <a class="auth-link link link-underline{% if settings.layout == '8' %} text-underline{% endif %}" href="{{ routes.account_login_url }}#recover">
                                 <span class="text">{{ 'customer.forgot_password' | t }}</span>
                             </a>
                         </div>

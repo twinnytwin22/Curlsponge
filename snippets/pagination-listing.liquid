@@ -16,7 +16,7 @@
 
 {%- if paginate.parts.size > 0 -%}
     <div class="{{ class | default: 'pagination-wrapper' }}">
-        <nav class="pagination{% if settings.pagination_style == '2' %} pagination-2{% elsif settings.pagination_style == '3' %} pagination-3{% endif %}{% if show_infinite_scrolling %} pagination-infinite style-{{ settings.infinite_scroll_style }}{% endif %}" role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
+        <nav class="pagination{% if settings.pagination_style == '2' %} pagination-2{% endif %}{% if show_infinite_scrolling %} pagination-infinite style-{{ settings.infinite_scroll_style }}{% endif %}" role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
             <div class="pagination-page-item pagination-page-total">
                 <span>{{ 'sections.collection_template.start_count' | t }}</span>
                 <span data-total-start>{{ paginate.current_offset | plus: 1 }}</span>
@@ -54,8 +54,6 @@
                             <a class="link{% if settings.pagination_style == '1' %} link-underline{% endif %}" href="{{ paginate.previous.url }}{{ anchor }}" aria-label="{{ 'general.pagination.previous' | t }}">
                                 {%- if settings.pagination_style == '1' -%}
                                     <span class="text">{{ 'general.pagination.previous_label' | t }}</span>
-                                {%- elsif settings.pagination_style == '3' -%}
-                                    <span class="text">{{ 'general.pagination.previous_label' | t }}</span>
                                 {%- else -%}
                                     {% render 'icon-previous' %}
                                 {%- endif -%}
@@ -85,8 +83,6 @@
                         <li class="pagination-item pagination-item--next">
                             <a class="link{% if settings.pagination_style == '1' %} link-underline{% endif %}" href="{{ paginate.next.url }}{{ anchor }}" aria-label="{{ 'general.pagination.next' | t }}">
                                 {%- if settings.pagination_style == '1' -%}
-                                    <span class="text">{{ 'general.pagination.next_label' | t }}</span>
-                                {%- elsif settings.pagination_style == '3' -%}
                                     <span class="text">{{ 'general.pagination.next_label' | t }}</span>
                                 {%- else -%}
                                     {% render 'icon-next' %}

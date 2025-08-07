@@ -1,9 +1,24 @@
 {%- if section.settings.show_toolbar_mobile -%}
     {{ 'component-toolbar-mobile.css' | asset_url | stylesheet_tag }}
     {%- liquid
+        assign background_color = section.settings.background_color
+        assign text_color = section.settings.text_color
         assign show_text = section.settings.show_text
     -%}
-    <div data-section-id="{{ section.id }}" data-section-type="halo-toolbar-mobile" id="Toolbar-{{ section.id }}" data-section="{{ section.id }}" class="halo-toolbar-mobile{% if show_text %} show_text{% endif %}" style="--bg-color: {{ section.settings.background_color }};--text-color: {{ section.settings.text_color }};">
+    <style type="text/css">
+        .halo-toolbar-mobile{
+            background: {{ background_color }}
+        }
+
+        .halo-toolbar-mobile .halo-toolbar-item .label{
+            color: {{ text_color }}
+        }
+
+        .halo-toolbar-mobile .halo-toolbar-item svg{
+            fill: {{ text_color }};
+        }
+    </style>
+    <div data-section-id="{{ section.id }}" data-section-type="halo-toolbar-mobile" id="Toolbar-{{ section.id }}" data-section="{{ section.id }}" class="halo-toolbar-mobile{% if show_text %} show_text{% endif %}">
         <div class="halo-toolbar-wrapper">
             {%- for block in section.blocks -%}
                 {%- if block.type == 'action' -%}
@@ -12,9 +27,9 @@
                         assign title = block.settings.title
                         assign action = block.settings.action
                     -%}
-                    <div class="halo-toolbar-item toolbar-item-action" style="--cart-count-background: {{ block.settings.cart_count_background }};--cart-count-color: {{ block.settings.cart_count_color }};">
+                    <div class="halo-toolbar-item toolbar-item-action">
                         {%- if action == 'cart' -%}
-                            <a {% if settings.show_quick_cart %}{% if settings.quick_cart_type=='popup' %} data-open-cart-popup href="javascript:void(0)" {% else %}data-cart-sidebar href="javascript:void(0)" {% endif %}{% else %}href="{{ routes.cart_url }}" {% endif %} class="link" id="cart-icon-bubble toolbar" role="button">
+                            <a {% if settings.show_quick_cart %}{% if settings.quick_cart_type=='popup' %} data-open-cart-popup href="javascript:void(0)" {% else %}data-cart-sidebar href="javascript:void(0)" {% endif %}{% else %}href="{{ routes.cart_url }}" {% endif %} class="link" id="cart-icon-bubble" role="button">
                                 {%- if icon != blank -%}
                                     {{ icon }}
                                 {%- else -%}
@@ -33,7 +48,7 @@
                                 </div>
                             </a>
                         {%- elsif action == 'account' -%}
-                            <a href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" class="link" {% if routes.account_login_url == '/account/login' %}{% if settings.customer_login_type=='popup' %} data-open-auth-popup{% else %} data-open-auth-sidebar{% endif %}{% endif %} role="button">
+                            <a href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" class="link" {% if settings.customer_login_type=='popup' %} data-open-auth-popup{% else %} data-open-auth-sidebar{% endif %} role="button">
                                 {%- if icon != blank -%}
                                     {{ icon }}
                                 {%- else -%}
@@ -48,39 +63,35 @@
                                 {% endif %}
                             </a>
                         {%- elsif action == 'ask' -%}
-                            <custom-modal-opener data-modal="#Modal-AskAnExpert" class="link">
-                                <button class="link text-underline link-underline clearfix" type="button">
-                                    {%- if icon != blank -%}
-                                        {{ icon }}
-                                    {%- else -%}
-                                        {% render 'icon-question' %}
-                                    {%- endif -%}
-                                    {%- if show_text -%}
-                                        <span class="label">
-                                            {{ title | escape }}
-                                        </span>
-                                    {%- endif -%}
-                                </button>
-                            </custom-modal-opener>
+                            <a class="link" href="javascript:void(0)" data-open-ask-an-expert role="button">
+                                {%- if icon != blank -%}
+                                    {{ icon }}
+                                {%- else -%}
+                                    {% render 'icon-question' %}
+                                {%- endif -%}
+                                {%- if show_text -%}
+                                    <span class="label">
+                                        {{ title | escape }}
+                                    </span>
+                                {%- endif -%}
+                            </a>
                         {%- else -%}
-                            <side-drawer-opener class="header-mobile--icon" data-side-drawer="#Drawer-Search">
-                                <button class="header__iconItem header__search t-button link focus-inset" type="button" aria-haspopup="dialog">
-                                    {%- if icon != blank -%}
-                                        {{ icon }}
-                                    {%- else -%}
-                                        {% render 'icon-search',
-                                            icon_search: '1',
-                                            class: 'icon icon-search'
-                                        %}
-                                    {%- endif -%}
-                                    {%- if show_text -%}
-                                        <span class="label">{{ title | escape }}</span>
-                                    {%- endif -%}
-                                    <script type="text/javascript">
-                                        window.show_search_footer = true;
-                                    </script>
-                                </button>
-                            </side-drawer-opener>
+                            <a class="link" href="javascript:void(0)" data-search-mobile role="button">
+                                {%- if icon != blank -%}
+                                    {{ icon }}
+                                {%- else -%}
+                                    {% render 'icon-search',
+                                        icon_search: '1',
+                                        class: 'icon icon-search'
+                                    %}
+                                {%- endif -%}
+                                {%- if show_text -%}
+                                    <span class="label">{{ title | escape }}</span>
+                                {%- endif -%}
+                                <script type="text/javascript">
+                                    window.show_search_footer = true;
+                                </script>
+                            </a>
                         {%- endif -%}
                     </div>
                 {%- else -%}
@@ -90,7 +101,7 @@
                         assign link = block.settings.link
                     -%}
                     <div class="halo-toolbar-item toolbar-item-link">
-                        <a {% if link %} href="{{ link }}" {% else %} href="javascript:void(0)"{% endif %} class="link" role="button">
+                        <a {% if link %} href="{{ link }}" {% else %} href="javascript:void(0)" role="button"{% endif %} class="link">
                             {%- if icon != blank -%}
                                 {{ icon }}
                             {%- else -%}
@@ -177,18 +188,6 @@
                 "id": "title",
                 "label": "t:sections.general.settings.content.label__2",
                 "default": "Title"
-            },
-            {
-                "type": "color",
-                "id": "cart_count_background",
-                "label": "t:sections.general.settings.color.label__1",
-                "default": "#BC1B3B"
-            },
-            {
-                "type": "color",
-                "id": "cart_count_color",
-                "label": "t:sections.general.settings.color.label__2",
-                "default": "#FFFFFF"
             },
             {
                 "type": "select",

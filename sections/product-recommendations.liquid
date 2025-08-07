@@ -17,14 +17,27 @@
         assign portrait_aspect_ratio = section.settings.portrait_aspect_ratio
         assign show_add_to_cart = section.settings.show_add_to_cart
     -%}
-    <div class="halo-block halo-product-block halo-block-padding" id="halo-recommendations-block-{{ section.id }}" data-limit="{{ limit }}" data-layout="{{ layout }}" sectionId="{{ section.id }}" data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ limit }}" data-image-ratio="{{ image_ratio }}" data-recommendations-block
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};"
-    >
+    <style type="text/css" media="screen">
+        #halo-recommendations-block-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        @media (max-width: 1024px) {
+            #halo-recommendations-block-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #halo-recommendations-block-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+    </style>
+    <div class="halo-block halo-product-block" id="halo-recommendations-block-{{ section.id }}" data-limit="{{ limit }}" data-layout="{{ layout }}" sectionId="{{ section.id }}" data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ limit }}" data-image-ratio="{{ image_ratio }}" data-recommendations-block>
         {%- if recommendations.performed and recommendations.products_count > 0 -%}
             <div class="container container-{{ container }}">
                 {%- if block_title != blank -%}

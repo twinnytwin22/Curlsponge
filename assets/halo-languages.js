@@ -33,7 +33,7 @@ class LocalizationForm extends HTMLElement {
     }
 
     onBodyClickEvent(event){
-        if ((!this.contains(event.target)) && (!(event.target).closest('[localization-form__select]'))){
+        if ((!this.contains(event.target)) && ($(event.target).closest('[localization-form__select]').length === 0)){
             this.closeSelector(event);
         }
     }

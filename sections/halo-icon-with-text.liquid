@@ -1,4 +1,10 @@
-{%- if section.blocks.size > 0 and section.settings.show_icon_with_text -%}
+{%- liquid
+    assign show_section = false
+    if section.blocks.size > 0 and section.settings.show_icon_with_text
+        assign show_section = true
+    endif
+-%}
+{%- if show_section -%}
     {%- liquid
         assign padding_top = section.settings.padding_top | append: 'px'
         assign padding_bottom = section.settings.padding_bottom | append: 'px'
@@ -10,6 +16,7 @@
         assign icon_color = section.settings.svg_color
         assign title_color = section.settings.title_color
         assign text_color = section.settings.text_color
+        assign border_color = section.settings.border_color
         assign title_font = section.settings.title_font
         assign title_font_size = section.settings.title_font_size | append: 'px'
         assign title_mobile_font_size = section.settings.title_mobile_font_size | append: 'px'
@@ -23,15 +30,14 @@
         assign alignment = section.settings.alignment
         assign layout_style = section.settings.layout_style
         assign content_style = section.settings.content_style
-        assign icon_ratio = section.settings.icon_ratio
         assign show_bg_img = section.settings.show_bg_img
         if show_bg_img
             assign block_bg_img = section.settings.block_bg_img | img_url: 'master'
-            assign block_bg_position_x = section.settings.block_bg_position_x
-            assign block_bg_position_y = section.settings.block_bg_position_y
-            assign block_bg_repeat = section.settings.block_bg_repeat
-            assign block_bg_attachment = section.settings.block_bg_attachment
-            assign block_bg_size = section.settings.block_bg_size
+            assign block_bg_position_x =  section.settings.block_bg_position_x
+            assign block_bg_position_y =  section.settings.block_bg_position_y
+            assign block_bg_repeat =  section.settings.block_bg_repeat
+            assign block_bg_attachment =  section.settings.block_bg_attachment
+            assign block_bg_size =  section.settings.block_bg_size
         endif
         assign col = section.settings.col
         assign layout = section.settings.block_layout
@@ -46,125 +52,163 @@
             assign dots = section.settings.block_dots
             assign arrows = section.settings.block_arrows
         endif
-
-        if settings.show_dark_mode
-            assign dark_mode = false
-            unless background_color == blank or background_color == '#fff' or background_color == '#FFF' or background_color == '#ffffff' or background_color == '#FFFFFF' or background_color == 'rgb(255,255,255)' or background_color == 'rgba(255,255,255,1)' or background_color == 'rgba(0,0,0,0)' or background_color == 'rgb(0,0,0,0)'
-                assign dark_mode = true
-                assign dark_mode_background_color = section.settings.background_color
-                assign dark_mode_icon_color = section.settings.svg_color
-                assign dark_mode_title_color = section.settings.title_color
-                assign dark_mode_text_color = section.settings.text_color
-            endunless
-        endif
     -%}
-    {%- if settings.show_dark_mode -%}
-        <style type="text/css" media="screen">
-            body.dark-mode .halo-icon-with-text.dark-mode.has-background .item-icon svg,
-            body.dark-mode .halo-icon-with-text.dark-mode.has-background .item-content-item svg {
-                color: var(--dark-mode-icon-color);
-            }
-
-            body.dark-mode .halo-icon-with-text.dark-mode.has-background .item-content .title {
-                color: var(--dark-mode-title-color);
-            }
-
-            body.dark-mode .halo-icon-with-text.dark-mode.has-background .item-content .sub-title,
-            body.dark-mode .halo-icon-with-text.dark-mode.has-background .item-content .text {
-                color: var(--dark-mode-text-color);
-            }
-
-            body.dark-mode .halo-icon-with-text.dark-mode .item-icon svg,
-            body.dark-mode .halo-icon-with-text.dark-mode .item-content-item svg,
-            body.dark-mode .halo-icon-with-text.dark-mode .item-content .title,
-            body.dark-mode .halo-icon-with-text.dark-mode:not(.has-background) .item-icon svg,
-            body.dark-mode .halo-icon-with-text.dark-mode:not(.has-background) .item-content-item svg,
-            body.dark-mode .halo-icon-with-text.dark-mode:not(.has-background) .item-content .title {
-                color: var(--color-text);
-            }
-
-            body.dark-mode .halo-icon-with-text.dark-mode:not(.has-background) .item-content .text  {
-                color: var(--color-text2);
-            }
-
-            body.dark-mode .halo-icon-with-text-1.halo-block-full.dark-mode:not(.has-background) {
-                background: var(--color-background);
-            }
-
-            body.dark-mode .halo-icon-with-text-1.dark-mode .item-content .sub-title,
-            body.dark-mode .halo-icon-with-text-1.dark-mode .item-content .text {
-                color: var(--color-text2);
-            }
-
-            {%- if dark_mode -%}
-                body.dark-mode .halo-icon-with-text:not(.dark-mode) .item-icon svg,
-                body.dark-mode .halo-icon-with-text:not(.dark-mode) .item-content-item svg {
-                    color: var(--dark-mode-icon-color);
-                }
-
-                body.dark-mode .halo-icon-with-text:not(.dark-mode) .item-content .title {
-                    color: var(--dark-mode-title-color);
-                }
-
-                body.dark-mode .halo-icon-with-text:not(.dark-mode) .item-content .sub-title,
-                body.dark-mode .halo-icon-with-text:not(.dark-mode) .item-content .text {
-                    color: var(--dark-mode-text-color);
-                }
-
-                body.dark-mode .halo-icon-with-text-1.halo-block-full:not(.dark-mode):not(.has-background) {
-                    background: var(--dark-mode-bg-color);
-                }
-            {%- endif -%}
-        </style>
-    {%- endif -%}
-    <div class="halo-block halo-icon-with-text halo-icon-with-text-1{% unless dark_mode %} dark-mode{% endunless %}{% if layout_style == '1' %} halo-block-full{% if content_style != '1' %} has-arrow--mobile{% endif %}{% endif %}{% unless enable_border %} halo-block-padding{% endunless %}{% if show_bg_img and block_bg_img != blank %} has-background{% endif %}" id="halo-icon-with-text-{{ section.id }}" {% if layout == 'slider' or mobile_layout == 'slider' %} data-icon-with-text-block data-loader-script="{{ 'halo.slide-icon-with-text.js' | asset_url }}"{% endif %}
-        style="
-            --padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};
+    <style type="text/css" media="screen">
+        :root {
             {% if title_font == 'font_1' %}
-                --title-font: var(--font-1-family);
+                --title-font-{{ section.id }}: var(--font-1-family);
             {% elsif title_font == 'font_2' %}
-                --title-font: var(--font-2-family);
+                --title-font-{{ section.id }}: var(--font-2-family);
             {% elsif title_font == 'font_3' %}
-                --title-font: var(--font-3-family);
+                --title-font-{{ section.id }}: var(--font-3-family);
             {% endif %}
-            --title-font-size: {{ title_font_size }};
-            --title-mobile-font-size: {{ title_mobile_font_size }};
-            --title-font-weight: {{ title_font_weight }};
-            --title-text-transform: {{ title_text_transform }};
-            --text-font-size: {{ text_font_size }};
-            --text-font-weight: {{ text_font_weight }};
-            --text-text-transform: {{ text_text_transform }};
-            --title-color: {{ title_color }};
-            --text-color: {{ text_color }};
-            --icon-color: {{ icon_color }};
-            --bg-color: {{ background_color | default: settings.colors_bg }};
-            {% if dark_mode %}
-                --dark-mode-bg-color: {{ dark_mode_background_color }};
-                --dark-mode-title-color: {{ dark_mode_title_color }};
-                --dark-mode-text-color: {{ dark_mode_text_color }};
-                --dark-mode-icon-color: {{ dark_mode_icon_color }};
+        }
+
+        {% if background_color != 'rgba(0,0,0,0)' and background_color != blank %}
+            {% if layout_style == '1' %}
+                #halo-icon-with-text-{{ section.id }}.halo-block-full{
+                    background: {{ background_color }};
+                }
+            {% else %}
+                #halo-icon-with-text-{{ section.id }} .halo-block-items{
+                    background: {{ background_color }};
+                }
             {% endif %}
-            {% if settings.show_dark_mode and show_bg_img and block_bg_img != blank %}
-                --dark-mode-title-color: {{ title_color }};
-                --dark-mode-text-color: {{ text_color }};
-                --dark-mode-icon-color: {{ icon_color }};
+        {% endif %}
+
+        {% if show_bg_img and block_bg_img != blank %}
+            {% if layout_style == '1' %}
+                #halo-icon-with-text-{{ section.id }}.halo-block-full{
+                    background-image: url({{ block_bg_img }});
+                    background-position: {{ block_bg_position_x }} {{ block_bg_position_y }};
+                    background-repeat: {{ block_bg_repeat }};
+                    background-attachment: unset;
+                    background-size: {{ block_bg_size }};
+                }
+            {% else %}
+                #halo-icon-with-text-{{ section.id }} .halo-block-items{
+                    background-image: url({{ block_bg_img }});
+                    background-position: {{ block_bg_position_x }} {{ block_bg_position_y }};
+                    background-repeat: {{ block_bg_repeat }};
+                    background-attachment: unset;
+                    background-size: {{ block_bg_size }};
+                }
             {% endif %}
+        {% endif %}
+
+        {% if enable_border %}
+            #halo-icon-with-text-{{ section.id }} .halo-row-item{
+                padding-top: {{ padding_top }};
+                padding-bottom: {{ padding_bottom }};
+            }
+
+            #halo-icon-with-text-{{ section.id }} .halo-row--border .halo-row-item{
+                border-right: 1px solid {{ border_color }};
+            }
+
+            #halo-icon-with-text-{{ section.id }} .halo-row--border .halo-row-item:last-child{
+                border-right: none;
+            }
+
+            .halo-icon-with-text .show-icon .item-content-right{
+                width: auto;
+            }
+
+            @media (max-width: 768px){
+                #halo-icon-with-text-{{ section.id }} .halo-row--grid .halo-row-item,
+                #halo-icon-with-text-{{ section.id }} .halo-row--slider .halo-row-item{
+                    border-right: none;
+                }
+            }
+        {% else %}
+            #halo-icon-with-text-{{ section.id }}{
+                padding-top: {{ padding_top }};
+                padding-bottom: {{ padding_bottom }};
+            }
+        {% endif %}
+
+        #halo-icon-with-text-{{ section.id }} .item-content .title{
+            font-family: var(--title-font-{{ section.id }});
+            font-size: {{ title_mobile_font_size }};
+            font-weight: {{ title_font_weight }};
+            text-transform: {{ title_text_transform }};
+            color: {{ title_color }};
+        }
+
+        #halo-icon-with-text-{{ section.id }} .item-content .sub-title,
+        #halo-icon-with-text-{{ section.id }} .item-content .link{
+            color: {{ text_color }};
+            font-size: {{ text_font_size }};
+            font-weight: {{ text_font_weight }};
+            text-transform: {{ text_text_transform }};
+        }
+
+        #halo-icon-with-text-{{ section.id }} .item-icon svg,
+        #halo-icon-with-text-{{ section.id }} .item-content-item svg{
+            fill: {{ icon_color }};
+        }
+
+        @media (max-width: 1024px) {
+            {% if enable_border %}
+                #halo-icon-with-text-{{ section.id }} .halo-row-item{
+                    padding-top: {{ padding_top_tablet }};
+                    padding-bottom: {{ padding_bottom_tablet }};
+                }
+            {% else %}
+                #halo-icon-with-text-{{ section.id }}{
+                    padding-top: {{ padding_top_tablet }};
+                    padding-bottom: {{ padding_bottom_tablet }};
+                }
+            {% endif %}
+
+            #halo-icon-with-text-{{ section.id }} .halo-row--grid{
+                text-align: center;
+            }
+
+            #halo-icon-with-text-{{ section.id }}.has-arrow--mobile .slick-arrow{
+                display: block!important;
+                background-color: transparent!important;
+            }
+
+            #halo-icon-with-text-{{ section.id }}.has-arrow--mobile .slick-arrow svg{
+                fill: {{ icon_color }}!important;
+            }
+        }
+
+        @media (max-width: 550px) {
+            {% if enable_border %}
+                #halo-icon-with-text-{{ section.id }} .halo-row-item{
+                    padding-top: {{ padding_top_mobile }};
+                    padding-bottom: {{ padding_bottom_mobile }};
+                }
+            {% else %}
+                #halo-icon-with-text-{{ section.id }}{
+                    padding-top: {{ padding_top_mobile }};
+                    padding-bottom: {{ padding_bottom_mobile }};
+                }
+            {% endif %}
+        }
+
+        @media (min-width: 1025px){
             {% if show_bg_img and block_bg_img != blank %}
-                --bg-block-img: url({{ block_bg_img }}); 
-                --bg-block-img-position-x: {{ block_bg_position_x }};
-                --bg-block-img-position-y: {{ block_bg_position_y }};
-                --bg-block-img-repeat: {{ block_bg_repeat }};
-                --bg-block-img-attachment: {{ block_bg_attachment }};
-                --bg-block-img-size: {{ block_bg_size }};
+                {% if layout_style == '1' %}
+                    #halo-icon-with-text-{{ section.id }}.halo-block-full{
+                        background-attachment: {{ block_bg_attachment }};
+                    }
+                {% else %}
+                    #halo-icon-with-text-{{ section.id }} .halo-block-items{
+                        background-attachment: {{ block_bg_attachment }};
+                    }
+                {% endif %}
             {% endif %}
-        " 
-    >
-        <div class="container container-{{ container }}{% if mobile_layout == 'swipe' %} container-no-padding{% endif %}{% if enable_border %} halo-block-padding{% endif %}">
+
+            #halo-icon-with-text-{{ section.id }} .item-content .title{
+                font-size: {{ title_font_size }};
+            }
+        }
+    </style>
+    <div class="halo-block halo-icon-with-text{% if layout_style == '1' %} halo-block-full{% if content_style == '2' %} has-arrow--mobile{% endif %}{% endif %}" id="halo-icon-with-text-{{ section.id }}" {% if layout == 'slider' or mobile_layout == 'slider' %} data-icon-with-text-block data-loader-script="{{ 'halo.slide-icon-with-text.js' | asset_url }}"{% endif %}>
+        <div class="container container-{{ container }}{% if mobile_layout == 'swipe' %} container-no-padding{% endif %}">
             <div class="halo-row halo-row--{{ col }} halo-row--{{ mobile_layout }} column-{{ column }} disable-scrollbar{% if layout == 'slider' %} halo-row-carousel{% if mobile_layout == 'slider' %} halo-row-carousel--mobile{% endif %}{% elsif mobile_layout == 'slider' %} halo-row-carousel--mobile{% endif %}{% if enable_border %} halo-row--border{% endif %}"
                 {% if layout == 'slider' %}
                     data-item-to-show="{{ column }}"
@@ -182,9 +226,9 @@
                     -%}
                     <div class="halo-row-item">
                         <div class="banner-item item">
-                            <div class="wrapper-item{% if icon != blank %} show-icon icon-ratio--{{ icon_ratio }}{% endif %}">
-                                <div class="item-content text-{{ alignment }} style-{{ content_style }}{% unless heading != blank %} no-title{% endunless %}">
-                                    {%- if content_style == '1' -%}
+                            <div class="wrapper-item{% if icon != blank %} show-icon{% endif %}">
+                                <div class="item-content text-{{ alignment }} style-{{ content_style }} {% unless heading != blank %}no-title {% endunless %}">
+                                    {%- if content_style == '1'-%}
                                         {%- if icon != blank -%}
                                             <div class="wrapper-title">
                                                 <div class="item-icon">
@@ -205,17 +249,13 @@
                                                 <span class="text">{{ link_title }}</span>
                                             </{% if link != blank %}a{% else %}div{% endif %}>
                                         {%- endif -%}
-                                    {%- else -%}
+                                    {%- elsif content_style == '2' -%}
                                         {%- if icon != blank -%}
                                             <div class="item-content-item item-content-left">
                                                 {{ icon }}
                                             </div>
                                         {%- endif -%}
-                                        <div class="item-content-item{% if icon != blank %} item-content-right{% endif %}"
-                                            {% if icon != blank %}
-                                                style="width: auto;" 
-                                            {% endif %}
-                                        >
+                                        <div class="item-content-item{% if icon != blank %} item-content-right{% endif %}">
                                             {%- if heading != blank -%}
                                                 <h3 class="title">{{ heading }}</h3>
                                             {%- endif -%}
@@ -223,7 +263,7 @@
                                                 <span  class="sub-title">{{ sub_heading }}</span>
                                             {%- endif -%}
                                             {%- if link_title != blank -%}
-                                                <{% if link != blank %}a{% else %}div{% endif %} {% if link != blank %} href="{{ link }}"{% endif %} class="link link-underline text-underline">
+                                                <{% if link != blank %}a{% else %}div{% endif %} {% if link != blank %} href="{{ link }}"{% endif %} class="link link-underline">
                                                     <span class="text">{{ link_title }}</span>
                                                 </{% if link != blank %}a{% else %}div{% endif %}>
                                             {%- endif -%}
@@ -514,27 +554,7 @@
                 {
                     "value": "2",
                     "label": "2"
-                },
-                {
-                    "value": "3",
-                    "label": "3"
                 }]
-            },
-            {
-                "type": "select",
-                "id": "icon_ratio",
-                "label": "t:sections.general.settings.icon-ratio.label__1",
-                "options": [
-                {
-                    "value": "medium",
-                    "label": "t:sections.general.settings.icon-ratio.options__2"
-                },
-                {
-                    "value": "large",
-                    "label": "t:sections.general.settings.icon-ratio.options__3"
-                }],
-                "default": "medium",
-                "info": "t:sections.general.settings.icon-ratio.info"
             },
             {
                 "type": "checkbox",
@@ -564,6 +584,12 @@
                 "id": "title_color",
                 "label": "t:sections.general.settings.color.label__7",
                 "default": "#FFFFFF"
+            },
+            {
+                "type": "color",
+                "id": "border_color",
+                "label": "t:sections.general.settings.color.label__15",
+                "default": "#404040"
             },
             {
                 "type": "paragraph",

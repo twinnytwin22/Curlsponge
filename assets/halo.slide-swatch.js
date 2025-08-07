@@ -23,7 +23,6 @@ Shopify.ProductSwatchs = (() => {
                         slidesToScroll: 1,
                         arrows: true,
                         dots: false,
-                        rtl: window.rtl_slick,
                         nextArrow: '<button type="button" class="slick-arrow slick-next" aria-label="'+ window.accessibility.next_slide +'">' + window.slick.nextArrow + '</button>',
                         prevArrow: '<button type="button" class="slick-arrow slick-prev" aria-label="'+ window.accessibility.previous_slide +'">' + window.slick.prevArrow + '</button>',
                         responsive:

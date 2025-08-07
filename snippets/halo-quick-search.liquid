@@ -1,98 +1,121 @@
-{%- liquid
-	assign limit = settings.search_product_to_show
-	assign media_size = settings.search_product_image_ratio
-	assign portrait_aspect_ratio = settings.search_product_portrait_aspect_ratio
--%}
-<quick-search class="quickSearchResultsWrap" data-limit="{{ limit }}" data-image-ratio="{{ media_size }}" data-ratio="{{ portrait_aspect_ratio }}" data-quick-trendingProduct>
+<quick-search class="quickSearchResultsWrap" style="display: none;" data-product-to-show="{{ settings.quick_search_to_show }}">
 	<div class="loadingOverlay"></div>
 	<div class="quickSearchResults custom-scrollbar">
 		<div class="container{% if container %}{% if settings.layout == '9' %} container-1370{% else %} container-{{ container }}{% endif %}{% endif %}">
 			{%- if has_close -%}
 				<div class="halo-popup-header popup-search-header">
 					<a href="#" class="halo-popup-close clearfix" data-close-search-popup role="button">
-						{% render 'icon-close' %}
-					</a>
+				        {% render 'icon-close' %}
+				    </a>
 				</div>
 			{%- endif -%}
-			{%- if settings.show_search_trending or settings.show_search_product -%}
+			{%- if settings.show_search_trending and settings.show_search_product -%}
 				<div class="quickSearchResultsBlock quickSearchResultsWidget is-show{% if settings.search_product_style == 'custom' %} ajax-loaded{% endif %}">
 					{%- if settings.show_search_trending -%}
 						<div class="search-block quickSearchTrending">
 							{%- if settings.search_trending_title != blank -%}
-								<h3 class="search-block-title text-left">
-									<span class="text">{{ settings.search_trending_title | escape }}</span>
-								</h3>
-							{%- endif -%}
-							<ul class="list-item list-unstyled clearfix custom-scrollbar">
-								{%- for i in (1..15) -%}
-									{% capture cap_seach_trending_item %}seach_trending_item_{{ i }}{% endcapture %}
-									{%- assign seach_trending_item = settings[cap_seach_trending_item] -%}
+	                            <h3 class="search-block-title text-left">
+	                                <span class="text">{{ settings.search_trending_title | escape }}</span>
+	                            </h3>
+	                        {%- endif -%}
+                            <ul class="list-item list-unstyled clearfix custom-scrollbar">
+                                {%- for i in (1..15) -%}
+                                    {% capture cap_seach_trending_item %}seach_trending_item_{{ i }}{% endcapture %}
+                                    {%- assign seach_trending_item = settings[cap_seach_trending_item] -%}
 
-									{%- if seach_trending_item != blank -%}
-										{% assign handle = seach_trending_item | split: '|' | first | strip | handleize %}
-										<li class="item">
-											<a href="{{ routes.search_url }}?q={{ handle }}*&amp;type=product" class="link" role="button">
-												{% render 'icon-search' %}
-												<span class="text">
-													{{ seach_trending_item | escape }}
-												</span>
-											</a>
-										</li>
-									{%- endif -%}
-								{%- endfor -%}
-							</ul>
-						</div>
+                                    {%- if seach_trending_item != blank -%}
+                                        {% assign handle = seach_trending_item | split: '|' | first | strip | handleize %}
+                                        <li class="item">
+                                            <a href="{{ routes.search_url }}?q={{ handle }}*&amp;type=product" class="link">
+                                                {% render 'icon-search' %}
+                                                <span class="text">
+                                                	{{ seach_trending_item | escape }}
+                                                </span>
+                                            </a>
+                                        </li>
+                                    {%- endif -%}
+                                {%- endfor -%}
+                            </ul>
+                        </div>
 					{%- endif -%}
 					{%- if settings.show_search_product -%}
 						{%- liquid
 							assign collection = settings.search_product_collection
+							assign limit = settings.search_product_to_show
+							assign media_size = settings.search_product_image_ratio
+							assign portrait_aspect_ratio = settings.search_product_portrait_aspect_ratio
 						%}
 						<div class="search-block quickSearchProduct" data-limit="{{ limit }}"
 							{% if collection != blank %}
-								data-collection="{{ collection }}"
-							{% endif %}
+					            data-collection="{{ collection }}"
+					            data-image-ratio="{{ media_size }}"
+					            data-ratio="{{ portrait_aspect_ratio }}"
+					        {% endif %}
 						>
 							{%- if settings.search_product_title != blank -%}
 								<h3 class="search-block-title text-left">
-									<span class="text">{{ settings.search_product_title | escape }}</span>
-								</h3>
-							{%- endif -%}
-							<div class="search-block-content">
-								<div class="halo-block">
-									<div class="products-grid custom-scrollbar-x column-{{ settings.search_product_per_row }}">
-										{%- for product in collections[collection].products limit: limit -%}
-											<div class="product">
-												{%- if settings.search_product_style == 'default' -%}
-													{% render 'product-card-loading',
-														product_card_product: product,
-														media_size: media_size,
-														show_add_to_cart: true,
-														portrait_aspect_ratio: portrait_aspect_ratio,
-														sectionId: 'list-result'
-													%}
-												{%- else -%}
-													{% render 'product-card-custom',
-															product_card_product: product
-													%}
-												{%- endif -%}
-											</div>
-										{%- else -%}
-											{%- for product in (1..limit) -%}
-												<div class="product">
-													{% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
-													{% render 'product-card-placeholder',
-														index: current
-													%}
-												</div>
-											{%- endfor -%}
-										{%- endfor -%}
-									</div>
-								</div>
-							</div>
+	                                <span class="text">{{ settings.search_product_title | escape }}</span>
+	                            </h3>
+                            {%- endif -%}
+                            <div class="search-block-content">
+                            	<div class="halo-block">
+                            		<div class="products-grid custom-scrollbar-x column-{{ settings.search_product_per_row }}">
+	                                    {%- for product in collections[collection].products limit: limit -%}
+	                                        <div class="product">
+	                                        	{%- if settings.search_product_style == 'default' -%}
+	            									{% render 'product-card-loading',
+						                                product_card_product: product,
+						                                media_size: media_size,
+						                                show_add_to_cart: true,
+						                                portrait_aspect_ratio: portrait_aspect_ratio,
+						                                sectionId: 'list-result'
+						                            %}
+	            								{%- else -%}
+	            									{% render 'product-card-custom',
+	              										product_card_product: product
+	            									%}
+	            								{%- endif -%}
+	                                        </div>
+	                                    {%- else -%}
+	                                        {%- for product in (1..limit) -%}
+	                                            <div class="product">
+	                                            	{% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+	                                                {% render 'product-card-placeholder',
+	                                                	index: current
+	                                                %}
+	                                            </div>
+	                                        {%- endfor -%}
+	                                    {%- endfor -%}
+	                                </div>
+                            	</div>
+                            </div>
 						</div>
 					{%- endif -%}
 				</div>
 			{%- endif -%}
+			<div class="quickSearchResultsBlock quickSearchResultsContent is-hidden">
+				<div class="search-block quickSearchProduct">
+					<h3 class="search-block-title text-left">
+                        <span class="text">{{ 'general.search.search_result_title' | t }}</span>
+                    </h3>
+                    <div class="search-block-content">
+                    	<div class="productGrid products-grid column-{{ settings.search_product_per_row }}"></div>
+                    	<div class="productViewAll" style="display: none;">
+                    		<a href="" class="button button--primary button-view-all">
+                    			{{ 'general.search.view_all' | t }}
+                    		</a>
+                    	</div>
+                    	<div class="productEmpty text-center" style="display: none;">
+                    		<span class="text">{{ 'general.search.search_no_result' | t }}</span>
+                    		<span class="keyword"></span>
+                    		<a class="link link-underline" href="">
+                    			<span class="text">{{ 'general.search.view_more' | t }}</span>
+                    		</a>
+                    	</div>
+                    </div>
+				</div>
+			</div>
 		</div>
 	</div>
 </quick-search>
+<script src="{{ 'halo-quick-search.js' | asset_url }}" defer="defer"></script>

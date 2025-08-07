@@ -55,11 +55,6 @@
     background-color: #e5e5e5;
 }
 
-.halo-collection-content-4 .toolbar .toolbar-icon {
-    border: 1px solid transparent;
-    box-sizing: border-box;
-}
-
 .toolbar .toolbar-item .toolbar-icon .icon{
     width: 100%;
     height: 100%;
@@ -73,10 +68,6 @@
 
 .toolbar .toolbar-item .toolbar-icon.active{
     background-color: var(--bg-white);
-}
-
-.halo-collection-content-4 .toolbar .toolbar-icon.active {
-    border-color: #c7c7c7;
 }
 
 .toolbar .toolbar-item .toolbar-icon + .toolbar-icon{
@@ -223,19 +214,6 @@
     top: unset!important;
 }
 
-body.dark-mode .toolbar .toolbar-item .toolbar-icon.active {
-    background-color: var(--bg-black);
-}
-
-body.dark-mode .toolbar .toolbar-dropdown .dropdown-menu {
-    background-color: var(--bg-black);
-    box-shadow: 0px 6px 27px 0px rgba(255, 255, 255, 0.2);
-}
-
-body.dark-mode .toolbar .toolbar-item .toolbar-icon {
-    background-color: #1A1A1A;
-}
-
 @media (max-width: 1024px){
     .toolbar.show-sticky{
         position: fixed;
@@ -249,11 +227,6 @@ body.dark-mode .toolbar .toolbar-item .toolbar-icon {
         animation-name: fadeInDown;
         animation-duration: .5s;
         animation-fill-mode: both;
-    }
-
-    body.dark-mode .toolbar.show-sticky {
-        background: var(--bg-black);
-        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 1px 2px 0 rgba(255, 255, 255, 0.1);
     }
 }
 

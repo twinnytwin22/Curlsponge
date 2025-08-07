@@ -1,10 +1,10 @@
 <li class="menu-lv-item menu-lv-1 text-left no-megamenu{% if link.links != blank %} dropdown{% endif %}{% if sale_item_lv1 contains title %} menu-sale{% endif %}">
     {%- if link.links != blank -%}
-        <a class="menu-lv-1__action list-menu__item link focus-inset" href="{{ link.url }}" role="button">
-            <span class="text">{{ link.title | escape }}</span>
-            {%- if sale_item_lv1 contains title -%}
-                {% render 'icon-flashy' %}
-            {%- endif -%}
+        <p class="menu-lv-1__action list-menu__item link focus-inset">
+            <a class="text" href="{{ link.url }}">{{ link.title | escape }}</a>
+            <span class="icon-dropdown" data-toggle-menu-mb>
+                {% render 'icon-caret-right' %}
+            </span>
             {%- if new_label_1 contains title -%}
                 <span class="label new-label">
                     {{ 'general.navigation.new_label' | t }}
@@ -18,10 +18,7 @@
                     {{ 'general.navigation.hot_label' | t }}
                 </span>
             {%- endif -%}
-            <span class="icon-dropdown" data-toggle-menu-mb>
-                {% render 'icon-caret-right' %}
-            </span>
-        </a>
+        </p>
         {%- if load -%}
             {% render 'halo-dropdownmenu-2',
                 link: link,
@@ -44,11 +41,8 @@
             %}
         {%- endif -%}
     {%- else -%}
-        <a href="{{ link.url }}" class="menu-lv-1__action list-menu__item list-menu__item--end link focus-inset"{% if link.current %} aria-current="page"{% endif %} role="button">
+        <a href="{{ link.url }}" class="menu-lv-1__action list-menu__item list-menu__item--end link focus-inset"{% if link.current %} aria-current="page"{% endif %}>
             <span class="text">{{ link.title | escape }}</span>
-            {%- if sale_item_lv1 contains title -%}
-                {% render 'icon-flashy' %}
-            {%- endif -%}
             {%- if new_label_1 contains title -%}
                 <span class="label new-label">
                     {{ 'general.navigation.new_label' | t }}

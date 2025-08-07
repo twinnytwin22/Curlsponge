@@ -1,4 +1,6 @@
 <div class="card-review halo-productReview clearfix {{ class }}">
+    {% render 'judgeme_widgets', widget_type: 'judgeme_preview_badge', jm_style: '', concierge_install: true, product: product %}
+    {% comment %}
     {%- liquid
         assign average = product.metafields.reviews.rating.value
         assign rating = average | replace: '', '' | plus : 0 | round
@@ -17,4 +19,5 @@
             <span class="spr-badge-caption">{{ product.metafields.reviews.rating_count }}</span>
         {%- endif -%}
     </span>
+  {% endcomment %}
 </div>

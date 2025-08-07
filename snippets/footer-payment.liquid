@@ -9,10 +9,10 @@
     {% assign methods = payment_string | split: ',' %}
     {%- for method in methods -%}
         {%- assign show_current_method = method | prepend: 'show_payment_' -%}
-        {% if block.settings[show_current_method] %}
+        {% if section.settings[show_current_method] %}
             <div class="payment-methods--item">
                 {{ method | payment_type_svg_tag: class: 'icon icon--full-color' }}
             </div>
-        {% endif %}
+            {% endif %}
     {%- endfor -%}
 {%- endif -%}

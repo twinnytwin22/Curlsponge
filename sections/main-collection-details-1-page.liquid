@@ -12,8 +12,9 @@
     assign container = section.settings.container
     assign background_color = section.settings.background_color
 -%}
-{%- if background_color != 'rgba(0,0,0,0)' and background_color != blank -%}
-    <style type="text/css" media="screen">
+
+<style type="text/css" media="screen">
+    {% if background_color != 'rgba(0,0,0,0)' and background_color != blank %}
         :root {
             --body-bg: {{ background_color }};
         }
@@ -21,16 +22,34 @@
         body{
             background: var(--body-bg);
         }
-    </style>
-{%- endif -%}
-<div data-section-id="{{ section.id }}" data-section-type="collection-details" id="CollectionDetailsSection-{{ section.id }}" data-section="{{ section.id }}" class="halo-page-padding"
-    style="--padding-top: {{ padding_top }};
-        --padding-bottom: {{ padding_bottom }};
-        --padding-top-tablet: {{ padding_top_tablet }};
-        --padding-bottom-tablet: {{ padding_bottom_tablet }};
-        --padding-top-mobile: {{ padding_top_mobile }};
-        --padding-bottom-mobile: {{ padding_bottom_mobile }};"
->
+
+        .skin-1 .halo-block-header .title .text,
+        .skin-2 .halo-block-header .title .text{
+            background: var(--body-bg);
+        }
+    {% endif %}
+        
+    #CollectionDetailsSection-{{ section.id }}{
+        padding-top: {{ padding_top }};
+        padding-bottom: {{ padding_bottom }};
+    }
+
+    @media (max-width: 1024px) {
+        #CollectionDetailsSection-{{ section.id }}{
+            padding-top: {{ padding_top_tablet }};
+            padding-bottom: {{ padding_bottom_tablet }};
+        }
+    }
+
+    @media (max-width: 550px) {
+        #CollectionDetailsSection-{{ section.id }}{
+            padding-top: {{ padding_top_mobile }};
+            padding-bottom: {{ padding_bottom_mobile }};
+        }
+    }
+</style>
+
+<div data-section-id="{{ section.id }}" data-section-type="collection-details" id="CollectionDetailsSection-{{ section.id }}" data-section="{{ section.id }}">
     <div class="container container-{{ container }}">
         {%- if show_breadcrumb -%}
             {% render 'breadcrumb', alignment: breadcrumb_alignment %}

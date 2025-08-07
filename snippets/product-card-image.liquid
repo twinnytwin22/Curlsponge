@@ -13,7 +13,7 @@
     endif
 -%}
 <a class="card-media card-media--{{ media_size }}{% if show_image_swap %} media--hover-effect{% endif %}{% if show_image_loading %} media--loading-effect{% endif %}"
-    href="{{ product.url }}"
+    href="{{ product.url | within: collection }}"
     {% if product.featured_media %}
         {% if media_size == 'adapt' %}
             style="padding-bottom: {{ 1 | divided_by: featured_media_aspect_ratio | times: 100 }}%;"
@@ -25,21 +25,61 @@
             {% endif %}
         {% endif %}
     {% endif %}
-    draggable="false"
-    data-image-adapt="{{ 1 | divided_by: featured_media_aspect_ratio | times: 100 }}"
 >
     {%- if product.featured_media -%}
-        <img {% render 'lazyload', preview_img: product.featured_media %} class="lazyload"/>
+        <img srcset="
+            {%- if product.featured_media.width >= 165 -%}
+                {{ product.featured_media | img_url: '165x' }} 165w,
+            {%- endif -%}
+            {%- if product.featured_media.width >= 360 -%}
+                {{ product.featured_media | img_url: '360x' }} 360w,
+            {%- endif -%}
+            {%- if product.featured_media.width >= 533 -%}
+                {{ product.featured_media | img_url: '533x' }} 533w,
+            {%- endif -%}
+            {%- if product.featured_media.width >= 720 -%}
+                {{ product.featured_media | img_url: '720x' }} 720w,
+            {%- endif -%}
+            {%- if product.featured_media.width >= 940 -%}
+                {{ product.featured_media | img_url: '940x' }} 940w,
+            {%- endif -%}
+            {%- if product.featured_media.width >= 1066 -%}
+                {{ product.featured_media | img_url: '1066x' }} 1066w
+            {%- endif -%}"
+            src="{{ product.featured_media | img_url: '533x' }}"
+            sizes="(min-width: 1100px) 535px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)"
+            alt="{{ product.featured_media.alt | escape }}"
+            class="lazyload"
+        >
         {%- if show_image_swap -%}
             {%- if has_video != blank -%}
                 {{ has_video[0] | video_tag: muted: true, loop: true, image_size: 'master' }}
             {%- else -%}
-                {% comment %} {%- if product.images[1] != nil -%}
-                    <img {% render 'lazyload', preview_img: product.images[1] %} class="lazyload"/>
-                {%- endif -%} {% endcomment %}
-                {%- if product.selected_or_first_available_variant.featured_media != null -%}
-                    {%- assign featured_media = product.selected_or_first_available_variant.featured_media -%}
-                    <img {% render 'lazyload', preview_img: featured_media %} class="lazyload"/>
+                {%- if product.images[1] != nil -%}
+                    <img srcset="
+                        {%- if product.images[1].width >= 165 -%}
+                            {{ product.images[1] | img_url: '165x' }} 165w,
+                        {%- endif -%}
+                        {%- if product.images[1].width >= 360 -%}
+                            {{ product.images[1] | img_url: '360x' }} 360w,
+                        {%- endif -%}
+                        {%- if product.images[1].width >= 533 -%}
+                            {{ product.images[1] | img_url: '533x' }} 533w,
+                        {%- endif -%}
+                        {%- if product.images[1].width >= 720 -%}
+                            {{ product.images[1] | img_url: '720x' }} 720w,
+                        {%- endif -%}
+                        {%- if product.images[1].width >= 940 -%}
+                            {{ product.images[1] | img_url: '940x' }} 940w,
+                        {%- endif -%}
+                        {%- if product.images[1].width >= 1066 -%}
+                            {{ product.images[1] | img_url: '1066x' }} 1066w
+                        {%- endif -%}"
+                        src="{{ product.images[1] | img_url: '533x' }}"
+                        sizes="(min-width: 1100px) 535px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)"
+                        alt="{{ product.images[1].alt | escape }}"
+                        class="lazyload"
+                    >
                 {%- endif -%}
             {%- endif -%}
         {%- endif -%}

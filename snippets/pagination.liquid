@@ -16,14 +16,12 @@
 
 {%- if paginate.parts.size > 0 -%}
     <div class="{{ class | default: 'pagination-wrapper' }}">
-        <nav class="pagination{% if settings.pagination_style == '2' %} pagination-2{% elsif settings.pagination_style == '3' %} pagination-3{% endif %}" role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
+        <nav class="pagination{% if settings.pagination_style == '2' %} pagination-2{% endif %}" role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
             <ul class="list-unstyled" role="list">
                 {%- if paginate.previous -%}
                     <li class="pagination-item pagination-item--prev">
                         <a class="link{% if settings.pagination_style == '1' %} link-underline{% endif %}" href="{{ paginate.previous.url }}{{ anchor }}" aria-label="{{ 'general.pagination.previous' | t }}">
                             {%- if settings.pagination_style == '1' -%}
-                                <span class="text">{{ 'general.pagination.previous_label' | t }}</span>
-                            {%- elsif settings.pagination_style == '3' -%}
                                 <span class="text">{{ 'general.pagination.previous_label' | t }}</span>
                             {%- else -%}
                                 {% render 'icon-previous' %}
@@ -54,8 +52,6 @@
                     <li class="pagination-item pagination-item--next">
                         <a class="link{% if settings.pagination_style == '1' %} link-underline{% endif %}" href="{{ paginate.next.url }}{{ anchor }}" aria-label="{{ 'general.pagination.next' | t }}">
                             {%- if settings.pagination_style == '1' -%}
-                                <span class="text">{{ 'general.pagination.next_label' | t }}</span>
-                            {%- elsif settings.pagination_style == '3' -%}
                                 <span class="text">{{ 'general.pagination.next_label' | t }}</span>
                             {%- else -%}
                                 {% render 'icon-next' %}

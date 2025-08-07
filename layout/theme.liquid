@@ -1,21 +1,19 @@
 <!doctype html>
-{%- liquid
-    if settings.select_layout
-        if settings.list_iso_rtl != blank
-            assign locale_iso_code = request.locale.iso_code
-            assign arr_list_rtl = settings.list_iso_rtl | remove:' ' | split:',' 
-            if arr_list_rtl contains locale_iso_code
-                assign enable_iso_rtl = true
-            else
-                assign enable_iso_rtl = false
-            endif
-        endif
-    else
-        assign enable_iso_rtl = false
-    endif
--%}
-<html class="no-js" lang="{{ request.locale.iso_code }}" {% if settings.select_layout and enable_iso_rtl %} dir="rtl" {% endif %}>
-    <head>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+    <head> 
+        <script src='{{ 'subscription-plan-selector-js.js' | asset_url }}' defer='defer' ></script>
+        <script id='sealoop_product' type='application/json'>
+              {{ product | json }}
+        </script>
+        <script id='sealoop_product_selected_or_first_variant' type='application/json'>
+              {{ product.selected_or_first_available_variant.id | json }}
+        </script>
+        <script id='sealoop_money_format' type='application/json'>
+            {{shop.money_format | json}}
+        </script>
+	<!-- Added by AVADA SEO Suite -->
+	{% include 'avada-seo' %}
+	<!-- /Added by AVADA SEO Suite -->
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -55,9 +53,6 @@
         </style>
 
         {{ 'base.css' | asset_url | stylesheet_tag }}
-        {%- if settings.select_layout and enable_iso_rtl -%}
-            {{ 'rtl-base.css' | asset_url | stylesheet_tag }}
-        {%- endif -%}
         {%- unless settings.type_font_1_shopify_name.system? -%}
             <link rel="preload" as="font" href="{{ settings.type_font_1_shopify_name | font_url }}" type="font/woff2" crossorigin>
         {%- endunless -%}
@@ -67,71 +62,58 @@
         {%- unless settings.type_font_3_shopify_name.system? -%}
             <link rel="preload" as="font" href="{{ settings.type_font_3_shopify_name | font_url }}" type="font/woff2" crossorigin>
         {%- endunless -%}
+        {%- if settings.use_custom_css -%}
+            {{ 'custom.css' | asset_url | stylesheet_tag }}
+        {%- endif -%}
         <script>
             document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
             if (Shopify.designMode) {
                 document.documentElement.classList.add('shopify-design-mode');
             }
         </script>
-    </head>
+      {% render 'judgeme_core' %}
+      <!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '781012302931779');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=781012302931779&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+</head>
     {%- liquid
         assign page_type = request.page_type | replace: 'customers/', ''
-        if settings.show_dark_mode
-            assign default_dark_mode = settings.default_dark_mode
-        endif
     -%}
-    <body class="body-full template-{{ page_type }} skin-{{ settings.layout }}{% if settings.select_layout and enable_iso_rtl %} rtl{% endif %}{% if default_dark_mode %} dark-mode{% endif %}">
-        {%- if settings.show_dark_mode -%}
-            <script>
-                {%- if default_dark_mode -%}
-                    localStorage.getItem('theme') === 'light' ? document.body.classList.remove('dark-mode') : document.body.classList.add('dark-mode');
-                {%- else -%}
-                    localStorage.getItem('theme') === 'dark' ? document.body.classList.add('dark-mode') : document.body.classList.remove('dark-mode');
-                {%- endif -%}
-            </script>
-        {%- endif -%}
+    <body class="body-full template-{{ page_type }} skin-{{ settings.layout }}">
         <a class="skip-to-content-link visually-hidden" href="#MainContent">
             {{ "accessibility.skip_to_text" | t }}
         </a>
         {% render 'global-style' %}
         {% render 'global-script' %}
-        {%- if settings.enable_preloading_screen -%}
-            {% render 'preload-screen' %}
-        {%- endif -%}
-        {{ 'section-header.css' | asset_url | stylesheet_tag }}
-        {{ 'component-header.css' | asset_url | stylesheet_tag }}
-        {{ 'component-search.css' | asset_url | stylesheet_tag }}
-        {{ 'component-menu.css' | asset_url | stylesheet_tag }}
-        {% sections 'header-group' %}
-        {% render 'wrapper-header', ajax_menu : false %}
-        {%- if settings.enable_currencies -%}
-            {% render 'halo-currency-js' %}
-        {%- endif -%}
-        
+        {% render 'wrapper-header' %}
         <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
             {{ content_for_layout }}
         </main>
-        <div class="wrapper-footer">
-            {{ 'section-footer.css' | asset_url | stylesheet_tag }}
-            {% sections 'footer-group' %}
-        </div>
-        {% section 'halo-toolbar-mobile' %}
-        {{ 'rtl-section-header.css' | asset_url | stylesheet_tag }}
-        {{ 'rtl-section-footer.css' | asset_url | stylesheet_tag }}
+        {% render 'wrapper-footer' %}
+      	{% section 'halo-toolbar-mobile' %}
         {% render 'halo-popup' %}
         {% render 'halo-sidebar' %}
         {% render 'halo-gdpr-cookie-consent' %}
         <div class="background-overlay"></div>
-        {%- if settings.show_background_effect -%}
-            <div class="background-effect {{ settings.background_effect }}" style="--duration-timing: {{ settings.background_effect_timing | append: 's' }};--opacity: {{ settings.background_effect_opacity | times: 0.01 }};"></div>
-        {%- endif -%}
         <ul hidden>
             <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
         </ul>
         {% render 'global-script-2' %}
         {% capture notification %}{% render 'translation-lab-theme-editor-notification' %}{% endcapture %}{% unless notification contains "Liquid error" %}{{ notification }}{% endunless %}
-        {% render 'theme-editor-notification' %}
-        {% render 'theme-demo-notification' %}
-        <script src="{{ 'halo-quick-search.js' | asset_url }}" defer="defer"></script>
-    </body>
+    {{ '//cdn.shopify.com/s/files/1/0194/1736/6592/t/1/assets/booster-page-speed-optimizer.js?23' | script_tag }}
+</body>
 </html>

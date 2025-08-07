@@ -6,3 +6,33 @@
     margin: 0 auto;
     max-width: 100%;
 }
+
+.halo-size-chart-popup .halo-popup-wrapper{
+    padding: 30px 0 0 0;
+}
+
+body.size-chart-show{
+    overflow: hidden;
+    height: 100%;
+}
+
+body.size-chart-show .background-overlay{
+    display: block;
+}
+
+body.size-chart-show .halo-size-chart-popup{
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translate3d(-50%,-50%,0);
+}
+
+body.size-chart-show .halo-size-chart-popup.halo-popup-topDown{
+    transform: translate3d(-50%,0,0);
+}
+
+@media (min-width: 1025px){
+    body.size-chart-show{
+        padding-right: 10px;
+    }
+}

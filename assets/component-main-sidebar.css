@@ -10,16 +10,16 @@
 
 .sidebarBlock-heading {
     position: relative;
-    font-family: var(--sidebar-heading-font);
-    font-size: var(--sidebar-heading-font-size);
-    font-weight: var(--sidebar-heading-font-weight);
+    font-family: var(--font-heading-family);
+    font-size: calc(var(--header-font-size) - 6px);
+    font-weight: var(--header-font-weight);
+    text-transform: var(--header-text-transform);
     letter-spacing: var(--letter-spacing);
     line-height: var(--line-height);
     color: var(--color-text);
     margin-top: 0;
     margin-bottom: 0;
     padding: 6px 0;
-    text-transform: var(--sidebar-heading-font-text-transform);
 }
 
 .sidebarBlock.refined-widgets{
@@ -73,20 +73,8 @@
     transform: translate3D(-50%,-50%,0) rotate(90deg);
 }
 
-.sidebarBlock-headingWrapper{
-    display: block;
-}
-
 .sidebarBlock-contentWrapper{
-    transition: max-height .5s ease-out;
-    max-height: 0;
-    overflow: hidden;
-    pointer-events: none;
-    position: relative;
-}
-
-.sidebarBlock-contentWrapper.is-expanded{
-    pointer-events: auto;
+    display: none;
 }
 
 .sidebarBlock-contentWrapper .advertisement-text{
@@ -104,6 +92,7 @@
 }
 
 .navPages-action{
+    letter-spacing: .02em;
     color: var(--color-link);
     padding: 5px 0;
 }
@@ -112,10 +101,6 @@
     display: block;
     position: relative;
     padding: 0 0 0 10px;
-}
-
-category-dropdown-list{
-    display: block;
 }
 
 .all-categories-list .icon-dropdown{
@@ -186,13 +171,7 @@ category-dropdown-list{
 
 .all-categories-list ul{
     display: none;
-    overflow: hidden;;
-    pointer-events: none;
-}
-
-.all-categories-list .is-clicked > ul{
-    display: block;
-    pointer-events: auto;
+    overflow: hidden;
 }
 
 .recentPosts-list-item{
@@ -285,10 +264,6 @@ category-dropdown-list{
 
 .page-sidebar.page-sidebar--vertical .refined-widgets .sidebarBlock-heading{
     text-transform: uppercase!important;
-}
-
-body.dark-mode .tags-list-item {
-    background: var(--color-background);
 }
 
 @media (min-width: 551px){
@@ -396,9 +371,7 @@ body.dark-mode .tags-list-item {
     }
 
     .page-sidebar.page-sidebar--horizontal .sidebarBlock-contentWrapper{
-        max-height: unset!important;
-        overflow: inherit!important;
-        pointer-events: auto!important;
+        display: block!important;
     }
 
     .page-sidebar.page-sidebar--horizontal .sidebarBlock-content--list{
@@ -424,12 +397,6 @@ body.dark-mode .tags-list-item {
         text-align: left;
     }
 
-    .halo-collection-content-4 .page-sidebar.page-sidebar--horizontal .sidebarBlock-content--full,
-    .halo-collection-content-4 .page-sidebar.page-sidebar--horizontal .sidebarBlock:hover .sidebarBlock-heading {
-        background-color: #efe7db;
-        border-color: transparent;
-    }
-
     .page-sidebar.page-sidebar--horizontal .sidebarBlock:hover .sidebarBlock-heading{
         background-color: var(--bg-white);
         border-color: #dedede;
@@ -441,38 +408,10 @@ body.dark-mode .tags-list-item {
         visibility: visible;
     }
 
-    .halo-collection-content-4 .page-sidebar.page-sidebar--horizontal .sidebarBlock-heading:after {
-        background: #efe7db;
-    }
-
     .page-sidebar.page-sidebar--horizontal .sidebarBlock:hover .sidebarBlock-content--full{
         opacity: 1;
         visibility: visible;
         pointer-events: auto;
         transform: translate3d(0,0,0);
-    }
-
-    body.dark-mode .page-sidebar.page-sidebar--horizontal .sidebarBlock-content--full,
-    body.dark-mode .page-sidebar.page-sidebar--horizontal .sidebarBlock:hover .sidebarBlock-heading {
-        background-color: var(--color-background);
-        border: 1px solid #484848;
-    }
-
-    body.dark-mode .page-sidebar.page-sidebar--horizontal .sidebarBlock:hover .sidebarBlock-heading {
-        border-bottom-color: transparent;
-    }
-
-    body.dark-mode .page-sidebar.page-sidebar--horizontal .sidebarBlock-heading:after {
-        background: var(--color-background);
-    }
-
-    body.dark-mode .page-sidebar.page-sidebar--horizontal .sidebarBlock-heading:before {
-        filter: invert(1);
-    }
-
-    body.dark-mode .halo-collection-content-4 .page-sidebar.page-sidebar--horizontal .sidebarBlock-content--full,
-    body.dark-mode .halo-collection-content-4 .page-sidebar.page-sidebar--horizontal .sidebarBlock:hover .sidebarBlock-heading {
-        background: #101824;
-        border-color: transparent;
     }
 }

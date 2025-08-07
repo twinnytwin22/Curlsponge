@@ -128,7 +128,7 @@ class ProductBundle extends HTMLElement {
         if (showBundleText) {
             if(this.querySelector('.bundle-price')){
                 const bundlePrice = this.querySelector('.bundle-price');
-                const discountRate = parseFloat(bundlePrice.getAttribute('data-bundle-discount-rate')) * 100;
+                const discountRate = parseInt(bundlePrice.getAttribute('data-bundle-discount-rate')) * 100;
                 const discountText = this.querySelector('.bundle-product-text');
 
                 discountText.innerHTML = discountText.textContent.replace('[discount]', discountRate);
@@ -294,6 +294,7 @@ class ProductBundle extends HTMLElement {
         const priceOld = productPrice.querySelector('.old-price');
         const priceRegular = productPrice.querySelector('[data-bundle-product-price]');
         const productInput = item.querySelector('[name=group_id]');
+        const hotStock = item.querySelector('.bundle-hotStock');
 
         let selectedVariant;
         let selectedSwatchOption1;
@@ -374,6 +375,28 @@ class ProductBundle extends HTMLElement {
 
         this.updateBundleTotalPrice();
 
+        if (selectedVariant.inventory_management != null) {
+            if(hotStock) {
+                let arrayInVarName = 'bundle_inven_array_' + productId,
+                    inven_array = window[arrayInVarName],
+                    maxStock = parseInt(hotStock.getAttribute('data-bundle-hot-stock'));
+
+                if(inven_array != undefined) {
+                    let inven_num = inven_array[selectedVariant.id],
+                        inventoryQuantity = parseInt(inven_num);
+
+                    if(inventoryQuantity > 0 && inventoryQuantity <= maxStock){
+                        let textStock = window.inventory_text.hotStock.replace('[inventory]', inventoryQuantity);
+
+                        hotStock.innerText = textStock;
+                        hotStock.style.display = 'block';
+                    } else {
+                        hotStock.style.display = 'none';
+                    }
+                }
+            }
+        }
+
         if(selectedVariant.featured_image){
             const productImage = this.querySelector(`[data-bundle-product-item-id="${productId}"] img`);
 
@@ -415,7 +438,7 @@ class ProductBundle extends HTMLElement {
     }
 
     checkNeedToConvertCurrency() {
-        return (window.show_multiple_currencies && Currency.currentCurrency != window.shop_currency) || window.show_auto_currency;
+        return (window.show_multiple_currencies && Currency.currentCurrency != shopCurrency) || window.show_auto_currency;
     }
 }
 

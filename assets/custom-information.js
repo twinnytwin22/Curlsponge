@@ -23,15 +23,15 @@ class ProductCustomInfo extends HTMLElement {
 
         if(!document.getElementById('halo-global-custom-information-popup')) return;
 
-        let item = event.currentTarget.closest('.item'),
-            popup = document.getElementById('halo-global-custom-information-popup'),
-            popupContent = popup.querySelector('.halo-popup-content'),
-            popupTitle = popup.querySelector('.halo-popup-title'),
-            title = item.querySelector('.title')?.innerHTML,
-            content = item.querySelector('.popup-desc')?.innerHTML;
+        var $item = event.currentTarget.closest('.item'),
+            $popup = document.getElementById('halo-global-custom-information-popup'),
+            $popupContent = $popup.querySelector('.halo-popup-content'),
+            $popupTitle =  $popup.querySelector('.halo-popup-title'),
+            title = $item.querySelector('.title')?.innerHTML,
+            content = $item.querySelector('.desc_popup')?.innerHTML;
 
-        popupTitle.innerHTML = title;
-        popupContent.innerHTML = content;
+        $popupTitle.innerHTML = title;
+        $popupContent.innerHTML = content;
 
         document.body.classList.add('custom-info-show');
     }
@@ -41,10 +41,8 @@ class ProductCustomInfo extends HTMLElement {
     }
 
     onBodyClickEvent(event){
-        if(document.body.classList.contains('custom-info-show')){
-            if ((!document.querySelector('#halo-global-custom-information-popup').contains(event.target)) && (!(event.target).closest('[data-custom-information]'))){
-                this.setClosePopup();
-            }
+        if (($(event.target).closest('#halo-global-custom-information-popup').length === 0) && ($(event.target).closest('[data-custom-information]').length === 0) && document.querySelector('body').classList.contains('custom-info-show')){
+            this.setClosePopup();
         }
     }
 }

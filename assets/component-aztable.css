@@ -67,6 +67,7 @@ aztable-items{
 
 .haloAZTable.visible-all li a{
     color: var(--color-text)!important;
+    letter-spacing: .02em;
     text-align: left;
 }
 .haloAZTable.visible-all li:first-child a{
@@ -89,14 +90,14 @@ aztable-items{
 
 .az-group{
     display: none;
-    margin: 0 0 10px 0;
+    margin: 0 0 12px 0;
 }
 
 .az-group-title{
     display: block;
     position: relative;
     font-family: var(--font-heading-family);
-    font-size: var(--header-mobile-font-size);
+    font-size: var(--header-font-size);
     font-weight: var(--header-font-weight);
     line-height: var(--line-height);
     letter-spacing: var(--letter-spacing);
@@ -124,18 +125,6 @@ aztable-items{
 
 .az-group.is-active{
     display: block;
-}
-
-.halo-location-content .az-group{
-    margin-bottom: 0;
-}
-
-.halo-location-content .az-group + .az-group{
-    margin-top: 60px;
-}
-
-.halo-location-content .az-group.is-active{
-    margin-top: 0;
 }
 
 .haloAZWrapper.active-all{
@@ -183,10 +172,7 @@ aztable-items{
 }
 
 .haloAZWrapper.visible-all .az-group-list .store-map a{
-    padding: 12px 40px;
-    min-height: var(--btn-min-height);
-    padding-top: var(--btn-padding-top);
-    padding-bottom: var(--btn-padding-bottom);
+    padding: 12px 40px 12px 40px;
 }
 
 .haloAZWrapper.visible-all .az-group-list li:last-child a{
@@ -201,7 +187,7 @@ aztable-items{
 .az-name{
     display: block;
     font-family: var(--font-heading-family);
-    font-size: var(--header-mobile-font-size);
+    font-size: calc(var(--header-font-size) + 6px);
     font-weight: var(--header-font-weight);
     text-transform: var(--header-text-transform);
     line-height: var(--line-height);
@@ -226,7 +212,7 @@ aztable-items{
 
 .store-name{
     font-family: var(--font-heading-family);
-    font-size: min(30px, var(--header-mobile-font-size));
+    font-size: var(--header-font-size);
     font-weight: var(--header-font-weight);
     line-height: var(--line-height);
     letter-spacing: var(--letter-spacing);
@@ -328,22 +314,6 @@ body.map-popup-show .halo-map-popup.halo-popup-topDown{
     top: 0;
 }
 
-body.dark-mode .haloAZWrapper.visible-all .az-group-list a,
-body.dark-mode .store-wrapper {
-    background: var(--bg-black);
-}
-
-@media (min-width: 551px) {
-    .az-group-title,
-    .store-name{
-        font-size: min(35px, var(--header-font-size));
-    }
-
-    .az-name{
-        font-size: calc(var(--header-mobile-font-size) + 6px)
-    }
-}
-
 @media (min-width: 768px){
     .az-group {
         column-count: 3;
@@ -426,10 +396,6 @@ body.dark-mode .store-wrapper {
         margin-right: -15px;
     }
 
-    .az-name{
-        font-size: min(45px,var(--header-font-size));
-    }
-
     .store{
         padding-left: 15px;
         padding-right: 15px;
@@ -444,12 +410,6 @@ body.dark-mode .store-wrapper {
 
     body.map-popup-show{
         padding-right: 10px;
-    }
-
-    body.dark-mode .haloAZWrapper.visible-all .az-group-list a:hover {
-        background: var(--bg-white);
-        color: var(--color-black);
-        border-color: var(--bg-grey);
     }
 }
 
@@ -475,10 +435,6 @@ body.dark-mode .store-wrapper {
     .az-store{
         margin-left: -20px;
         margin-right: -20px;
-    }
-
-    .az-name{
-        font-size: calc(var(--header-font-size) + 6px);
     }
 
     .store{

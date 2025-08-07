@@ -19,131 +19,171 @@
         assign sub_title_font_size = section.settings.sub_title_font_size | append: 'px'
         assign sub_title_font_weight = section.settings.sub_title_font_weight
         assign sub_title_text_transform = section.settings.sub_title_text_transform
-        assign link_font_size = section.settings.link_font_size | append: 'px'
-        assign link_font_size_mobile = section.settings.link_font_size_mobile | append: 'px'
-        assign link_font_weight = section.settings.link_font_weight
-        assign link_text_transform = section.settings.link_text_transform
         assign title_font = section.settings.title_font
         assign title_font_size = section.settings.title_font_size
-        if title_font_size >= 60
-            assign title_tablet_font_size = title_font_size | minus: 30 | append: 'px'
-            assign title_font_size = title_font_size | append: 'px'
-        else
-            assign title_tablet_font_size = title_font_size | append: 'px'
-            assign title_font_size = title_font_size | append: 'px'
-        endif
         assign title_mobile_font_size = section.settings.title_mobile_font_size | append: 'px'
         assign title_font_weight = section.settings.title_font_weight
         assign title_text_transform = section.settings.title_text_transform
         assign label = section.settings.label
         assign link_title = section.settings.link_title
-        if link_title
-            assign button_style = section.settings.button_style
-            assign transparent_button = section.settings.transparent_button
-            assign button_width = section.settings.button_width
-        endif
         assign link = section.settings.link
         assign alignment = section.settings.alignment
         assign image_border_radius = settings.image_border_radius
         assign background_color = section.settings.background_color
         assign title_color = section.settings.title_color
         assign text_color = section.settings.text_color
+        assign link_color = section.settings.link_color
         assign btn_color = section.settings.btn_color
         assign btn_bg = section.settings.btn_bg
         assign btn_border_color = section.settings.btn_border_color
         assign btn_box_shadow = section.settings.btn_box_shadow
-        
-        if settings.show_dark_mode
-            assign dark_mode = false
-            unless background_color == blank or background_color == '#fff' or background_color == '#FFF' or background_color == '#ffffff' or background_color == '#FFFFFF' or background_color == 'rgb(255,255,255)' or background_color == 'rgba(255,255,255,1)' or background_color == 'rgba(0,0,0,0)' or background_color == 'rgb(0,0,0,0)'
-                assign dark_mode = true
-                assign dark_mode_background_color = section.settings.background_color
-                assign dark_mode_title_color = section.settings.title_color
-                assign dark_mode_text_color = section.settings.text_color
-            endunless
-        endif
     -%}
-    <div class="halo-block halo-banner halo-banner-with-custom-link2 style-{{ style }} banner-position-{{ banner_position }} halo-block-padding{% unless dark_mode %} dark-mode{% endunless %}" id="halo-banner-with-custom-link2-{{ section.id }}"
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};
-            {% if style == '4' %}
-                --bg-color: {{ background_color }};
-                {% if dark_mode %}
-                    --dark-mode-bg-color: {{ dark_mode_background_color }};
-                {% endif %} 
+    <style type="text/css" media="screen">
+        :root {
+            {% if sub_title_font == 'font_1' %}
+                --sub-title-font-{{ section.id }}: var(--font-1-family);
+            {% elsif sub_title_font == 'font_2' %}
+                --sub-title-font-{{ section.id }}: var(--font-2-family);
+            {% elsif sub_title_font == 'font_3' %}
+                --sub-title-font-{{ section.id }}: var(--font-3-family);
             {% endif %}
-        "
-    >
+            {% if title_font == 'font_1' %}
+                --title-font-{{ section.id }}: var(--font-1-family);
+            {% elsif title_font == 'font_2' %}
+                --title-font-{{ section.id }}: var(--font-2-family);
+            {% elsif title_font == 'font_3' %}
+                --title-font-{{ section.id }}: var(--font-3-family);
+            {% endif %}
+        }
+
+        {% if background_color != 'rgba(0,0,0,0)' and background_color != blank %}
+            #halo-banner-with-custom-link2-{{ section.id }} .halo-block-content{
+                background: {{ background_color }};
+                padding-left: 25px;
+                padding-right: 25px;
+            }
+        {% endif %}
+
+        #halo-banner-with-custom-link2-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        #halo-banner-with-custom-link2-{{ section.id }} .sub-title{
+            font-family: var(--sub-title-font-{{ section.id }});
+            font-size: {{ sub_title_font_size }};
+            font-weight: {{ sub_title_font_weight }};
+            text-transform: {{ sub_title_text_transform }};
+            color: {{ title_color }};
+        }
+
+        #halo-banner-with-custom-link2-{{ section.id }} .banner-desc{
+            color: {{ text_color }};
+            {% if section.settings.style == '2'%}
+                font-size: {{ sub_title_font_size }};
+                font-weight: {{ sub_title_font_weight }};
+            {% endif %}
+        }
+
+        #halo-banner-with-custom-link2-{{ section.id }} .banner-title{
+            font-family: var(--title-font-{{ section.id }});
+            font-size: {{ title_mobile_font_size }};
+            font-weight: {{ title_font_weight }};
+            text-transform: {{ title_text_transform }};
+            color: {{ title_color }};
+        }
+        
+        #halo-banner-with-custom-link2-{{ section.id }} .label-title{
+            color: {{ title_color }};
+        }
+
+        #halo-banner-with-custom-link2-{{ section.id }} .content-bottom .link .text{
+            color: {{ link_color }};
+        }
+
+        #halo-banner-with-custom-link2-{{ section.id }} .halo-block-content .banner-link{
+            background: {{ btn_bg }};
+            border: 2px solid {{ btn_border_color }};
+            color: {{ btn_color }};
+            box-shadow: {{ btn_box_shadow }};
+        }
+
+        @media (max-width: 1024px) {
+            #halo-banner-with-custom-link2-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #halo-banner-with-custom-link2-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+
+        {% if title_font_size >= 60 %}
+            @media (min-width: 768px){
+                #halo-banner-with-custom-link2-{{ section.id }} .banner-title{
+                    font-size: {{ title_font_size | minus: 30 | append: 'px' }};
+                }
+            }
+
+            @media (min-width: 1025px){
+                #halo-banner-with-custom-link2-{{ section.id }} .banner-title{
+                    font-size: {{ title_font_size | minus: 20 | append: 'px' }};
+                }
+            }
+
+            @media (min-width: 1600px) {
+                #halo-banner-with-custom-link2-{{ section.id }} .banner-title{
+                    font-size: {{ title_font_size | append: 'px' }};
+                }
+            }
+        {% else %}
+            @media (min-width: 551px) {
+                #halo-banner-with-custom-link2-{{ section.id }} .banner-title{
+                    font-size: {{ title_font_size | append: 'px' }};
+                }
+            }
+        {% endif %}
+
+        @media (min-width: 1600px) {
+            {% if background_color != 'rgba(0,0,0,0)' and background_color != blank %}
+                #halo-banner-with-custom-link2-{{ section.id }} .halo-block-content{
+                    padding-left: 40px;
+                    padding-right: 40px;
+                }
+            {% endif %} 
+        }
+    </style>
+    
+    <div class="halo-block halo-banner halo-banner-with-custom-link2 style-{{ style }} banner-position-{{banner_position}} " id="halo-banner-with-custom-link2-{{ section.id }}">
         <div class="container container-{{ container }}">
-            <div class="halo-block-content{% if background_color != 'rgba(0,0,0,0)' and background_color != blank %} has-background{% endif %}"
-                {% if style != '4' %}
-                    style="--bg-color: {{ background_color }};
-                    {% if dark_mode %}
-                        --dark-mode-bg-color: {{ dark_mode_background_color }};
-                    {% endif %}" 
-                {% endif %}
-            >
-                <div class="item block-content__left text-{{ alignment }}">
-                    {%- if title != blank or subtitle != blank or description != blank -%}
-                        <div class="content-box"
-                            style="{% if sub_title_font == 'font_1' %}
-                                --sub-title-font: var(--font-1-family);
-                                {% elsif sub_title_font == 'font_2' %}
-                                --sub-title-font: var(--font-2-family);
-                                {% elsif sub_title_font == 'font_3' %}
-                                    --sub-title-font: var(--font-3-family);
-                                {% endif %}
-                                --sub-title-font-size: {{ sub_title_font_size }};
-                                --sub-title-font-weight: {{ sub_title_font_weight }};
-                                --sub-title-text-transform: {{ sub_title_text_transform }};
-                                --link-text-font-size: {{ link_font_size }};
-                                --link-text-font-size-mobile: {{ link_font_size_mobile }};
-                                --link-text-font-weight: {{ link_font_weight }};
-                                --link-text-transform: {{ link_text_transform }};
-                                {% if title_font == 'font_1' %}
-                                    --title-font: var(--font-1-family);
-                                {% elsif title_font == 'font_2' %}
-                                    --title-font: var(--font-2-family);
-                                {% elsif title_font == 'font_3' %}
-                                    --title-font: var(--font-3-family);
-                                {% endif %}
-                                --title-font-size: {{ title_font_size }};
-                                --title-tablet-font-size: {{ title_tablet_font_size }};
-                                --title-mobile-font-size: {{ title_mobile_font_size }};
-                                --title-font-weight: {{ title_font_weight }};
-                                --title-text-transform: {{ title_text_transform }};
-                                --title-color: {{ title_color }};
-                                --text-color: {{ text_color }};
-                                --btn-bg: {{ btn_bg }};
-                                --btn-color: {{ btn_color }};
-                                --btn-border-color: {{ btn_border_color }};
-                                --btn-box-shadow: {{ btn_box_shadow }};
-                                {% if dark_mode %}
-                                    --dark-mode-title-color: {{ dark_mode_title_color }};
-                                    --dark-mode-text-color: {{ dark_mode_text_color }};
-                                {% endif %}"
-                        >
+            <div class="halo-block-content image-border-{{ image_border_radius }}">
+                <div class="item block-content__left text-{{alignment}}">
+                    {%- if title != blank or subtitle != blank -%}
+                        <div class="content-box">
                             <div class="content-top">
                                 {%- if subtitle != blank -%}
-                                    <h5 class="sub-title text-{{ alignment }}">
+                                    <h5 class="sub-title">
                                         {{ subtitle | escape }}
                                     </h5>
                                 {%- endif -%}
+
                                 {%- if title != blank -%}
-                                    <h4 class="banner-title text-{{ alignment }} typography__mobile typography__tablet typography__desktop">
+                                    <h4 class="banner-title">
                                         {{ title | escape }}
                                     </h4>
                                 {%- endif -%}
+
                                 {%- if description != blank -%}
-                                    <div class="banner-desc text-{{ alignment }}">
+                                    <div class="banner-desc">
                                         {{ description }}
                                     </div>
                                 {%- endif -%}
                             </div>
+
                             {%- if section.blocks.size > 0 -%}
                                 <div class="content-medium">
                                     {%- if label != blank -%}
@@ -156,38 +196,19 @@
                                                 assign link_url = block.settings.link
                                             -%}
                                             {%- if link_text != blank -%}
-                                                <{% if link_url != blank %}a{% else %}div{% endif %} {% if link_url != blank %} href="{{ link_url }}"{% endif %} class="banner-link link{% if style != '4' %} link-underline{% endif %}">
-                                                    <span class="text">
-                                                        {{ link_text | escape }}
-                                                        {%- if style == '4' -%}
-                                                            <span class="icon-arrow-wrap pos-relative">
-                                                                <svg viewBox="0 0 256.14 256.03" class="icon-arrow icon-arrow-1" id="arrow-top-right">
-                                                                    <g id="Layer_2" data-name="Layer 2">
-                                                                        <g id="Layer_1-2" data-name="Layer 1"><path d="M182.2,42.78H44.78c-4.8,0-9.54-.51-13.71-3.1-7.74-4.81-10.36-12.22-9.44-20.83C22.89,6.94,30.79,0,42.79,0Q139.66,0,236.53,0a19.49,19.49,0,0,1,18.65,14.59,24.41,24.41,0,0,1,.91,6.11q.06,95.75.05,191.49c0,7.77-2.14,14.5-8.93,19-9.59,6.33-26.21,4.44-31.4-7.63a32,32,0,0,1-2.36-12.35c-.17-44.66-.1-89.32-.11-134,0-1.12-.11-2.24-.2-4.06-1.26,1.12-2.06,1.76-2.78,2.48q-86.52,86.5-173,173c-4.56,4.57-9.64,7.56-16.3,7.35-9.06-.28-15.19-5-19-12.86s-2.28-15.22,3.08-21.9a44.2,44.2,0,0,1,3.27-3.44l172-172c.73-.73,1.43-1.5,2.15-2.26Z"></path></g>
-                                                                    </g>
-                                                                </svg>
-                                                                <svg viewBox="0 0 256.14 256.03" class="icon-arrow icon-arrow-2" id="arrow-top-right">
-                                                                    <g id="Layer_2" data-name="Layer 2">
-                                                                        <g id="Layer_1-2" data-name="Layer 1"><path d="M182.2,42.78H44.78c-4.8,0-9.54-.51-13.71-3.1-7.74-4.81-10.36-12.22-9.44-20.83C22.89,6.94,30.79,0,42.79,0Q139.66,0,236.53,0a19.49,19.49,0,0,1,18.65,14.59,24.41,24.41,0,0,1,.91,6.11q.06,95.75.05,191.49c0,7.77-2.14,14.5-8.93,19-9.59,6.33-26.21,4.44-31.4-7.63a32,32,0,0,1-2.36-12.35c-.17-44.66-.1-89.32-.11-134,0-1.12-.11-2.24-.2-4.06-1.26,1.12-2.06,1.76-2.78,2.48q-86.52,86.5-173,173c-4.56,4.57-9.64,7.56-16.3,7.35-9.06-.28-15.19-5-19-12.86s-2.28-15.22,3.08-21.9a44.2,44.2,0,0,1,3.27-3.44l172-172c.73-.73,1.43-1.5,2.15-2.26Z"></path></g>
-                                                                    </g>
-                                                                </svg>
-                                                            </span>
-                                                        {%- endif -%}
-                                                    </span>
+                                                <{% if link_url != blank %}a{% else %}div{% endif %} {% if link_url != blank %} href="{{ link_url }}"{% endif %} class="banner-link link link-underline">
+                                                    <span class="text">{{ link_text | escape }}</span>
                                                 </{% if link_url != blank %}a{% else %}div{% endif %}>
                                             {%- endif -%}
                                         {%- endfor -%}
                                     </div>
                                 </div>
                             {%- endif -%}
+
                             {%- if link_title != blank -%}
                                 <div class="content-bottom">
-                                    <{% if link != blank %}a{% else %}div{% endif %} class="{% if button_style == 'link' %}link link-underline text-underline{% else %}banner-button button button-{{ button_style }}{% if transparent_button %} button--transparent{% endif %}{% endif %}"{% if link == blank %} role="link" aria-disabled="true"{% else %} href="{{ link }}"{% endif %}
-                                        {% if button_style != 'link' %}
-                                            style="max-width: {{ button_width | append: 'px' }};"
-                                        {% endif %}
-                                    >
-                                        <span class="text">{{ link_title | escape }}</span>
+                                    <{% if link != blank %}a{% else %}div{% endif %} class="link link-underline" {% if link != blank %} href="{{ link }}"{% endif %}>
+                                        <span class="text">{{ link_title }}</span>
                                     </{% if link != blank %}a{% else %}div{% endif %}>
                                 </div>
                             {%- endif -%}
@@ -197,74 +218,31 @@
                 <div class="item block-content__right">
                     <div class="banner-item">
                         <div class="img-box img-box--mobile">
-                            <loading-banner class="loading-banner">
+                            {%- if image != blank -%}
+                                <{% if link != blank %}a{% else %}div{% endif %} class="image image-adapt" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
+                                    <img srcset="{{ image | img_url: '1920x' }} 1x, {{ image | img_url: '1920x', scale: 2 }} 2x" src="{{ image | img_url: '1920x', crop: 'center' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
+                                </{% if link != blank %}a{% else %}div{% endif %}>
+                            {%- else -%}
+                                <{% if link != blank %}a{% else %}div{% endif %} class="image" {% if link != blank %} href="{{ link }}"{% endif %}>
+                                    {% capture current %}{% cycle 1, 2 %}{% endcapture %}
+                                    {{ 'lifestyle-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}   
+                                </{% if link != blank %}a{% else %}div{% endif %}>
+                            {%- endif -%}
+                            {%- if mobile_image != blank -%}
+                                <{% if link != blank %}a{% else %}div{% endif %} class="image image-mobile image-adapt" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: {{ 1 | divided_by: mobile_image.aspect_ratio | times: 100 | append: '%' }}">
+                                    <img srcset="{{ mobile_image | img_url: 'master' }} 1x, {{ mobile_image | img_url: 'master', scale: 2 }} 2x" src="{{ mobile_image | img_url: 'master' }}" alt="{{ mobile_image.alt | default: shop.name | escape }}" loading="lazy">
+                                </{% if link != blank %}a{% else %}div{% endif %}>
+                            {%- else -%}
                                 {%- if image != blank -%}
-                                    <{% if link != blank %}a{% else %}div{% endif %} class="image image-adapt image-border-{{ image_border_radius }}" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: {% unless image.presentation.focal_point == '50.0% 50.0%' %}{{ 1 | divided_by: image.aspect_ratio | times: 100 | divided_by: 1.1 }}%{% else %}{{ 1 | divided_by: image.aspect_ratio | times: 100 }}%{% endunless %}">
-                                        <img srcset="{%- if image.width < 320 -%}{{ image | image_url: width: image.width }} 320w,{%- endif -%}
-                                            {%- if image.width >= 320 -%}{{ image | image_url: width: 375 }} 375w,{%- endif -%}
-                                            {%- if image.width >= 740 -%}{{ image | image_url: width: 740 }} 740w,{%- endif -%} 
-                                            {%- if image.width >= 750 -%}{{ image | image_url: width: 750 }} 750w,{%- endif -%}
-                                            {%- if image.width >= 1100 -%}{{ image | image_url: width: 1100 }} 1100w,{%- endif -%}
-                                            {%- if image.width >= 1370 -%}{{ image | image_url: width: 1370 }} 1370w,{%- endif -%}
-                                            {%- if image.width >= 1500 -%}{{ image | image_url: width: 1500 }} 1500w,{%- endif -%}
-                                            {%- if image.width >= 1770 -%}{{ image | image_url: width: 1770 }} 1770w,{%- endif -%}
-                                            {%- if image.width >= 1780 -%}{{ image | image_url: width: 1780 }} 1780w,{%- endif -%}
-                                            {%- if image.width >= 1880 -%}{{ image | image_url: width: 1880 }} 1880w,{%- endif -%}
-                                            {%- if image.width >= 2000 -%}{{ image | image_url: width: 2000 }} 2000w,{%- endif -%}
-                                            {%- if image.width >= 2800 -%}{{ image | image_url: width: 2800 }} 2800w{%- endif -%}"
-                                            alt="{{ image.alt | default: shop.name | escape }}" width="{{ image.width }}" height="{{ image.width | divided_by: image.aspect_ratio | round }}" 
-                                            {% unless image.presentation.focal_point == '50.0% 50.0%' %}style="object-position: {{ image.presentation.focal_point }}"{% endunless %}
-                                            loading="lazy"
-                                        >
+                                    <{% if link != blank %}a{% else %}div{% endif %} class="image image-mobile image-adapt" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: 100%">
+                                        <img srcset="{{ image | img_url: '420x', crop: 'center' }} 1x, {{ image | img_url: '420x', crop: 'center',  scale: 2 }} 2x" src="{{ image | img_url: '420x', crop: 'center' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
                                     </{% if link != blank %}a{% else %}div{% endif %}>
                                 {%- else -%}
-                                    <{% if link != blank %}a{% else %}div{% endif %} class="image" {% if link != blank %} href="{{ link }}"{% endif %}>
-                                        {% capture current %}{% cycle 1, 2 %}{% endcapture %}
-                                        {{ 'lifestyle-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}   
+                                    <{% if link != blank %}a{% else %}div{% endif %} class="image image-mobile" {% if link != blank %} href="{{ link }}"{% endif %}>
+                                        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
                                     </{% if link != blank %}a{% else %}div{% endif %}>
                                 {%- endif -%}
-                                {%- if mobile_image != blank -%}
-                                    <{% if link != blank %}a{% else %}div{% endif %} class="image image-mobile image-adapt image-border-{{ image_border_radius }}" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: {{ 1 | divided_by: mobile_image.aspect_ratio | times: 100 | append: '%' }}">
-                                        <img srcset="{%- if mobile_image.width < 320 -%}{{ mobile_image | image_url: width: mobile_image.width }} 320w,{%- endif -%}
-                                            {%- if mobile_image.width >= 320 -%}{{ mobile_image | image_url: width: 375 }} 375w,{%- endif -%}
-                                            {%- if mobile_image.width >= 750 -%}{{ mobile_image | image_url: width: 750 }} 750w,{%- endif -%}
-                                            {%- if mobile_image.width >= 1100 -%}{{ mobile_image | image_url: width: 1100 }} 1100w,{%- endif -%}
-                                            {%- if mobile_image.width >= 1370 -%}{{ mobile_image | image_url: width: 1370 }} 1370w,{%- endif -%}
-                                            {%- if mobile_image.width >= 1500 -%}{{ mobile_image | image_url: width: 1500 }} 1500w,{%- endif -%}
-                                            {%- if mobile_image.width >= 1780 -%}{{ mobile_image | image_url: width: 1780 }} 1780w,{%- endif -%}
-                                            {%- if mobile_image.width >= 2000 -%}{{ mobile_image | image_url: width: 2000 }} 2000w,{%- endif -%}
-                                            {%- if mobile_image.width >= 2800 -%}{{ mobile_image | image_url: width: 2800 }} 2800w{%- endif -%}"
-                                            alt="{{ mobile_image.alt | default: shop.name | escape }}" width="{{ mobile_image.width }}" height="{{ mobile_image.width | divided_by: mobile_image.aspect_ratio | round}}"
-                                            loading="lazy"
-                                        >
-                                    </{% if link != blank %}a{% else %}div{% endif %}>
-                                {%- else -%}
-                                    {%- if image != blank -%}
-                                        <{% if link != blank %}a{% else %}div{% endif %} class="image image-mobile image-adapt image-border-{{ image_border_radius }}" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: {% unless image.presentation.focal_point == '50.0% 50.0%' %}100%{% else %}{{ 1 | divided_by: image.aspect_ratio | times: 100 }}%{% endunless %}">
-                                            <img srcset="{%- if image.width < 320 -%}{{ image | image_url: width: image.width }} 320w,{%- endif -%}
-                                                {%- if image.width >= 320 -%}{{ image | image_url: width: 375 }} 375w,{%- endif -%}
-                                                {%- if image.width >= 740 -%}{{ image | image_url: width: 740 }} 740w,{%- endif -%} 
-                                                {%- if image.width >= 750 -%}{{ image | image_url: width: 750 }} 750w,{%- endif -%}
-                                                {%- if image.width >= 1100 -%}{{ image | image_url: width: 1100 }} 1100w,{%- endif -%}
-                                                {%- if image.width >= 1370 -%}{{ image | image_url: width: 1370 }} 1370w,{%- endif -%}
-                                                {%- if image.width >= 1500 -%}{{ image | image_url: width: 1500 }} 1500w,{%- endif -%}
-                                                {%- if image.width >= 1770 -%}{{ image | image_url: width: 1770 }} 1770w,{%- endif -%}
-                                                {%- if image.width >= 1780 -%}{{ image | image_url: width: 1780 }} 1780w,{%- endif -%}
-                                                {%- if image.width >= 1880 -%}{{ image | image_url: width: 1880 }} 1880w,{%- endif -%}
-                                                {%- if image.width >= 2000 -%}{{ image | image_url: width: 2000 }} 2000w,{%- endif -%}
-                                                {%- if image.width >= 2800 -%}{{ image | image_url: width: 2800 }} 2800w{%- endif -%}"
-                                                alt="{{ image.alt | default: shop.name | escape }}" width="{{ image.width }}" height="{{ image.width | divided_by: image.aspect_ratio | round }}" 
-                                                {% unless image.presentation.focal_point == '50.0% 50.0%' %}style="object-position: {{ image.presentation.focal_point }}"{% endunless %}
-                                                loading="lazy"
-                                            >
-                                        </{% if link != blank %}a{% else %}div{% endif %}>
-                                    {%- else -%}
-                                        <{% if link != blank %}a{% else %}div{% endif %} class="image image-mobile" {% if link != blank %} href="{{ link }}"{% endif %}>
-                                            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-                                        </{% if link != blank %}a{% else %}div{% endif %}>
-                                    {%- endif -%}
-                                {%- endif -%}
-                            </loading-banner>
+                            {%- endif -%}
                         </div>
                     </div>
                 </div>
@@ -405,14 +383,6 @@
                 {
                     "value": "2",
                     "label": "2"
-                },
-                {
-                    "value": "3",
-                    "label": "3"
-                },
-                {
-                    "value": "4",
-                    "label": "4"
                 }]
             },
             {
@@ -468,65 +438,6 @@
                 "id": "link",
                 "label": "t:sections.general.settings.content.label__6",
                 "info": "t:sections.general.settings.content.info__1"
-            },
-            {
-                "type": "select",
-                "id": "button_style",
-                "label": "t:sections.general.settings.button.label__1",
-                "default": "link",
-                "options": [
-                {
-                    "value": "1",
-                    "label": "t:sections.general.settings.button.options__1"
-                },
-                {
-                    "value": "2",
-                    "label": "t:sections.general.settings.button.options__2"
-                },
-                {
-                    "value": "3",
-                    "label": "t:sections.general.settings.button.options__3"
-                },
-                {
-                    "value": "4",
-                    "label": "t:sections.general.settings.button.options__4"
-                },
-                {
-                    "value": "5",
-                    "label": "t:sections.general.settings.button.options__5"
-                },
-                {
-                    "value": "6",
-                    "label": "t:sections.general.settings.button.options__9"
-                },
-                {
-                    "value": "7",
-                    "label": "t:sections.general.settings.button.options__10"
-                },
-                {
-                    "value": "8",
-                    "label": "t:sections.general.settings.button.options__11"
-                },
-                {
-                    "value": "link",
-                    "label": "t:sections.general.settings.button.options__7"
-                }]
-            },
-            {
-                "type": "checkbox",
-                "id": "transparent_button",
-                "label": "t:sections.general.settings.button.label__5",
-                "default": false
-            },
-            {
-                "type": "range",
-                "id": "button_width",
-                "label": "t:sections.general.settings.button.label__8",
-                "min": 150,
-                "max": 400,
-                "step": 10,
-                "unit": "t:sections.general.settings.button.unit",
-                "default": 300
             },
             {
                 "type": "header",
@@ -760,88 +671,6 @@
             },
             {
                 "type": "paragraph",
-                "content": "t:settings_schema.typography.settings.paragraph__4.content"
-            },
-            {
-                "type": "range",
-                "id": "link_font_size",
-                "label": "t:settings_schema.typography.settings.font_size.label",
-                "min": 10,
-                "max": 30,
-                "step": 1,
-                "unit": "t:settings_schema.typography.settings.font_size.unit",
-                "default": 16
-            },
-            {
-                "type": "range",
-                "id": "link_font_size_mobile",
-                "label": "t:settings_schema.typography.settings.font_size.label__2",
-                "min": 10,
-                "max": 20,
-                "step": 1,
-                "unit": "t:settings_schema.typography.settings.font_size.unit",
-                "default": 16
-            },
-            {
-                "type": "select",
-                "id": "link_font_weight",
-                "label": "t:settings_schema.typography.settings.font_weight.label",
-                "default": "700",
-                "options": [
-                {
-                    "value": "300",
-                    "label": "t:settings_schema.typography.settings.font_weight.options__7"
-                },
-                {
-                    "value": "400",
-                    "label": "t:settings_schema.typography.settings.font_weight.options__1"
-                },
-                {
-                    "value": "500",
-                    "label": "t:settings_schema.typography.settings.font_weight.options__2"
-                },
-                {
-                    "value": "600",
-                    "label": "t:settings_schema.typography.settings.font_weight.options__3"
-                },
-                {
-                    "value": "700",
-                    "label": "t:settings_schema.typography.settings.font_weight.options__4"
-                },
-                {
-                    "value": "800",
-                    "label": "t:settings_schema.typography.settings.font_weight.options__5"
-                },
-                {
-                    "value": "900",
-                    "label": "t:settings_schema.typography.settings.font_weight.options__6"
-                }]
-            },
-            {
-                "type": "select",
-                "id": "link_text_transform",
-                "label": "t:settings_schema.typography.settings.text_transform.label",
-                "default": "uppercase",
-                "options": [
-                {
-                    "value": "none",
-                    "label": "t:settings_schema.typography.settings.text_transform.options__1"
-                },
-                {
-                    "value": "capitalize",
-                    "label": "t:settings_schema.typography.settings.text_transform.options__2"
-                },
-                {
-                    "value": "uppercase",
-                    "label": "t:settings_schema.typography.settings.text_transform.options__3"
-                },
-                {
-                    "value": "lowercase",
-                    "label": "t:settings_schema.typography.settings.text_transform.options__4"
-                }]
-            },
-            {
-                "type": "paragraph",
                 "content": "t:sections.general.settings.color.paragraph__1.content"
             },
             {
@@ -855,6 +684,12 @@
                 "id": "text_color",
                 "label": "t:sections.general.settings.color.label__3",
                 "default": "#505050"
+            },
+            {
+                "type": "color",
+                "id": "link_color",
+                "label": "t:sections.general.settings.color.label__16",
+                "default": "#808080"
             },
             {
                 "type": "paragraph",
@@ -921,9 +756,6 @@
                     }
                 ]
             }
-        ],
-        "disabled_on": {
-            "groups": ["header", "footer"]
-        }
+        ]
     }
 {% endschema %}

@@ -7,32 +7,29 @@
         {%- assign limit = tag | remove: 'limit=' -%}
     {%- elsif tag contains 'sectionId=' -%}
         {%- assign sectionId = tag | remove: 'sectionId=' -%}
-    {%- elsif tag contains 'imageRatio=' -%}
-        {%- assign image_ratio = tag | remove: 'imageRatio=' -%}
-    {%- elsif tag contains 'portraitAspectRatio=' -%}
-        {%- assign portrait_aspect_ratio = tag | remove: 'portraitAspectRatio=' -%}
-    {%- elsif tag contains 'action=' -%}
-        {%- assign show_add_to_cart = tag | remove: 'action=' -%}
     {%- endif -%}
 {%- endfor -%}
 
 {%- if list_handle != blank -%}
     {%- assign list_handle = list_handle | split: '%2C' -%}
     {%- for handle in list_handle limit: limit -%}
-        {% assign handle_decode = handle | url_decode %}
-        {% assign product = all_products[handle_decode] %}
+        {% assign product = all_products[handle] %}
         {%- if product != blank -%}
             <div class="product">
                 {%- if settings.search_product_style == 'default' -%}
+                    {%- liquid
+                        assign media_size = settings.search_product_image_ratio
+                        assign portrait_aspect_ratio = settings.search_product_portrait_aspect_ratio
+                    -%}
                     {% render 'product-card',
                         product_card_product: product,
-                        media_size: image_ratio,
+                        media_size: media_size,
                         portrait_aspect_ratio: portrait_aspect_ratio,
-                        show_add_to_cart: show_add_to_cart,
+                        show_add_to_cart: true,
                         serial: forloop.index,
                         sectionId: sectionId,
-                        list: false,
                         wishlist_add: false,
+                        list: false,
                         loading: true
                     %}
                 {%- else -%}

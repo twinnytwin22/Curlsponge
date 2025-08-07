@@ -3,14 +3,28 @@
 	{%- if tab_layout == 'horizontal' -%}
 		<ul class="tabs tabs-horizontal list-unstyled">
 			{%- for block in section.blocks -%}
-				{%- if block.type == 'description' or block.type == 'review' or block.type == 'custom' -%}
+				{% if  block.type != 'popup_information'  %}
 					{%- liquid
 						assign title = block.settings.title
+						assign has_tab = false
+						if block.type == 'custom'
+							if block.settings.type == 'metafield'
+								if product.metafields.c_f.custom_tab
+					                assign has_tab = true
+					            else
+					            	assign has_tab = false
+					            endif
+					        else
+					        	assign has_tab = true
+					        endif
+						else
+							assign has_tab = true
+						endif
 					-%}
-					{%- if title != blank -%}
-						<li class="tab" {{ block.shopify_attributes }}>
-					        <a class="tab-title{% if forloop.first %} is-open{% endif %}" href="#tab-{{ title | escape | handleize }}" role="button">
-					            {{ title | escape }}
+					{%- if has_tab and title != blank -%}
+						<li class="tab">
+					        <a class="tab-title{% if forloop.first %} is-open{% endif %}" href="#tab-{{ block.settings.title | escape | handleize }}">
+					            {{ block.settings.title | escape }}
 					        </a>
 					    </li>
 					{%- endif -%}
@@ -20,32 +34,35 @@
 	{%- endif -%}
 	<div class="tabs-contents tabs-contents-{{ tab_layout }} clearfix halo-text-format">
 		{%- for block in section.blocks -%}
-			{%- if block.type == 'description' or block.type == 'review' or block.type == 'custom' -%}
+			{%- if  block.type != 'popup_information' -%}
 				{%- liquid
 					assign title = block.settings.title
+					assign has_tab = false
 					if block.type == 'custom'
-				        assign content = block.settings.content
-						assign content_html = block.settings.content_html
-						if content == blank
-							assign content = content_html
-						endif
-					elsif block.type == 'description'
-						assign current_variant = product.selected_or_first_available_variant
-						if current_variant.metafields.c_f.variant_description != blank
-							assign content = current_variant.metafields.c_f.variant_description
-						else
+						if block.settings.type == 'metafield'
+							if product.metafields.c_f.custom_tab
+				                assign has_tab = true
+				                assign content = product.metafields.c_f.custom_tab
+				            else
+				            	assign has_tab = false
+				            endif
+				        else
+				        	assign has_tab = true
+				        	assign content = block.settings.content
+				        endif
+					else
+						assign has_tab = true
+						if block.type == 'description'
 							assign content = product.description
+						else block.type == 'review'
+							assign content = product.metafields.spr.reviews
 						endif
-					elsif block.type == 'review'
-						assign content = product.metafields.spr.reviews
 					endif
 				-%}
-				{%- if title != blank -%}
-					<div class="tab-content{% if tab_layout == 'horizontal' %}{% if forloop.first %} is-active{% endif %}{% endif %}" id="tab-{{ title | escape | handleize }}"
-						{{ block.shopify_attributes }}
-					>
+				{%- if has_tab and title != blank -%}
+					<div class="tab-content{% if tab_layout == 'horizontal' %}{% if forloop.first %} is-active{% endif %}{% endif %}" id="tab-{{ title | escape | handleize }}">
 						<div class="toggle-title">
-			                <a class="toggleLink" data-collapsible href="#tab-{{ title | escape | handleize }}-mobile" role="button">
+			                <a class="toggleLink" data-collapsible href="#tab-{{ title | escape | handleize }}-mobile">
 			                    <span class="text">
 			                        {{ title | escape }}
 			                    </span>
@@ -54,24 +71,21 @@
 			            </div>
 			            {%- liquid
 			            	if block.type == 'description'
-				            	assign letter = content | size
-				            	assign show_readmore = block.settings.show_readmore
+			            		assign letter = content | size
+			            		assign show_readmore = block.settings.show_readmore
 			            	endif
 			            -%}
-			            <div class="toggle-content{% if block.type == 'description' %}{% if letter > 200 and show_readmore %} toggle-content--height{% endif %}{% endif %}" id="tab-{{ title | escape | handleize }}-mobile" {% if block.type == 'description' %} data-product-description-{{ section.id }}-{{ product.id }}{% endif %}>
+			            <div class="toggle-content{% if block.type == 'description' %}{% if letter > 200 and show_readmore %} toggle-content--height{% endif %}{% endif %}" id="tab-{{ title | escape | handleize }}-mobile">
 			            	{%- if block.type == 'review' -%}
 			            		<div class="productView-review" id="shopify-product-reviews" data-id="{{ product.id }}">
 			            	{%- endif -%}
 			            	{{ content }}
-							{%- if block.type == 'custom' and block.settings.content != blank -%}
-								{{ content_html }}
-							{%- endif -%}
 			            	{%- if block.type == 'description' -%}
 			            		{%- if letter > 200 and show_readmore -%}
-			            			<div class="tab-descriptionShowmore">
-				                        <more-less-button class="button button--secondary is-more" data-target="#tab-{{ title | escape | handleize }}-mobile" data-show-more-text="{{ 'products.product.read_more' | t }}" data-show-less-text="{{ 'products.product.read_less' | t }}" data-description-toogle> 
+			            			<div class="tab-descriptionShowmore is-show">
+				                        <a class="button button--secondary" href="tab-{{ title | escape | handleize }}-mobile" data-show-more-text="{{ 'products.product.read_more' | t }}" data-show-less-text="{{ 'products.product.read_less' | t }}" data-description-toogle> 
 				                            {{ 'products.product.read_more' | t }}
-				                        </more-less-button>
+				                        </a>
 				                    </div>
 			            		{%- endif -%}
 			            	{%- endif -%}

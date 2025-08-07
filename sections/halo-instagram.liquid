@@ -47,27 +47,38 @@
         endif
         assign image_border_radius = settings.image_border_radius
         assign image_effect = settings.image_effect
-
-        if settings.show_dark_mode
-            assign dark_mode = false
-            unless background_color == blank or background_color == '#fff' or background_color == '#FFF' or background_color == '#ffffff' or background_color == '#FFFFFF' or background_color == 'rgb(255,255,255)' or background_color == 'rgba(255,255,255,1)' or background_color == 'rgba(0,0,0,0)' or background_color == 'rgb(0,0,0,0)'
-                assign dark_mode = true
-                assign dark_mode_background_color = section.settings.background_color
-            endunless
-        endif
     -%}
-    <div class="halo-block halo-block-padding halo-banner instagram style-{{ style }}{% if layout == 'slider' %}{% if dots %} has-dots{% endif %}{% elsif mobile_layout == 'slider' %} has-dots{% endif %}{% if style == '1'%} halo-block-gradient{% endif %}{% unless dark_mode %} dark-mode{% endunless %}" id="halo-instagram-{{ section.id }}" {% if type == 'image_gallery' %}{% if layout == 'slider' or mobile_layout == 'slider' %}data-instagram-block data-loader-script="{{ 'halo.slide-instagram.js' | asset_url }}"{% endif %}{% endif %}
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};
-            --bg-color: {{ background_color | default: settings.colors_bg }};
-            {% if dark_mode %}
-                --dark-mode-bg-color: {{ dark_mode_background_color }};
-            {% endif %}"
-    >
+    <style type="text/css" media="screen">
+        #halo-instagram-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+            
+        }
+        {% if section.settings.style == '1'%}
+            #halo-instagram-{{ section.id }}{
+                background: {{ background_color }};
+            }
+        {% else %}
+            #halo-instagram-{{ section.id }}.style-2:before{
+                background: {{ background_color }};
+            }
+        {% endif %}
+
+        @media (max-width: 1024px) {
+            #halo-instagram-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #halo-instagram-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+    </style>
+    <div class="halo-block halo-banner instagram style-{{ style }}{% if layout == 'slider' %}{% if dots %} has-dots{% endif %}{% elsif mobile_layout == 'slider' %} has-dots{% endif %}" id="halo-instagram-{{ section.id }}" {% if type == 'image_gallery' %}{% if layout == 'slider' or mobile_layout == 'slider' %}data-instagram-block data-loader-script="{{ 'halo.slide-instagram.js' | asset_url }}"{% endif %}{% endif %}>
         <div class="container container-{{ container }}{% if mobile_layout == 'swipe' %} container-no-padding{% endif %}">
             {%- if block_title != blank -%}
                 {%- if settings.layout == '2' and container == 'full' -%}
@@ -112,20 +123,15 @@
                             <div class="halo-row-item item item-{{ block.id }}">
                                 <div class="instagram-item banner-item image-{{ image_effect }}{% if section.blocks.size < 4 %} banner-item--large{% endif %}">
                                     <div class="img-box">
-                                        <loading-banner class="loading-banner">
-                                            {%- if image != blank -%}
-                                                <{% if link != blank %}a{% else %}div{% endif %} class="image image-adapt image-border-{{ image_border_radius }}" {% if block_action == 'link' %}{% if link != blank %} href="{{ link }}"{% endif %}{% else %} rel="gallery1" href="{{ image | img_url: 'master' }}" data-fancybox="instagram-image1"{% endif %} style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
-                                                    <img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x" src="{{ image | img_url: 'master' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
-                                                    {%- if image_effect == 'liquid' -%}
-                                                        <span class="hover"></span>
-                                                    {%- endif -%}
-                                                </{% if link != blank %}a{% else %}div{% endif %}>
-                                            {%- else -%}
-                                                <{% if link != blank %}a{% else %}div{% endif %} class="image" href="{{ link }}">
-                                                    {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-                                                </{% if link != blank %}a{% else %}div{% endif %}>
-                                            {%- endif -%}
-                                        </loading-banner>
+                                        {%- if image != blank -%}
+                                            <{% if link != blank %}a{% else %}div{% endif %} class="image image-adapt image-border-{{ image_border_radius }}" {% if block_action == 'link' %}{% if link != blank %} href="{{ link }}"{% endif %}{% else %} rel="gallery1" href="{{ image | img_url: 'master' }}" data-fancybox="instagram-image1"{% endif %} style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
+                                                <img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x" src="{{ image | img_url: 'master' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
+                                            </{% if link != blank %}a{% else %}div{% endif %}>
+                                        {%- else -%}
+                                            <{% if link != blank %}a{% else %}div{% endif %} class="image" href="{{ link }}">
+                                                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                                            </{% if link != blank %}a{% else %}div{% endif %}>
+                                        {%- endif -%}
                                     </div>
                                     {%- if btn_text != blank -%}
                                         <div class="content-box content-box--hover content-box--absolute">
@@ -609,9 +615,6 @@
                     }
                 ]
             }
-        ],
-        "disabled_on": {
-            "groups": ["header", "footer"]
-        }
+        ]
     }
 {% endschema %}

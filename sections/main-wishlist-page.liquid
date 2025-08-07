@@ -1,7 +1,6 @@
 {{ 'component-wishlist.css' | asset_url | stylesheet_tag }}
 
 {%- liquid
-    assign container = section.settings.container
     assign padding_top = section.settings.padding_top | append: 'px'
     assign padding_bottom = section.settings.padding_bottom | append: 'px'
     assign padding_top_tablet = section.settings.padding_top_tablet | append: 'px'
@@ -19,15 +18,30 @@
         assign portrait_aspect_ratio = section.settings.portrait_aspect_ratio
     endif
 -%}
-<div data-section-id="{{ section.id }}" data-section-type="wishlist" id="WishlistSection-{{ section.id }}" data-section="{{ section.id }}" class="halo-page-padding"
-    style="--padding-top: {{ padding_top }};
-        --padding-bottom: {{ padding_bottom }};
-        --padding-top-tablet: {{ padding_top_tablet }};
-        --padding-bottom-tablet: {{ padding_bottom_tablet }};
-        --padding-top-mobile: {{ padding_top_mobile }};
-        --padding-bottom-mobile: {{ padding_bottom_mobile }};"
->
-    <div class="container container-{{ container }}">
+
+<style type="text/css" media="screen">
+    #WishlistSection-{{ section.id }}{
+        padding-top: {{ padding_top }};
+        padding-bottom: {{ padding_bottom }};
+    }
+
+    @media (max-width: 1024px) {
+        #WishlistSection-{{ section.id }}{
+            padding-top: {{ padding_top_tablet }};
+            padding-bottom: {{ padding_bottom_tablet }};
+        }
+    }
+
+    @media (max-width: 550px) {
+        #WishlistSection-{{ section.id }}{
+            padding-top: {{ padding_top_mobile }};
+            padding-bottom: {{ padding_bottom_mobile }};
+        }
+    }
+</style>
+
+<div data-section-id="{{ section.id }}" data-section-type="wishlist" id="WishlistSection-{{ section.id }}" data-section="{{ section.id }}">
+    <div class="container">
         {%- if show_breadcrumb -%}
             {% render 'breadcrumb', alignment: breadcrumb_alignment %}
         {%- endif -%}
@@ -72,6 +86,7 @@
         </div>
     </div>
 </div>
+
 <script type="text/javascript">
 	window.wishlist_page = true;
     window.wishlist_layout = '{{ layout }}';
@@ -80,6 +95,7 @@
     	continue_shopping: `{{ 'general.continue_shopping' | t }}`
     };
 </script>
+
 {% schema %}
 	{
 		"name": "t:sections.main-wishlist-page.name",

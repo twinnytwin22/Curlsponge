@@ -4,7 +4,7 @@
     top: auto;
     left: 0;
     bottom: 0;
-    z-index: 98;
+    z-index: 100;
     transition: transform var(--duration-default) ease, visibility var(--duration-default) ease;
     transform: translate3d(-10px,0,0);
 }
@@ -12,11 +12,6 @@
 .skin-8 .halo-notification-popup{
     border: 1px solid var(--color-grey);
     box-shadow: unset;
-}
-
-.skin-11 .halo-notification-popup{
-    box-shadow: unset;
-    border: 2px solid var(--color-text);
 }
 
 .product-suggest{
@@ -69,10 +64,6 @@
 
 .skin-9 .product-suggest .product-info{
     padding-top: 16px;
-}
-
-.skin-10 .product-suggest .product-info{
-    padding-right: 20px;
 }
 
 .product-suggest .product-info .text{
@@ -162,10 +153,6 @@
     color: var(--color-text);
 }
 
-.skin-11 .product-suggest .product-info .product-name{
-    font-size: var(--font-size);
-}
-
 .skin-5 .product-suggest .product-image{
     padding: 10px 0 10px 10px;
 }
@@ -189,11 +176,6 @@
 .skin-5 .product-suggest .product-info .word,
 .skin-5 .product-suggest .product-info .time{
     font-size: calc(var(--font-size) - 3px);
-}
-
-.skin-11 .product-suggest .product-info .word,
-.skin-11 .product-suggest .product-info .time{
-    font-size: calc(var(--font-size) - 1px);
 }
 
 .halo-notification-popup.is-active {

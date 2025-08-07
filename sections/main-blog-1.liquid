@@ -34,7 +34,7 @@
     endif
     if show_sidebar and section.blocks.size > 0
         assign sidebar_heading_font = section.settings.sidebar_heading_font
-        assign sidebar_heading_font_size = section.settings.sidebar_heading_font_size | append: 'px'
+        assign sidebar_heading_font_size = section.settings.sidebar_heading_font_size
         assign sidebar_heading_font_weight = section.settings.sidebar_heading_font_weight
         assign sidebar_heading_text_transform = section.settings.sidebar_heading_text_transform
         assign sidebar_heading_margin_top = sidebar_heading_font_size | times: settings.line_height | minus: sidebar_heading_font_size | divided_by: 2
@@ -51,31 +51,92 @@
     assign text_font_weight = section.settings.text_font_weight
     assign text_text_transform = section.settings.text_text_transform
 -%}
-<div data-section-id="{{ section.id }}" data-section-type="blog-layout-01" id="BlogSection-{{ section.id }}" data-section="{{ section.id }}" class="blog-layout-01 halo-page-padding"
-    style="--padding-top: {{ padding_top }};
-        --padding-bottom: {{ padding_bottom }};
-        --padding-top-tablet: {{ padding_top_tablet }};
-        --padding-bottom-tablet: {{ padding_bottom_tablet }};
-        --padding-top-mobile: {{ padding_top_mobile }};
-        --padding-bottom-mobile: {{ padding_bottom_mobile }};
+
+<style type="text/css" media="screen">
+    :root {
         {% if title_font == 'font_1' %}
-            --blog-title-font: var(--font-1-family);
+            --title-font-{{ section.id }}: var(--font-1-family);
         {% elsif title_font == 'font_2' %}
-           --blog-title-font: var(--font-2-family);
+            --title-font-{{ section.id }}: var(--font-2-family);
         {% elsif title_font == 'font_3' %}
-           --blog-title-font: var(--font-3-family);
+            --title-font-{{ section.id }}: var(--font-3-family);
         {% endif %}
-        --blog-title-font-size: {{ title_font_size }};
-        --blog-title-mobile-font-size: {{ title_mobile_font_size }};
-        --blog-title-font-weight: {{ title_font_weight }};
-        --blog-title-text-transform: {{ title_text_transform }};
-        --blog-text-font-size: {{ text_font_size }};
-        --blog-text-font-weight: {{ text_font_weight }};
-        --blog-text-text-transform: {{ text_text_transform }};
-        --blog-title-color: {{ title_color }};
-        --blog-text-color: {{ text_color }};
-        --blog-bg: {{ background_color }};"
->
+        {% if show_sidebar and section.blocks.size > 0 %}
+            {% if sidebar_heading_font == 'font_1' %}
+                --sidebar-heading-font: var(--font-1-family);
+            {% elsif sidebar_heading_font == 'font_2' %}
+                --sidebar-heading-font: var(--font-2-family);
+            {% elsif sidebar_heading_font == 'font_3' %}
+                --sidebar-heading-font: var(--font-3-family);
+            {% endif %}
+        {% endif %}
+    }
+
+    #BlogSection-{{ section.id }}{
+        padding-top: {{ padding_top }};
+        padding-bottom: {{ padding_bottom }};
+    }
+
+    {% if show_sidebar and section.blocks.size > 0 %}
+        #BlogSection-{{ section.id }} .sidebarBlock-heading{
+            font-family: var(--sidebar-heading-font);
+            font-size: {{ sidebar_heading_font_size | append: 'px' }};
+            font-weight: {{ sidebar_heading_font_weight }};
+            text-transform: {{ sidebar_heading_text_transform }};
+        }
+
+        #BlogSection-{{ section.id }} .sidebarBlock:first-child .sidebarBlock-heading{
+            margin-top: {{ sidebar_heading_margin_top | append: 'px' | prepend: '-' }};
+        }
+    {% endif %}
+
+    #BlogSection-{{ section.id }} .blog-block-item .blog-content{
+        background: {{ background_color }};
+    }
+
+    #BlogSection-{{ section.id }} .blog-block-item .blog-title{
+        font-family: var(--title-font-{{ section.id }});
+        font-size: {{ title_mobile_font_size }};
+        font-weight: {{ title_font_weight }};
+        text-transform: {{ title_text_transform }};
+        color: {{ title_color }}
+    }
+
+    #BlogSection-{{ section.id }} .blog-block-item .blog-info,
+    #BlogSection-{{ section.id }} .blog-block-item .blog-summary{
+        font-size: {{ text_font_size }};
+        font-weight: {{ text_font_weight }};
+        text-transform: {{ text_text_transform }};
+    }
+
+    #BlogSection-{{ section.id }} .blog-block-item .blog-info,
+    #BlogSection-{{ section.id }} .blog-block-item .blog-summary,
+    #BlogSection-{{ section.id }} .blog-block-item .blog-btn{
+        color: {{ text_color }}
+    }
+
+    @media (max-width: 1024px) {
+        #BlogSection-{{ section.id }}{
+            padding-top: {{ padding_top_tablet }};
+            padding-bottom: {{ padding_bottom_tablet }};
+        }
+    }
+
+    @media (max-width: 550px) {
+        #BlogSection-{{ section.id }}{
+            padding-top: {{ padding_top_mobile }};
+            padding-bottom: {{ padding_bottom_mobile }};
+        }
+    }
+
+    @media (min-width: 551px){
+        #BlogSection-{{ section.id }} .blog-block-item .blog-title{
+            font-size: {{ title_font_size }};
+        }
+    }
+</style>
+
+<div data-section-id="{{ section.id }}" data-section-type="blog-layout-01" id="BlogSection-{{ section.id }}" data-section="{{ section.id }}" class="blog-layout-01">
     {%- if show_breadcrumb -%}
         {% render 'breadcrumb', alignment: breadcrumb_alignment %}
     {%- endif -%}
@@ -88,22 +149,11 @@
         <div class="halo-blog-content halo-grid-content">
             {%- if show_sidebar and section.blocks.size > 0 -%}
                 {{ 'component-main-sidebar.css' | asset_url | stylesheet_tag }}
-                <div class="page-sidebar page-sidebar-{{ sidebar_position }} page-sidebar--vertical" id="halo-sidebar"
-                    style="{% if sidebar_heading_font == 'font_1' %}
-                        --sidebar-heading-font: var(--font-1-family);
-                    {% elsif sidebar_heading_font == 'font_2' %}
-                        --sidebar-heading-font: var(--font-2-family);
-                    {% elsif sidebar_heading_font == 'font_3' %}
-                        --sidebar-heading-font: var(--font-3-family);
-                    {% endif %}
-                    --sidebar-heading-font-size: {{ sidebar_heading_font_size }};
-                    --sidebar-heading-font-weight: {{ sidebar_heading_font_weight }};
-                    --sidebar-heading-font-text-transform: {{ sidebar_heading_text_transform }};"
-                >
-                    <button type="button" class="halo-sidebar-close" data-close-sidebar aria-label="{{ 'general.common.close' | t }}">
+                <div class="page-sidebar page-sidebar-{{ sidebar_position }} page-sidebar--vertical" id="halo-sidebar">
+                    <a href="javascript:void(0)" class="halo-sidebar-close" data-close-sidebar role="button">
                         <span class="visually-hidden">{{ 'general.common.close' | t }}</span>
                         {% render 'icon-close' %}
-                    </button>
+                    </a>
                     <div class="halo-sidebar-header text-left">
                         <span class="title">
                             {{ 'sections.sidebar.title' | t }}

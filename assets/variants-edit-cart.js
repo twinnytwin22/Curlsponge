@@ -1,13 +1,15 @@
 class VariantEditCartSelects extends HTMLElement {
     constructor() {
         super();
-        this.item = this.closest('.product-edit-item');
+        this.variantSelect = this;
+        this.item = $(this.variantSelect).closest('.product-edit-item');
         this.variants = this.getVariantData();
 
         this.onVariantInit = debounce(() => {
             this.updateOptions();
             this.updateMasterId();
             this.updateVariants(this.variants);
+            this.updateProductInfo();
             this.updateAttribute(false, !this.currentVariant.available);
         }, 500);
 
@@ -25,6 +27,7 @@ class VariantEditCartSelects extends HTMLElement {
         } else {
             this.updateMedia();
             this.updatePrice();
+            this.updateProductInfo();
             this.updateAttribute(false, !this.currentVariant.available);
         }
     }
@@ -79,14 +82,17 @@ class VariantEditCartSelects extends HTMLElement {
 
                             if(optionSoldout == undefined){
                                 if (optionUnavailable == undefined) {
-                                    label.classList.remove('available', 'soldout');
+                                    label.classList.remove('available');
+                                    label.classList.remove('soldout');
                                     label.classList.add('unavailable');
                                 } else {
-                                    label.classList.remove('available', 'unavailable');
+                                    label.classList.remove('available');
+                                    label.classList.remove('unavailable');
                                     label.classList.add('soldout');
                                 }
                             } else {
-                                label.classList.remove('soldout', 'unavailable');
+                                label.classList.remove('soldout');
+                                label.classList.remove('unavailable');
                                 label.classList.add('available');
                             }
                         });
@@ -98,14 +104,17 @@ class VariantEditCartSelects extends HTMLElement {
 
                     if(optionSoldout == undefined){
                         if (optionUnavailable == undefined) {
-                            label.classList.remove('available', 'soldout');
+                            label.classList.remove('available');
+                            label.classList.remove('soldout');
                             label.classList.add('unavailable');
                         } else {
-                            label.classList.remove('available', 'unavailable');
+                            label.classList.remove('available');
+                            label.classList.remove('unavailable');
                             label.classList.add('soldout');
                         }
                     } else {
-                        label.classList.remove('soldout', 'unavailable');
+                        label.classList.remove('soldout');
+                        label.classList.remove('unavailable');
                         label.classList.add('available');
                     }
                 };
@@ -175,16 +184,19 @@ class VariantEditCartSelects extends HTMLElement {
 
                             if(optionSoldout == undefined){
                                 if (optionUnavailable == undefined) {
-                                    option.classList.remove('available', 'soldout');
+                                    option.classList.remove('available');
+                                    option.classList.remove('soldout');
                                     option.classList.add('unavailable');
                                     option.setAttribute('disabled','disabled');
                                 } else {
-                                    option.classList.remove('available', 'unavailable');
+                                    option.classList.remove('available');
+                                    option.classList.remove('unavailable');
                                     option.classList.add('soldout');
                                     option.removeAttribute('disabled');
                                 }
                             } else {
-                                option.classList.remove('soldout', 'unavailable');
+                                option.classList.remove('soldout');
+                                option.classList.remove('unavailable');
                                 option.classList.add('available');
                                 option.removeAttribute('disabled');
                             }
@@ -195,16 +207,19 @@ class VariantEditCartSelects extends HTMLElement {
                 var updateVariant = (optionSoldout, optionUnavailable, element) => {
                     if(optionSoldout == undefined){
                         if (optionUnavailable == undefined) {
-                            element.classList.remove('available', 'soldout');
+                            element.classList.remove('available');
+                            element.classList.remove('soldout');
                             element.classList.add('unavailable');
                             element.setAttribute('disabled','disabled');
                         } else {
-                            element.classList.remove('available', 'unavailable');
+                            element.classList.remove('available');
+                            element.classList.remove('unavailable');
                             element.classList.add('soldout');
                             element.removeAttribute('disabled');
                         }
                     } else {
-                        element.classList.remove('soldout', 'unavailable');
+                        element.classList.remove('soldout');
+                        element.classList.remove('unavailable');
                         element.classList.add('available');
                         element.removeAttribute('disabled');
                     }
@@ -260,159 +275,118 @@ class VariantEditCartSelects extends HTMLElement {
 
     updateMedia() {
         if (!this.currentVariant || !this.currentVariant?.featured_image) return;
+        const itemImage = this.item.find('.product-edit-image');
+        const image = this.currentVariant?.featured_image;
 
-        const itemImage = this.item.querySelector('.product-edit-image');
+        if (!itemImage) return;
 
-        if (itemImage) {
-            itemImage.querySelector('img').setAttribute('src', this.currentVariant?.featured_image.src);
-            itemImage.querySelector('img').setAttribute('srcset', this.currentVariant?.featured_image.src);
-            itemImage.querySelector('img').setAttribute('alt', this.currentVariant?.featured_image.alt);
-        }
+        itemImage.find('img').attr({
+            'src': image.src,
+            'srcset': image.src,
+            'alt': image.alt
+        });
     }
 
     updatePrice(){
-        const itemPrice = this.item.querySelector('.product-edit-price');
+        const itemPrice = this.item.find('.product-edit-price');
 
         if (!itemPrice) return;
 
-        let price = this.currentVariant?.price,
+        var price = this.currentVariant?.price,
             compare_at_price = this.currentVariant?.compare_at_price;
 
-        const priceDiv = itemPrice.querySelector('.price');
-        const comparePriceDiv = itemPrice.querySelector('.compare-price');
-
-        priceDiv.innerHTML = Shopify.formatMoney(price, window.money_format);
-        priceDiv.style.display = 'inline-block';
+        itemPrice.find('.price').html(Shopify.formatMoney(price, window.money_format)).show();
 
         if(compare_at_price > price) {
-            comparePriceDiv.innerHTML = Shopify.formatMoney(compare_at_price, window.money_format);
-            comparePriceDiv.style.display = 'inline-block';
-
-            priceDiv.classList.add('new-price');
+            itemPrice.find('.compare-price').html(Shopify.formatMoney(compare_at_price, window.money_format)).show();
+            itemPrice.find('.price').addClass('new-price');
         } else {
-            comparePriceDiv.style.display = 'none';
-
-            priceDiv.classList.remove('new-price');
+            itemPrice.find('.compare-price').hide();
+            itemPrice.find('.price').removeClass('new-price');
         }
 
         if (this.checkNeedToConvertCurrency()) {
-            let currencyCode = document.getElementById('currencies')?.querySelector('.active')?.getAttribute('data-currency');
-
-            Currency.convertAll(window.shop_currency, currencyCode, 'span.money', 'money_format');
+            Currency.convertAll(window.shop_currency, $('#currencies .active').attr('data-currency'), 'span.money', 'money_format');
         }
     }
 
-    updateAttribute(unavailable = true, disable = true){
-        this.alertBox = this.item.querySelector('.alertBox');
-        this.quantityInput = this.item.querySelector('input[name="quantity"]');
-        this.notifyMe = this.item.querySelector('.product-edit-notifyMe');
-        this.productMessage = this.item.querySelector('.quantity__message');
+    updateProductInfo() {
+        if(this.currentVariant){
+            var inventory = this.currentVariant?.inventory_management;
 
-        let quantityInputValue = parseInt(this.quantityInput?.value),
-            quantityInputMaxValue;
-
-        if(unavailable){
-            let text = window.variantStrings.unavailable;
-
-            this.item.classList.remove('isChecked');
-            this.quantityInput.setAttribute('disabled', true);
-            this.alertBox.querySelector('.alertBox-message').textContent = text;
-            this.alertBox.style.display = 'block';
-
-            if(this.productMessage) {
-                this.productMessage.innerHTML = '';
-                this.productMessage.style.display = 'none';
-            }
-
-            if(this.notifyMe){
-                this.notifyMe.style.display = 'none';
-            }
-        } else {
-            if (disable) {
-                let text = window.variantStrings.soldOut;
-
-                this.item.classList.remove('isChecked');
-                this.quantityInput.setAttribute('disabled', true);
-                this.alertBox.querySelector('.alertBox-message').textContent = text;
-                this.alertBox.style.display = 'block';
-                
-                if(this.productMessage) {
-                    this.productMessage.innerText = '';
-                    this.productMessage.style.display = 'none';
-                }
-
-                if(this.notifyMe){
-                    this.notifyMe.querySelector('.halo-notify-product-variant').value = this.currentVariant.title;
-                    this.notifyMe.querySelector('.notifyMe-text').innerHTML = '';
-                    this.notifyMe.style.display = 'block';
-                }
-            } else{
-                let inventory = this.currentVariant?.inventory_management,
-                    productId = this.item.getAttribute('data-cart-edit-id'),
-                    arrayInVarName,
-                    inven_array,
-                    inven_num, 
-                    inventoryQuantity;
-
-                this.quantityInput.removeAttribute('disabled');
-                this.alertBox.querySelector('.alertBox-message').innerHTML = '';
-                this.alertBox.style.display = 'none';
-
-                if(inventory != null) {
-                    arrayInVarName = `edit_cart_inven_array_${productId}`;
+            if(inventory != null) {
+                var productId = this.item.data('cart-edit-id'),
+                    arrayInVarName = 'edit_cart_inven_array_' + productId,
                     inven_array = window[arrayInVarName];
 
-                    if(inven_array != undefined) {
-                        inven_num = inven_array[this.currentVariant.id];
+                if(inven_array != undefined) {
+                    var inven_num = inven_array[this.currentVariant.id],
                         inventoryQuantity = parseInt(inven_num);
 
-                        if (typeof inventoryQuantity != 'undefined'){
-                            if(inventoryQuantity > 0) {
-                                this.quantityInput.setAttribute('data-quantity', inventoryQuantity);
-                            } else {
-                                this.quantityInput.removeAttribute('data-quantity');
-                            }
+                    this.item.find('input[name="quantity"]').attr('data-inventory-quantity', inventoryQuantity);
+
+                    if(this.item.find('.product-edit-hotStock').length > 0){
+                        var hotStock = this.item.find('.product-edit-hotStock'),
+                            maxStock = hotStock.data('edit-cart-hot-stock');
+
+                        if(inventoryQuantity > 0 && inventoryQuantity <= maxStock){
+                            var textStock = window.inventory_text.hotStock.replace('[inventory]', inventoryQuantity);
+                            hotStock.text(textStock).show();
                         } else {
-                            this.quantityInput.setAttribute('data-quantity', inventoryQuantity);
+                            hotStock.hide();
                         }
                     }
-                }
-
-                if(inventoryQuantity > 0) {
-                    quantityInputMaxValue = parseInt(this.quantityInput?.getAttribute('data-quantity'));
-
-                    if(quantityInputValue > quantityInputMaxValue){
-                        this.item.classList.remove('isChecked');
-                        this.productMessage.innerHTML = window.inventory_text.warningQuantity.replace('[inventory]', quantityInputMaxValue);
-                        this.productMessage.style.display = 'block';
-                    } else {
-                        this.item.classList.add('isChecked');
-                        this.productMessage.innerHTML = '';
-                        this.productMessage.style.display = 'none';
-                    }
-                } else {
-                    this.item.classList.add('isChecked');
-
-                    this.alertBox.querySelector('.alertBox-message').innerHTML = '';
-                    this.alertBox.style.display = 'none';
-                }
-
-                if(this.notifyMe) this.notifyMe.style.display = 'none';
-
-                if (this.checkNeedToConvertCurrency()) {
-                    let currencyCode = document.getElementById('currencies')?.querySelector('.active')?.getAttribute('data-currency');
-
-                    Currency.convertAll(window.shop_currency, currencyCode, 'span.money', 'money_format');
                 }
             }
 
             const productForm = document.querySelector(`#product-form-edit-${this.dataset.product}`);
             if (!productForm) return;
-
             const input = productForm.querySelector('input[name="id"]');
-            if (input) {
-                input.value = this.currentVariant.id;
-                input.dispatchEvent(new Event('change', { bubbles: true }));
+            if (!input) return;
+            input.value = this.currentVariant.id;
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    }
+
+    updateAttribute(unavailable = true, disable = true){
+        var alertBox = this.item.find('.alertBox'),
+            quantityInput = this.item.find('input[name="quantity"]'),
+            notifyMe = this.item.find('.product-edit-notifyMe'),
+            hotStock = this.item.find('.productView-hotStock');
+
+        if(unavailable){
+            this.item.removeClass('isChecked');
+            quantityInput.attr('disabled', true);
+            alertBox.find('.alertBox-message').text(window.variantStrings.unavailable_message);
+            alertBox.show();
+            notifyMe.hide();
+
+            if(hotStock.length > 0){
+                hotStock.hide();
+            }
+        } else {
+            if (disable) {
+                this.item.removeClass('isChecked');
+                quantityInput.attr('disabled', true);
+                alertBox.find('.alertBox-message').text(window.variantStrings.soldOut_message);
+                alertBox.show();
+
+                this.item.find('.quantity__message').empty().hide();
+
+                if(notifyMe.length > 0){
+                    notifyMe.find('input[name="halo-notify-product-variant"]').val(this.currentVariant.title);
+                    notifyMe.find('.notifyMe-text').empty();
+                    notifyMe.show();
+                }
+            } else{
+                this.item.addClass('isChecked')
+                quantityInput.attr('disabled', false);
+                alertBox.find('.alertBox-message').text('');
+                alertBox.hide();
+
+                if(notifyMe.length > 0){
+                    notifyMe.hide;
+                }
             }
         }
     }
@@ -423,7 +397,7 @@ class VariantEditCartSelects extends HTMLElement {
     }
 
     checkNeedToConvertCurrency() {
-        return (window.show_multiple_currencies && Currency.currentCurrency != window.shop_currency) || window.show_auto_currency;
+        return (window.show_multiple_currencies && Currency.currentCurrency != shopCurrency) || window.show_auto_currency;
     }
 }
 
@@ -448,30 +422,31 @@ class QuantityEditCartInput extends HTMLElement {
     constructor() {
         super();
         this.input = this.querySelector('input');
-        this.item = this.closest('.product-edit-item');
+        this.item = $(this.input).closest('.product-edit-item');
         this.input.addEventListener('change', this.onInputChange.bind(this));
     }
 
     onInputChange(event) {
         event.preventDefault();
-
-        let inputValue = parseInt(this.input.value),
-            inputMaxValue = parseInt(this.input.dataset.quantity),
-            productMessage = this.item.querySelector('.quantity__message');
+        var inputValue = this.input.value;
+        var inventoryQuantity = parseInt(this.input.dataset.quantity);
 
         if(inputValue < 1) {
             inputValue = 1;
 
-            this.input.value = inputValue;
+            this.input.value =  inputValue;
         } else {
-            if (inputMaxValue < inputValue) {
-                productMessage.innerHTML = window.inventory_text.warningQuantity.replace('[inventory]', inputMaxValue);
-                productMessage.style.display = 'block';
-                this.item.classList.remove('isChecked');
+            if (inventoryQuantity < inputValue) {
+                var message = window.inventory_text.warningQuantity.replace('[inventory]', inventoryQuantity);
+
+                inputValue = inventoryQuantity;
+                this.input.value =  inputValue;
+
+                this.item.find('.quantity__message').text(message).show();
+                this.item.removeClass('isChecked');
             } else {
-                productMessage.innerHTML = '';
-                productMessage.style.display = 'none';
-                this.item.classList.add('isChecked');
+                this.item.addClass('isChecked');
+                this.item.find('.quantity__message').empty().hide();
             }
         }
     }

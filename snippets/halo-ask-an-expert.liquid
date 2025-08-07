@@ -1,46 +1,62 @@
+{%- liquid
+    assign btn = settings.ask_an_expert_btn
+    assign btn_text = settings.ask_an_expert_btn_text
+-%}
+
 <div class="ask-an-expert halo-ask-an-expert{% if product %} has-product{% endif%}">
     {%- if settings.ask_an_expert_title != blank -%}
-        <h4 class="heading text-center">{{ settings.ask_an_expert_title | escape }}</h4>
+        <h4 class="heading text-center">
+            {{ settings.ask_an_expert_title | escape }}
+        </h4>
     {%- endif -%}
     {%- if settings.ask_an_expert_desc != blank -%}
-        <span class="text text-center">{{ settings.ask_an_expert_desc | escape }}</span>
+        <span class="text text-center">
+            {{ settings.ask_an_expert_desc | escape }}
+        </span>
     {%- endif -%}
     <div class="message">
         {%- if settings.ask_an_expert_questions != blank -%}
-            <div class="intro text-center">{{ settings.ask_an_expert_questions | escape }}</div>
+            <div class="intro text-center">
+                {{ settings.ask_an_expert_questions | escape }}
+            </div>
         {%- endif -%}
     </div>
-    {%- form 'contact', id: 'ContactForm-ask', class: 'halo-ask-an-expert-form contact-form' -%}
-        <input type="hidden" name="contact[Form]" value="{{ 'ask_an_expert.general.text' | t }}"/>
-
+    <form class="halo-ask-an-expert-form" method="post" action="">
         {%- if product -%}
-            <input type="hidden" name="contact[Product Title]" value="{{ product.title }}" />
-            <input type="hidden" name="contact[Product Image]" value="{{ product.featured_image.src | img_url: 'master' }} "/>
-            <input type="hidden" name="contact[Product Link]" value="{{ shop.url | append: product.url }}"/>
+            <input type="hidden" name="halo-product-title" value="{{ product.title }}" />
+            <input type="hidden" name="halo-product-image" value="{{ product.featured_image.src | img_url: '100x' }} "/>
+            <input type="hidden" name="halo-product-link" value="{{ shop.url | append: product.url }}"/>
         {%- endif -%}
-
         <div class="form-field">
-            <label class="form-label hiddenLabels" for="askAnExpertName">{{ 'ask_an_expert.general.name' | t }}</label>
-            <input class="form-input form-input-placeholder" type="text" required id="askAnExpertName" name="contact[Name]" autocapitalize="words" placeholder="{{ 'ask_an_expert.general.name' | t }}">
+            <label class="form-label hiddenLabels" for="askAnExpertName">
+            	{{ 'ask_an_expert.general.name' | t }}
+            </label>
+            <input class="form-input form-input-placeholder" type="text" required id="askAnExpertName" name="askAnExpertName" autocapitalize="words" placeholder="{{ 'ask_an_expert.general.name' | t }}">
         </div>
         <div class="form-field">
-            <label class="form-label hiddenLabels" for="askAnExpertMail">{{ 'ask_an_expert.general.mail' | t }}</label>
-            <input class="form-input form-input-placeholder" type="email" required id="askAnExpertMail" name="contact[email]" autocorrect="off" autocapitalize="off" placeholder="{{ 'ask_an_expert.general.mail' | t }}">
+            <label class="form-label hiddenLabels" for="askAnExpertMail">
+            	{{ 'ask_an_expert.general.mail' | t }}
+            </label>
+            <input class="form-input form-input-placeholder" type="email" name="askAnExpertMail" required id="askAnExpertMail" autocorrect="off" autocapitalize="off" placeholder="{{ 'ask_an_expert.general.mail' | t }}">
         </div>
         <div class="form-field">
-            <label class="form-label hiddenLabels" for="askAnExpertPhone">{{ 'ask_an_expert.general.phone' | t }}</label>
-            <input class="form-input form-input-placeholder" type="tel" required id="askAnExpertPhone" name="contact[Phone number]" pattern="[0-9]*" placeholder="{{ 'ask_an_expert.general.phone' | t }}">
+            <label class="form-label hiddenLabels" for="askAnExpertPhone">
+            	{{ 'ask_an_expert.general.phone' | t }}
+            </label>
+            <input class="form-input form-input-placeholder" type="tel" required id="askAnExpertPhone" name="askAnExpertPhone" pattern="[0-9]*" placeholder="{{ 'ask_an_expert.general.phone' | t }}">
         </div>
         {%- if settings.ask_an_expert_option_1_1 != blank or settings.ask_an_expert_option_1_2 != blank or settings.ask_an_expert_option_1_3 != blank -%}
             <div class="form-field form-field-radio">
                 {%- if settings.ask_an_expert_option_1 != blank -%}
-                    <label class="form-label">{{ settings.ask_an_expert_option_1 | escape }}</label>
+                    <label class="form-label">
+                        {{ settings.ask_an_expert_option_1 | escape }}
+                    </label>
                 {%- endif -%}
                 {%- for i in (1..3) -%}
                     {% capture cap_option %}ask_an_expert_option_1_{{ i }}{% endcapture %}
                     {% assign option = settings[cap_option] %}
                     {%- if option != blank -%}
-                        <input class="form-radio" {% if forloop.first == true %} checked{% endif %} id="askAnExpertRadio{{ i }}" type="radio" name="contact[{{ settings.ask_an_expert_option_1 | escape | default: 'Option 1'  }}]" value="{{ option | split: '|' | first }}"/>
+                        <input class="form-radio" {% if forloop.first == true %} checked{% endif %} id="askAnExpertRadio{{ i }}" type="radio" name="askAnExpertRadioFirst" value="{{ option | split: '|' | first }}"/>
                         <label class="form-label form-label--radio" for="askAnExpertRadio{{ i }}">
                             {{ option | escape }}
                         </label>
@@ -49,8 +65,10 @@
             </div>
         {%- endif -%}
         <div class="form-field form-field-textarea">
-            <label class="form-label hiddenLabels" for="askAnExpertMessage">{{ 'ask_an_expert.general.message' | t }}</label>
-            <textarea class="form-input form-input-placeholder" rows="6" name="contact[{{ 'ask_an_expert.general.message' | t }}]" id="askAnExpertMessage" placeholder="{{ 'ask_an_expert.general.message' | t }}"></textarea>
+            <label class="form-label hiddenLabels" for="askAnExpertMessage">
+                {{ 'ask_an_expert.general.message' | t }}
+            </label>
+            <textarea class="form-input form-input-placeholder" rows="6" name="askAnExpertMessage" id="askAnExpertMessage" placeholder="{{ 'ask_an_expert.general.message' | t }}"></textarea>
         </div>
         {%- if settings.ask_an_expert_option_2_1 != blank or settings.ask_an_expert_option_2_2 != blank or settings.ask_an_expert_option_2_3 != blank -%}
             <div class="form-field form-field-radio form-field-radio-2">
@@ -63,7 +81,7 @@
                     {% capture cap_option %}ask_an_expert_option_2_{{ i }}{% endcapture %}
                     {% assign option = settings[cap_option] %}
                     {%- if option != blank -%}
-                        <input class="form-radio" {% if forloop.first == true %} checked{% endif %} id="askAnExpertRadio2{{ i }}" type="radio" name="contact[{{ settings.ask_an_expert_option_2 | escape | default: 'Option 2'  }}]" value="{{ option | split: '|' | first }}"/>
+                        <input class="form-radio" {% if forloop.first == true %} checked{% endif %} id="askAnExpertRadio2{{ i }}" type="radio" name="askAnExpertRadioSecond" value="{{ option | split: '|' | first }}"/>
                         <label class="form-label form-label--radio" for="askAnExpertRadio2{{ i }}">
                             {{ option | escape }}
                         </label>
@@ -72,13 +90,13 @@
             </div>
         {%- endif -%}
         <div class="form-actions">
-            <button type="submit" class="button button-height button-{{ settings.ask_an_expert_btn }}" data-button-message="ask">
-                {%- if settings.ask_an_expert_btn_text != blank -%}
-                    {{ settings.ask_an_expert_btn_text | escape }}
+            <button type="button" class="button button-height button-{{ btn }}" id="halo-ask-an-expert-button">
+                {%- if btn_text != blank -%}
+                    {{ btn_text | escape }}
                 {%- else -%}
                     {{ 'ask_an_expert.general.submit' | t }}
                 {%- endif -%}
             </button>
         </div>
-    {%- endform -%}
+    </form>
 </div>

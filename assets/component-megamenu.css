@@ -22,8 +22,8 @@
     box-shadow: none;
 }
 
-[data-navigation] .has-megamenu .menu-lv__dropdownmenu-2.menu-lv__megamenu,
-[data-navigation] .has-custom-megamenu .menu-lv__dropdownmenu-2.menu-lv__megamenu{
+[data-navigation] .has-megamenu .menu-lv__dropdownmenu-2,
+[data-navigation] .has-custom-megamenu .menu-lv__dropdownmenu-2{
     display: block;
     position: relative;
     top: unset;
@@ -110,8 +110,7 @@
     background-color: var(--bg-white);
 }
 
-.skin-1 .menu-dropdown__block--title:before,
-.skin-11 .menu-dropdown__block--title:before{
+.skin-1 .menu-dropdown__block--title:before{
     content: '';
     display: block;
     position: absolute;
@@ -120,10 +119,6 @@
     width: 100%;
     height: 1px;
     background: #cbcbcb;
-}
-
-.skin-11 .menu-dropdown__block--title:before{
-    background: var(--color-text);
 }
 
 .nav-product-carousel{
@@ -182,12 +177,6 @@
     text-transform: capitalize;
     opacity: .5;
     pointer-events: none;
-    color: var(--bg-black);
-}
-
-.header-nav .azbrandsTable .link,
-.header-nav .nazbrandsLink .link {
-    color: var(--lv-2-color);
 }
 
 .azbrandsTable .link.is-active{
@@ -206,7 +195,6 @@
 
 .nazbrandsLink .link{
     margin-top: 0!important;
-    color: var(--color-black);
 }
 
 [data-navigation] .has-megamenu .site-nav-title{
@@ -282,7 +270,6 @@
 .site-nav-banner--item .image{
     display: block;
     width: 100%;
-    position: relative;
 }
 
 .site-nav-banner--item .image-adapt img,
@@ -308,12 +295,55 @@
     color: var(--color-text);
     line-height: var(--line-height);
     letter-spacing: var(--letter-spacing);
+    text-transform: uppercase;
     margin-top: 0;
     margin-bottom: 0;
 }
 
+.header-3 .site-nav-banner--item .content .title{
+    font-family: var(--font-body-family);
+    font-size: var(--font-size);
+    font-weight: var(--font-weight-semibold);
+}
+
+.header-4 .site-nav-banner--item .content .title{
+    font-family: var(--font-body-family);
+    font-size: calc(var(--font-size) + 1px);
+    font-weight: var(--font-weight-semibold);
+}
+
+.header-6 .site-nav-banner--item .content .title,
+.header-7 .site-nav-banner--item .content .title,
+.header-9 .site-nav-banner--item .content .title{
+    font-size: var(--font-size);
+    font-weight: var(--font-weight-medium);
+    text-transform: capitalize;
+}
+
 .site-nav-banner--item .content .link{
     padding: 2px 0 0 0;
+}
+
+.header-3 .site-nav-banner--item .content .link{
+    font-size: var(--font-size);
+    font-weight: var(--font-weight-bold);
+    text-transform: capitalize;
+    border: 2px solid var(--color-text2);
+    border-radius: 20px;
+    padding: 6px 30px;
+    margin-top: 12px;
+}
+
+.header-3 .site-nav-banner--item .content .link .text{
+    text-decoration: none;
+}
+
+.header-4 .site-nav-banner--item .content .link{
+    font-size: calc(var(--font-size) - 1px);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    padding-top: 7px;
+    margin-top: 10px;
 }
 
 .site-nav-banner--item img{
@@ -354,15 +384,12 @@
 }
 
 @media (max-width: 1919px){
-    .container-1770 [data-navigation] .has-custom-megamenu > .menu-lv__megamenu,
     .container-header-1770 [data-navigation] .has-custom-megamenu > .menu-lv__megamenu{
         width: calc(1570px - 210px)!important;
     }
 }
 
 @media (max-width: 1599px){
-    .container-1770 [data-navigation] .has-custom-megamenu > .menu-lv__megamenu,
-    .container-1570 [data-navigation] .has-custom-megamenu > .menu-lv__megamenu,
     .container-header-1770 [data-navigation] .has-custom-megamenu > .menu-lv__megamenu,
     .container-header-1570 [data-navigation] .has-custom-megamenu > .menu-lv__megamenu{
         width: calc(1370px - 210px)!important;
@@ -370,9 +397,6 @@
 }
 
 @media (max-width: 1399px){
-    .container-1770 [data-navigation] .has-custom-megamenu > .menu-lv__megamenu,
-    .container-1570 [data-navigation] .has-custom-megamenu > .menu-lv__megamenu,
-    .container-1370 [data-navigation] .has-custom-megamenu > .menu-lv__megamenu,
     .container-header-1770 [data-navigation] .has-custom-megamenu > .menu-lv__megamenu,
     .container-header-1570 [data-navigation] .has-custom-megamenu > .menu-lv__megamenu,
     .container-header-1370 [data-navigation] .has-custom-megamenu > .menu-lv__megamenu{
@@ -381,9 +405,6 @@
 }
 
 @media (max-width: 1199px) {
-    .container-1770 [data-navigation] .has-custom-megamenu > .menu-lv__megamenu,
-    .container-1570 [data-navigation] .has-custom-megamenu > .menu-lv__megamenu,
-    .container-1370 [data-navigation] .has-custom-megamenu > .menu-lv__megamenu,
     .container-header-1770 [data-navigation] .has-custom-megamenu > .menu-lv__megamenu,
     .container-header-1570 [data-navigation] .has-custom-megamenu > .menu-lv__megamenu,
     .container-header-1370 [data-navigation] .has-custom-megamenu > .menu-lv__megamenu{
@@ -391,31 +412,9 @@
     }
 }
 
-@media (max-width: 1024px) {
-    body.dark-mode .menu-dropdown__block--title .text {
-        background-color: var(--color-background);
-    }
-
-    body.dark-mode .azbrandsTable .link {
-        color: var(--bg-white);
-    }
-
-    body.dark-mode .nazbrandsLink .link{
-        color: var(--color-white);
-    }
-
-    body.dark-mode .site-nav-banner--item .content .title {
-        color: var(--color-text) !important;
-    }
-
-    body.dark-mode .site-nav-banner--item .content .link {
-        color: var(--color-text2) !important;
-    }
-}
-
 @media (min-width: 1025px){
-    [data-navigation] .has-megamenu:hover .menu-lv__dropdownmenu-2.menu-lv__megamenu,
-    [data-navigation] .has-custom-megamenu:hover .menu-lv__dropdownmenu-2.menu-lv__megamenu{
+    [data-navigation] .has-megamenu:hover .menu-lv__dropdownmenu-2,
+    [data-navigation] .has-custom-megamenu:hover .menu-lv__dropdownmenu-2{
         opacity: 1;
         visibility: visible;
         pointer-events: auto;
@@ -429,8 +428,10 @@
         margin-bottom: 20px;
     }
 
-    .site-nav-banner--item .content .title:hover{
-        color: var(--color-link-hover);
+    .header-3 .site-nav-banner--item .content .link:hover{
+        border-color: var(--color-global-darken);
+        background-color: var(--color-global-darken);
+        color: var(--color-global);
     }
 }
 
@@ -451,7 +452,13 @@
 
 @media (min-width: 1920px){
     .azbrandsTable li{
-        margin-right: 35px;
+        margin-right: 44px;
+    }
+
+    .header-3 .azbrandsTable li,
+    .header-4 .azbrandsTable li,
+    .header-5 .azbrandsTable li{
+        margin-right: 33px;
     }
 
     [data-navigation] .has-custom-megamenu .menu-dropdown__wrapper {

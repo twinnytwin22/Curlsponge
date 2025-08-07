@@ -7,52 +7,36 @@
     {{ "jquery.currencies.min.js" | asset_url | script_tag }}
 
     <script>
-        const currencySwitcher = document.querySelectorAll('#currencies');
-        const currencyForm = document.getElementById('currency_form');
+        var shopCurrency = '{{ shop.currency }}';
+        var currencySwitcher = $('#currencies'),
+            currencyItem = currencySwitcher.find('[data-currency]');
+            
+        currencyItem.on('click', function(e) {
+            e.preventDefault();
 
-        currencySwitcher.forEach((index, element) => {
-            if(currencySwitcher[element] && currencySwitcher[element].querySelector('[data-currency]')) {
-                currencySwitcher[element].querySelectorAll('[data-currency]').forEach((button) => {
-                    button.addEventListener('click', (event) => {
-                        event.preventDefault();
-                        event.stopPropagation();
-    
-                        if(!event.currentTarget.classList.contains('active')) {
-                            let currentCode = event.currentTarget.getAttribute('data-currency');
-    
-                            if(currencySwitcher[element].querySelector('.active[data-currency]')) {
-                                currencySwitcher[element].querySelector('.active[data-currency]').classList.remove('active');
-                            }
-    
-                            event.currentTarget.classList.add('active');
-    
-                            if(document.querySelectorAll('#currencies [data-currency]')) {
-                                document.querySelectorAll('#currencies [data-currency]').forEach(data => 
-                                    (event.currentTarget.getAttribute('data-currency') === data.dataset.currency) ? data.classList.add('active') : data.classList.remove('active'));
-                            }
-    
-                            if(document.querySelectorAll('[data-currency-label]')) {
-                                document.querySelectorAll('[data-currency-label]').forEach(data => data.innerHTML = event.currentTarget.innerHTML);
-                            }
-    
-                            if(currencyForm && currencyForm.querySelector('option')) {
-                                let selectCurrency;
-    
-                                currencyForm.querySelectorAll('option').forEach((option) => {
-                                    if(option.innerText == currentCode) {
-                                        selectCurrency = option;
-                                    }
-                                });
-    
-                                selectCurrency.setAttribute('selected', true);
-    
-                                currencyForm.submit();
-                            }
-                        }
-                    });
-                });
+            var $target = $(event.currentTarget),
+                label = $('#currencies').prev('[data-currency-label]');
+                cur = $(this).attr('data-currency');
+
+            if($(this).hasClass('active')){
+                return false;
             }
-        })
+
+            currencyItem.removeClass('active');
+            $(this).addClass('active');
+
+            if (label.length && label.is(':visible')){
+                var item = $(this).html();
+                label.html(item);
+            }
+
+            $('#currency_form option').filter(function() {
+                return ($(this).text() == cur); 
+            }).prop('selected', true);
+
+            $('#currency_form').submit();
+           
+        });
     </script>
 {%- else -%}
     {%- if settings.enable_multiple_currencies -%}
@@ -61,296 +45,335 @@
 
         {%- if settings.enable_auto_currency == false -%}
             <script>
+                // Pick your format here:  
+                // Can be 'money_format' or 'money_with_currency_format'
                 Currency.format = 'money_format';
 
-                if (window.shop_currency != '{{ cart.currency.iso_code }}') {
-                    window.location = window.location.href + '?currency=' + window.shop_currency;
+                var shopCurrency = '{{ shop.currency }}';
+
+                if (shopCurrency != '{{cart.currency.iso_code}}') {
+                    window.location = window.location.href + '?currency=' + shopCurrency;
                 }
 
-                Currency.moneyFormats[window.shop_currency].money_with_currency_format = {{ shop.money_with_currency_format | strip_html | json }};
-                Currency.moneyFormats[window.shop_currency].money_format = {{ shop.money_format | strip_html | json }};
+                /* Sometimes merchants change their shop currency, let's tell our JavaScript file */
+                Currency.moneyFormats[shopCurrency].money_with_currency_format = {{ shop.money_with_currency_format | strip_html | json }};
+                Currency.moneyFormats[shopCurrency].money_format = {{ shop.money_format | strip_html | json }};
 
                 var cookieCurrency = Currency.cookie.read();
 
-                if(document.querySelector('span.money')) {
-                    document.querySelectorAll('span.money').forEach((element) => {
-                        element.setAttribute('data-currency-{{ shop.currency }}', element.innerHTML);
+                // Fix for customer account pages 
+                $('span.money span.money').each((index, element) => {
+                    $(element).parent('span.money').removeClass('money');
+                });
 
-                        if(element.querySelector('span.money')) {
-                            element.classList.remove('money');
+                // Add precalculated shop currency to data attribute 
+                $('span.money').each((index, element) => {
+                    $(element).attr('data-currency-{{ shop.currency }}', $(element).html());
+                });
+
+                // Select all your currencies buttons.
+                var currencySwitcher = $('#currencies'),
+                    currencyItem = currencySwitcher.find('[data-currency]');
+
+                // When the page loads.
+                if (cookieCurrency == null || cookieCurrency == shopCurrency) {
+                    Currency.currentCurrency = shopCurrency;
+                } else {
+                    var flag = 0;
+                    currencyItem.each((index, element) => {
+                        if (cookieCurrency == $(element).data('currency')) {
+                            flag = 1;
                         }
                     });
+
+                    if (flag == 0) {
+                        cookieCurrency = shopCurrency;
+                    }
+
+                    Currency.currentCurrency = cookieCurrency;
+                    currencySwitcher.find('.active').removeClass('active').parent().find('[data-currency=' + Currency.currentCurrency + ']').addClass('active');
+                    Currency.convertAll(shopCurrency, cookieCurrency);
                 }
 
-                const currencySwitcher = document.querySelectorAll('#currencies');
-                currencySwitcher.forEach((index,element) => {
-                    if(currencySwitcher[element] && currencySwitcher[element].querySelector('[data-currency]')) {
-                        if (cookieCurrency == null || cookieCurrency == window.shop_currency) {
-                            Currency.currentCurrency = window.shop_currency;
-                        } else {
-                            var flag = 0;
-    
-                            currencySwitcher[element].querySelectorAll('[data-currency]').forEach((element) => {
-                                if (cookieCurrency == element.dataset.currency) {
-                                    flag = 1;
-                                }
-                            });
-    
-                            if (flag == 0) {
-                                cookieCurrency = window.shop_currency;
-                            }
-    
-                            Currency.currentCurrency = cookieCurrency;
-    
-                            const _currentCurrency = currencySwitcher[element].querySelector('.active');
-    
-                            _currentCurrency ?.classList.remove('active')
-                            _currentCurrency ?.parentNode.querySelector(`[data-currency="${Currency.currentCurrency}"]`).classList.add('active');
-    
-                            Currency.convertAll(window.shop_currency, cookieCurrency);
-                        }
-    
-                        if(document.querySelectorAll('[data-currency-label]') && currencySwitcher[element].querySelector('.active[data-currency]')) {
-                            document.querySelectorAll('[data-currency-label]').forEach(data => data.innerHTML = currencySwitcher[element].querySelector('.active[data-currency]').innerHTML);
-                        }
-    
-                        currencySwitcher[element].querySelectorAll('[data-currency]').forEach((button) => {
-                            button.addEventListener('click', (event) => {
-                                event.preventDefault();
-                                event.stopPropagation();
-    
-                                if(!event.currentTarget.classList.contains('active')) {
-                                    let currentCode = event.currentTarget.getAttribute('data-currency');
-    
-                                    if(currencySwitcher[element].querySelector('.active[data-currency]')) {
-                                        currencySwitcher[element].querySelector('.active[data-currency]').classList.remove('active');
-                                    }
-    
-                                    event.currentTarget.classList.add('active');
-    
-                                    if(document.querySelectorAll('#currencies [data-currency]')) {
-                                        document.querySelectorAll('#currencies [data-currency]').forEach(data => 
-                                            (event.currentTarget.getAttribute('data-currency') === data.dataset.currency) ? data.classList.add('active') : data.classList.remove('active'));
-                                    }
-    
-                                    if(document.querySelectorAll('[data-currency-label]')) {
-                                        document.querySelectorAll('[data-currency-label]').forEach(data => data.innerHTML = event.currentTarget.innerHTML);
-                                    }
-    
-                                    currentCode != Currency.currentCurrency && Currency.convertAll(Currency.currentCurrency, currentCode);
-                                }
-                            });
-                        });
+                var active_currency_label = $('[data-currency-label]'),
+                    active_currency = currencySwitcher.find('.active[data-currency]').html();
+                    active_currency_label.html(active_currency);
+
+                currencyItem.on('click', (event) => {
+                    event.preventDefault();
+
+                    var $target = $(event.currentTarget),
+                        label = $('[data-currency-label]'),
+                        cur = $target.attr('data-currency');
+
+                    if ($target.hasClass('active')){
+                        return false;
                     }
-                    Currency.convertAll(window.shop_currency, currencySwitcher[element].querySelector('.active[data-currency]')?.getAttribute('data-currency'));
+
+                    currencyItem.removeClass('active');
+                    $target.addClass('active');
+
+                    if (label.length && label.is(':visible')){
+                        var item = $target.html();
+
+                        label.html(item);
+                    }
+
+                    cur != Currency.currentCurrency && Currency.convertAll(Currency.currentCurrency, cur);
+                });
+
+                $('body').on('refreshCurrency', () => {
+                    Currency.convertAll(shopCurrency, $("#currencies .active").attr('data-currency'));
                 });
             </script>
         {%- else -%}
             <script>
-                Currency.format = 'money_format';
-                var shopCurrency = window.shop_currency;
+                // Pick your format here:  
+                // Can be 'money_format' or 'money_with_currency_format'
+                    Currency.format = 'money_format';
 
-                if (window.shop_currency != '{{cart.currency.iso_code}}') {
-                    window.location = window.location.href + '?currency=' + window.shop_currency;
+                var shopCurrency = '{{ shop.currency }}';
+
+                if (shopCurrency != '{{cart.currency.iso_code}}') {
+                    window.location = window.location.href + '?currency=' + shopCurrency;
                 }
 
-                Currency.moneyFormats[window.shop_currency].money_with_currency_format = {{ shop.money_with_currency_format | strip_html | json }};
-                Currency.moneyFormats[window.shop_currency].money_format = {{ shop.money_format | strip_html | json }};
+                /* Sometimes merchants change their shop currency, let's tell our JavaScript file */
+                Currency.moneyFormats[shopCurrency].money_with_currency_format = {{ shop.money_with_currency_format | strip_html | json }};
+                Currency.moneyFormats[shopCurrency].money_format = {{ shop.money_format | strip_html | json }};
 
                 var cookieCurrency = Currency.cookie.read();
 
-                if(document.querySelector('span.money')) {
-                    document.querySelectorAll('span.money').forEach((element) => {
-                        element.setAttribute('data-currency-{{ shop.currency }}', element.innerHTML);
+                // Fix for customer account pages 
+                $('span.money span.money').each((index, element) => {
+                    $(element).parent('span.money').removeClass('money');
+                });
 
-                        if(element.querySelector('span.money')) {
-                            element.classList.remove('money');
-                        }
-                    });
-                }
+                // Add precalculated shop currency to data attribute 
+                $('span.money').each((index, element) => {
+                    $(element).attr('data-currency-{{ shop.currency }}', $(element).html());
+                });
 
-                const currencySwitcher = document.querySelectorAll('#currencies');
+                // Select all your currencies buttons.
+                var currencySwitcher = $('#currencies'),
+                    currencyItem = currencySwitcher.find('[data-currency]');
 
-                currencySwitcher.forEach((index,element) => {
-                    if (cookieCurrency == null) {
-                        $.getScript('https://ssl.geoplugin.net/javascript.gp?k=9247556ec91c71e9', function() {
-                            var newCurrency = geoplugin_currencyCode(),
-                                flag = 0;
-    
-                            if(currencySwitcher[element] && currencySwitcher[element].querySelector('[data-currency]')) {
-                                currencySwitcher[element].querySelectorAll('[data-currency]').forEach((button) => {
-                                    button.addEventListener('click', (event) => {
-                                        event.preventDefault();
-                                        event.stopPropagation();
-    
-                                        if(!event.currentTarget.classList.contains('active')) {
-                                            let currentCode = event.currentTarget.getAttribute('data-currency');
-    
-                                            if(currencySwitcher[element].querySelector('.active[data-currency]')) {
-                                                currencySwitcher[element].querySelector('.active[data-currency]').classList.remove('active');
-                                            }
-    
-                                            event.currentTarget.classList.add('active');
+                if (cookieCurrency == null) {
+                    $.getScript('https://ssl.geoplugin.net/javascript.gp?k=9247556ec91c71e9', function() {
+                        var newCurrency = geoplugin_currencyCode(),
+                            flag = 0;
 
-                                            if(document.querySelectorAll('#currencies [data-currency]')) {
-                                                document.querySelectorAll('#currencies [data-currency]').forEach(data => 
-                                                    (event.currentTarget.getAttribute('data-currency') === data.dataset.currency) ? data.classList.add('active') : data.classList.remove('active'));
-                                            }
-    
-                                            if(document.querySelectorAll('[data-currency-label]')) {
-                                                document.querySelectorAll('[data-currency-label]').forEach(data => data.innerHTML = event.currentTarget.innerHTML);
-                                            }
-                                        }
-                                    });
-                                });
-    
-                                if (cookieCurrency == null || cookieCurrency == window.shop_currency) {
-                                    Currency.currentCurrency = window.shop_currency;
-                                } else {
-                                    if (flag == 0 && newCurrency != window.shop_currency) {
-                                        cookieCurrency = window.shop_currency;
-                                    }
-    
-                                    Currency.currentCurrency = cookieCurrency;
-    
-                                    const _currentCurrency = currencySwitcher[element].querySelector('.active');
-    
-                                    _currentCurrency ?.classList.remove('active')
-                                    _currentCurrency ?.parentNode.querySelector(`[data-currency="${Currency.currentCurrency}"]`).classList.add('active');
-    
-                                    Currency.convertAll(window.shop_currency, cookieCurrency);
-                                }
+                        currencyItem.on('click', (event) => {
+                            event.preventDefault();
+
+                            var $target = $(event.currentTarget),
+                                label = $('[data-currency-label]'),
+                                cur = $target.attr('data-currency');
+
+                            if ($target.hasClass('active')){
+                                return false;
+                            }
+
+                            currencyItem.removeClass('active');
+                            $target.addClass('active');
+
+                            if (label.length && label.is(':visible')){
+                                var item = $target.html();
+
+                                label.html(item);
                             }
                         });
-                    } else if (cookieCurrency == window.shop_currency) {
-                        Currency.currentCurrency = window.shop_currency;
-                    } else {
-                        var flag = 0;
-    
-                        if(currencySwitcher[element] && currencySwitcher[element].querySelector('[data-currency]')) {
-                            currencySwitcher[element].querySelectorAll('[data-currency]').forEach((element) => {
-                                if (cookieCurrency == element.dataset.currency) {
-                                    flag = 1;
-                                }
-                            });
+
+                        // When the page loads.
+                        if (cookieCurrency == null || cookieCurrency == shopCurrency) {
+                            Currency.currentCurrency = shopCurrency;
+                        } else {
+                            if (flag == 0 && newCurrency != shopCurrency) {
+                                cookieCurrency = shopCurrency;
+                            }
+
+                            Currency.currentCurrency = cookieCurrency;
+                            currencySwitcher.find('.active').removeClass('active').parent().find('[data-currency=' + Currency.currentCurrency + ']').addClass('active');
+                            Currency.convertAll(shopCurrency, cookieCurrency);
                         }
-    
-                        if (flag == 0) {
-                            cookieCurrency = window.shop_currency;
+                    });
+                } else if (cookieCurrency == shopCurrency) {
+                    Currency.currentCurrency = shopCurrency;
+                } else {
+                    var flag = 0;
+
+                    currencyItem.each((index, element) => {
+                        if (cookieCurrency == $(element).data('currency')) {
+                            flag = 1;
                         }
-    
-                        Currency.currentCurrency = cookieCurrency;
-                        
-                        const _currentCurrency = currencySwitcher[element].querySelector('.active');
-                        
-                        _currentCurrency?.classList.remove('active')
-                        _currentCurrency?.parentNode.querySelector(`[data-currency="${Currency.currentCurrency}"]`).classList.add('active');
-                        
-                        Currency.convertAll(window.shop_currency, cookieCurrency);
+                    });
+
+                    if (flag == 0) {
+                        cookieCurrency = shopCurrency;
                     }
-    
-                    if(document.querySelectorAll('[data-currency-label]') && currencySwitcher[element].querySelector('.active[data-currency]')) {
-                        document.querySelectorAll('[data-currency-label]').forEach(data => data.innerHTML = currencySwitcher[element].querySelector('.active[data-currency]').innerHTML);
+
+                    Currency.currentCurrency = cookieCurrency;
+                    currencySwitcher.find('.active').removeClass('active').parent().find('[data-currency=' + Currency.currentCurrency + ']').addClass('active');
+                    Currency.convertAll(shopCurrency, cookieCurrency);
+                }
+
+                currencyItem.on('click', (event) => {
+                    event.preventDefault();
+
+                    var $target = $(event.currentTarget),
+                        label = $('[data-currency-label]'),
+                        cur = $target.attr('data-currency');
+
+                    if ($target.hasClass('active')){
+                        return false;
                     }
-    
-                    if(currencySwitcher[element] && currencySwitcher[element].querySelector('[data-currency]')) {
-                        currencySwitcher[element].querySelectorAll('[data-currency]').forEach((button) => {
-                            button.addEventListener('click', (event) => {
-                                event.preventDefault();
-                                event.stopPropagation();
-    
-                                if(!event.currentTarget.classList.contains('active')) {
-                                    let currentCode = event.currentTarget.getAttribute('data-currency');
-    
-                                    if(currencySwitcher[element].querySelector('.active[data-currency]')) {
-                                        currencySwitcher[element].querySelector('.active[data-currency]').classList.remove('active');
-                                    }
-    
-                                    event.currentTarget.classList.add('active');
-    
-                                    if(document.querySelectorAll('#currencies [data-currency]')) {
-                                        document.querySelectorAll('#currencies [data-currency]').forEach(data => 
-                                            (event.currentTarget.getAttribute('data-currency') === data.dataset.currency) ? data.classList.add('active') : data.classList.remove('active'));
-                                    }
-    
-                                    if(document.querySelectorAll('[data-currency-label]')) {
-                                        document.querySelectorAll('[data-currency-label]').forEach(data => data.innerHTML = event.currentTarget.innerHTML);
-                                    }
-    
-                                    currentCode != Currency.currentCurrency && Currency.convertAll(Currency.currentCurrency, currentCode);
-                                }
-                            });
-                        });
+
+                    currencyItem.removeClass('active');
+                    $target.addClass('active');
+
+                    if (label.length && label.is(':visible')){
+                        var item = $target.html();
+
+                        label.html(item);
                     }
-    
-                    Currency.convertAll(window.shop_currency, currencySwitcher[element].querySelector('.active[data-currency]')?.getAttribute('data-currency'));
+
+                    cur != Currency.currentCurrency && Currency.convertAll(Currency.currentCurrency, cur);
                 });
+
+                $('body').on('refreshCurrency', () => {
+                    Currency.convertAll(shopCurrency, $("#currencies .active").attr('data-currency'));
+                });
+
+                document.addEventListener('DOMContentLoaded', initBlocked, false);
+
+                function initBlocked() {
+                    adsBlocked((blocked) => {
+                        if (blocked) {
+                            alert('Please turn off the uBlock addon on the browser for this site to display your currency!');
+                        } else {
+                            console.log('Ads are not blocked!');
+                        }
+                    })
+                }
+
+                function adsBlocked(callback) {
+                    var testURL = 'https://ssl.geoplugin.net/javascript.gp?k=9247556ec91c71e9'
+
+                    var myInit = {
+                        method: 'HEAD',
+                        mode: 'no-cors'
+                    };
+
+                    var myRequest = new Request(testURL, myInit);
+
+                    fetch(myRequest).then((response) => {
+                        return response;
+                    }).then((response) => {
+                        callback(false)
+                    }).catch(() => {
+                        callback(true)
+                    });
+                }
             </script>
         {%- endif -%}
     {%- else -%}
         {%- if settings.enable_auto_currency -%}
             <div id="currencies" style="display: none;">
-                <a class="dropdown-item active" href="#" data-currency="{{ shop.currency }}">
+                <a class="dropdown-item active " href="#" data-currency="{{ shop.currency }}">
                     <span class="text">{{ shop.currency }}</span>
                 </a>
             </div>
+
             {{ "//cdn.shopify.com/s/javascripts/currencies.js" | script_tag }}
             {{ "jquery.currencies.min.js" | asset_url | script_tag }}
-            <script>
-                Currency.format = 'money_format';
-                var shopCurrency = window.shop_currency;
 
-                if (window.shop_currency != '{{ cart.currency.iso_code }}') {
-                    window.location = window.location.href + '?currency=' + window.shop_currency;
+            <script>
+                // Pick your format here:  
+                // Can be 'money_format' or 'money_with_currency_format'
+                Currency.format = 'money_format';
+
+                var shopCurrency = '{{ shop.currency }}';
+
+                if (shopCurrency != '{{cart.currency.iso_code}}') {
+                    window.location = window.location.href + '?currency=' + shopCurrency;
                 }
 
-                Currency.moneyFormats[window.shop_currency].money_with_currency_format = {{ shop.money_with_currency_format | strip_html | json }};
-                Currency.moneyFormats[window.shop_currency].money_format = {{ shop.money_format | strip_html | json }};
+                /* Sometimes merchants change their shop currency, let's tell our JavaScript file */
+                Currency.moneyFormats[shopCurrency].money_with_currency_format = {{ shop.money_with_currency_format | strip_html | json }};
+                Currency.moneyFormats[shopCurrency].money_format = {{ shop.money_format | strip_html | json }};
 
                 var cookieCurrency = Currency.cookie.read();
 
-                const currencySwitcher = document.getElementById('currencies');
+                // Fix for customer account pages 
+                $('span.money span.money').each((index, element) => {
+                    $(element).parent('span.money').removeClass('money');
+                });
 
-                if(document.querySelector('span.money')) {
-                    document.querySelectorAll('span.money').forEach((element) => {
-                        element.setAttribute('data-currency-{{ shop.currency }}', element.innerHTML);
+                // Add precalculated shop currency to data attribute 
+                $('span.money').each((index, element) => {
+                    $(element).attr('data-currency-{{ shop.currency }}', $(element).html());
+                });
 
-                        if(element.querySelector('span.money')) {
-                            element.classList.remove('money');
-                        }
-                    });
-                }
+                var currencyCode = shopCurrency;
 
-                var currencyCode = window.shop_currency;
-
+                // When the page loads.
                 $.getScript('https://ssl.geoplugin.net/javascript.gp?k=9247556ec91c71e9', function() {
                     var newCurrency = geoplugin_currencyCode();
 
-                    if (newCurrency == null || newCurrency == window.shop_currency) {
-                        Currency.currentCurrency = window.shop_currency;
+                    if (newCurrency == null || newCurrency == shopCurrency) {
+                        Currency.currentCurrency = shopCurrency;
 
-                        if(currencySwitcher && currencySwitcher.querySelector('.active')) {
-                            currencySwitcher.querySelector('.active').setAttribute('data-currency', window.shop_currency)
-                        }
+                        $('#currencies .active').attr('data-currency', shopCurrency);
                     } else {
                         try {
-                            currencySwitcher.querySelector('.active')?.setAttribute('data-currency', newCurrency);
+                            $('#currencies .active').attr('data-currency', newCurrency);
                             currencyCode = newCurrency;
                             Currency.currentCurrency = newCurrency;
-                            Currency.convertAll( window.shop_currency, newCurrency);
-                        } catch (error) {
-                            console.log(error);
+                            Currency.convertAll(shopCurrency, newCurrency);
+                        } catch (e) {
+                            console.log(e);
                         }
 
-                        $(document).ajaxComplete((event, xhr, settings) => {
+                        $(document).ajaxComplete(function(event, xhr, settings) {
                             try {
-                                Currency.convertAll(shopCurrency, window.shop_currency);
-                            } catch (error) {
-                                console.log(error);
+                                Currency.convertAll(shopCurrency, currencyCode);
+                            } catch (e) {
+                                console.log(e);
                             }
                         });
                     }
                 });
+
+                document.addEventListener('DOMContentLoaded', initBlocked, false);
+
+                function initBlocked() {
+                    adsBlocked((blocked) => {
+                        if (blocked) {
+                            alert('Please turn off the uBlock addon on the browser for this site to display your currency!');
+                        } else {
+                            console.log('Ads are not blocked!');
+                        }
+                    })
+                }
+
+                function adsBlocked(callback) {
+                    var testURL = 'https://ssl.geoplugin.net/javascript.gp?k=9247556ec91c71e9'
+
+                    var myInit = {
+                        method: 'HEAD',
+                        mode: 'no-cors'
+                    };
+
+                    var myRequest = new Request(testURL, myInit);
+
+                    fetch(myRequest).then((response) => {
+                        return response;
+                    }).then((response) => {
+                        callback(false)
+                    }).catch(() => {
+                        callback(true)
+                    });
+                }
             </script>
         {%- endif -%}
     {%- endif -%}

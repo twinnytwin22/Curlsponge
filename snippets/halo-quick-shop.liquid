@@ -2,24 +2,28 @@
     assign file_extension = 'png'
 	assign current_variant = product.selected_or_first_available_variant
     assign variantCount = product.variants | size
+    assign show_hot_stock = settings.show_hot_stock
+    if show_hot_stock
+        assign productMaxStock = settings.hot_stock_limit | plus: 0
+    endif
     assign show_notify_form = settings.show_notify_form
-    assign hide_unavailable_variants = settings.hide_unavailable_variants
--%}
-{%- if variantCount > 0 and product.has_only_default_variant != true  -%}
+%}
+{% if variantCount > 0 and product.has_only_default_variant != true  %}
     <script>
         window.quick_shop_inven_array_{{ product.id }} = {
-            {%- for variant in product.variants -%}
+            {% for variant in product.variants %}
                 '{{ variant.id }}': '{{ variant.inventory_quantity }}',
-            {%- endfor -%}
+            {%endfor%}
         };
     </script>
-{%- endif -%}
+{% endif %}
+
 <div class="card-QuickShop">
 	<div class="card-options">
 		<div class="card-variants halo-productOptions" id="product-card-option-{{ product.id }}" data-type="button">
-			{%- if variantCount > 0 and product.has_only_default_variant != true -%}
+			{%- if variantCount > 0 and product.has_only_default_variant != true  -%}
 				{%- assign product_swatch_option = settings.swatch | downcase -%}
-				<variant-quick-shop-radios class="no-js-hidden product-option has-default{% if hide_unavailable_variants %} hide-unavailable{% endif %}" data-product="{{ product.id }}" data-url="{{ product.url }}">
+				<variant-quick-shop-radios class="no-js-hidden product-option has-default" data-product="{{ product.id }}" data-url="{{ product.url }}">
                     {%- for option in product.options_with_values -%}
                         {%- liquid
                             assign is_swatch = false
@@ -57,14 +61,14 @@
                                                 <span class="pattern" style="background-image: url({{ variant.image.src | product_img_url: '40x'}});" role="none"></span>
                                                 <span class="visually-hidden">{{ value | escape }}</span>
                                                 <span class="expand">
-                                                    <img srcset="{{ variant.image.src | product_img_url: '75x'}}" src="{{ variant.image.src | product_img_url: '75x'}}" sizes="75px" loading="lazy" alt="{{ value | escape }}">
+                                                    <img srcset="{{ variant.image.src | product_img_url: '75x'}}" src="{{ variant.image.src | product_img_url: '75x'}}" sizes="auto" loading="lazy" alt="{{ value | escape }}">
                                                 </span>
                                             {%- else -%}
                                                 {%- if swatch_type == 'png' -%}
                                                     <span class="pattern" style="background-image: url({{ value | handle | append: '.' | append: file_extension | file_url }})" role="none"></span>
                                                 {%- else -%}
                                                     {% assign check_color = color | split: ' ' | last | handle %}
-                                                    <span class="pattern{% if check_color == 'white' or check_color == 'White' %} pattern--white{% elsif check_color == 'black' or check_color == 'Black' %} pattern--black{% endif %}" style="background-color: {{ value | split: ' ' | last | handle }};" role="none"></span>
+                                                    <span class="pattern{% if check_color == 'white' or check_color == 'White' %} pattern--white{% endif %}" style="background-color: {{ value | split: ' ' | last | handle }};" role="none"></span>
                                                 {%- endif -%}
                                                 <span class="visually-hidden">{{ value | escape }}</span>
                                                 <span class="tooltip">
@@ -85,6 +89,15 @@
                         {{ product.variants | json }}
                     </script>
                 </variant-quick-shop-radios>
+                {%- if show_hot_stock -%}
+                    <div class="card-hotStock" data-hot-stock="{{ productMaxStock }}">
+                        {%- if current_variant.inventory_management -%}
+                            {%- if current_variant.inventory_quantity > 0 and current_variant.inventory_quantity <= productMaxStock -%}
+                                {{ 'products.product.hot_stock' | t : inventory: current_variant.inventory_quantity }}
+                            {%- endif -%}
+                        {%- endif -%}
+                    </div>
+                {%- endif -%}
 			{%- endif -%}
 		</div>
 		<noscript>
@@ -101,7 +114,7 @@
 	                            value="{{ variant.id }}"
 	                        >
 	                            {{ variant.title }}
-	                            {%- if variant.available == false %} - {{ 'products.product.sold_out' | t }}{%- endif -%}
+	                            {%- if variant.available == false %} - {{ 'products.product.sold_out' | t }}{% endif %}
 	                            - {{ variant.price | money | strip_html }}
 	                        </option>
 	                    {%- endfor -%}
@@ -110,13 +123,6 @@
           	</div>
         </noscript>
 	</div>
-    <div class="card-price no-js-hidden clearfix" id="product-quick-shop-price-{{ product.id }}">
-        {%- render 'price',
-            product: product,
-            use_variant: true,
-            price_class: 'price--large'
-        -%}
-    </div>
 	{%- assign product_form_id = 'product-quick-shop-form-' | append: product.id -%}
 	{%- form 'product', product, id: product_form_id, class: 'form card-form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
 		<input type="hidden" name="id" value="{{ current_variant.id }}">

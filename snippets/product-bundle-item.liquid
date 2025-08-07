@@ -2,6 +2,13 @@
 	<script>
         window.productVariants = window.productVariants || {};
         window.productVariants[{{ product.id }}] = {{ product.variants | json }};
+        {% if settings.show_hot_stock %}
+	        window.bundle_inven_array_{{ product.id }} = {
+	            {% for variant in product.variants %}
+	                '{{ variant.id }}': '{{ variant.inventory_quantity }}',
+	            {%endfor%}
+	        };
+	    {% endif %}
     </script>
     {%- liquid
     	assign current_variant = product.selected_or_first_available_variant
@@ -21,7 +28,7 @@
         </div>
     {%- endif -%}
     <div class="bundle-product-image">
-        <a href="{{ product.url }}" class="bundle-product-media bundle-product-media--{{ image_ratio }}"
+        <a href="{{ product.url | within: collection }}" class="bundle-product-media bundle-product-media--{{ image_ratio }}"
         	{% if product.featured_media %}
                 {% if image_ratio == 'adapt' %}
                     style="padding-bottom: {{ 1 | divided_by: featured_media_aspect_ratio | times: 100 }}%;"
@@ -96,7 +103,7 @@
                         </div>
                     {%- endif -%}
                 {%- endif -%}
-                <a class="product-title" href="{{ product.url }}">
+                <a class="product-title" href="{{ product.url | within: collection }}">
                 	{{ product.title | split: '|' | first }}
                 	{%- if variantCount > 1 and settings.enable_swatch_name -%}
                 		<span data-bundle-product-title> - {{ current_variant.title }}</span>
@@ -122,7 +129,7 @@
             </div>
         {%- else -%}
             <div class="bundle-product-title">
-                <a class="product-title" href="{{ product.url }}">
+                <a class="product-title" href="{{ product.url | within: collection }}">
                     {{ product.title | split: '|' | first }}
                     {%- if variantCount > 1 and settings.enable_swatch_name -%}
                         <span data-bundle-product-title> - {{ current_variant.title }}</span>
@@ -206,6 +213,16 @@
                     {% render 'product-bundle-swatch',
                     	product: product
                     %}
+                    {%- if settings.show_hot_stock -%}
+                    	{% assign productMaxStock = settings.hot_stock_limit | plus: 0 %}
+                    	<div class="bundle-hotStock" data-bundle-hot-stock="{{ productMaxStock }}">
+                            {%- if current_variant.inventory_management -%}
+                                {%- if current_variant.inventory_quantity > 0 and current_variant.inventory_quantity <= productMaxStock -%}
+                                    {{ 'products.product.hot_stock' | t : inventory: current_variant.inventory_quantity }}
+                                {%- endif -%}
+                            {%- endif -%}
+                        </div>
+                    {%- endif -%}
 		        </div>
 		    </div>
         </div>

@@ -1,9 +1,3 @@
-function checkViewport(viewport) {
-    let check = window.innerWidth < viewport ? true : false;
-
-    return check
-}
-
 function resetForm (form) {
     if (form.querySelector('.form-field')){
         form.querySelectorAll('.form-field').forEach((element) => {
@@ -41,7 +35,7 @@ function getCookie(cname) {
 }
 
 function deleteCookie(name) {
-    document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/';
+    document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
 function getFocusableElements(container) {
@@ -77,7 +71,7 @@ function trapFocus(container, elementToFocus = container) {
     };
 
     trapFocusHandlers.keydown = function(event) {
-        if (event.code.toUpperCase() !== 'TAB') return; // if not TAB key
+        if (event.code.toUpperCase() !== 'TAB') return; // If not TAB key
         // On the last focusable element and tab forward, focus the first element.
         if (event.target === last && !event.shiftKey) {
             event.preventDefault();
@@ -322,7 +316,7 @@ Shopify.formatMoney = function(cents, format) {
 };
 
 Shopify.getCart = function(callback) {
-    $.getJSON(`${window.routes.cart}`, function (cart, textStatus) {
+    $.getJSON('/cart.js', function (cart, textStatus) {
         if ((typeof callback) === 'function') {
             callback(cart);
         } else {
@@ -338,7 +332,7 @@ Shopify.onCartUpdate = function(cart) {
 Shopify.changeItem = function(line, quantity, callback) {
     var params = {
         type: 'POST',
-        url: `${window.routes.cart}/change.js`,
+        url: '/cart/change.js',
         data:  'quantity='+quantity+'&id='+line,
         dataType: 'json',
         success: function(cart) {
@@ -359,7 +353,7 @@ Shopify.changeItem = function(line, quantity, callback) {
 Shopify.removeItem = function(line, callback) {
     var params = {
         type: 'POST',
-        url: `${window.routes.cart}/change.js`,
+        url: '/cart/change.js',
         data:  'quantity=0&id='+line,
         dataType: 'json',
         success: function(cart) {
@@ -381,12 +375,11 @@ Shopify.addItem = function(variant_id, quantity, callback) {
     var quantity = quantity || 1;
     var params = {
         type: 'POST',
-        url: `${window.routes.cart}/add.js`,
+        url: '/cart/add.js',
         data: 'quantity=' + quantity + '&id=' + variant_id,
         dataType: 'json',
         success: function(line_item) {
             if ((typeof callback) === 'function') {
-                setCookie('added-item', line_item.key, 1);
                 callback(line_item);
             } else {
                 Shopify.onItemAdded(line_item);

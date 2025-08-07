@@ -12,6 +12,10 @@
         assign layout = section.settings.block_layout
         assign col = section.settings.col
         assign infinite_scroll = section.settings.block_infinite_scroll
+        if infinite_scroll
+            assign infinite_scroll_color = section.settings.block_infinite_color
+            assign infinite_scroll_backg = section.settings.block_infinite_backg
+        endif
         assign block_icon_title = section.settings.block_icon_title
         assign block_title = section.settings.block_title
         assign block_text = section.settings.block_text
@@ -30,46 +34,59 @@
         assign banner_image_ratio = section.settings.banner_image_ratio
         assign portrait_banner_ratio = section.settings.portrait_banner_ratio
         assign banner_position = section.settings.banner_position
-
-        if settings.show_dark_mode
-            assign dark_mode = false
-            unless background_color == blank or background_color == '#fff' or background_color == '#FFF' or background_color == '#ffffff' or background_color == '#FFFFFF' or background_color == 'rgb(255,255,255)' or background_color == 'rgba(255,255,255,1)' or background_color == 'rgba(0,0,0,0)' or background_color == 'rgb(0,0,0,0)'
-                assign dark_mode = true
-                assign dark_mode_background_color = section.settings.background_color
-            endunless
-        endif
     -%}
-    {%- if settings.show_dark_mode -%}
-        <style type="text/css" media="screen">
-            body.dark-mode .halo-product-block-3.dark-mode {
-                background: var(--color-background);
+    <style type="text/css" media="screen">
+        {% if background_color != 'rgba(0,0,0,0)' and background_color != blank %}
+            #halo-product-block-{{ section.id }}{
+                background: {{ background_color }};
             }
-            {%- if dark_mode -%}
-                body.dark-mode .halo-product-block-3:not(.dark-mode) {
-                    background: {{ dark_mode_background_color }};
+        {% endif %} 
+
+        #halo-product-block-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        {% if infinite_scroll %}
+            #halo-product-block-{{ section.id }} .product-infinite-scroll .button{
+                background: {{ infinite_scroll_backg }};
+                border-color: {{ infinite_scroll_backg }};
+                color: {{ infinite_scroll_color }};
+                box-shadow: none!important;
+            }
+        {% endif %}
+
+        @media (max-width: 1024px) {
+            #halo-product-block-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #halo-product-block-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+
+        @media (min-width: 1025px){
+            {% if infinite_scroll %}
+                #halo-product-block-{{ section.id }} .product-infinite-scroll .button:hover{
+                    color: var(--btn-1-color-hover);
+                    background: var(--btn-1-bg-hover);
+                    border-color: var(--btn-1-border-hover);
                 }
-                
-                body.dark-mode .halo-product-block-3:not(.dark-mode) .halo-block-header .title .text,
-                body.dark-mode .halo-product-block-3:not(.dark-mode) .halo-block-header .desc {
-                    filter: invert(1);
-                }
-            {%- endif -%}
-        </style>
-    {%- endif -%}
-    <div class="halo-block halo-product-block halo-product-block-3 halo-block-padding halo-block-gradient{% unless dark_mode %} dark-mode{% endunless %}" id="halo-product-block-{{ section.id }}" data-product-block data-limit="{{ limit }}" data-layout="{{ layout }}" sectionId="{{ section.id }}"
+            {% endif %}
+        }
+    </style>
+    <div class="halo-block halo-product-block halo-product-block-3" id="halo-product-block-{{ section.id }}" data-product-block data-limit="{{ limit }}" data-layout="{{ layout }}" sectionId="{{ section.id }}"
         {% if collection != blank %}
             data-collection="{{ collection }}"
             data-image-ratio="{{ image_ratio }}"
             data-show-add-to-cart="{{ show_add_to_cart }}"
             data-ratio="{{ portrait_aspect_ratio }}"
         {% endif %}
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};
-            --bg-color: {{ background_color | default: settings.colors_bg }};"
     >
         <div class="container container-{{ container }}">
             {%- if block_title != blank -%}
@@ -142,7 +159,7 @@
                                 </{% if link != blank %}a{% else %}div{% endif %}>
                             {%- else -%}
                                 {%- if image != blank -%}
-                                    <{% if link != blank %}a{% else %}div{% endif %} class="image image-mobile image-adapt" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
+                                    <{% if link != blank %}a{% else %}div{% endif %} class="image image-mobile image-adapt" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: 100%">
                                         <img srcset="{{ image | img_url: '420x', crop: 'center' }} 1x, {{ image | img_url: '420x', crop: 'center',  scale: 2 }} 2x" src="{{ image | img_url: '420x', crop: 'center' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
                                     </{% if link != blank %}a{% else %}div{% endif %}>
                                 {%- else -%}
@@ -200,7 +217,7 @@
                     {%- assign product_total = collections[collection].all_products_count -%}
                     {%- if product_total > product_limit -%}
                         <div class="product-infinite-scroll text-center" data-product-infinite>
-                            <a class="button button--primary"
+                            <a class="button"
                                 data-collection="{{ collection.handle }}"
                                 data-limit="{{ product_limit }}"
                                 data-page="2"
@@ -497,6 +514,22 @@
                 "default": true
             },
             {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.color.paragraph__4.content"
+            },
+            {
+                "type":"color_background",
+                "id": "block_infinite_backg",
+                "label": "t:sections.general.settings.color.label__1",
+                "default": "#f0f6ff"
+            },
+            {
+                "type": "color",
+                "id": "block_infinite_color",
+                "label": "t:sections.general.settings.color.label__3",
+                "default": "#505050"
+            },
+            {
                 "type": "header",
                 "content": "t:sections.product-block.settings.header__3.content"
             },
@@ -635,9 +668,6 @@
             {
                 "name": "t:sections.product-block.presets.name__3"
             }
-        ],
-        "disabled_on": {
-            "groups": ["header", "footer"]
-        }
+        ]
     }
 {% endschema %}

@@ -1,4 +1,10 @@
-{%- if section.blocks.size > 0 and section.settings.show_custom_banner -%}
+{%- liquid
+    assign show_section = false
+    if section.blocks.size > 0 and section.settings.show_custom_banner
+        assign show_section = true
+    endif
+-%}
+{%- if show_section -%}
     {%- liquid
         assign padding_top = section.settings.padding_top | append: 'px'
         assign padding_bottom = section.settings.padding_bottom | append: 'px'
@@ -20,58 +26,127 @@
             assign background_color = section.settings.background_color
             assign title_color = section.settings.title_color
             assign title_font = section.settings.title_font
-            assign title_font_size = section.settings.title_font_size
-            if title_font_size >= 60
-                assign title_tablet_font_size = title_font_size | minus: 30 | append: 'px'
-                assign title_font_size = title_font_size | append: 'px'
-            else
-                assign title_tablet_font_size = title_font_size | append: 'px'
-                assign title_font_size = title_font_size | append: 'px'
-            endif
+            assign title_font_size = section.settings.title_font_size | plus: 0
             assign title_mobile_font_size = section.settings.title_mobile_font_size | append: 'px'
             assign title_font_weight = section.settings.title_font_weight
             assign title_text_transform = section.settings.title_text_transform
             assign text_color = section.settings.text_color
+            assign transparent_button = section.settings.transparent_button
             assign text_font_size = section.settings.text_font_size | append: 'px'
-            assign text_mobile_font_size = section.settings.text_mobile_font_size | append: 'px'
             assign text_font_weight = section.settings.text_font_weight
             assign text_text_transform = section.settings.text_text_transform
-            assign transparent_button = section.settings.transparent_button
         endif
         assign image_border_radius = settings.image_border_radius
         assign image_effect = settings.image_effect
-        assign show_hoverImage_1 = section.settings.show_hoverImage_1
-        assign show_hoverImage_2 = section.settings.show_hoverImage_2
-
-        if settings.show_dark_mode
-            assign dark_mode_1 = false
-            unless background_color_section == blank or background_color_section == '#fff' or background_color_section == '#FFF' or background_color_section == '#ffffff' or background_color_section == '#FFFFFF' or background_color_section == 'rgb(255,255,255)' or background_color_section == 'rgba(255,255,255,1)' or background_color_section == 'rgba(0,0,0,0)' or background_color_section == 'rgb(0,0,0,0)'
-                assign dark_mode_1 = true
-                assign dark_mode_background_color_section = section.settings.background_color_section
-            endunless
-            assign dark_mode_2 = false
-            unless background_color == blank or background_color == '#fff' or background_color == '#FFF' or background_color == '#ffffff' or background_color == '#FFFFFF' or background_color == 'rgb(255,255,255)' or background_color == 'rgba(255,255,255,1)' or background_color == 'rgba(0,0,0,0)' or background_color == 'rgb(0,0,0,0)'
-                assign dark_mode_2 = true
-                if show_custom_banner_style
-                    assign dark_mode_background_color = section.settings.background_color
-                    assign dark_mode_title_color = section.settings.title_color
-                    assign dark_mode_text_color = section.settings.text_color
-                endif
-            endunless
-        endif
     -%}
-    <div class="halo-block halo-banner custom-banner style-{{ style }} {% if show_hoverImage_1 %}show-button{% endif %} halo-block-padding halo-block-gradient{% unless dark_mode_1 %} dark-mode-1{% endunless %}{% unless dark_mode_2 %} dark-mode-2{% endunless %}" id="halo-custom-banner-{{ section.id }}"
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};
-            --bg-color: {{ background_color_section | default: settings.colors_bg }};
-            {% if dark_mode_1 %}
-                --dark-mode-bg-color: {{ dark_mode_background_color_section }};
-            {% endif %}"
-    >
+    <style type="text/css" media="screen">
+        {% if show_custom_banner_style %}
+            :root {
+                {% if title_font == 'font_1' %}
+                    --title-font-{{ section.id }}: var(--font-1-family);
+                {% elsif title_font == 'font_2' %}
+                    --title-font-{{ section.id }}: var(--font-2-family);
+                {% elsif title_font == 'font_3' %}
+                    --title-font-{{ section.id }}: var(--font-3-family);
+                {% endif %}
+            }
+        {% endif %}
+
+        #halo-custom-banner-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+            {% if background_color_section != 'rgba(0,0,0,0)' and background_color_section != blank %}
+                background:{{ background_color_section }};
+            {% endif %}
+        }
+
+        {% if show_custom_banner_style %}
+            {% if background_color != 'rgba(0,0,0,0)' and background_color != blank %}
+                #halo-custom-banner-{{ section.id }} .content-box{
+                    background: {{ background_color }};
+                    padding-left: 15px;
+                    padding-right: 15px;
+                    padding-bottom: 15px;
+                }
+            {% endif %}
+
+            #halo-custom-banner-{{ section.id }} .banner-title{
+                font-family: var(--title-font-{{ section.id }});
+                font-size: {{ title_mobile_font_size }};
+                font-weight: {{ title_font_weight }};
+                text-transform: {{ title_text_transform }};
+                color: {{ title_color }};
+            }
+
+            #halo-custom-banner-{{ section.id }} .banner-text,
+            #halo-custom-banner-{{ section.id }} .button-link{
+                color: {{ text_color }};
+                font-size: {{ text_font_size }};
+                font-weight: {{ text_font_weight }};
+                text-transform: {{ text_text_transform }};
+            }
+
+            #halo-custom-banner-{{ section.id }}.style-3 .button-link,
+            #halo-custom-banner-{{ section.id }}.style-4 .button-link{
+                color: var(--color-link);
+            }
+
+            {% if transparent_button %}
+                #halo-custom-banner-{{ section.id }} .banner-button{
+                    color: {{ text_color }};
+                    border-color: {{ text_color }};
+                    background-color: transparent;
+                }
+
+                #halo-custom-banner-{{ section.id }} .banner-button:before{
+                    background-color: {{ text_color }};
+                }
+            {% endif %}
+        {% endif %}
+
+        @media (max-width: 1024px) {
+            #halo-custom-banner-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #halo-custom-banner-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+
+        {% if show_custom_banner_style %}
+            {% if title_font_size >= 60 %}
+                @media (min-width: 768px){
+                    #halo-custom-banner-{{ section.id }} .banner-title{
+                        font-size: {{ title_font_size | minus: 30 | append: 'px' }};
+                    }
+                }
+
+                @media (min-width: 1025px){
+                    #halo-custom-banner-{{ section.id }} .banner-title{
+                        font-size: {{ title_font_size | minus: 20 | append: 'px' }};
+                    }
+                }
+
+                @media (min-width: 1600px){
+                    #halo-custom-banner-{{ section.id }} .banner-title{
+                        font-size: {{ title_font_size | append: 'px' }};
+                    }
+                }
+            {% else %}
+                @media (min-width: 551px){
+                    #halo-custom-banner-{{ section.id }} .banner-title{
+                        font-size: {{ title_font_size | append: 'px' }};
+                    }
+                }
+            {% endif %}
+        {% endif %}
+    </style>
+    <div class="halo-block halo-banner custom-banner style-{{ style }}" id="halo-custom-banner-{{ section.id }}">
         <div class="container container-{{ container }}{% if mobile_layout == 'swipe' %} container-no-padding{% endif %}">
             {%- if block_title != blank -%}
                 <div class="halo-block-header">
@@ -87,143 +162,55 @@
                     {%- endif -%}
                 </div>
             {%- endif -%}
-            <div class="halo-block-content"
-                {% if show_custom_banner_style %}
-                    style="{% if title_font == 'font_1' %}
-                        --title-font: var(--font-1-family);
-                    {% elsif title_font == 'font_2' %}
-                        --title-font: var(--font-2-family);
-                    {% elsif title_font == 'font_3' %}
-                        --title-font: var(--font-3-family);
-                    {% endif %}
-                    --title-font-size: {{ title_font_size }};
-                    --title-tablet-font-size: {{ title_tablet_font_size }};
-                    --title-mobile-font-size: {{ title_mobile_font_size }};
-                    --title-font-weight: {{ title_font_weight }};
-                    --title-text-transform: {{ title_text_transform }};
-                    --title-color: {{ title_color }};
-                    --text-font-size: {{ text_font_size }};
-                    --text-mobile-font-size: {{ text_mobile_font_size }};
-                    --text-font-weight: {{ text_font_weight }};
-                    --text-text-transform: {{ text_text_transform }};
-                    --text-color: {{ text_color }};
-                    {% if dark_mode_2 %}
-                        --dark-mode-title-color: {{ dark_mode_title_color }};
-                        --dark-mode-text-color: {{ dark_mode_text_color }};
-                    {% endif %}" 
-                {% endif %}
-            >
+            <div class="halo-block-content">
                 <div class="halo-row halo-row--{{ col }} column-{{ column }} halo-row--{{ mobile_layout }} disable-scrollbar">
                     {%- for block in section.blocks -%}
-                        {%- case block.type -%}
-                            {%- when 'image' -%}
-                                {%- liquid
-                                    assign image = block.settings.image
-                                    assign title = block.settings.title
-                                    assign text = block.settings.text
-                                    assign btn = block.settings.btn
-                                    assign btn_text = block.settings.btn_text
-                                    assign link = block.settings.link
-                                    assign align = block.settings.align
-                                    assign position = block.settings.position
-                                -%}
-                                <div class="halo-row-item item item-{{ block.id }}">
-                                    <div class="custom-banner-item banner-item banner-item--large{% if show_hoverImage_2 %} image-{{ image_effect }}{% endif %} image-border-{{ image_border_radius }}{% if show_custom_banner_style %} custom-banner-item--style{% endif %}">
-                                        <div class="img-box">
-                                            <loading-banner class="loading-banner">
-                                                {%- if image != blank -%}
-                                                    <{% if link != blank %}a{% else %}div{% endif %} class="image image-adapt" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
-                                                        <img {% render 'lazyload', preview_img: image %}>
-                                                        {%- if image_effect == 'liquid' -%}
-                                                            <span class="hover"></span>
-                                                        {%- endif -%}
-                                                    </{% if link != blank %}a{% else %}div{% endif %}>
-                                                {%- else -%}
-                                                    <{% if link != blank %}a{% else %}div{% endif %} class="image" {% if link != blank %} href="{{ link }}"{% endif %}>
-                                                        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-                                                    </{% if link != blank %}a{% else %}div{% endif %}>
-                                                {%- endif -%}
-                                            </loading-banner>
-                                        </div>
-                                        {%- if title != blank or text != blank or btn_text != blank -%}
-                                            <div class="content-box{% if style == '1' %} content-box--absolute content-box--{{ position }}{% elsif style == '3' or style == '4' %} content-box--custom{% endif %} text-{{ align }}{% if show_custom_banner_style %}{% if background_color != 'rgba(0,0,0,0)' and background_color != blank %} content-box--bg{% endif %}{% endif %}"
-                                                style="--bg-color: {{ background_color }};
-                                                {% if dark_mode_2 %}
-                                                    --dark-mode-bg-color: {{ dark_mode_background_color }};
-                                                {% endif %}"
-                                            >
-                                                {%- if title != blank -%}
-                                                    <h4 class="banner-title{% if show_custom_banner_style %} typography__mobile typography__tablet typography__desktop{% endif %}">
-                                                        {%- if link != blank -%}<a href="{{ link }}">{%- endif -%}{{ title | escape }}{%- if link != blank -%}</a>{%- endif -%}
-                                                    </h4>
-                                                {%- endif -%}
-                                                {%- if text != blank -%}
-                                                    <span class="banner-text{% if show_custom_banner_style %} typography__text{% endif %}">
-                                                        {{ text }}
-                                                    </span>
-                                                {%- endif -%}
-                                                {%- if btn_text != blank -%}
-                                                    <{% if link != blank %}a{% else %}div{% endif %} {% if link != blank %}href="{{ link }}"{% endif %} class="banner-button{% if btn != 'link' %} button button-{{ btn }}{% if transparent_button %} button--transparent{% endif %}{% else %} button-link link text-underline link-underline{% endif %}{% if show_custom_banner_style %} typography__button{% endif %}">
-                                                        <span class="text">
-                                                            {{ btn_text | escape }}
-                                                        </span>
-                                                    </{% if link != blank %}a{% else %}div{% endif %}>
-                                                {%- endif -%}
-                                            </div>
+                        {%- liquid
+                            assign image = block.settings.image
+                            assign title = block.settings.title
+                            assign text = block.settings.text
+                            assign btn = block.settings.btn
+                            assign btn_text = block.settings.btn_text
+                            assign link = block.settings.link
+                            assign align = block.settings.align
+                            assign position = block.settings.position
+                        -%}
+                        <div class="halo-row-item item item-{{ block.id }}">
+                            <div class="custom-banner-item banner-item banner-item--large image-{{ image_effect }} image-border-{{ image_border_radius }}">
+                                <div class="img-box">
+                                    {%- if image != blank -%}
+                                        <{% if link != blank %}a{% else %}div{% endif %} class="image image-adapt" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
+                                            <img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x" src="{{ image | img_url: 'master' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
+                                        </{% if link != blank %}a{% else %}div{% endif %}>
+                                    {%- else -%}
+                                        <{% if link != blank %}a{% else %}div{% endif %} class="image" {% if link != blank %} href="{{ link }}"{% endif %}>
+                                            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                                        </{% if link != blank %}a{% else %}div{% endif %}>
+                                    {%- endif -%}
+                                </div>
+                                {%- if title != blank or text != blank or btn_text != blank -%}
+                                    <div class="content-box{% if style == '1' %} content-box--absolute content-box--{{ position }}{% elsif style == '3' or style == '4' %} content-box--custom{% endif %} text-{{ align }}">
+                                        {%- if title != blank -%}
+                                            <h4 class="banner-title">
+                                                {%- if link != blank -%}<a href="{{ link }}">{%- endif -%}{{ title | escape }}{%- if link != blank -%}</a>{%- endif -%}
+                                            </h4>
+                                        {%- endif -%}
+                                        {%- if text != blank -%}
+                                            <span class="banner-text">
+                                                {{ text }}
+                                            </span>
+                                        {%- endif -%}
+                                        {%- if btn_text != blank -%}
+                                            <{% if link != blank %}a{% else %}div{% endif %} {% if link != blank %}href="{{ link }}"{% endif %} class="banner-button{% if btn != 'link' %} button button-{{ btn }}{% if transparent_button %} button--transparent{% endif %}{% else %} button-link link text-underline link-underline{% endif %}">
+                                                {%- if btn == 'link' -%}<span class="text">{%- endif -%}
+                                                    {{ btn_text | escape }}
+                                                {%- if btn == 'link' -%}</span>{%- endif -%}
+                                            </{% if link != blank %}a{% else %}div{% endif %}>
                                         {%- endif -%}
                                     </div>
-                                </div>
-                            {%- when 'image_with_overlay' -%}
-                                {%- liquid
-                                    assign image = block.settings.image
-                                    assign title = block.settings.title
-                                    assign text = block.settings.text
-                                    assign link = block.settings.link
-                                    assign align = block.settings.align
-                                -%}
-                                <div class="halo-row-item block-i-w-overlay item item-{{ block.id }}">
-                                    <div class="custom-banner-item banner-item banner-item--large{% if show_hoverImage_2 %} image-overlay-2{% endif %} image-border-{{ image_border_radius }}{% if show_custom_banner_style %} custom-banner-item--style{% endif %}">
-                                        <div class="img-box">
-                                            <loading-banner class="loading-banner">
-                                                {%- if image != blank -%}
-                                                    <{% if link != blank %}a{% else %}div{% endif %} class="image image-adapt" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
-                                                        <img {% render 'lazyload', preview_img: image %}>
-                                                        {%- if image_effect == 'liquid' -%}
-                                                            <span class="hover"></span>
-                                                        {%- endif -%}
-                                                    </{% if link != blank %}a{% else %}div{% endif %}>
-                                                {%- else -%}
-                                                    <{% if link != blank %}a{% else %}div{% endif %} class="image" {% if link != blank %} href="{{ link }}"{% endif %}>
-                                                        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-                                                    </{% if link != blank %}a{% else %}div{% endif %}>
-                                                {%- endif -%}
-                                            </loading-banner>
-                                        </div>
-                                        {%- if title != blank or text != blank -%}
-                                            <div class="content-box z-index-2 di-flex f-column w-s-normal text-{{ align }}{% if show_custom_banner_style %}{% if background_color != 'rgba(0,0,0,0)' and background_color != blank %} content-box--bg{% endif %}{% endif %}"
-                                                style="
-                                                    --top: 0; --left: 0; --right: 0; --bottom: 0;
-                                                    --bg-color: {{ background_color }};
-                                                    {% if dark_mode_2 %}
-                                                        --dark-mode-bg-color: {{ dark_mode_background_color }};
-                                                    {% endif %}
-                                                "
-                                            >
-                                                {%- if title != blank -%}
-                                                    <h4 class="banner-title{% if show_custom_banner_style %} typography__mobile typography__tablet typography__desktop{% endif %}">
-                                                        {%- if link != blank -%}<a href="{{ link }}">{%- endif -%}{{ title | escape }}{%- if link != blank -%}</a>{%- endif -%}
-                                                    </h4>
-                                                {%- endif -%}
-                                                {%- if text != blank -%}
-                                                    <span class="banner-text{% if show_custom_banner_style %} typography__text{% endif %} block-rich-text h-link" style="--banner-m-t: auto; --banner-m-b: 0;">
-                                                        {{ text }}
-                                                    </span>
-                                                {%- endif -%}
-                                            </div>
-                                        {%- endif -%}
-                                    </div>
-                                </div>
-                        {%- endcase -%}
+                                {%- endif -%}
+                            </div>
+                        </div>
                     {%- endfor -%}
                 </div>
             </div>
@@ -471,10 +458,6 @@
                 {
                     "value": "expand",
                     "label": "t:sections.general.settings.column.options__5"
-                },
-                {
-                    "value": "slim",
-                    "label": "t:sections.general.settings.column.options__6"
                 }]
             },
             {
@@ -617,17 +600,7 @@
                 "id": "text_font_size",
                 "label": "t:settings_schema.typography.settings.font_size.label",
                 "min": 10,
-                "max": 25,
-                "step": 1,
-                "unit": "t:settings_schema.typography.settings.font_size.unit",
-                "default": 14
-            },
-            {
-                "type": "range",
-                "id": "text_mobile_font_size",
-                "label": "t:settings_schema.typography.settings.font_size.label__2",
-                "min": 10,
-                "max": 25,
+                "max": 20,
                 "step": 1,
                 "unit": "t:settings_schema.typography.settings.font_size.unit",
                 "default": 14
@@ -690,22 +663,6 @@
                         "label": "t:settings_schema.typography.settings.text_transform.options__4"
                     }
                 ]
-            },
-            {
-                "type": "header",
-                "content": "t:sections.custom-banner.settings.general.label__2"
-            },
-            {
-                "type": "checkbox",
-                "id": "show_hoverImage_1",
-                "label": "t:sections.custom-banner.settings.general.label__3",
-                "default": false
-            },
-            {
-                "type": "checkbox",
-                "id": "show_hoverImage_2",
-                "label": "t:sections.custom-banner.settings.general.label__4",
-                "default": true
             }
         ],
         "blocks": [
@@ -767,18 +724,6 @@
                         {
                             "value": "link",
                             "label": "t:sections.general.settings.button.options__6"
-                        },
-                        {
-                            "value": "6",
-                            "label": "t:sections.general.settings.button.options__9"
-                        },
-                        {
-                            "value": "7",
-                            "label": "t:sections.general.settings.button.options__10"
-                        },
-                        {
-                            "value": "8",
-                            "label": "t:sections.general.settings.button.options__11"
                         }]
                     },
                     {
@@ -832,62 +777,6 @@
                         }]
                     }
                 ]
-            },
-            {
-                "type": "image_with_overlay",
-                "name": "t:sections.custom-banner.blocks.image-with-overlay.name",
-                "settings": [
-                    {
-                        "type": "header",
-                        "content": "t:sections.custom-banner.blocks.image-with-overlay.settings.header__1.content"
-                    },
-                    {
-                        "type": "image_picker",
-                        "id": "image",
-                        "label": "t:sections.general.settings.image.label__1"
-                    },
-                    {
-                        "type": "url",
-                        "id": "link",
-                        "label": "t:sections.general.settings.content.label__6",
-                        "info": "t:sections.general.settings.content.info__1"
-                    },
-                    {
-                        "type": "header",
-                        "content": "t:sections.custom-banner.blocks.image-with-overlay.settings.header__2.content"
-                    },
-                    {
-                        "type" : "text",
-                        "id" : "title",
-                        "label" : "t:sections.general.settings.content.label__1",
-                        "default" : "Cosmopolis"
-                    },
-                    {
-                        "type" : "richtext",
-                        "id" : "text",
-                        "label" : "t:sections.general.settings.content.label__2",
-                        "default" : "<p>Lorem ipsum dolor sit amet</p>"
-                    },
-                    {
-                        "type": "select",
-                        "id": "align",
-                        "label": "t:sections.general.settings.content-alignment.label__1",
-                        "options": [
-                        {
-                            "value": "left",
-                            "label": "t:sections.general.settings.aligmnent.options__1"
-                        },
-                        {
-                            "value": "center",
-                            "label": "t:sections.general.settings.aligmnent.options__2"
-                        },
-                        {
-                            "value": "right",
-                            "label": "t:sections.general.settings.aligmnent.options__3"
-                        }],
-                        "default": "center"
-                    }
-                ]
             }
         ],
         "presets": [
@@ -902,9 +791,6 @@
                     }
                 ]
             }
-        ],
-        "disabled_on": {
-            "groups": ["header", "footer"]
-        }
+        ]
     }
 {% endschema %}

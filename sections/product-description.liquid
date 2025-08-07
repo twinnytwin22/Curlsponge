@@ -1,4 +1,4 @@
-{%- if section.settings.show_product_description and section.blocks.size > 0 -%}
+{%- if section.settings.show_product_description -%}
 	{{ 'component-product-description.css' | asset_url | stylesheet_tag }}
 	{%- liquid
         assign padding_top = section.settings.padding_top | append: 'px'
@@ -12,8 +12,7 @@
         assign block_text = section.settings.block_text
         assign block_title_align = section.settings.block_title_align
         assign title_font = section.settings.title_font
-        assign title_font_size = section.settings.title_font_size | append: 'px'
-        assign title_tablet_font_size = section.settings.title_font_size | times: 0.75 | round: 0 | append: 'px'
+        assign title_font_size = section.settings.title_font_size
         assign title_mobile_font_size = section.settings.title_mobile_font_size | append: 'px'
         assign title_font_weight = section.settings.title_font_weight
         assign title_text_transform = section.settings.title_text_transform
@@ -21,14 +20,75 @@
         assign text_color = section.settings.text_color
         assign style_section = section.settings.style_section
     -%}
-    <div class="halo-block halo-product-description halo-block-padding style-{{ style_section }}" id="halo-product-description-{{ section.id }}"
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};"
-    >
+    <style type="text/css" media="screen">
+        :root {
+            {% if title_font == 'font_1' %}
+                --title-font-{{ section.id }}: var(--font-1-family);
+            {% elsif title_font == 'font_2' %}
+                --title-font-{{ section.id }}: var(--font-2-family);
+            {% elsif title_font == 'font_3' %}
+                --title-font-{{ section.id }}: var(--font-3-family);
+            {% endif %}
+        }
+
+        #halo-product-description-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        #halo-product-description-{{ section.id }} .content-box .heading{
+            font-family: var(--title-font-{{ section.id }});
+            font-size: {{ title_mobile_font_size }};
+            font-weight: {{ title_font_weight }};
+            text-transform: {{ title_text_transform }};
+            color: {{ title_color }};
+        }
+
+        #halo-product-description-{{ section.id }} .content-box .content{
+            color: {{ text_color }};
+        }
+
+        @media (max-width: 1024px) {
+            #halo-product-description-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #halo-product-description-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+
+        {% if title_font_size >= 60 %}
+            @media (min-width: 768px){
+                #halo-product-description-{{ section.id }} .content-box .heading{
+                    font-size: {{ title_font_size | minus: 30 | append: 'px' }};
+                }
+            }
+
+            @media (min-width: 1025px){
+                #halo-product-description-{{ section.id }} .content-box .heading{
+                    font-size: {{ title_font_size | minus: 20 | append: 'px' }};
+                }
+            }
+
+            @media (min-width: 1600px) {
+                #halo-product-description-{{ section.id }} .content-box .heading{
+                    font-size: {{ title_font_size | append: 'px' }};
+                }
+            }
+        {% else %}
+            @media (min-width: 551px){
+                #halo-product-description-{{ section.id }} .content-box .heading{
+                    font-size: {{ title_font_size | append: 'px' }};
+                }
+            }
+        {% endif %}
+    </style>
+    <div class="halo-block halo-product-description style-{{ style_section }}" id="halo-product-description-{{ section.id }}">
     	<div class="container container-{{ container }}">
     		{%- if block_title != blank -%}
                 <div class="halo-block-header">
@@ -45,22 +105,7 @@
                 </div>
             {%- endif -%}
             <div class="halo-block-content">
-            	<div class="description-block"
-                    style="{% if title_font == 'font_1' %}
-                        --title-font: var(--font-1-family);
-                    {% elsif title_font == 'font_2' %}
-                        --title-font: var(--font-2-family);
-                    {% elsif title_font == 'font_3' %}
-                        --title-font: var(--font-3-family);
-                    {% endif %}
-                    --title-font-size: {{ title_font_size }};
-                    --title-tablet-font-size: {{ title_tablet_font_size }};
-                    --title-mobile-font-size: {{ title_mobile_font_size }};
-                    --title-font-weight: {{ title_font_weight }};
-                    --title-text-transform: {{ title_text_transform }};
-                    --title-color: {{ title_color }};
-                    --text-color: {{ text_color }};" 
-                >
+            	<div class="description-block">
 	            	{%- for block in section.blocks -%}
 	            		{%- if block.type == 'image' -%}
 	            			<div class="halo-items description-block-item">
@@ -81,35 +126,33 @@
 		                        <div class="halo-item halo-item--{{ class }}">
 		                            <div class="item item-image{% if has_content %} item-first{% endif %}">
 		                                <div class="img-box">
-                                            <loading-banner class="loading-banner">
-    		                                    {%- if image != blank -%}
-                                                    <{% if link != blank %}a{% else %}div{% endif %} class="image image-{{ image_effect }} image-border-{{ image_border_radius }}" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
-    		                                            <img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x"
-    		                                                src="{{ image | img_url: 'master' }}"
-    		                                                loading="lazy"
-    		                                                alt="{{ image.alt | default: shop.name | escape }}"
-                                                            sizes="700px"
-                                                        >
-                                                    </{% if link != blank %}a{% else %}div{% endif %}>
-    		                                    {%- else -%}
-    		                                        <div class="image">
-    		                                            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-    		                                        </div>
-    		                                    {%- endif -%}
-                                            </loading-banner>
+		                                    {%- if image != blank -%}
+		                                        {%- if link != blank -%}
+		                                            <a class="image image-{{ image_effect }} image-border-{{ image_border_radius }}" href="{{ link }}" style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
+		                                        {%- else -%}
+		                                            <div class="image image-{{ image_effect }} image-border-{{ image_border_radius }}" style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
+		                                        {%- endif -%}
+		                                            <img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x"
+		                                                src="{{ image | img_url: 'master' }}"
+		                                                loading="lazy"
+		                                                alt="{{ image.alt | default: shop.name | escape }}">
+		                                        {%- if link != blank -%}
+		                                            </a>
+		                                        {%- else -%}
+		                                            </div>
+		                                        {%- endif -%}
+		                                    {%- else -%}
+		                                        <div class="image">
+		                                            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+		                                        </div>
+		                                    {%- endif -%}
 		                                </div>
 		                            </div>
 		                            {%- if has_content -%}
 		                                <div class="item item-content item-second">
 		                                    <div class="content-box text-{{ alignment }}">
 		                                        {%- if title != blank -%}
-		                                            <h4 class="heading">
-                                                        {% if link != blank %}
-                                                            <a href="{{ link }}">{{ title | escape }}</a>
-                                                        {%- else -%}
-                                                            <span class="text">{{ title | escape }}</span>
-                                                        {%- endif -%}
-                                                    </h4>
+		                                            <h4 class="heading">{{ title | escape }}</h4>
 		                                        {%- endif -%}
 		                                        {%- if content != blank -%}
 		                                            <div class="content">{{ content }}</div>

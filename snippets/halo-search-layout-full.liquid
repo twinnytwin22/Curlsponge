@@ -7,39 +7,18 @@
                 %}
             </button>
             <label class="field__label hiddenLabels" for="Search-In-Modal">{{ 'general.search.search' | t }}</label>
-            <input 
-                class="search__input field__input form-input-placeholder" 
-                id="Search-In-Modal" 
-                type="search" 
-                name="q" 
-                value="{{ search.terms | escape}}" 
-                placeholder="{{ 'general.search.search' | t }}" 
-                autocomplete="off"
-                {%- if settings.show_predictive_search -%}
-                    role="combobox"
-                    aria-expanded="false"
-                    aria-owns="predictive-search-results-list"
-                    aria-controls="predictive-search-results-list"
-                    aria-haspopup="listbox"
-                    aria-autocomplete="list"
-                    autocorrect="off"
-                    autocomplete="off"
-                    autocapitalize="off"
-                    spellcheck="false"
-                {%- endif -%}
-            >
+            <input class="search__input field__input form-input-placeholder" id="Search-In-Modal" type="search" name="q" value="{{ search.terms | escape}}" placeholder="{{ 'general.search.search' | t }}" autocomplete="off">
             <input type="hidden" name="type" value="product">
             <input type="hidden" name="options[prefix]" value="last" />
         </div>
     </form>
 </summary>
-<div class="search-modal modal__content{% if settings.show_predictive_search %} quickSearch{% endif %}" role="dialog" aria-modal="true" aria-label="{{ 'general.search.search' | t }}">
-    {% render 'halo-quick-search',
-        section: section,
-        container: container,
-        has_close: has_close
-    %}
-    {%- if settings.show_predictive_search -%}
-        {%- render 'predictive-search-results' -%}
+<div class="search-modal modal__content{% if settings.show_quick_search %} quickSearch{% endif %}" role="dialog" aria-modal="true" aria-label="{{ 'general.search.search' | t }}">
+    {%- if settings.show_quick_search -%}
+        {% render 'halo-quick-search',
+            section: section,
+            container: container,
+            has_close: has_close
+        %}
     {%- endif -%}
 </div>

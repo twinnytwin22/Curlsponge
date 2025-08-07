@@ -1,64 +1,57 @@
 Shopify.ProductCompare = (() => {
+	var config = {
+		link: $('a[data-compare-link]'),
+        onComplete: null
+	};
 	return {
-		setLocalStorageProductForCompare: () => {
-    		var compareList = JSON.parse(localStorage.getItem('compareItem'));
+		setLocalStorageProductForCompare: (params) => {
+			var params = params || {};
 
-            if(compareList !== null){ 
-                if(document.querySelector(`[data-product-compare-handle]`)){
-                    document.querySelectorAll(`[data-product-compare-handle]`).forEach((item) => {
-                        var handle = item.getAttribute('data-product-compare-handle');
+    		$.extend(config, params);
 
-                        if(compareList.indexOf(handle) !== -1) {
-                            if(item.querySelector('.compare-icon')){
-                                item.querySelector('.compare-icon').classList.add('is-checked');
-                            }
+    		var $link = config.link,
+    			count = JSON.parse(localStorage.getItem('compareItem')),
+                items = $('[data-product-compare-handle]');
 
-                            if(item.querySelector('.text')){
-                                item.querySelector('.text').innerText = window.compare.added;
-                            }
+            if(count !== null){ 
+                if(items.length > 0) {
+                    items.each((index, element) => {
+                        var item = $(element),
+                            handle = item.data('product-compare-handle');
 
-                            item.querySelector('input').setAttribute('checked', true);
+                        if(count.indexOf(handle) >= 0) {
+                            item.find('.compare-icon').addClass('is-checked');
+                            item.find('.text').text(window.compare.added);
+                            item.find('input').prop('checked', true);
 
                             if(window.card.layout == '4' || window.card.layout == '5'){
-		                        item.querySelector('label').inerHTML = `<span class="visually-hidden">${window.compare.added}</span>${window.compare.added}`;
+		                        item.find('label').html(`<span class="visually-hidden">${window.compare.added}</span>${window.compare.added}`);
 		                    }
                         } else {
-                            if(item.querySelector('.compare-icon')){
-                                item.querySelector('.compare-icon').classList.remove('is-checked');
-                            }
-
-                            if(item.querySelector('.text')){
-                                item.querySelector('.text').innerText = window.compare.add;
-                            }
-
-                            item.querySelector('input').removeAttribute('checked');
+                            item.find('.compare-icon').removeClass('is-checked');
+                            item.find('.text').text(window.compare.add);
+                            item.find('input').prop('checked', false);
 
                             if(window.card.layout == '4' || window.card.layout == '5'){
-		                        item.querySelector('label').inerHTML = `<span class="visually-hidden">${window.compare.add}</span>${window.compare.add}`;
+		                        item.find('label').html(`<span class="visually-hidden">${window.compare.add}</span>${window.compare.add}`);
 		                    }
                         }
-
-                        Shopify.ProductCompare.updateCounterCompare();
                     });
+
+                    this.updateCounterCompare($link);
                 }
             }
 		},
 
-		updateCounterCompare: () => {
-			var compareList = JSON.parse(localStorage.getItem('compareItem')),
-                compareLink = document.querySelector('a[data-compare-link]');
+		updateCounterCompare: ($link) => {
+			var count = JSON.parse(localStorage.getItem('compareItem'));
 
-            if(compareLink){
-    	        if (compareList.length > 1) {
-    	            compareLink.closest('.halo-compareProduct').classList.add('is-show');
-
-                    if(compareLink.querySelector('span.countPill')){
-                        compareLink.querySelector('span.countPill').innerText = compareList.length;
-                    }
-    	        } else {
-    	            compareLink.closest('.halo-compareProduct').classList.remove('is-show');
-    	        }
-            }
+	        if (count.length > 1) {
+	            $link.parent().addClass('is-show');
+	            $link.find('span.countPill').html(count.length);
+	        } else {
+	            $link.parent().removeClass('is-show');
+	        }
 		}
 	}
 })();

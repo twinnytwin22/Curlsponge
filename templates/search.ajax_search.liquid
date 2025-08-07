@@ -14,8 +14,8 @@
 	        </div>
 	    </form>
 	</div>
-	<div class="search-modal modal__content{% if settings.show_predictive_search %} quickSearch{% endif %}" role="dialog" aria-modal="true" aria-label="{{ 'general.search.search' | t }}">
-	    {%- if settings.show_predictive_search -%}
+	<div class="search-modal modal__content{% if settings.show_quick_search %} quickSearch{% endif %}" role="dialog" aria-modal="true" aria-label="{{ 'general.search.search' | t }}">
+	    {%- if settings.show_quick_search -%}
 	        {% render 'halo-quick-search',
 	            container: container
 	        %}

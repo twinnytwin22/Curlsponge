@@ -2,9 +2,8 @@
     {%- liquid
         assign product_swatch_option = settings.swatch | downcase
         assign swatch_style = settings.swatch_style
-        assign hide_unavailable_variants = settings.hide_unavailable_variants
     -%}
-    <variant-radios class="{% unless request.design_mode %} no-js-hidden{% endunless %} product-option has-default{% if hide_unavailable_variants %} hide-unavailable{% endif %}" data-product="{{ product.id }}" data-section="{{ section.id }}" data-url="{{ product.url }}" data-update-url="{{ updateURL }}" data-update-cart="{{ updateCart }}" data-update-template="{{ updateTemplate }}" data-update-sticky="{{ updateSticky }}">
+    <{% if type == 'main-product' %}variant-radios{% else %}variant-quick-view-radios{% endif %} class="no-js-hidden product-option has-default" data-product="{{ product.id }}" data-section="{{ section.id }}" data-url="{{ product.url }}">
         {%- for option in product.options_with_values -%}
             {%- liquid
                 assign is_swatch = false
@@ -15,7 +14,7 @@
                 assign swatch_type = settings.swatch_type
                 assign option_index = forloop.index0
             -%}
-            <fieldset class="js product-form__input{% if is_swatch %} product-form__swatch{% endif %} clearfix {{ prefix }}" data-product-attribute="set-rectangle" data-option-index="{{ forloop.index0 }}">
+            <fieldset class="js product-form__input{% if is_swatch %} product-form__swatch{% endif %} clearfix" data-product-attribute="set-rectangle" data-option-index="{{ forloop.index0 }}">
                 <legend class="form__label">
                     {{ option.name | append: ':' }}
                     <span data-header-option>
@@ -31,26 +30,25 @@
                             assign values = values | append: ';' | append: value
                             assign values = values | split: ';'
                         -%}
-                        <input class="product-form__radio" type="radio" id="option-{{ section.id }}-{{ product.id }}-{{ option.name | handle }}-{{ forloop.index0 | prepend: prefix }}"
-                            name="{{ option.name | handle }}-{{ product.id }}-{{ section.id | prepend: prefix }}"
+                        <input class="product-form__radio" type="radio" id="option-{{ product.id }}-{{ option.name }}-{{ forloop.index0 }}"
+                            name="{{ option.name }}-{{ product.id }}-{{ section.id }}"
                             value="{{ value | escape }}"
                             {% if option.selected_value == value %}checked{% endif %}
                             {% if is_swatch and show_variant_image_group %}data-filter=".filter-{{ value | handle }}"{% endif %}
-                            data-variant-id="{{ variant.id }}"
                         >
                         {%- if is_swatch -%}
-                            <label class="product-form__label style-{{ swatch_style }}{% if variant.available %} available{% else %} soldout{% endif %}" for="option-{{ section.id }}-{{ product.id }}-{{ option.name | handle }}-{{ forloop.index0 | prepend: prefix }}" role="button" tabindex="0" data-variant-id="{{ variant.id }}">
+                            <label class="product-form__label style-{{ swatch_style }}{% if variant.available %} available{% else %} soldout{% endif %}" for="option-{{ product.id }}-{{ option.name }}-{{ forloop.index0 }}" role="button" tabindex="0">
                                 {%- if variant.image %}
                                     <span class="pattern" style="background-image: url({{ variant.image.src | product_img_url: '40x'}});" role="none"></span>
                                     <span class="visually-hidden">{{ value | escape }}</span>
                                     <span class="expand">
-                                        <img srcset="{{ variant.image.src | product_img_url: '75x'}}" src="{{ variant.image.src | product_img_url: '75x'}}" sizes="75px" loading="lazy" alt="{{ value | escape }}">
+                                        <img srcset="{{ variant.image.src | product_img_url: '75x'}}" src="{{ variant.image.src | product_img_url: '75x'}}" sizes="auto" loading="lazy" alt="{{ value | escape }}">
                                     </span>
                                 {%- else -%}
                                     {%- if swatch_type == 'png' -%}
                                         <span class="pattern" style="background-image: url({{ value | handle | append: '.' | append: 'png' | file_url }})" role="none"></span>
                                     {%- else -%}
-                                        <span class="pattern{% if value contains 'white' or value contains 'White' %} pattern-white{% elsif value contains 'black' or value contains 'Black' %} pattern-black{% endif %} {{ value }}" style="background-color: {{ value | split: ' ' | last | handle }};" role="none"></span>
+                                        <span class="pattern{% if value contains 'white' or value contains 'White' %} pattern-white{% endif %} {{ value }}" style="background-color: {{ value | split: ' ' | last | handle }};" role="none"></span>
                                     {%- endif -%}
                                     <span class="visually-hidden">{{ value | escape }}</span>
                                     <span class="tooltip">
@@ -59,7 +57,7 @@
                                 {%- endif -%}
                             </label>
                         {%- else -%}   
-                            <label class="product-form__label{% if variant.available %} available{% else %} soldout{% endif %}{% if value.size >= 5 %} product-form__labelLagre{% endif %}" for="option-{{ section.id }}-{{ product.id }}-{{ option.name | handle }}-{{ forloop.index0 | prepend: prefix }}" role="button" tabindex="0" {% if value.size > 30 %} title="{{ value }}"{% endif %} data-variant-id="{{ variant.id }}">
+                            <label class="product-form__label{% if variant.available %} available{% else %} soldout{% endif %}{% if value.size >= 5 %} product-form__labelLagre{% endif %}" for="option-{{ product.id }}-{{ option.name }}-{{ forloop.index0 }}" role="button" tabindex="0" {% if value.size > 30 %} title="{{ value }}"{% endif %}>
                                 <span class="text">{% if value.size > 50 %}{{ value | truncate: 30 }}{% else %}{{ value }}{% endif %}</span>
                             </label>
                         {%- endif -%}
@@ -70,22 +68,21 @@
         <script type="application/json">
             {{ product.variants | json }}
         </script>
-    </variant-radios>
+    </{% if type == 'main-product' %}variant-radios{% else %}variant-quick-view-radios{% endif %}>
 {%- else -%}
-    {%- assign hide_unavailable_variants = settings.hide_unavailable_variants -%}
-    <variant-selects class="{% unless request.design_mode %} no-js-hidden{% endunless %} product-option has-default{% if hide_unavailable_variants %} hide-unavailable{% endif %}" data-product="{{ product.id }}" data-section="{{ section.id }}" data-url="{{ product.url }}" data-update-url="{{ updateURL }}" data-update-cart="{{ updateCart }}" data-update-template="{{ updateTemplate }}" data-update-sticky="{{ updateSticky }}">
+    <{% if type == 'main-product' %}variant-selects{% else %}variant-quick-view-selects{% endif %} class="no-js-hidden product-option has-default" data-product="{{ product.id }}" data-section="{{ section.id }}" data-url="{{ product.url }}">
         {%- for option in product.options_with_values -%}
             <div class="product-form__input product-form__input--dropdown" data-product-attribute="set-select" data-option-index="{{ forloop.index0 }}">
-                <label class="form__label" for="option-{{ forloop.index0 | prepend: prefix }}">
+                <label class="form__label" for="option-{{ forloop.index0 }}">
                     {{ option.name | append: ':' }}
                     <span data-header-option>
                         {{ option.selected_value }}
                     </span>
                 </label>
                 <div class="form__select select">
-                    <select id="option-{{ forloop.index0 | prepend: prefix }}"
+                    <select id="option-{{ forloop.index0 }}"
                         class="select__select"
-                        name="options[{{ option.name | escape }}-{{ product.id }}-{{ section.id | prepend: prefix }}]"
+                        name="options[{{ option.name | escape }}-{{ product.id }}-{{ section.id }}]"
                     >
                         {%- for value in option.values -%}
                             <option value="{{ value | escape }}" {% if option.selected_value == value %}selected="selected"{% endif %}>
@@ -99,5 +96,5 @@
         <script type="application/json">
             {{ product.variants | json }}
         </script>
-    </variant-selects>
+    </{% if type == 'main-product' %}variant-selects{% else %}variant-quick-view-selects{% endif %}>
 {%- endif -%}

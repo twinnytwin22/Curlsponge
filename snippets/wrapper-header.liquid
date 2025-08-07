@@ -1,7 +1,28 @@
-{%- if ajax_menu -%}
-	{% section 'header-navigation-full-elements' %}
+{%- if settings.header_layout == '1' -%}
+    {% section 'announcement-bar' %}
+	{% section 'header' %}
+{%- elsif settings.header_layout == '2' -%}
+    {% section 'header-2' %}
+{%- elsif settings.header_layout == '3' -%}
+    {% section 'header-3' %}
+	{% section 'announcement-bar-2' %}
+{%- elsif settings.header_layout == '4' -%}
+    {% section 'announcement-bar-3' %}
+	{% section 'header-4' %}
+{%- elsif settings.header_layout == '5' -%}
+	{% section 'header-5' %}
+{%- elsif settings.header_layout == '6' -%}
+	{% section 'announcement-bar-3' %}
+	{% section 'header-6' %}
+{%- elsif settings.header_layout == '7' -%}
+	{% section 'announcement-bar-3' %}
+	{% section 'header-7' %}
+{%- elsif settings.header_layout == '8' -%}
+	{% section 'header-8' %}
+{%- elsif settings.header_layout == '9' -%}
+	{% section 'announcement-bar-3' %}
+	{% section 'header-9' %}
 {%- endif -%}
-
 {%- if settings.mobile_menu != 'default' -%}
 	{% section 'halo-navigation-mobile' %}
 	{% section 'halo-navigation-mobile-2' %}

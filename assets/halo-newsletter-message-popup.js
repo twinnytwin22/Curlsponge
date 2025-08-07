@@ -15,10 +15,8 @@ class NewsletterMessagePopup extends HTMLElement {
     }
 
     onBodyClickEvent(event){
-        if(document.body.classList.contains('newsletter-message-show')){
-            if (!this.contains(event.target)){
-                this.close();
-            }
+        if (!this.contains(event.target)){
+            this.close();
         }
     }
 }

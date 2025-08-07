@@ -1,4 +1,5 @@
 {{ 'component-portfolio.css' | asset_url | stylesheet_tag }}
+
 {%- liquid
     assign padding_top = section.settings.padding_top | append: 'px'
     assign padding_bottom = section.settings.padding_bottom | append: 'px'
@@ -20,14 +21,29 @@
     assign image_border_radius = settings.image_border_radius
     assign image_effect = settings.image_effect
 -%}
-<portfolio-item data-section-id="{{ section.id }}" data-section-type="portfolio" id="PortfolioSection-{{ section.id }}" data-section="{{ section.id }}" class="halo-page-padding"
-    style="--padding-top: {{ padding_top }};
-        --padding-bottom: {{ padding_bottom }};
-        --padding-top-tablet: {{ padding_top_tablet }};
-        --padding-bottom-tablet: {{ padding_bottom_tablet }};
-        --padding-top-mobile: {{ padding_top_mobile }};
-        --padding-bottom-mobile: {{ padding_bottom_mobile }};"
->
+
+<style type="text/css" media="screen">
+    #PortfolioSection-{{ section.id }}{
+        padding-top: {{ padding_top }};
+        padding-bottom: {{ padding_bottom }};
+    }
+
+    @media (max-width: 1024px) {
+        #PortfolioSection-{{ section.id }}{
+            padding-top: {{ padding_top_tablet }};
+            padding-bottom: {{ padding_bottom_tablet }};
+        }
+    }
+
+    @media (max-width: 550px) {
+        #PortfolioSection-{{ section.id }}{
+            padding-top: {{ padding_top_mobile }};
+            padding-bottom: {{ padding_bottom_mobile }};
+        }
+    }
+</style>
+
+<portfolio-item data-section-id="{{ section.id }}" data-section-type="portfolio" id="PortfolioSection-{{ section.id }}" data-section="{{ section.id }}">
     <div class="container container-{{ container }}">
         {%- if show_breadcrumb -%}
             {% render 'breadcrumb', alignment: breadcrumb_alignment %}
@@ -102,28 +118,33 @@
                                             {% capture cap_title %}title_{{ i }}{% endcapture %}
                                             {% capture cap_text %}text_{{ i }}{% endcapture %}
                                             {% capture cap_link %}link_{{ i }}{% endcapture %}
+
                                             {%- liquid
                                                 assign image = block.settings[cap_image]
                                                 assign title = block.settings[cap_title]
                                                 assign text = block.settings[cap_text]
                                                 assign link = block.settings[cap_link]
                                             -%}
+                                            
                                             {%- if image != blank -%}
                                                 <div class="masonry-item portfolio-item" data-gallery-item="{{ block.id }}">
                                                     <div class="item image-{{ image_effect }} image-border-{{ image_border_radius }}">
                                                         <div class="img-box">
-                                                            <loading-banner class="loading-banner">
-                                                                <{% if link != blank %}a{% else %}div{% endif %} class="image style-{{ style }}" {% if link != blank %}href="{{ link }}"{% endif %} style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
-                                                                    <img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x"
-                                                                        src="{{ image | img_url: 'master' }}"
-                                                                        loading="lazy"
-                                                                        alt="{{ image.alt | default: shop.name | escape }}">
-                                                                    {%- if image_effect == 'liquid' -%}
-                                                                        <span class="hover"></span>
-                                                                    {%- endif -%}
-                                                                    {% render 'icon-long-arrow' %}
-                                                                </{% if link != blank %}a{% else %}div{% endif %}>
-                                                            </loading-banner>
+                                                            {%- if link != blank -%}
+                                                                <a class="image style-{{ style }}" href="{{ link }}" style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
+                                                            {%- else -%}
+                                                                <div class="image style-{{ style }}" style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
+                                                            {%- endif -%}
+                                                                <img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x"
+                                                                    src="{{ image | img_url: 'master' }}"
+                                                                    loading="lazy"
+                                                                    alt="{{ image.alt | default: shop.name | escape }}">
+                                                                {% render 'icon-long-arrow' %}
+                                                            {%- if link != blank -%}
+                                                                </a>
+                                                            {%- else -%}
+                                                                </div>
+                                                            {%- endif -%}
                                                         </div>
                                                         {%- if title != blank or text != blank -%}
                                                             <div class="content-box text-{{ align }} style-{{ style }}">
@@ -156,8 +177,11 @@
         </div>
     </div>
 </portfolio-item>
+
 {{ 'halo-masonry.js' | asset_url | script_tag }}
+
 <script src="{{ 'halo-portfolio.js' | asset_url }}" defer></script>
+
 {% schema %}
     {
         "name": "t:sections.main-portfolio-page.name",

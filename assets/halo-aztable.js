@@ -57,9 +57,11 @@ class AZTable extends HTMLElement {
     	event.preventDefault();
         event.stopPropagation();
 
-        let url = event.target.getAttribute('data-href'),
+        var url = event.target.getAttribute('data-href'),
             title = event.target.getAttribute('data-title'),
-            content = `<iframe src="${url}" width="100%" height="500" style="border:0;" allowfullscreen=""></iframe>`;
+            content;
+
+        content = `<iframe src="${url}" width="100%" height="500" style="border:0;" allowfullscreen=""></iframe>`;
 
     	this.mapPopup.querySelector('.halo-popup-title').innerText = title;
     	this.mapPopup.querySelector('.map').innerHTML = content;
@@ -68,13 +70,16 @@ class AZTable extends HTMLElement {
     }
 
     onClickCloseMap(event){
+    	event.preventDefault();
+        event.stopPropagation();
+
         document.body.classList.remove('map-popup-show');
     }
 
     onBodyClickEvent(event){
         if(document.body.classList.contains('map-popup-show')){
-            if ((!this.mapPopup.contains(event.target)) && (!(event.target).closest('[data-open-map-popup]'))){
-                this.onClickCloseMap();
+            if ((!this.mapPopup.contains(event.target)) && ($(event.target).closest('[data-open-map-popup]').length === 0)){
+                this.onClickCloseMap(event);
             }
         }
     }

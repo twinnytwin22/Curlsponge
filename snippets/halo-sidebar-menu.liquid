@@ -1,28 +1,22 @@
 <div class="halo-sidebar halo-sidebar-left halo-sidebar-menu" id="navigation-mobile">
-    <button type="button" class="halo-sidebar-close" data-menu-close-sidebar aria-label="{{ 'general.common.close' | t }}">
+    <a href="javascript:void(0)" class="halo-sidebar-close" data-menu-close-sidebar role="button">
     	<span class="visually-hidden">{{ 'general.common.close' | t }}</span>
         {% render 'icon-close' %}
-    </button>
+    </a>
     <div class="halo-sidebar-wrapper custom-scrollbar">
     	{%- if settings.mobile_menu == 'default' -%}
     		<div class="site-nav-mobile nav-menu-tab"></div>
     	{%- else -%}
     		<div class="site-nav-mobile nav-menu-tab nav-mobile-menu-tab" data-navigation-tab-mobile></div>
     	{%- endif -%}
-    	<div class="site-nav-mobile nav" data-navigation-mobile>
-			<ul class="list-menu-loading" role="list">
-				{%- for i in (1..8)-%}
-					<li class="list-menu-loading__item"></li>
-				{%- endfor -%}
-			</ul>
-		</div>
+    	<div class="site-nav-mobile nav" data-navigation-mobile></div>
     	{%- if settings.mobile_menu == 'default' -%}
 	    	<div class="site-nav-mobile nav-acc" data-navigation-list-mobile>
 	    		{%- if shop.customer_accounts_enabled or settings.show_wishlist -%}
 		    		<ul class="list-menu list-menu--inline list-unstyled">
 						{%- if shop.customer_accounts_enabled -%}
 							<li class="menu-lv-item menu-lv-1 text-left no-megamenu">
-								<a href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" class="menu-lv-1__action list-menu__item list-menu__item--end link focus-inset" role="button">
+								<a href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" class="menu-lv-1__action list-menu__item list-menu__item--end link focus-inset">
 									<span class="custom-icon">
 								        {% render 'icon-account',
 					                        icon_account: '3'
@@ -42,7 +36,7 @@
 						{%- endif -%}
 						{%- if settings.show_wishlist -%}
 							<li class="menu-lv-item menu-lv-1 text-left no-megamenu">
-							    <a href="{{ pages['wish-list'].url }}" class="menu-lv-1__action list-menu__item list-menu__item--end link focus-inset" role="button">
+							    <a href="{{ pages['wish-list'].url }}" class="menu-lv-1__action list-menu__item list-menu__item--end link focus-inset">
 							    	<span class="custom-icon">
 								        {% render 'icon-heart',
 								        	icon_heart: '4'
