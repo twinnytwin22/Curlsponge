@@ -1,0 +1,75 @@
+.halo-toolbar-mobile{
+    position: fixed;
+    display: block;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    padding: 10px 15px;
+    z-index: 9;
+    transition: transform .6s;
+    width: 100%;
+    box-shadow: 0 6px 27px 0 rgb(0, 0, 0, 0.2);
+    background: var(--bg-color);
+}
+
+.halo-toolbar-mobile.show_text{
+    padding: 6px 15px 5px;
+}
+
+.halo-toolbar-mobile .halo-toolbar-wrapper{
+    display: flex;
+    justify-content: space-between;
+}
+
+.halo-toolbar-mobile .halo-toolbar-item .link{
+    border: none;
+    cursor: pointer;
+    background: transparent;
+    position: relative;
+    text-align: center;
+    color: var(--text-color);
+    appearance: none;
+    padding: 0;
+}
+
+.halo-toolbar-mobile .halo-toolbar-item .label{
+    display: block;
+    font-size: calc(var(--font-size) - 3px);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--letter-spacing);
+    line-height: var(--line-height);
+    color: var(--text-color);
+}
+
+.halo-toolbar-mobile .halo-toolbar-item svg{
+    width: 30px;
+    height: 30px;
+    fill: currentColor;
+    stroke: transparent;
+    color: currentColor;
+}
+
+.halo-toolbar-mobile .halo-toolbar-item .cart-count-bubble {
+    top: -2px;
+    right: -3px;
+    min-width: 20px;
+    min-height: 20px;
+    line-height: 20px;
+    background: var(--cart-count-background);
+    color: var(--cart-count-color);
+}
+
+.halo-toolbar-mobile.show_text .halo-toolbar-item svg{
+    padding: 2px;
+}
+
+body.dark-mode .halo-toolbar-mobile{
+    box-shadow: 0 6px 27px 0 rgba(255, 255, 255, 0.2);
+    background: var(--color-background);
+}
+
+@media (min-width: 1025px){
+    .halo-toolbar-mobile{
+        display: none;
+    }
+}

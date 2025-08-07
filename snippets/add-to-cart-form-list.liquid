@@ -1,0 +1,75 @@
+{%- liquid
+    assign sold_out = false
+    if product.available == false
+        assign sold_out = true
+    endif
+    assign variantCount = product.variants | size
+    assign option_name = product.options_with_values[0].name | downcase
+    assign product_swatch_option = settings.swatch | downcase
+    assign use_available_button_style = section.settings.use_available_button_style
+    if use_available_button_style
+        assign btn = section.settings.btn 
+    endif
+-%}
+
+<script>
+    {% if variantCount > 0 and product.has_only_default_variant != true %}
+        window.product_quick_shop_inven_array_{{ product.id }} = {
+            {% for variant in product.variants %}
+                '{{ variant.id }}': '{{ variant.inventory_quantity }}',
+            {%endfor%}
+        };
+    {% endif %}
+</script>
+
+<form action="{{ routes.cart_url }}/add" method="post" class="variants" id="list-{{ id }}-{{ product.id }}-{{ sectionId }}" data-product-id="{{ product.id }}" enctype="multipart/form-data">
+    {%- if sold_out -%}
+        {%- if settings.show_notify_form -%}
+            <a class="button{% if use_available_button_style %} button-{{ btn }}{% else %} button-style{% endif %} button-ATC is-notify-me" href="{{ product.url }}" data-btn-addToCart role="button">
+                {{ 'notify_form.general.label' | t }}
+            </a>
+        {%- else -%}
+            <a class="button{% if use_available_button_style %} button-{{ btn }}{% else %} button-style{% endif %} button-ATC" href="{{ product.url }}" disabled="disabled" role="button">
+                {{ 'products.product.out_of_stock' | t }}
+            </a>
+        {%- endif -%}
+    {%- else -%}
+        {%- if variantCount > 0 and product.variants.first.title != 'Default Title' -%}
+            {%- if settings.show_quick_shop -%}
+                <a class="button{% if use_available_button_style %} button-{{ btn }}{% else %} button-style{% endif %} button-ATC" href="{{ product.url }}" data-product-handle="{{ product.handle }}" data-open-quickshop-popup-list role="button">
+                    {{ 'products.product.quick_shop' | t }}
+                </a>
+            {%- else -%}
+                <a class="button{% if use_available_button_style %} button-{{ btn }}{% else %} button-style{% endif %} button-ATC" href="{{ product.url }}" role="button">
+                    {{ 'products.product.select_options' | t }}
+                </a>
+            {%- endif -%}
+        {%- else -%}
+            {%- liquid
+                assign current_variant_grid = product.selected_or_first_available_variant
+                assign first_inventory_grid = current_variant_grid.inventory_quantity
+            -%}
+            <input type="hidden" name="id" value="{{ current_variant_grid.id }}" />
+            <input type="hidden" name="quantity" value="1" />
+            {%- if first_inventory_grid > 0 -%}
+                <button
+                    class="button{% if use_available_button_style %} button-{{ btn }}{% else %} button-style{% endif %} button-ATC"
+                    type="submit"
+                    data-form-id="#list-{{ id }}-{{ product.id }}-{{ sectionId }}"
+                    data-btn-addToCart
+                >
+                    {{ 'products.product.add_to_cart' | t }}
+                </button>
+            {%- else -%}
+                <button
+                    class="button{% if use_available_button_style %} button-{{ btn }}{% else %} button-style{% endif %} button-ATC button-text-change"
+                    type="submit"
+                    data-form-id="#list-{{ id }}-{{ product.id }}-{{ sectionId }}"
+                    data-btn-addToCart
+                >
+                    {{ 'products.product.pre_order' | t }}
+                </button>
+            {%- endif -%} 
+        {%- endif -%}
+    {%- endif -%}
+</form>

@@ -1,0 +1,26 @@
+{%- if settings.enable_multiple_currencies or settings.enable_shopify_payments_currencies -%}
+	<div class="halo-top-currency">
+		{%- if settings.enable_shopify_payments_currencies -%}
+			<div class="btn-group currency-dropdown shopify-currency">
+			    <label class="dropdown-toggle dropdown-label{% unless settings.enable_multilang_shopify %} show-icon{% endunless %}" data-currency-label>
+			        {% assign currency_iso = cart.currency.iso_code %}
+			        {% render 'icon-currency',
+			        	currency_iso: currency_iso
+			        %}
+			        <span class="text" role="button" tabindex="0">
+			            {{ cart.currency.iso_code }}
+			        </span>
+			    </label>
+			</div>
+		{%- else -%}
+			<div class="btn-group currency-dropdown">
+			    <label class="dropdown-toggle dropdown-label{% unless settings.enable_multilang_shopify %} show-icon{% endunless %}" data-currency-label>
+			        <span class="icon">{{ settings.i-currency-1 }}</span>
+			        <span class="text" role="button" tabindex="0">
+			            {{ settings.currency_1_unit }}
+			        </span>
+			    </label>
+			</div>
+		{%- endif -%}
+	</div>
+{%- endif -%}

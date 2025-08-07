@@ -1,0 +1,62 @@
+{%- if settings.enable_multiple_currencies or settings.enable_shopify_payments_currencies -%}
+	<div class="halo-currency{% if settings.enable_multilang_shopify %} border-left{% endif %}">
+		<link rel="stylesheet" href="{{ 'component-currency.css' | asset_url }}" media="print" onload="this.media='all'">
+		<noscript>{{ 'component-currency.css' | asset_url | stylesheet_tag }}</noscript>
+
+		{%- if settings.enable_shopify_payments_currencies -%}
+			{%- form 'currency' -%}
+				<select name="currency" style="display:none;">
+				    {%- for currency in shop.enabled_currencies -%}
+					    {%- if currency == cart.currency -%}
+					    	<option selected="true">{{ currency.iso_code }}</option>
+					    {%- else -%}
+					    	<option>{{ currency.iso_code }}</option>
+					    {%- endif -%}
+				    {%- endfor -%}
+				</select>
+			{%- endform -%}
+			<div class="currency-block">
+			    <div class="btn-group currency-dropdown shopify-currency">
+			    	<p class="title"> {{ 'currency.currency' | t }}</p>
+			        <div class="dropdown-menu currency-menu custom-scrollbar" id="currencies">
+			            {%- for currency in shop.enabled_currencies -%}
+				            <a class="dropdown-item{% if currency == cart.currency %} active {% endif %}" href="#" data-currency="{{ currency.iso_code }}" role="button">
+				                {% assign currency_iso = currency.iso_code %}
+				                {% render 'icon-currency',
+				                	currency_iso: currency_iso
+				                %}
+				                <span class="text" role="button" tabindex="0">
+				                    {{ currency.iso_code }}
+				                </span>
+				            </a>
+			            {%- endfor -%}
+			        </div>
+			    </div>
+			</div>
+		{%- else -%}
+			{%- if settings.enable_multiple_currencies -%}
+				<div class="currency-block">
+				    <div class="btn-group currency-dropdown">
+				    	<p class="title">{{ 'currency.currency' | t }}</p>
+				        <div class="dropdown-menu currency-menu" id="currencies">
+				            {%- for i in (1..10) -%}
+					            {% capture currency_unit %}currency_{{ i }}_unit{% endcapture %}
+					        	{% assign currency_unit_data = settings[currency_unit] | split: '</span>' | last %}
+					            {% assign currency_length = settings[currency_unit] | size %}
+					            {% capture currency_icon %}i-currency-{{ i }}{% endcapture %}
+					            {%- if currency_length > 0 -%}
+						            <a class="dropdown-item{% if shop.currency == currency_unit_data %} active {% endif %}" href="#" data-currency="{{ currency_unit_data }}" role="button">
+						                <span class="icon">{{ settings[currency_icon] }}</span>
+						                <span class="text" role="button" tabindex="0">
+						                   {{ settings[currency_unit] }}
+						                </span>
+						            </a>
+					            {%- endif -%}
+				            {%- endfor -%}
+				        </div>
+				    </div>
+				</div>
+		    {%- endif -%}
+		{% endif %}
+	</div>
+{%- endif -%}

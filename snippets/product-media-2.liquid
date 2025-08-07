@@ -1,0 +1,81 @@
+<div class="productView-media">
+    {{ 'component-slider.css' | asset_url | stylesheet_tag }}
+    <slider-component class="slider-mobile-gutter">
+        <a class="skip-to-content-link button visually-hidden" href="#ProductInfo-{{ section.id }}">
+            {{ "accessibility.skip_to_product_info" | t }}
+        </a>
+        <ul class="productView-mediaList list-unstyled slider slider--mobile" role="list">
+            {%- assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src' -%}
+            {%- if product.selected_or_first_available_variant.featured_media != null -%}
+                {%- assign media = product.selected_or_first_available_variant.featured_media -%}
+                <li class="productView-mediaItem slider__slide{% if media.media_type != 'image' %} productView-mediaItem--full{% endif %}">
+                    {% render 'product-thumbnail-2',
+                        media: media,
+                        product_image_popup: product_image_popup,
+                        zoomed_image: zoomed_image,
+                        show_custom_cursor: show_custom_cursor,
+                        position: '1',
+                        loop: true,
+                        modal_id: section.id,
+                        xr_button: true
+                    %}
+                </li>
+            {%- endif -%}
+            {%- if product.featured_media -%}
+                {%- for media in product.media -%}
+                    {%- unless media.id == product.selected_or_first_available_variant.featured_media.id -%}
+                        <li class="productView-mediaItem slider__slide{% if media.media_type != 'image' %} productView-mediaItem--full{% endif %}">
+                            {% render 'product-thumbnail-2',
+                                media: media,
+                                product_image_popup: product_image_popup,
+                                zoomed_image: zoomed_image,
+                                show_custom_cursor: show_custom_cursor,
+                                position: forloop.index,
+                                loop: true,
+                                modal_id: section.id,
+                                xr_button: true
+                            %}
+                        </li>
+                    {%- endunless -%}
+                {%- endfor -%}
+            {%- else -%}
+                <li class="productView-mediaItem slider__slide">
+                    <div class="product__modal-opener product__modal-opener--noImage no-js-hidden">
+                         <div class="product__media media--transparent" style="padding-top: {{ 1 | divided_by: media.preview_image.aspect_ratio | times: 100 }}%;">
+                            {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+                            {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+                        </div>
+                    </div>
+                </li>
+            {%- endif -%}
+        </ul>
+        <div class="slider-buttons no-js-hidden{% if product.media.size < 2 %} small-hide{% endif %}">
+            <button type="button" class="slider-button slider-button--prev" name="previous" aria-label="{{ 'accessibility.previous_slide' | t }}">
+                {% render 'icon-caret' %}
+            </button>
+            <div class="slider-counter">
+                <span class="slider-counter--current">1</span>
+                <span aria-hidden="true"> / </span>
+                <span class="visually-hidden">{{ 'accessibility.of' | t }}</span>
+                <span class="slider-counter--total">{{ product.media.size }}</span>
+            </div>
+            <button type="button" class="slider-button slider-button--next" name="next" aria-label="{{ 'accessibility.next_slide' | t }}">
+                {% render 'icon-caret' %}
+            </button>
+        </div>
+    </slider-component>
+    {%- if first_3d_model -%}
+        <button
+            class="button button--full-width product__xr-button"
+            type="button"
+            aria-label="{{ 'products.product.xr_button_label' | t }}"
+            data-shopify-xr
+            data-shopify-model3d-id="{{ first_3d_model.id }}"
+            data-shopify-title="{{ product.title | escape }}"
+            data-shopify-xr-hidden
+        >
+            {% render 'icon-3d-model' %}
+            {{ 'products.product.xr_button' | t }}
+        </button>
+    {%- endif -%}
+</div>

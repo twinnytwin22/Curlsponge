@@ -1,0 +1,642 @@
+{%- if section.settings.show_categories_list -%}
+	{%- liquid
+        assign padding_top = section.settings.padding_top | append: 'px'
+        assign padding_bottom = section.settings.padding_bottom | append: 'px'
+        assign padding_top_tablet = section.settings.padding_top_tablet | append: 'px'
+        assign padding_bottom_tablet = section.settings.padding_bottom_tablet | append: 'px'
+        assign padding_top_mobile = section.settings.padding_top_mobile | append: 'px'
+        assign padding_bottom_mobile = section.settings.padding_bottom_mobile | append: 'px'
+        assign container = section.settings.container
+        assign block_title = section.settings.block_title
+        assign block_text = section.settings.block_text
+        assign block_title_align = section.settings.block_title_align
+        assign block_align = section.settings.block_align
+        assign show_categories_list_style = section.settings.show_categories_list_style
+        if show_categories_list_style
+        	assign background_color = section.settings.background_color
+            assign title_color = section.settings.title_color
+        endif
+        assign category_link = section.blocks | where: "type", "link_list"
+        if category_link.size > 6
+            assign col = 6
+        else
+            assign col = category_link.size
+        endif
+        assign heading_font = section.settings.heading_font
+        assign heading_font_size = section.settings.heading_font_size | append: 'px'
+        assign heading_font_weight = section.settings.heading_font_weight
+        assign heading_text_transform = section.settings.heading_text_transform
+        assign heading_color = section.settings.heading_color
+        assign link_font = section.settings.link_font
+        assign link_font_size = section.settings.link_font_size | append: 'px'
+        assign link_font_weight = section.settings.link_font_weight
+        assign link_text_transform = section.settings.link_text_transform
+        assign link_color =  section.settings.link_color
+        assign link_color_hover = section.settings.link_color_hover
+        assign block_mobile_layout = section.settings.block_mobile_layout
+        assign bottom_content = section.settings.bottom_content
+
+        if settings.show_dark_mode
+            assign dark_mode = false
+            unless background_color == blank or background_color == '#fff' or background_color == '#FFF' or background_color == '#ffffff' or background_color == '#FFFFFF' or background_color == 'rgb(255,255,255)' or background_color == 'rgba(255,255,255,1)' or background_color == 'rgba(0,0,0,0)' or background_color == 'rgb(0,0,0,0)'
+                assign dark_mode = true
+                if show_categories_list_style
+                    assign dark_mode_background_color = section.settings.background_color
+                endif
+                assign dark_mode_heading_color = section.settings.heading_color
+                assign dark_mode_link_color =  section.settings.link_color
+            endunless
+        endif
+    -%}
+    {%- if settings.show_dark_mode -%}
+        <style type="text/css" media="screen">
+            body.dark-mode .halo-categories-list.dark-mode {
+                background: var(--color-background);
+            }
+            
+            body.dark-mode .halo-categories-list.dark-mode .halo-row__heading {
+                color: var(--color-text);
+            }
+            
+            body.dark-mode .halo-categories-list.dark-mode .halo-row__list .link {
+                color: var(--color-text2);
+            }
+            {%- if dark_mode -%}
+                body.dark-mode .halo-categories-list:not(.dark-mode) {
+                    background: var(--dark-mode-bg-color);
+                }
+                
+                body.dark-mode .halo-categories-list:not(.dark-mode) .halo-row__heading {
+                    color: var(--dark-mode-heading-color);
+                }
+                
+                body.dark-mode .halo-categories-list:not(.dark-mode) .halo-row__list .link {
+                    color: var(--dark-mode-link-color);
+                }
+            {%- endif -%}
+            @media (min-width: 1025px) {
+                body.dark-mode .halo-categories-list.dark-mode .halo-row__list .link:hover {
+                    color: var(--link-color-hover);
+                    filter: invert(1);
+                }
+            }
+        </style>
+    {%- endif -%}
+    <div class="halo-block halo-categories-list mobile-layout-{{ block_mobile_layout }} halo-block-padding halo-block-gradient{% unless dark_mode %} dark-mode{% endunless %}" id="halo-categories-list-{{ section.id }}" data-section="{{ section.id }}"
+        style="--padding-top: {{ padding_top }};
+            --padding-bottom: {{ padding_bottom }};
+            --padding-top-tablet: {{ padding_top_tablet }};
+            --padding-bottom-tablet: {{ padding_bottom_tablet }};
+            --padding-top-mobile: {{ padding_top_mobile }};
+            --padding-bottom-mobile: {{ padding_bottom_mobile }};
+            --bg-color: {{ background_color | default: settings.colors_bg }};
+            {% if dark_mode %}
+                --dark-mode-bg-color: {{ dark_mode_background_color }};
+            {% endif %}"
+    >
+    	<div class="container container-{{ container }}">
+    		{%- if block_title != blank -%}
+                <div class="halo-block-header">
+                    <h3 class="title text-{{ block_title_align }}">
+                        <span class="text">
+                            {{ block_title | escape }}
+                        </span>
+                    </h3>
+                    {%- if block_text != blank -%}
+	                    <span class="desc text-{{ block_title_align }}">
+	                    	{{ block_text }}
+	                    </span>
+	                {%- endif -%}
+                </div>
+            {%- endif -%}
+            <div class="halo-block-content"
+                style="{% if link_font == 'font_1' %}
+                    --link-font: var(--font-1-family);
+                {% elsif link_font == 'font_2' %}
+                    --link-font: var(--font-2-family);
+                {% elsif link_font == 'font_3' %}
+                    --link-font: var(--font-3-family);
+                {% endif %}
+                --link-font-size: {{ link_font_size }};
+                --link-font-weight: {{ link_font_weight }};
+                --link-text-transform: {{ link_text_transform }};
+                {% if heading_font == 'font_1' %}
+                    --heading-font: var(--font-1-family);
+                {% elsif heading_font == 'font_2' %}
+                    --heading-font: var(--font-2-family);
+                {% elsif heading_font == 'font_3' %}
+                    --heading-font: var(--font-3-family);
+                {% endif %}
+                --heading-font-size: {{ heading_font_size }};
+                --heading-font-weight: {{ heading_font_weight }};
+                --heading-text-transform: {{ heading_text_transform }};
+                --heading-color: {{ heading_color }};
+                --link-color: {{ link_color }};
+                --link-color-hover: {{ link_color_hover }};
+                {% if dark_mode %}
+                    --dark-mode-heading-color: {{ dark_mode_heading_color }};
+                    --dark-mode-link-color: {{ dark_mode_link_color }};
+                {% endif %}"
+            >
+                <div class="halo-row column-{{ col }} disable-scrollbar">
+                    {%- for block in category_link -%}
+                        {%- liquid
+                            assign heading = block.settings.heading
+                            assign menu = block.settings.menu
+                        -%}
+                        {%- if heading != blank -%}
+                            <toggle-mobile-column class="halo-row-item halo-block__mobile text-{{ block_align }}" {{ block.shopify_attributes }}>
+                                <h2 class="halo-row__heading" {% if block_mobile_layout == "collapse" %} data-toggle-column{% endif %} role="button">
+                                    {{ heading | escape }}
+                                </h2>
+                                {%- if menu != blank -%}
+                                    <div class="halo-row__list">
+                                        <ul class="list-unstyled">
+                                            {%- for link in menu.links -%}
+                                                <li>
+                                                    <a href="{{ link.url }}" class="link link-underline list-menu__item--link" role="button">
+                                                        <span class="text">{{ link.title }}</span>
+                                                    </a>
+                                                </li>
+                                            {%- endfor -%}
+                                        </ul>
+                                    </div>
+                                {%- endif -%}
+                            </toggle-mobile-column>
+                        {%- endif -%}
+                    {%- endfor -%}
+                </div>
+                {%- if bottom_content != blank -%}
+                    <div class="halo-content text-{{ block_align }}">
+                        <div class="custom-text-content halo-text-format">
+                            {{ bottom_content }}
+                        </div>
+                    </div>
+                {%- endif -%}
+            </div>
+    	</div>
+    </div>
+{%- endif -%}
+{% schema %}
+	{
+		"name": "t:sections.categories-list.name",
+		"settings": [
+			{
+                "type": "header",
+                "content": "t:sections.categories-list.settings.header__1.content"
+            },
+            {
+                "type": "checkbox",
+                "id": "show_categories_list",
+                "label": "t:sections.categories-list.settings.general.label__1",
+                "default": true
+            },
+            {
+                "type": "select",
+                "id": "container",
+                "label": "t:sections.general.settings.container.label__1",
+                "default": "1770",
+                "options": [
+                {
+                    "value": "1170",
+                    "label": "t:sections.general.settings.container.options__1"
+                },
+                {
+                    "value": "1370",
+                    "label": "t:sections.general.settings.container.options__2"
+                },
+                {
+                    "value": "1570",
+                    "label": "t:sections.general.settings.container.options__3"
+                },
+                {
+                    "value": "1770",
+                    "label": "t:sections.general.settings.container.options__4"
+                },
+                {
+                    "value": "1860",
+                    "label": "t:sections.general.settings.container.options__5"
+                }],
+                "info": "t:sections.general.settings.container.info"
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__1.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 0
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 0
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__2.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top_tablet",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 40
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom_tablet",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 40
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__3.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top_mobile",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 30
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom_mobile",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 30
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.categories-list.settings.content.paragraph__1.content"
+            },
+            {
+                "type": "text",
+                "id": "block_title",
+                "label": "t:sections.general.settings.block-title.label__1",
+                "default": "Full Categories"
+            },
+            {
+                "type": "text",
+                "id": "block_text",
+                "label": "t:sections.general.settings.block-title.label__2"
+            },
+            {
+                "type": "select",
+                "id": "block_title_align",
+                "label": "t:sections.general.settings.block-title.label__3",
+                "options": [
+                {
+                    "value": "left",
+                    "label": "t:sections.general.settings.block-title.options__1"
+                },
+                {
+                    "value": "center",
+                    "label": "t:sections.general.settings.block-title.options__2"
+                },
+                {
+                    "value": "right",
+                    "label": "t:sections.general.settings.block-title.options__3"
+                }],
+                "default": "left"
+            },
+            {
+                "type": "select",
+                "id": "block_mobile_layout",
+                "label": "t:sections.general.settings.block-layout.label__2",
+                "options": [
+                {
+                    "value": "full",
+                    "label": "t:sections.categories-list.settings.style.options__1"
+                },
+                {
+                    "value": "collapse",
+                    "label": "t:sections.categories-list.settings.style.options__2"
+                }],
+                "default": "collapse"
+            },
+            {
+                "type": "select",
+                "id": "block_align",
+                "label": "t:sections.general.settings.aligmnent.label__1",
+                "options": [
+                {
+                    "value": "left",
+                    "label": "t:sections.general.settings.aligmnent.options__1"
+                },
+                {
+                    "value": "center",
+                    "label": "t:sections.general.settings.aligmnent.options__2"
+                },
+                {
+                    "value": "right",
+                    "label": "t:sections.general.settings.aligmnent.options__3"
+                },
+                {
+                    "value": "justify",
+                    "label": "t:sections.general.settings.aligmnent.options__4"
+                }],
+                "default": "left"
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.categories-list.settings.content.paragraph__2.content"
+            },
+            {
+                "type":"textarea",
+                "id":"bottom_content",
+                "label":"t:sections.categories-list.settings.content.label__1"
+            },
+            {
+                "type": "header",
+                "content": "t:sections.categories-list.settings.header__2.content"
+            },
+            {
+                "type": "checkbox",
+                "id": "show_categories_list_style",
+                "label": "t:sections.general.settings.style.label__3",
+                "default": true
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.typography.paragraph__1.content"
+            },
+            {
+                "type": "select",
+                "id": "heading_font",
+                "label": "t:settings_schema.typography.settings.font.label",
+                "options": [
+                {
+                    "value": "font_1",
+                    "label": "t:settings_schema.typography.settings.font.options__1"
+                },
+                {
+                    "value": "font_2",
+                    "label": "t:settings_schema.typography.settings.font.options__2"
+                },
+                {
+                    "value": "font_3",
+                    "label": "t:settings_schema.typography.settings.font.options__3"
+                }],
+                "default": "font_1"
+            },
+            {
+                "type": "range",
+                "id": "heading_font_size",
+                "label": "t:settings_schema.typography.settings.font_size.label",
+                "min": 10,
+                "max": 20,
+                "step": 1,
+                "unit": "t:settings_schema.typography.settings.font_size.unit",
+                "default": 18
+            },
+            {
+                "type": "select",
+                "id": "heading_font_weight",
+                "label": "t:settings_schema.typography.settings.font_weight.label",
+                "default": "600",
+                "options": [
+                {
+                    "value": "400",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__1"
+                },
+                {
+                    "value": "500",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__2"
+                },
+                {
+                    "value": "600",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__3"
+                },
+                {
+                    "value": "700",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__4"
+                },
+                {
+                    "value": "800",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__5"
+                },
+                {
+                    "value": "900",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__6"
+                }]
+            },
+            {
+                "type": "select",
+                "id": "heading_text_transform",
+                "label": "t:settings_schema.typography.settings.text_transform.label",
+                "default": "capitalize",
+                "options": [
+                {
+                    "value": "none",
+                    "label": "t:settings_schema.typography.settings.text_transform.options__1"
+                },
+                {
+                    "value": "capitalize",
+                    "label": "t:settings_schema.typography.settings.text_transform.options__2"
+                },
+                {
+                    "value": "uppercase",
+                    "label": "t:settings_schema.typography.settings.text_transform.options__3"
+                },
+                {
+                    "value": "lowercase",
+                    "label": "t:settings_schema.typography.settings.text_transform.options__4"
+                }]
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.typography.paragraph__2.content"
+            },
+            {
+                "type": "select",
+                "id": "link_font",
+                "label": "t:settings_schema.typography.settings.font.label",
+                "options": [
+                {
+                    "value": "font_1",
+                    "label": "t:settings_schema.typography.settings.font.options__1"
+                },
+                {
+                    "value": "font_2",
+                    "label": "t:settings_schema.typography.settings.font.options__2"
+                },
+                {
+                    "value": "font_3",
+                    "label": "t:settings_schema.typography.settings.font.options__3"
+                }],
+                "default": "font_1"
+            },
+            {
+                "type": "range",
+                "id": "link_font_size",
+                "label": "t:settings_schema.typography.settings.font_size.label",
+                "min": 10,
+                "max": 20,
+                "step": 1,
+                "unit": "t:settings_schema.typography.settings.font_size.unit",
+                "default": 14
+            },
+            {
+                "type": "select",
+                "id": "link_font_weight",
+                "label": "t:settings_schema.typography.settings.font_weight.label",
+                "default": "400",
+                "options": [
+                {
+                    "value": "400",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__1"
+                },
+                {
+                    "value": "500",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__2"
+                },
+                {
+                    "value": "600",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__3"
+                },
+                {
+                    "value": "700",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__4"
+                },
+                {
+                    "value": "800",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__5"
+                },
+                {
+                    "value": "900",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__6"
+                }]
+            },
+            {
+                "type": "select",
+                "id": "link_text_transform",
+                "label": "t:settings_schema.typography.settings.text_transform.label",
+                "default": "capitalize",
+                "options": [
+                {
+                    "value": "none",
+                    "label": "t:settings_schema.typography.settings.text_transform.options__1"
+                },
+                {
+                    "value": "capitalize",
+                    "label": "t:settings_schema.typography.settings.text_transform.options__2"
+                },
+                {
+                    "value": "uppercase",
+                    "label": "t:settings_schema.typography.settings.text_transform.options__3"
+                },
+                {
+                    "value": "lowercase",
+                    "label": "t:settings_schema.typography.settings.text_transform.options__4"
+                }]
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.color.paragraph__1.content"
+            },
+            {
+                "type": "color_background",
+                "id": "background_color",
+                "label": "t:sections.general.settings.color.label__1"
+            },
+            {
+                "type": "color",
+                "id": "heading_color",
+                "label": "t:sections.general.settings.color.label__7",
+                "default": "#202020"
+            },
+            {
+                "type": "color",
+                "id": "link_color",
+                "label": "t:sections.general.settings.color.label__2",
+                "default": "#202020"
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.color.paragraph__2.content"
+            },
+            {
+                "id": "link_color_hover",
+                "type": "color",
+                "label": "t:sections.general.settings.color.label__2",
+                "default": "#0000FF"
+            }
+		],
+		"blocks": [
+            {
+                "type": "link_list",
+                "name": "t:sections.categories-list.blocks.link_list.name",
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "heading",
+                        "default": "Quick links",
+                        "label": "t:sections.general.settings.content.label__1",
+                        "info": "t:sections.categories-list.blocks.link_list.settings.content.info__1"
+                    },
+                    {
+                        "type": "link_list",
+                        "id": "menu",
+                        "default": "footer",
+                        "label": "t:sections.general.settings.content.label__15",
+                        "info": "t:sections.categories-list.blocks.link_list.settings.content.info__2"
+                    }
+                ]
+            }
+        ],
+        "presets": [
+            {
+                "name": "t:sections.categories-list.presets.name",
+                "blocks": [
+                    {
+                        "type": "link_list"
+                    },
+                    {
+                        "type": "link_list"
+                    },
+                    {
+                        "type": "link_list"
+                    },
+                    {
+                        "type": "link_list"
+                    },
+                    {
+                        "type": "link_list"
+                    },
+                    {
+                        "type": "link_list"
+                    }
+                ]
+            }
+        ],
+        "disabled_on": {
+            "groups": ["header", "footer"]
+        }
+	}
+{% endschema %}

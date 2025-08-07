@@ -1,0 +1,80 @@
+<link rel="stylesheet" href="{{ 'component-auth.css' | asset_url }}" media="print" onload="this.media='all'">
+
+<noscript>{{ 'component-auth.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+    assign btn_1 = settings.customer_login_btn_1
+    assign btn_2 = settings.customer_login_btn_2
+-%}
+<customer-auth class="halo-popup halo-auth-popup custom-scrollbar{% if customer %} customPopup halo-popup-LeftRight{% else %} halo-popup-topDown{% endif %}" data-auth-popup id="halo-auth-popup">
+    {%- if settings.show_image_login and settings.image_login != blank -%}
+        <div class="halo-header-image">
+            {% assign image = settings.image_login %}
+            <img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x"
+                src="{{ image | img_url: 'master' }}"
+                loading="lazy"
+                alt="{{ image.alt | default: shop.name | escape }}"
+            >
+        </div>
+    {%- endif -%}
+    <div class="halo-popup-wrapper">
+        {%- unless customer -%}
+            <div class="halo-popup-header">
+        {%- endunless -%}
+            <a href="javascript:void(0)" class="halo-popup-close{% if customer %} customPopup-close{% endif %} clearfix" data-close-auth-popup role="button">
+                <span class="visually-hidden">{{ 'general.common.close' | t }}</span>
+                {% render 'icon-close' %}
+            </a>
+        {%- unless customer -%}
+                <h5 class="halo-popup-title text-center">
+                    {{ 'customer.login_page.title' | t }}
+                </h5>
+            </div>
+        {%- endunless -%}
+        <div class="halo-popup-content custom-scrollbar">
+            <div class="auth">
+                {%- if customer -%}
+                    <div class="auth-text">
+                        {{ 'customer.account.welcome' | t : name : customer.name }}
+                    </div>
+                    <div class="auth-actions">
+                        <a class="button button-{{ btn_1 }}" href="{{ routes.account_url }}" role="button">
+                            {{ 'customer.account.title' | t }}
+                        </a>
+                        <a class="button button-{{ btn_2 }}" href="{{ routes.account_logout_url }}" role="button">
+                            {{ 'customer.log_out' | t }}
+                        </a>
+                    </div>
+                {%- else -%}
+                    <form accept-charset="UTF-8" action="{{ routes.account_login_url }}" method="post" class="auth-form">
+                        <input name="form_type" type="hidden" value="customer_login" />
+                        <input name="utf8" type="hidden" value="✓" />
+                        <div class="form-field">
+                            <label class="form-label hiddenLabels" for="customer_email">
+                                {{ 'customer.login_page.email' | t }}
+                            </label>
+                            <input class="form-input form-input-placeholder" id="customer_email" type="email" value="" name="customer[email]" placeholder="{{ 'customer.login_page.email' | t }}">
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label hiddenLabels" for="customer_password">
+                                {{ 'customer.login_page.password' | t }}
+                            </label>
+                            <input class="form-input form-input-placeholder" id="customer_password" type="password" value="" placeholder="{{ 'customer.login_page.password' | t }}" name="customer[password]">
+                        </div>
+                        <div class="form-actions auth-actions text-center">
+                            <input type="submit" class="button button-height button-{{ btn_1 }} button-login" value="{{ 'customer.log_in' | t }}">
+                            <a href="{{ routes.account_register_url }}" class="button button-height flex align-center justify-center button-{{ btn_2 }} button-register" role="button">
+                                {{ 'customer.register.register' | t }}
+                            </a>
+                            <a class="auth-link link link-underline{% if settings.layout == '8' %} text-underline{% endif %}" href="{{ routes.account_login_url }}#recover" role="button">
+                                <span class="text">{{ 'customer.forgot_password' | t }}</span>
+                            </a>
+                        </div>
+                    </form>
+                {%- endif -%}
+            </div>
+        </div>
+    </div>
+</customer-auth>
+
+<script src="{{ 'halo-customer-login.js' | asset_url }}" defer="defer"></script>

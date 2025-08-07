@@ -1,0 +1,237 @@
+{% comment %}
+    Renders a product card
+
+    Accepts:
+    - product_card_product: {Object} Product Liquid object (optional)
+    - media_size: {String} Size of the product image card. Values are "square" and "portrait". Default is "square" (optional)
+    - show_secondary_image: {Boolean} Show the secondary image on hover. Default: false (optional)
+    - add_image_padding: {Boolean} Enables padding on the image to space out the grid
+    - show_vendor: {Boolean} Show the product vendor. Default: false
+
+    Usage:
+    {% render 'product-card', show_vendor: section.settings.show_vendor %}
+{% endcomment %}
+
+{%- liquid
+    assign product_swatch_option = settings.swatch | downcase
+    assign isColor = false
+    for option in product_card_product.options_with_values
+        assign option_name = option.name | downcase
+        if product_swatch_option contains option_name
+            assign isColor = true
+            assign index = forloop.index0
+            assign position = forloop.index | minus: 1
+            assign variant_selected = option.selected_value
+          break
+        else 
+            assign position = 0
+        endif
+    endfor
+    assign page_type = request.page_type | replace: 'customers/', ''
+-%}
+
+{%- if settings.product_card_style == '1' -%}
+    {% render 'product-card-style-1',
+        product: product_card_product,
+        media_size: media_size,
+        portrait_aspect_ratio: portrait_aspect_ratio,
+        page_type: page_type,
+        sectionId: sectionId,
+        serial: serial,
+        variant_selected: variant_selected,
+        index: index,
+        position: position,
+        isColor: isColor,
+        show_list: show_list,
+        wishlist_add: wishlist_add,
+        show_add_to_cart: show_add_to_cart,
+        loading: loading
+    %}
+{%- elsif settings.product_card_style == '2' -%}
+    {% render 'product-card-style-2',
+        product: product_card_product,
+        media_size: media_size,
+        portrait_aspect_ratio: portrait_aspect_ratio,
+        page_type: page_type,
+        sectionId: sectionId,
+        serial: serial,
+        variant_selected: variant_selected,
+        index: index,
+        position: position,
+        isColor: isColor,
+        show_list: show_list,
+        wishlist_add: wishlist_add,
+        show_add_to_cart: show_add_to_cart,
+        loading: loading
+    %}
+{%- elsif settings.product_card_style == '3' -%}
+    {% render 'product-card-style-3',
+        product: product_card_product,
+        media_size: media_size,
+        portrait_aspect_ratio: portrait_aspect_ratio,
+        page_type: page_type,
+        sectionId: sectionId,
+        serial: serial,
+        variant_selected: variant_selected,
+        index: index,
+        position: position,
+        isColor: isColor,
+        show_list: show_list,
+        wishlist_add: wishlist_add,
+        show_add_to_cart: show_add_to_cart,
+        loading: loading
+    %}
+{%- elsif settings.product_card_style == '4' -%}
+    {% render 'product-card-style-4',
+        product: product_card_product,
+        media_size: media_size,
+        portrait_aspect_ratio: portrait_aspect_ratio,
+        page_type: page_type,
+        sectionId: sectionId,
+        serial: serial,
+        variant_selected: variant_selected,
+        index: index,
+        position: position,
+        isColor: isColor,
+        show_list: show_list,
+        wishlist_add: wishlist_add,
+        show_add_to_cart: show_add_to_cart,
+        loading: loading
+    %}
+{%- elsif settings.product_card_style == '5' -%}
+    {% render 'product-card-style-5',
+        product: product_card_product,
+        media_size: media_size,
+        portrait_aspect_ratio: portrait_aspect_ratio,
+        page_type: page_type,
+        sectionId: sectionId,
+        serial: serial,
+        variant_selected: variant_selected,
+        index: index,
+        position: position,
+        isColor: isColor,
+        show_list: show_list,
+        wishlist_add: wishlist_add,
+        show_add_to_cart: show_add_to_cart,
+        loading: loading
+    %}
+{%- elsif settings.product_card_style == '6' -%}
+    {% render 'product-card-style-6',
+        product: product_card_product,
+        media_size: media_size,
+        portrait_aspect_ratio: portrait_aspect_ratio,
+        page_type: page_type,
+        sectionId: sectionId,
+        serial: serial,
+        variant_selected: variant_selected,
+        index: index,
+        position: position,
+        isColor: isColor,
+        show_list: show_list,
+        wishlist_add: wishlist_add,
+        show_add_to_cart: show_add_to_cart,
+        loading: loading
+    %}
+{%- elsif settings.product_card_style == '7' -%}
+    {% render 'product-card-style-7',
+        product: product_card_product,
+        media_size: media_size,
+        portrait_aspect_ratio: portrait_aspect_ratio,
+        page_type: page_type,
+        sectionId: sectionId,
+        serial: serial,
+        variant_selected: variant_selected,
+        index: index,
+        position: position,
+        isColor: isColor,
+        show_list: show_list,
+        wishlist_add: wishlist_add,
+        show_add_to_cart: show_add_to_cart,
+        loading: loading
+    %}
+{%- elsif settings.product_card_style == '8' -%}
+    {% render 'product-card-style-8',
+        product: product_card_product,
+        media_size: media_size,
+        portrait_aspect_ratio: portrait_aspect_ratio,
+        page_type: page_type,
+        sectionId: sectionId,
+        serial: serial,
+        variant_selected: variant_selected,
+        index: index,
+        position: position,
+        isColor: isColor,
+        show_list: show_list,
+        wishlist_add: wishlist_add,
+        show_add_to_cart: show_add_to_cart,
+        loading: loading
+    %}
+{%- elsif settings.product_card_style == '9' -%}
+    {% render 'product-card-style-9',
+        product: product_card_product,
+        media_size: media_size,
+        portrait_aspect_ratio: portrait_aspect_ratio,
+        page_type: page_type,
+        sectionId: sectionId,
+        serial: serial,
+        variant_selected: variant_selected,
+        index: index,
+        position: position,
+        isColor: isColor,
+        show_list: show_list,
+        wishlist_add: wishlist_add,
+        show_add_to_cart: show_add_to_cart,
+        loading: loading
+    %}
+{%- elsif settings.product_card_style == '10' -%}
+    {% render 'product-card-style-10',
+        product: product_card_product,
+        media_size: media_size,
+        portrait_aspect_ratio: portrait_aspect_ratio,
+        page_type: page_type,
+        sectionId: sectionId,
+        serial: serial,
+        variant_selected: variant_selected,
+        index: index,
+        position: position,
+        isColor: isColor,
+        show_list: show_list,
+        wishlist_add: wishlist_add,
+        show_add_to_cart: show_add_to_cart,
+        loading: loading
+    %}
+{%- elsif settings.product_card_style == '11' -%}
+    {% render 'product-card-style-11',
+        product: product_card_product,
+        media_size: media_size,
+        portrait_aspect_ratio: portrait_aspect_ratio,
+        page_type: page_type,
+        sectionId: sectionId,
+        serial: serial,
+        variant_selected: variant_selected,
+        index: index,
+        position: position,
+        isColor: isColor,
+        show_list: show_list,
+        wishlist_add: wishlist_add,
+        show_add_to_cart: show_add_to_cart,
+        loading: loading
+    %}
+{%- elsif settings.product_card_style == '12' -%}
+    {% render 'product-card-style-12',
+        product: product_card_product,
+        media_size: media_size,
+        portrait_aspect_ratio: portrait_aspect_ratio,
+        page_type: page_type,
+        sectionId: sectionId,
+        serial: serial,
+        variant_selected: variant_selected,
+        index: index,
+        position: position,
+        isColor: isColor,
+        show_list: show_list,
+        wishlist_add: wishlist_add,
+        show_add_to_cart: show_add_to_cart,
+        loading: loading
+    %}
+{%- endif -%}

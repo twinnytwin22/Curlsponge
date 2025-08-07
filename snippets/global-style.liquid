@@ -1,0 +1,36 @@
+{{ 'vendor.css' | asset_url | stylesheet_tag }}
+{{ 'animated.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-loading-overlay.css' | asset_url | stylesheet_tag }}
+{{ 'component-loading-banner.css' | asset_url | stylesheet_tag }}
+{{ 'component-loading-block.css' | asset_url | stylesheet_tag }}
+
+{{ 'custom.css' | asset_url | stylesheet_tag }}
+
+{%- unless request.page_type == 'product' -%}
+	<link rel="stylesheet" href="{{ 'component-product-form.css' | asset_url }}" media="print" onload="this.media='all'">
+	<link rel="stylesheet" href="{{ 'component-review.css' | asset_url }}" media="print" onload="this.media='all'">
+	<link rel="stylesheet" href="{{ 'component-price.css' | asset_url }}" media="print" onload="this.media='all'">
+	<link rel="stylesheet" href="{{ 'component-badge.css' | asset_url }}" media="print" onload="this.media='all'">
+	<link rel="stylesheet" href="{{ 'component-rte.css' | asset_url }}" media="print" onload="this.media='all'">
+	<link rel="stylesheet" href="{{ 'component-notify-me.css' | asset_url }}" media="print" onload="this.media='all'">
+	<link rel="stylesheet" href="{{ 'component-fancybox.css' | asset_url }}" media="print" onload="this.media='all'">
+{%- endunless -%}
+
+<link rel="stylesheet" href="{{ 'component-newsletter.css' | asset_url }}" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="{{ 'component-list-social.css' | asset_url }}" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="{{ 'component-image-effect.css' | asset_url }}" media="print" onload="this.media='all'">
+
+{%- unless request.page_type == 'product' -%}
+	<noscript>{{ 'component-product-form.css' | asset_url | stylesheet_tag }}</noscript>
+	<noscript>{{ 'component-review.css' | asset_url | stylesheet_tag }}</noscript>
+	<noscript>{{ 'component-price.css' | asset_url | stylesheet_tag }}</noscript>
+	<noscript>{{ 'component-badge.css' | asset_url | stylesheet_tag }}</noscript>
+	<noscript>{{ 'component-rte.css' | asset_url | stylesheet_tag }}</noscript>
+	<noscript>{{ 'component-notify-me.css' | asset_url | stylesheet_tag }}</noscript>
+	<noscript>{{ 'component-fancybox.css' | asset_url | stylesheet_tag }}</noscript>
+{%- endunless -%}
+
+<noscript>{{ 'component-newsletter.css' | asset_url | stylesheet_tag }}</noscript>
+<noscript>{{ 'component-list-social.css' | asset_url | stylesheet_tag }}</noscript>
+<noscript>{{ 'component-image-effect.css' | asset_url | stylesheet_tag }}</noscript>

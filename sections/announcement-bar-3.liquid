@@ -1,0 +1,256 @@
+{%- if section.settings.show_announcement_bar -%}
+    {{ 'component-announcement-bar.css' | asset_url | stylesheet_tag }}
+    {%- liquid
+        assign container = section.settings.container
+        assign content = section.settings.text
+        assign link = section.settings.link
+        assign show = section.settings.announcement-bar-show
+        assign has_announcement_bar = false
+        if show == 'home'
+            assign page_type = request.page_type | replace: 'customers/', ''
+            if page_type == 'index'
+                assign has_announcement_bar = true
+            endif
+        else
+            assign has_announcement_bar = true
+        endif
+        assign text_font_size = section.settings.text_font_size | append: 'px'
+        assign text_font_weight = section.settings.text_font_weight
+        assign announcement_bar_bg = section.settings.announcement_bar_bg
+        assign announcement_bar_color = section.settings.announcement_bar_color
+        assign announcement_bar_line_text = section.settings.announcement_bar_line_text
+        assign top_header = section.settings.text_font_size | times: settings.line_height | plus: 25 | append: 'px'
+
+        if settings.show_dark_mode
+            assign dark_mode = false
+            unless announcement_bar_bg == blank or announcement_bar_bg == '#fff' or announcement_bar_bg == '#FFF' or announcement_bar_bg == '#ffffff' or announcement_bar_bg == '#FFFFFF' or announcement_bar_bg == 'rgb(255,255,255)' or announcement_bar_bg == 'rgba(255,255,255,1)' or announcement_bar_bg == 'rgba(0,0,0,0)'
+                assign dark_mode = true
+                assign dark_mode_announcement_bar_bg = section.settings.announcement_bar_bg
+                assign dark_mode_announcement_bar_color = section.settings.announcement_bar_color
+            endunless
+        endif
+    -%}
+    {%- if has_announcement_bar -%}
+        <style type="text/css">
+            :root{
+                --top-fixed-header: {{ top_header }};
+            }
+        </style>
+        <announcement-bar class="announcement-bar announcement-bar-3{% unless dark_mode %} dark-mode{% endunless %}" role="region" aria-label="{{ 'sections.header.announcement' | t }}" id="announcement-bar-{{ section.id }}" style="--bg-color: {{ announcement_bar_bg | default: settings.colors_bg }};
+            --text-color: {{ announcement_bar_color }};
+            --text-font-size: {{ text_font_size }};
+            --text-font-weight: {{ text_font_weight }};
+            --line-text: {{ announcement_bar_line_text }};
+            {% if dark_mode %}
+                --dark-mode-bg-color: {{ dark_mode_announcement_bar_bg }};
+                --dark-mode-text-color: {{ dark_mode_announcement_bar_color }};
+            {% endif %}"
+        >
+            <div class="container container-{{ container }}">
+                <div class="top-announcement-bar top-announcement-bar-3 text-center">
+                    {%- if link != blank -%}
+                        <a href="{{ link }}" class="announcement-bar__link link focus-inset">
+                    {%- endif -%}
+                        <div class="announcement-bar__message">
+                            {{ content }}
+                        </div>
+                    {%- if link != blank -%}
+                        </a>
+                    {%- endif -%}
+                    <button type="button" class="announcement-bar__close clearfix">
+                        <span class="visually-hidden">{{ 'general.common.close' | t }}</span>
+                        {% render 'icon-close' %}
+                    </button>
+                </div>
+            </div>
+        </announcement-bar>
+    {%- endif -%}
+{%- endif -%}
+
+{% schema %}
+{
+    "name": "t:sections.announcement-bar.name__3",
+    "class": "header-line announcement-bar-3",
+    "settings": [
+        {
+            "type": "header",
+            "content": "t:sections.announcement-bar.settings.header__1.content"
+        },
+        {
+            "type": "checkbox",
+            "label": "t:sections.announcement-bar.settings.general.label__1",
+            "id": "show_announcement_bar",
+            "default": true
+        },
+        {
+            "type": "select",
+            "id": "container",
+            "label": "t:sections.general.settings.container.label__1",
+            "default": "1370",
+            "options": [
+            {
+                "value": "1170",
+                "label": "t:sections.general.settings.container.options__1"
+            },
+            {
+                "value": "1370",
+                "label": "t:sections.general.settings.container.options__2"
+            },
+            {
+                "value": "1570",
+                "label": "t:sections.general.settings.container.options__3"
+            },
+            {
+                "value": "1770",
+                "label": "t:sections.general.settings.container.options__4"
+            },
+            {
+                "value": "1860",
+                "label": "t:sections.general.settings.container.options__5"
+            },
+            {
+                "value": "full",
+                "label": "t:sections.general.settings.container.options__6"
+            }],
+            "info": "t:sections.general.settings.container.info"
+        },
+        {
+            "type": "select",
+            "id": "announcement-bar-show",
+            "label": "t:sections.announcement-bar.settings.general.label__3",
+            "default": "all",
+            "options":
+            [
+                {
+                    "value": "home",
+                    "label": "t:sections.announcement-bar.settings.general.options__3"
+                },
+                {
+                    "value": "all",
+                    "label": "t:sections.announcement-bar.settings.general.options__4"
+                }
+            ]
+        },
+        {
+            "type": "html",
+            "id": "text",
+            "label": "t:sections.general.settings.content.label__2",
+            "default": "<p>Welcome to our store</p>"
+        },
+        {
+            "type": "url",
+            "id": "link",
+            "label": "t:sections.general.settings.content.label__4",
+            "info": "t:sections.general.settings.content.info__1"
+        },
+        {
+            "type": "select",
+            "id": "announcement_bar_line_text",
+            "label": "t:sections.announcement-bar.settings.general.label__4",
+            "default": "1",
+            "options": [
+            {
+                "value": "1",
+                "label": "1"
+            },
+            {
+                "value": "2",
+                "label": "2"
+            },
+            {
+                "value": "3",
+                "label": "3"
+            },
+            {
+                "value": "full",
+                "label": "t:sections.announcement-bar.settings.general.options__5"
+            }]
+        },
+        {
+            "type": "paragraph",
+            "content": "t:sections.general.settings.typography.paragraph__2.content"
+        },
+        {
+            "type": "range",
+            "id": "text_font_size",
+            "label": "t:settings_schema.typography.settings.font_size.label",
+            "min": 10,
+            "max": 20,
+            "step": 1,
+            "unit": "t:settings_schema.typography.settings.font_size.unit",
+            "default": 12
+        },
+        {
+            "type": "select",
+            "id": "text_font_weight",
+            "label": "t:settings_schema.typography.settings.font_weight.label",
+            "default": "400",
+            "options": [
+            {
+                "value": "300",
+                "label": "t:settings_schema.typography.settings.font_weight.options__6"
+            },
+            {
+                "value": "400",
+                "label": "t:settings_schema.typography.settings.font_weight.options__1"
+            },
+            {
+                "value": "500",
+                "label": "t:settings_schema.typography.settings.font_weight.options__2"
+            },
+            {
+                "value": "600",
+                "label": "t:settings_schema.typography.settings.font_weight.options__3"
+            },
+            {
+                "value": "700",
+                "label": "t:settings_schema.typography.settings.font_weight.options__4"
+            },
+            {
+                "value": "800",
+                "label": "t:settings_schema.typography.settings.font_weight.options__5"
+            },
+            {
+                "value": "900",
+                "label": "t:settings_schema.typography.settings.font_weight.options__6"
+            }]
+        },
+        {
+            "type": "header",
+            "content": "t:sections.announcement-bar.settings.header__2.content"
+        },
+        {
+            "type": "color_background",
+            "label": "t:sections.general.settings.color.label__1",
+            "id": "announcement_bar_bg",
+            "default": "#6C959D"
+        },
+        {
+            "type": "color",
+            "label": "t:sections.general.settings.color.label__2",
+            "id": "announcement_bar_color",
+            "default": "#FFFFFF"
+        }
+    ],
+    "presets": [
+        {
+            "name": "t:sections.announcement-bar.name__3",
+            "settings": {
+                "show_announcement_bar": true,
+                "container": "1770",
+                "announcement-bar-show": "all",
+                "text": "<p>ENDS TONIGHT! <strong>20% OFF FINISHING TOUCHES<\/strong>. PRICES AS MARKED. EXCEPTIONS APPLY.<\/p>",
+                "link": "",
+                "announcement_bar_line_text": "1",
+                "text_font_size": 12,
+                "text_font_weight": "400",
+                "announcement_bar_bg": "#6c959d",
+                "announcement_bar_color": "#ffffff"
+            }
+        }
+    ],
+    "enabled_on": {
+        "groups": ["header" ]
+    }
+}
+{% endschema %}

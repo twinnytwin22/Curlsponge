@@ -1,0 +1,24 @@
+<quantity-input class="productView-quantity quantity__group clearfix style-{{ style }} {{ class }}">
+    <label class="form-label quantity__label{% unless style == '3' %} hiddenLabels{% endunless %}" for="quantity-{{ section.id }}-{{ product.id }}">
+        {{ 'products.product.quantity.label' | t }}:
+    </label>
+    {%- if style == '3' -%}
+        <div class="show-label-style-3">
+    {%- endif -%}
+    {%- if style == '2' or style == '3' -%}
+	    <button class="quantity__button no-js-hidden" name="minus" type="button" {% unless current_variant.available %} disabled{% endunless %}>
+	    	<span class="visually-hidden">{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}</span>
+	      	{% render 'icon-minus' %}
+	    </button>
+	{%- endif -%}
+    <input class="form-input quantity__input" type="number" aria-live="polite" name="quantity" aria-label="quantity" min="1" value="1" inputmode="numeric" pattern="[0-9]*" id="quantity-{{ section.id }}-{{ product.id }}" data-product="{{ product.id }}" data-section="{{ section.id }}" data-price="{{ current_variant.price }}" data-update-cart="{{ updateCart }}" {% if current_variant.inventory_management == 'shopify' and current_variant.inventory_quantity > 0 %} data-inventory-quantity="{{ current_variant.inventory_quantity }}"{% endif %} {% unless current_variant.available %} disabled{% endunless %}>
+    {%- if style == '2' or style == '3' -%}
+    	<button class="quantity__button no-js-hidden" name="plus" type="button" {% unless current_variant.available %} disabled{% endunless %}>
+          	<span class="visually-hidden">{{ 'products.product.quantity.increase' | t: product: product.title | escape }}</span>
+          	{% render 'icon-plus' %}
+        </button>
+    {%- endif -%}
+    {%- if style == '3' -%}
+        </div>
+    {%- endif -%}
+</quantity-input>

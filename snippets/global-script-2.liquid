@@ -1,0 +1,19 @@
+{%- if settings.show_predictive_search -%}
+	<script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+{%- if settings.show_wishlist -%}
+	<script src="{{ 'halo.set-wishlist.js' | asset_url }}"></script>
+{%- endif -%}
+{%- if settings.show_compare -%}
+	<script src="{{ 'halo.set-compare.js' | asset_url }}"></script>
+{%- endif -%}
+{%- if settings.show_swatch and settings.product_swatch_type == 'slider' -%}
+	<script src="{{ 'halo.slide-swatch.js' | asset_url }}"></script>
+{%- endif -%}
+<script src="{{ 'halo.set-product.js' | asset_url }}"></script>
+<script src="{{ 'theme.min.js' | asset_url }}"></script>
+<script src="{{ 'element.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'variants.js' | asset_url }}" defer="defer"></script>
+{%- if settings.image_effect == 'liquid' -%}
+	<script src="{{ 'hover.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}

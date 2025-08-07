@@ -1,0 +1,28 @@
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+html {
+    box-sizing: border-box;
+    font-size: 62.5%;
+    height: 100%;
+}
+
+body {
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    grid-template-columns: 100%;
+    min-height: 100%;
+    font-family: var(--font-body-family);
+    font-style: var(--font-body-style);
+    font-weight: var(--font-body-weight);
+    line-height: var(--line-height);
+    letter-spacing: var(--letter-spacing);
+}
+
+img{
+    height: auto;
+}
+

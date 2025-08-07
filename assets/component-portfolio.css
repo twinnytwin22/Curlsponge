@@ -1,0 +1,275 @@
+portfolio-item{
+    display: block;
+}
+
+.portfolio-title{
+    text-transform: capitalize;
+    font-size: 40px;
+    font-weight: var(--font-weight-semibold);
+    padding-bottom: 43px;
+}
+
+.portfolio-item .image svg:not(.placeholder-svg){
+    display: block;
+    width: 60px;
+    height: 60px;
+    background-color: var(--bg-white);
+    fill: var(--icon);
+    stroke: transparent;
+    border-radius: 50%;
+    position: absolute;
+    top: auto;
+    right: 20px;
+    bottom: 20px;
+    padding: 17px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: var(--anchor-transition);
+    z-index: 5;
+}
+
+.portfolio-item .image.style-2 svg:not(.placeholder-svg){
+    top: 40%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    transform: translate(-50%,-50%);
+}
+
+.portfolio-item .content-box{
+    padding: 21px 15px 31px 15px;
+}
+
+.portfolio-item .heading{
+    display: block;
+    font-size: calc(var(--font-size) + 4px);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height);
+    letter-spacing: var(--letter-spacing);
+    color: var(--color-text);
+    margin: 0 0 2px 0;
+}
+
+.portfolio-item .desc{
+    display: block;
+    font-size: var(--font-size);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height);
+    letter-spacing: var(--letter-spacing);
+    color: var(--color-text2);
+}
+
+.portfolio-tabs .tabs{
+    display: flex;
+    align-items: center;
+    font-size: 0;
+    letter-spacing: 0;
+    white-space: nowrap;
+    overflow-x: auto;
+    margin: 0 0 30px 0;
+    min-height: 50px;
+}
+
+.portfolio-tabs .tab{
+    display: flex;
+    width: auto;
+    margin: 0 0 0 15px;
+}
+
+.portfolio-tabs .tab-title{
+    display: block;
+    font-size: var(--font-size);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height);
+    letter-spacing: var(--letter-spacing);
+    color: var(--color-text);
+    background-color: var(--bg-white);
+    border: 1px solid var(--bg-grey);
+    padding: 7px 30px;
+}
+
+.portfolio-tabs .tab.tab-all{
+    margin-left: 0;
+    order: -1;
+}
+
+.portfolio-tabs .tab.is-active .tab-title{
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background-color: var(--bg-black);
+    border-color: var(--bg-black);
+    color: var(--color-white);
+}
+
+body.dark-mode .portfolio-tabs .tab.is-active .tab-title {
+    background-color: var(--bg-white);
+    border-color: var(--bg-white);
+    color: var(--color-black);
+}
+
+body.dark-mode .portfolio-tabs .tab-title {
+    background-color: var(--bg-black);
+}
+
+body.dark-mode .portfolio-item .image svg:not(.placeholder-svg) {
+    background-color: var(--bg-black);
+}
+
+@media(max-width: 1024px){
+    .portfolio .portfolio-title{
+        text-align: left;
+    }
+
+    .portfolio-tabs .tab.is-active .tab-title{
+        padding-top: 7px;
+        padding-bottom: 7px;
+    }
+
+    .portfolio-tabs .tabs{
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    .portfolio-tabs .tab{
+        margin: 0 15px 15px 0;
+    }
+}
+
+@media (min-width: 1025px){
+    .portfolio-item .image:before{
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,.1);
+        z-index: 2;
+        opacity: 0;
+        visibility: hidden;
+        transition: all ease .5s;
+    }
+
+    .portfolio-item .image:hover svg:not(.placeholder-svg),
+    .portfolio-item .item:hover .image.style-2 svg:not(.placeholder-svg){
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    .portfolio-item .image:hover:before,
+    .portfolio-item .item:hover .image.style-2:before{
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .portfolio-item .content-box.style-2{
+        position: absolute;
+        top: auto;
+        bottom: 0;
+        left: 50%;
+        width: 100%;
+        z-index: 6;
+        padding-bottom: 31px;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: var(--anchor-transition);
+        transition-property: transform;
+        transform: translate3d(calc(-50% - 10px),0,0);
+    }
+
+    .portfolio-item .content-box.style-2 .heading,
+    .portfolio-item .content-box.style-2 .desc{
+        color: var(--color-white);
+    }
+
+    .portfolio-item .item:hover .content-box.style-2{
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: translate3d(-50%,0,0);
+    }
+
+    .portfolio-tabs .tabs{
+        flex-wrap: wrap;
+        justify-content: center;
+        white-space: unset;
+        overflow-x: hidden;
+        margin-bottom: 60px;
+    }
+
+    .portfolio-tabs .tab{
+        margin-left: 20px;
+    }
+
+    .portfolio-tabs .tab-title{
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+
+    .portfolio-tabs--vertical{
+        display: flex;
+        flex-wrap: wrap;
+        margin-right: -15px;
+        margin-left: -15px;
+    }
+
+    .portfolio-tabs-col{
+        display: inline-block;
+        vertical-align: top;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .portfolio-tabs-col1{
+        width: 240px;
+    }
+
+    .portfolio-tabs-col2{
+        width: calc(100% - 240px);
+    }
+
+    .portfolio-tabs--vertical .portfolio-title{
+        top: -12px;
+        padding-bottom: 6px;
+    }
+
+    .portfolio-tabs--vertical .tabs{
+        flex-wrap: wrap;
+        margin-bottom: 0;
+        min-height: unset;
+    }
+
+    .portfolio-tabs--vertical .tab{
+        display: block;
+        width: 100%;
+        margin-left: 0;
+        margin-bottom: 15px;
+    }
+
+    .portfolio-tabs--vertical .tab-title{
+        display: inline-block;
+        vertical-align: top;
+        color: var(--color-grey);
+        padding: 0!important;
+        border: none!important;
+        background-color: transparent!important;
+    }
+
+    .portfolio-tabs--vertical .tab.is-active .tab-title{
+        color: var(--color-text);
+    }
+
+    body.dark-mode .portfolio-tabs--vertical .tab.is-active .tab-title {
+        color: var(--color-white);
+    }
+}
+
+@media (min-width: 1600px){
+    .portfolio-item .content-box.style-2{
+        max-width: 200px;
+    }
+}

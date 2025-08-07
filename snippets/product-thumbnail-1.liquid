@@ -1,0 +1,117 @@
+<div class="productView-for clearfix" {% if product_to_show %} data-item-to-show="{{ product_to_show }}"{% endif %}>
+    {%- if product.selected_or_first_available_variant.featured_media != null -%}
+        {%- assign featured_media = product.selected_or_first_available_variant.featured_media -%}
+        <div class="productView-thumbnail{% if show_variant_image_group %} filter-{{ featured_media.alt | handle }}{% endif %}" data-media-id="{{ thisId }}-{{ featured_media.id }}" data-index="1">
+            <a class="productView-thumbnail-link animated-loading" href="javascript:void(0)" data-image="{{ featured_media | img_url: 'original' }}" role="button" style="
+                {% if media_size != 'square' %}
+                    --padding-bottom: {{ portrait_aspect_ratio }};
+                {% else %}
+                    --padding-bottom: 100%;
+                {% endif %};"
+            >
+                <img srcset="{{ featured_media | img_url: 'compact' }}"
+                    src="{{ featured_media | img_url: 'compact' }}"
+                    alt="{{ featured_media.alt | escape }}"
+                    title="{{ featured_media.alt | escape }}"
+                    loading="lazy"
+                    data-sizes="auto"
+                >
+            </a>
+        </div>
+    {%- endif -%}
+    {%- for media in product.media -%}
+        {%- case media.media_type -%}
+            {%- when 'image' -%}
+                {%- unless media.id == product.selected_or_first_available_variant.featured_media.id -%}
+                    {%- liquid
+                        if product.selected_or_first_available_variant.featured_media != null
+                            assign media_position = media_position | default: 1 | plus: 1
+                        else
+                            assign media_position = media_position | default: 0 | plus: 1
+                        endif
+                        assign lazy_load = false
+                        if media_position > 1
+                            assign lazy_load = true
+                        endif
+                    -%}
+                    <div class="productView-thumbnail{% if show_variant_image_group %} filter-{{ media.alt | handle }}{% endif %}" data-media-id="{{ thisId }}-{{ media.id }}" data-index="{{ media_position }}">
+                        <a class="productView-thumbnail-link animated-loading" href="javascript:void(0)" data-image="{{ media | img_url: 'original' }}" role="button" style="
+                            {% if media_size != 'square' %}
+                                --padding-bottom: {{ portrait_aspect_ratio }};
+                            {% else %}
+                                --padding-bottom: 100%;
+                            {% endif %};"
+                        >
+                            <img srcset="{{ media | img_url: 'compact' }}"
+                                src="{{ media | img_url: 'compact' }}"
+                                alt="{{ media.alt | escape }}"
+                                title="{{ media.alt | escape }}"
+                                {%- if lazy_load -%}
+                                    loading="lazy"
+                                {%- endif -%}
+                                data-index="{{ media_position }}"
+                                data-sizes="auto"
+                            >
+                        </a>
+                    </div>
+                {%- endunless -%}
+            {%- when 'external_video' -%}
+                <div class="productView-thumbnail" data-media-id="{{ thisId }}-{{ media.id }}">
+                    <div class="productView-thumbnail-link animated-loading" role="button" tabindex="0"
+                        style="{% if media_size != 'square' %}
+                            --padding-bottom: {{ portrait_aspect_ratio }};
+                            {% else %}
+                                --padding-bottom: 100%;
+                            {% endif %};"
+                    >
+                        <img src="{{ media | img_url: 'compact' }}" alt="{{ media.alt | escape }}" title="{{ media.alt | escape }}">
+                    </div>
+                    <div class="productView-thumbnail-icon">
+                        {% render 'icon-video' %}
+                    </div>
+                </div>
+            {%- when 'video' -%}
+                <div class="productView-thumbnail" data-media-id="{{ thisId }}-{{ media.id }}">
+                    <div class="productView-thumbnail-link animated-loading" role="button" tabindex="0"
+                        style="{% if media_size != 'square' %}
+                            --padding-bottom: {{ portrait_aspect_ratio }};
+                            {% else %}
+                                --padding-bottom: 100%;
+                            {% endif %};"
+                    >
+                        <img src="{{ media | media_tag | split: 'src="' | last | split: '">' | first }}" alt="{{ media.alt | escape }}" title="{{ media.alt | escape }}"/>
+                    </div>
+                    <div class="productView-thumbnail-icon">
+                        {% render 'icon-video' %}
+                    </div>
+                </div>
+            {%- when 'model' -%}
+                <div class="productView-thumbnail" data-media-id="{{ thisId }}-{{ media.id }}">
+                    <div class="productView-thumbnail-link animated-loading" role="button" tabindex="0"
+                        style="{% if media_size != 'square' %}
+                            --padding-bottom: {{ portrait_aspect_ratio }};
+                            {% else %}
+                                --padding-bottom: 100%;
+                            {% endif %};"
+                    >
+                        <img src="{{ media | media_tag | split: 'poster="' | last | split: '">' | first }}" alt="{{ media.alt | escape }}" title="{{ media.alt | escape }}"/>
+                    </div>
+                    <div class="productView-thumbnail-icon">
+                        {% render 'icon-3d-model' %}
+                    </div>
+                </div>
+            {%- else -%}
+                <div class="productView-thumbnail" data-media-id="{{ thisId }}-{{ media.id }}">
+                    <div class="productView-thumbnail-link animated-loading" role="button" tabindex="0"
+                        style="{% if media_size != 'square' %}
+                            --padding-bottom: {{ portrait_aspect_ratio }};
+                            {% else %}
+                                --padding-bottom: 100%;
+                            {% endif %};"
+                    >
+                        {{ media | media_tag }}
+                    </div>
+                </div>
+        {%- endcase -%}
+    {%- endfor -%}
+</div>

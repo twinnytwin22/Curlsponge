@@ -1,0 +1,16 @@
+<noscript>{{ 'component-quick-edit-cart.css' | asset_url | stylesheet_tag }}</noscript>
+
+<div class="halo-popup halo-edit-cart-popup halo-popup-topDown customPopup-large" data-edit-cart-popup id="halo-edit-cart-popup" data-url-style-edit-cart="{{ 'component-quick-edit-cart.css' | asset_url }}">
+    <div class="halo-popup-wrapper">
+    	<div class="halo-popup-header">
+            <a href="javascript:void(0)" class="halo-popup-close clearfix" data-close-edit-cart role="button">
+                <span class="visually-hidden">{{ 'general.common.close' | t }}</span>
+                {% render 'icon-close' %}
+            </a>
+            <h5 class="halo-popup-title text-center">
+                {{ 'sections.cart.edit_cart_title' | t }}
+            </h5>
+    	</div>
+        <div class="halo-popup-content halo-popup-scroll custom-scrollbar"></div>
+    </div>
+</div>

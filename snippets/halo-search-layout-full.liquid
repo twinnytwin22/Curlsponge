@@ -1,0 +1,45 @@
+<summary class="header__search-full" aria-haspopup="dialog" aria-label="{{ 'general.search.search' | t }}">
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search search-modal__form {{ search_custom_class }}">
+        <div class="field field-justify-between">
+            <button class="button button--primary search__button field__button focus-inset" aria-label="{{ 'general.search.search' | t }}">
+                {% render 'icon-search',
+                    icon_search: icon_search
+                %}
+            </button>
+            <label class="field__label hiddenLabels" for="Search-In-Modal">{{ 'general.search.search' | t }}</label>
+            <input 
+                class="search__input field__input form-input-placeholder" 
+                id="Search-In-Modal" 
+                type="search" 
+                name="q" 
+                value="{{ search.terms | escape}}" 
+                placeholder="{{ 'general.search.search' | t }}" 
+                autocomplete="off"
+                {%- if settings.show_predictive_search -%}
+                    role="combobox"
+                    aria-expanded="false"
+                    aria-owns="predictive-search-results-list"
+                    aria-controls="predictive-search-results-list"
+                    aria-haspopup="listbox"
+                    aria-autocomplete="list"
+                    autocorrect="off"
+                    autocomplete="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                {%- endif -%}
+            >
+            <input type="hidden" name="type" value="product">
+            <input type="hidden" name="options[prefix]" value="last" />
+        </div>
+    </form>
+</summary>
+<div class="search-modal modal__content{% if settings.show_predictive_search %} quickSearch{% endif %}" role="dialog" aria-modal="true" aria-label="{{ 'general.search.search' | t }}">
+    {% render 'halo-quick-search',
+        section: section,
+        container: container,
+        has_close: has_close
+    %}
+    {%- if settings.show_predictive_search -%}
+        {%- render 'predictive-search-results' -%}
+    {%- endif -%}
+</div>

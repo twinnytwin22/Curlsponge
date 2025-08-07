@@ -1,0 +1,72 @@
+<a href="javascript:void(0)" class="header__icon header__icon--search header__icon--summary link focus-inset modal__toggle" data-open-search-popup role="button">
+    <span class="group-icon">
+        {% render 'icon-search',
+            icon_search: icon_search,
+            class: 'modal__toggle-open icon icon-search'
+        %}
+        {% render 'icon-close',
+            class: 'modal__toggle-close icon icon-close'
+        %}
+    </span>
+    {%- if show_text -%}
+        <span class="text">
+            {{ 'general.search.icon_header' | t }}
+        </span>
+    {%- else -%}
+        <span class="visually-hidden">
+            {{ 'general.search.icon_header' | t }}
+        </span>
+    {%- endif -%}
+</a>
+<div class="search-modal search-modal-popup modal__content{% if settings.show_quick_search %} quickSearch{% endif %}" role="dialog" aria-modal="true" aria-label="{{ 'general.search.search' | t }}">
+    <div class="search-modal__content" tabindex="-1">
+        {%- if settings.show_predictive_search -%}
+            <predictive-search data-loading-text="{{ 'accessibility.loading' | t }}" data-product-to-show="{{ settings.quick_search_to_show }}" class="predictive-search-form">
+        {%- endif -%}
+                <form action="{{ routes.search_url }}" method="get" role="search" class="search search-modal__form {{ search_custom_class }}">
+                    <div class="field">
+                        <input type="hidden" name="type" value="product">
+                        <input type="hidden" name="options[prefix]" value="last" />
+                        <label class="field__label hiddenLabels" for="Search-In-Modal">{{ 'general.search.search' | t }}</label>
+                        <input 
+                            class="search__input field__input form-input-placeholder" 
+                            id="Search-In-Modal" 
+                            type="search" 
+                            name="q" 
+                            value="{{ search.terms | escape | split:'*' | first }}" 
+                            placeholder="{{ 'general.search.search' | t }}" 
+                            autocomplete="off"
+                            {%- if settings.show_predictive_search -%}
+                                role="combobox"
+                                aria-expanded="false"
+                                aria-owns="predictive-search-results-list"
+                                aria-controls="predictive-search-results-list"
+                                aria-haspopup="listbox"
+                                aria-autocomplete="list"
+                                autocorrect="off"
+                                autocomplete="off"
+                                autocapitalize="off"
+                                spellcheck="false"
+                            {%- endif -%}
+                        >
+                        <button class="button button--primary search__button field__button focus-inset" aria-label="{{ 'general.search.search' | t }}">
+                            {% render 'icon-search' %}
+                        </button>
+                    </div>
+                </form>
+
+                {% render 'halo-quick-search',
+                    container: container
+                %}
+
+                {%- if settings.show_predictive_search -%}
+                    {%- render 'predictive-search-results' -%}
+                {%- endif -%}
+        {%- if settings.show_predictive_search -%}
+            </predictive-search>
+        {%- endif -%}
+        <button type="button" class="search-modal__close-button modal__close-button button{% if search_custom_class == 'search-modal__form--custom' %} modal__close-button-custom{% endif %}" aria-label="{{ 'accessibility.close' | t }}" data-close-search-popup>
+            {% render 'icon-close' %}
+        </button>
+    </div>
+</div>

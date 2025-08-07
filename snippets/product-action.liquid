@@ -1,0 +1,71 @@
+{%- assign button_id = 'product-add-to-cart' | prepend: prefix -%}
+<div class="productView-action{% unless settings.show_wishlist %} productView-action-2{% endunless %}">
+    <input type="hidden" name="id" value="{{ current_variant.id }}">
+    <div class="product-form__buttons">
+        {%- if current_variant.available -%}
+            {%- if current_variant.inventory_management -%}
+                {%- assign first_inventory = current_variant.inventory_quantity -%}
+                <button
+                    type="submit"
+                    name="add"
+                    data-btn-addToCart
+                    class="product-form__submit button-height button{% if use_available_button_style %} button-{{ btn }}{% else %} button-style{% endif %}{% if first_inventory > 0 %}{% if show_subtotal_text %}{% if subtotal_style == '1' %} button-text-change{% endif %}{% endif %}{% else %} button-text-change button-text-pre-order{% endif %}{% if enable_shake_affect %} button-shake-affect{% endif %}"
+                    id="{{ button_id }}">
+                    {%- if first_inventory > 0 -%}
+                        {%- if show_subtotal_text -%}
+                            {%- if subtotal_style == '1' -%}
+                                {{ 'products.product.sub_total' | t : value : '' }}
+                                {{ subtotal | money }}
+                            {%- else -%}
+                                {{ 'products.product.add_to_cart' | t}}
+                            {%- endif -%}
+                        {%- else -%}
+                            {{ 'products.product.add_to_cart' | t}}
+                        {%- endif -%}
+                    {%- else -%}
+                        {%- if show_subtotal_text -%}
+                            {%- if subtotal_style == '1' -%}
+                                {{ 'products.product.sub_total_2' | t : value : '' }}
+                                {{ subtotal | money }}
+                            {%- else -%}
+                                {{ 'products.product.pre_order' | t }}
+                            {%- endif -%}
+                        {%- else -%}
+                            {{ 'products.product.pre_order' | t }}
+                        {%- endif -%}
+                    {%- endif -%}
+                </button>
+            {%- else -%}
+                <button
+                    type="submit"
+                    name="add"
+                    data-btn-addToCart
+                    class="product-form__submit button-height button{% if use_available_button_style %} button-{{ btn }}{% else %} button-style{% endif %}{% if show_subtotal_text %}{% if subtotal_style == '1' %} button-text-change{% endif %}{% endif %}{% if enable_shake_affect %} button-shake-affect{% endif %}"
+                    id="{{ button_id }}"
+                >
+                    {%- if show_subtotal_text -%}
+                        {%- if subtotal_style == '1' -%}
+                            {{ 'products.product.sub_total' | t : value : '' }}
+                            {{ subtotal | money }}
+                        {%- else -%}
+                            {{ 'products.product.add_to_cart' | t}}
+                        {%- endif -%}
+                    {%- else -%}
+                        {{ 'products.product.add_to_cart' | t}}
+                    {%- endif -%}
+                </button>
+            {%- endif -%}
+        {%- else -%}
+            <button
+                type="submit"
+                name="add"
+                data-btn-addToCart
+                class="product-form__submit button-height button{% if use_available_button_style %} button-{{ btn }}{% else %} button-style{% endif %}"
+                id="{{ button_id }}"
+                disabled
+            >
+                {{ 'products.product.sold_out' | t }}
+            </button>
+        {%- endif -%}
+    </div>
+</div>

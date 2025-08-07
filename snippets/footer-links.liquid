@@ -1,0 +1,42 @@
+<div class="footer-block__item footer-block__link{% if footer_newsletter.size > 0 %} footer_newsletter_show{% endif %}{% if footer_text.size > 0 %} footer__text-show{% endif %} text-{{ text_align }}">
+    {%- liquid
+        assign col = footer_link.size
+        if footer_custom_information.size > 0
+            assign col = footer_link.size | plus : 1
+        endif
+    -%}
+    <div class="item column-{{ col }} clearfix">
+        {%- if footer_style == '1' or footer_style == '3' -%}
+            {% render 'footer-custom-information',
+                footer_custom_information: footer_custom_information
+            %}
+        {%- endif -%}
+        {%- for column in footer_link -%}
+            {%- if column.settings.heading != blank -%}
+                <toggle-mobile-column class="footer-block__column footer-block__mobile" {{ column.shopify_attributes }}>
+                    <h2 class="footer-block__heading" data-toggle-column>
+                        {{ column.settings.heading | escape }}
+                    </h2>
+                    {%- if column.settings.menu != blank -%}
+                        <div class="footer-block__list">
+                            <ul class="list-unstyled">
+                                {%- for link in column.settings.menu.links -%}
+                                    <li>
+                                        <a href="{{ link.url }}" class="link link-underline list-menu__item--link" role="button">
+                                            <span class="text">{{ link.title }}</span>
+                                        </a>
+                                    </li>
+                                {%- endfor -%}
+                            </ul>
+                        </div>
+                    {%- endif -%}
+                </toggle-mobile-column>
+            {%- endif -%}
+        {%- endfor -%}
+        {%- if footer_style == '2' or footer_style == '4' -%}
+            {% render 'footer-custom-information',
+                footer_custom_information: footer_custom_information
+            %}
+        {%- endif -%}
+    </div>
+</div>

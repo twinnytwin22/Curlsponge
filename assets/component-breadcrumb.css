@@ -1,0 +1,107 @@
+.breadcrumb{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px 0;
+    font-size: var(--font-size);
+    font-weight: var(--font-weight-normal);
+    text-transform: capitalize;
+    letter-spacing: var(--letter-spacing);
+    line-height: var(--line-height);
+}
+
+.breadcrumb a,
+.breadcrumb span:not(.separate){
+    font-size: inherit;
+    font-weight: inherit;
+    text-transform: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
+}
+
+.breadcrumb a{
+    color: var(--color-text);
+}
+
+.breadcrumb span.separate{
+    display: block;
+    position: relative;
+    padding: 0 4px;
+}
+
+.breadcrumb span.separate:before{
+    content: '/';
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+    color: #ececec;
+}
+
+.breadcrumb span:not(.separate),
+.breadcrumb span.bd-title a{
+    color: var(--color-grey);
+}
+
+.breadcrumb.breadcrumb-center{
+    justify-content: center;
+}
+
+.breadcrumb.breadcrumb-right{
+    justify-content: flex-end;
+}
+
+@media (max-width: 550px) {
+    .breadcrumb-inline{
+        display: block;
+        white-space: nowrap;
+        overflow-x: auto;
+        /*display: -webkit-box;
+        -webkit-line-clamp: 1;
+        text-overflow: ellipsis;
+        -webkit-box-orient: vertical;*/
+    }
+
+    .breadcrumb-full{
+        display: block;
+    }
+
+    .breadcrumb-full span.separate,
+    .breadcrumb-inline span.separate{
+        display: inline-block;
+    }
+
+    .breadcrumbs-blur{
+        display: block;
+        position: absolute;
+        top: 1px;
+        background: linear-gradient(270deg,hsla(var(--color-background-hsl), .8) 38.19%, hsla(var(--color-background-hsl), 0));
+        width: 40px;
+        height: 40px;
+        z-index: 1;
+    }
+
+    .breadcrumbs-blur__left{
+        left: 0;
+        transform: rotate(180deg);
+    }
+
+    .breadcrumbs-blur__right{
+        right: 0;
+    }
+
+    body.dark-mode .breadcrumbs-blur{
+        background: linear-gradient(270deg,hsla(var(--color-background-hsl), .2) 38.19%, hsla(var(--color-background-hsl), 0));
+    }
+}
+
+@media (min-width: 1025px){
+    .breadcrumb{
+        padding: 35px 0 20px 0;
+    }
+    
+    .breadcrumb a:hover{
+        color: var(--color-link-hover);
+    }
+}

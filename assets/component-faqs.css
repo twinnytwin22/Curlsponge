@@ -1,0 +1,536 @@
+faqs-item{
+    display: block;
+}
+
+.faqs-desc{
+    font-size: var(--font-size);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height);
+    letter-spacing: -0.02em;
+    color: var(--color-text2);
+}
+
+.faqs-filter{
+    display: inline-block;
+    vertical-align: top;
+    position: relative;
+    margin: 33px 0 57px 0;
+}
+
+.faqs-filterLabel{
+    display: inline-block;
+    vertical-align: middle;
+    font-size: var(--font-size);
+    font-weight: var(--font-weight-normal);
+    letter-spacing: var(--letter-spacing);
+    line-height: var(--line-height);
+    color: var(--color-text);
+    margin: 0 20px 0 0;
+}
+
+.faqs-filterDropdown{
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.faqs-filterDropdown-text{
+    background-color: var(--form-input-bg);
+    border: 1px solid var(--form-input-border);
+    padding: 7px 38px 7px 20px;
+    min-height: 40px;
+    min-width: 90px;
+    cursor: pointer;
+    position: relative;
+    min-width: 160px;
+}
+
+.faqs-filterDropdown-text .text{
+    font-size: var(--font-size);
+    font-weight: var(--font-weight-normal);
+    letter-spacing: var(--letter-spacing);
+    line-height: var(--line-height);
+    color: var(--form-label);
+    overflow: hidden;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.faqs-filterDropdown-menu{
+    font-size: 0;
+    letter-spacing: 0;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--bg-white);
+    z-index: 5;
+    width: 100%;
+    min-width: 90px;
+    box-shadow: 0 6px 27px 0 rgb(0, 0, 0, .2);
+    padding: 13px 0 13px 20px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.faqs-filterDropdown-menu li{
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    width: 100%;
+    padding: 0 20px 0 0;
+}
+
+.faqs-filterDropdown-menu li .text{
+    display: block;
+    width: 100%;
+    padding: 7px 0 0 0;
+    font-size: var(--font-size);
+    font-weight: var(--font-weight-normal);
+    color: var(--form-label);
+    line-height: var(--line-height);
+    letter-spacing: var(--letter-spacing);
+    cursor: pointer;
+}
+
+.faqs-filterDropdown-menu li.is-active .text{
+    text-decoration: underline;
+    text-underline-offset: 0.3rem;
+}
+
+.faqs-filterDropdown-menu.is-show{
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.faqs-title{
+    display: block;
+    font-size: 30px;
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height);
+    letter-spacing: var(--letter-spacing);
+    text-transform: capitalize;
+    color: var(--color-grey);
+    margin: 0 0 20px 0;
+}
+
+.faqs-item .card-header{
+    position: relative;
+}
+
+.faqs-item .card-header .title{
+    font-size: var(--font-size);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height);
+    letter-spacing: var(--letter-spacing);
+    color: var(--color-text);
+    background-color: transparent;
+    text-align: left;
+    padding: 0 0 4px 0;
+    transition: var(--anchor-transition);
+}
+
+.faqs-item .card-header .icon-plus{
+    display: inline-block;
+    vertical-align: top;
+    font-size: 0;
+    letter-spacing: 0;
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    width: 13px;
+    height: 13px;
+    z-index: 2;
+    pointer-events: none;
+    transform: translateY(-50%);
+}
+
+.faqs-item .card-header .icon-plus:before,
+.faqs-item .card-header .icon-plus:after{
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    z-index: 2;
+    transform: translate(50%,-50%);
+    background: var(--icon);
+    transition: var(--anchor-transition);
+}
+
+.faqs-item .card-header .icon-plus:before{
+    width: 2px;
+    height: 13px;
+}
+
+.faqs-item .card-header .icon-plus:after{
+    width: 13px;
+    height: 2px;
+}
+
+.faqs-item .collapse{
+    transition: max-height 0.5s ease-out;
+    max-height: 0;
+    overflow: hidden;
+    pointer-events: none;
+    position: relative;
+}
+
+.faqs-item + .faqs-item{
+    margin-top: 50px;
+}
+
+.faqs-paragraph.is-hidden{
+    display: none;
+}
+
+.faqs-paragraph.is-active{
+    display: block;
+    margin-top: 0!important;
+}
+
+.faqs-paragraph + .faqs-paragraph{
+    margin-top: 63px;
+}
+
+.faqs-2 .faqs-title{
+    margin-bottom: 25px;
+}
+
+.faqs-2 .faqs-item .card-header .title{
+    padding: 15px 30px 15px 15px;
+    border: 1px solid #e6e6e6;
+    background-color: var(--bg-white);
+    cursor: pointer;
+}
+
+.faqs-2 .faqs-item .card-header:not(.collapsed) .icon-plus:before{
+    transform: translateY(-50%) rotate(90deg);
+}
+
+.faqs-2 .faqs-item .card-header:not(.collapsed) + .collapse{
+    pointer-events: auto;
+}
+
+.faqs-2 .faqs-item .halo-text-format{
+    padding: 24px 30px 26px 15px;
+    background-color: var(--bg-white);
+}
+
+.faqs-2 .faqs-item + .faqs-item{
+    margin-top: 20px;
+}
+
+.faqs-2 .faqs-paragraph + .faqs-paragraph{
+    margin-top: 68px;
+}
+
+.faqs-3{
+    padding-top: 67px;
+}
+
+.faqs-3 .faqs-title{
+    margin-bottom: 28px;
+}
+
+.faqs-3 .faqs-paragraph + .faqs-paragraph{
+    margin-top: 70px;
+}
+
+.faqs-3 .faqs-row{
+    font-size: 0;
+    letter-spacing: 0;
+    margin: 0 -8px;
+}
+
+.faqs-3 .faqs-item{
+    display: inline-block;
+    vertical-align: bottom;
+    position: relative;
+    width: 100%;
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-top: 0!important;
+}
+
+.faqs-3 .faqs-item .card-header .title{
+    padding: 26px 0;
+    border: 1px solid transparent;
+    border-bottom-color:#d9d9d9;
+    border-width: 0 0 1px 0;
+    cursor: pointer;
+}
+
+.faqs-3 .faqs-item .card-header .title:before{
+    content: '';
+    display: block;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 50%;
+    left: 0px;
+    transform: translateY(-50%);
+    opacity: 0;
+    visibility: hidden;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000000' viewBox='0 0 128 128' width='512px' height='512px'%3E%3Cpath d='M1 124c0 1.7 1.3 3 3 3h30c1.7 0 3-1.3 3-3s-1.3-3-3-3H11.2l35.1-35.1c1.2-1.2 1.2-3.1 0-4.2-1.2-1.2-3.1-1.2-4.2 0L7 116.8V94c0-1.7-1.3-3-3-3s-3 1.3-3 3V124zM127 124V94c0-1.7-1.3-3-3-3s-3 1.3-3 3v22.8L85.9 81.7c-1.2-1.2-3.1-1.2-4.2 0-1.2 1.2-1.2 3.1 0 4.2l35.1 35.1H94c-1.7 0-3 1.3-3 3s1.3 3 3 3h30C125.7 127 127 125.7 127 124zM127 4c0-1.7-1.3-3-3-3H94c-1.7 0-3 1.3-3 3s1.3 3 3 3h22.8L81.7 42.1c-1.2 1.2-1.2 3.1 0 4.2.6.6 1.4.9 2.1.9s1.5-.3 2.1-.9L121 11.2V34c0 1.7 1.3 3 3 3s3-1.3 3-3V4zM37 4c0-1.7-1.3-3-3-3H4C2.3 1 1 2.3 1 4v30c0 1.7 1.3 3 3 3s3-1.3 3-3V11.2l35.1 35.1c.6.6 1.4.9 2.1.9s1.5-.3 2.1-.9c1.2-1.2 1.2-3.1 0-4.2L11.2 7H34C35.7 7 37 5.7 37 4z'/%3E%3C/svg%3E");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: var(--anchor-transition);
+}
+
+.faqs-header{
+    min-height: 300px;
+    background-color: #faf8f6;
+    position: relative;
+    overflow: hidden;
+}
+
+.faqs-banner{
+    position: relative;
+    overflow: hidden;
+}
+
+.faqs-banner .image{
+    display: none;
+}
+
+.faqs-banner img{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    object-fit: cover;
+    object-position: center;
+}
+
+.faqs-banner .image + .image{
+    display: block;
+}
+
+.faqs-form{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    margin: 0 auto;
+    max-width: 600px;
+    transform: translate(-50%,-50%);
+    z-index: 2;
+    padding: 15px;
+}
+
+.faqs-form .form-label{
+    font-size: 30px;
+    color: var(--bg-white);
+    text-align: center;
+    margin-bottom: 27px;
+}
+
+.faqs-form .form-input{
+    background-color: var(--bg-white);
+    border-color: var(--bg-grey);
+    color: var(--color-text);
+    padding-left: 30px;
+    padding-right: 30px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23ffffff' viewBox='0 0 32 32' width='512px' height='512px'%3E%3Cpath d='M 19 3 C 13.488281 3 9 7.488281 9 13 C 9 15.394531 9.839844 17.589844 11.25 19.3125 L 3.28125 27.28125 L 4.71875 28.71875 L 12.6875 20.75 C 14.410156 22.160156 16.605469 23 19 23 C 24.511719 23 29 18.511719 29 13 C 29 7.488281 24.511719 3 19 3 Z M 19 5 C 23.429688 5 27 8.570313 27 13 C 27 17.429688 23.429688 21 19 21 C 14.570313 21 11 17.429688 11 13 C 11 8.570313 14.570313 5 19 5 Z'/%3E%3C/svg%3E");
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: right 28px center;
+}
+
+.faqs-form .form-input::-webkit-input-placeholder{
+    color: var(--bg-white);
+}
+
+.faqs-form .form-input:-ms-input-placeholder{
+    color: var(--color-text);
+}
+
+.faqs-form .form-input::placeholder{
+    color: var(--color-text);
+}
+
+.faqs-content{
+    padding: 0 30px 30px 30px;
+}
+
+.halo-faqs-popup .halo-popup-wrapper{
+    padding: 30px 0 0 0;
+}
+
+.halo-faqs-popup .halo-popup-header{
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.halo-faqs-popup .halo-popup-title{
+    text-transform: capitalize;
+    text-align: left;
+    font-size: calc(var(--font-size) + 8px);
+}
+
+body.faqs-popup-show{
+    overflow: hidden;
+    height: 100%;
+}
+
+body.faqs-popup-show .background-overlay{
+    display: block;
+}
+
+body.faqs-popup-show .halo-faqs-popup{
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translate3d(-50%, -50% ,0);
+    max-height: 80vh;
+}
+
+body.dark-mode .faqs-filterDropdown-menu {
+    background-color: var(--bg-black);
+    box-shadow: 0 6px 27px 0 rgba(255, 255, 255, 0.2);
+}
+
+body.dark-mode .faqs-2 .faqs-item .card-header .title,
+body.dark-mode .faqs-2 .faqs-item .halo-text-format {
+    background-color: var(--bg-black);
+}
+
+body.dark-mode .faqs-form .form-input {
+    background-color: var(--bg-black);
+}
+
+body.dark-mode .faqs-3 .faqs-item .card-header .title:before {
+    filter: invert(1);
+}
+
+@media (max-width: 1024px){
+    .faqs-banner--parallax{
+        background-image: unset;
+    }
+}
+
+@media (min-width: 375px){
+    .faqs-form .form-label{
+        font-size: 36px;
+    }
+}
+
+@media (min-width: 551px){
+    .faqs-banner .image{
+        display: block;
+    }
+
+    .faqs-banner .image + .image{
+        display: none;
+    }
+
+    .faqs-2 .faqs-item .card-body{
+        padding-left: 15px;
+    }
+}
+
+@media (min-width: 768px){
+    .faqs-header,
+    .faqs-banner img{
+        min-height: 320px;
+    }
+
+    .faqs-form .form-label{
+        font-size: 62px;
+    }
+
+    .faqs-2 .faqs-item .card-header .title,
+    .faqs-2 .faqs-item .card-body,
+    .faqs-2 .faqs-item .halo-text-format{
+        padding-left: 30px;
+    }
+
+    .faqs-3 .faqs-item{
+        width: 50%;
+    }
+
+    .faqs-3 .faqs-item .card-header .title{
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .faqs-3 .faqs-item .card-header.is-active .title,
+    .faqs-3 .faqs-item .card-header:hover .title{
+        background-color: var(--bg-white);
+        border-color:#d9d9d9;
+        padding-left: 70px;
+    }
+
+    .faqs-3 .faqs-item .card-header.is-active .title:before,
+    .faqs-3 .faqs-item .card-header:hover .title:before{
+        left: 30px;
+        opacity: 1;
+        visibility: visible;
+    }
+
+    body.dark-mode .faqs-3 .faqs-item .card-header.is-active .title,
+    body.dark-mode .faqs-3 .faqs-item .card-header:hover .title {
+        background-color: var(--bg-black);
+    }
+}
+
+@media (min-width: 1025px){
+    .faqs-item .card-header .title{
+        font-size: calc(var(--font-size) + 2px);
+    }
+
+    .faqs-item .card-header .icon-plus{
+        right: 30px;
+    }
+
+    .faqs-content{
+        padding: 15px 60px 45px 60px;
+    }
+
+    .faqs-banner--parallax{
+        height: 550px;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+    }
+
+    .faqs-banner--parallax .image{
+        opacity: 0;
+        visibility: hidden;
+        padding-top: 0!important;
+    }
+
+    .faqs-3 .faqs-row{
+        margin-left: -15px;
+        margin-right: -15px;
+    }
+
+    .faqs-3 .faqs-item{
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .faqs-3 .faqs-item .card-header .title{
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    .halo-popup.halo-faqs-popup{
+        max-width: 1170px;
+    }
+
+    .halo-faqs-popup .halo-popup-header{
+        padding-left: 60px;
+        padding-right: 60px;
+    }
+
+    body.faqs-popup-show{
+        padding-right: 10px;
+    }
+}

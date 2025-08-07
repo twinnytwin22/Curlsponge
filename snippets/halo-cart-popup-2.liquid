@@ -1,0 +1,20 @@
+<noscript>{{ 'component-add-to-cart.css' | asset_url | stylesheet_tag }}</noscript>
+
+<custom-modal class="halo-modal halo-modal__topDown halo-add-to-cart-popup-2" id="Modal-Upsell" data-url-style-popup-cart2="{{ 'component-add-to-cart.css' | asset_url }}">
+	<div class="halo-modal__dialog" role="dialog" aria-label="Dialog" aria-modal="true" tabindex="-1">
+		<div class="halo-modal-header">
+			<button class="halo-modal-close clearfix" role="button" id="ModalClose-Upsell" aria-label="{{ 'general.common.close' | t }}">
+				{% render 'icon-close' %}
+			</button>
+			<h3 class="halo-modal-title text-center">
+				{{ 'sections.cart.upsell' | t }}
+			</h3>
+		</div>
+		<div class="halo-modal-content halo-popup-scroll custom-scrollbar">
+			<quick-upsell-cart-items data-view="ajax_upsell_cart" data-section="Upsell" data-added-class="true" data-empty-cart="true" data-toggle-class="">
+				<div class="halo-block-loader"></div>
+				<div id="Cart-Content-Upsell"></div>
+			</quick-upsell-cart-items>
+		</div>
+	</div>
+</custom-modal>

@@ -1,0 +1,39 @@
+{%- if product != blank -%}
+    {%- liquid
+        assign productId = product.selected_or_first_available_variant.id
+        assign check = false
+        for item in cart.items
+            if item.id == productId
+                assign check = true
+            endif
+        endfor
+    -%}
+    <div id="{{ sectionId }}">
+        <gift-wrapping class="cart-gift element-spacing"
+            data-id="{{ productId }}"
+            data-quantity="1"
+            data-cart-item="{{ cart.items.size }}"
+            data-added-gift-wrapping="{{ check }}"
+            style="--spacing-top: {{ padding_top | append: 'px' }};
+                --spacing-bottom: {{ padding_bottom | append: 'px' }};
+                --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+                --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+                --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+                --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};"
+        >
+            <div class="cart-gift-wrapping__wapper">
+                <input id="gift-wrapping-{{ productId }}" type="checkbox" name="attributes[gift-wrapping]" value="yes" class="visually-hidden cart-gift-wrapping__input" {% if check %} checked{% endif %}>
+                <label for="gift-wrapping-{{ productId }}" class="cart-gift-wrapping__label form-label--checkbox">
+                    <div class="cart-gift-wrapping__content">
+                        {%- if content != blank -%}
+                            <div class="content">
+                                {{ content }}
+                            </div>
+                        {%- endif -%}
+                        {% render 'icon-gift-card' %}
+                    </div>
+                </label>
+            </div>
+        </gift-wrapping>
+    </div>
+{%- endif -%}

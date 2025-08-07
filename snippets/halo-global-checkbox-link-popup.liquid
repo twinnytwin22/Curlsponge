@@ -1,0 +1,17 @@
+<link rel="stylesheet" href="{{ 'halo-global-checkbox-link-popup.css' | asset_url }}" media="print" onload="this.media='all'">
+
+<noscript>{{ 'halo-global-checkbox-link-popup.css' | asset_url | stylesheet_tag }}</noscript>
+
+<div class="halo-popup halo-global-checkboxt-popup halo-popup-topDown customPopup-large" data-global-checkbox-popup id="halo-global-checkboxt-popup">
+    <div class="halo-popup-wrapper">
+    	<div class="halo-popup-header">
+            <a href="javascript:void(0)" class="halo-popup-close clearfix" data-close-global-checkbox role="button">
+            	<span class="visually-hidden">{{ 'general.common.close' | t }}</span>
+                {% render 'icon-close' %}
+            </a>
+    	</div>
+        <div class="halo-popup-content halo-popup-scroll custom-scrollbar">
+        	{{ settings.global_checkbox_content }}
+        </div>
+    </div>
+</div>

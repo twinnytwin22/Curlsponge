@@ -1,0 +1,357 @@
+<script>
+    window.show_auto_currency = {{ settings.enable_auto_currency }};
+</script>
+
+{%- if settings.enable_shopify_payments_currencies -%}
+    {{ "//cdn.shopify.com/s/javascripts/currencies.js" | script_tag }}
+    {{ "jquery.currencies.min.js" | asset_url | script_tag }}
+
+    <script>
+        const currencySwitcher = document.querySelectorAll('#currencies');
+        const currencyForm = document.getElementById('currency_form');
+
+        currencySwitcher.forEach((index, element) => {
+            if(currencySwitcher[element] && currencySwitcher[element].querySelector('[data-currency]')) {
+                currencySwitcher[element].querySelectorAll('[data-currency]').forEach((button) => {
+                    button.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+    
+                        if(!event.currentTarget.classList.contains('active')) {
+                            let currentCode = event.currentTarget.getAttribute('data-currency');
+    
+                            if(currencySwitcher[element].querySelector('.active[data-currency]')) {
+                                currencySwitcher[element].querySelector('.active[data-currency]').classList.remove('active');
+                            }
+    
+                            event.currentTarget.classList.add('active');
+    
+                            if(document.querySelectorAll('#currencies [data-currency]')) {
+                                document.querySelectorAll('#currencies [data-currency]').forEach(data => 
+                                    (event.currentTarget.getAttribute('data-currency') === data.dataset.currency) ? data.classList.add('active') : data.classList.remove('active'));
+                            }
+    
+                            if(document.querySelectorAll('[data-currency-label]')) {
+                                document.querySelectorAll('[data-currency-label]').forEach(data => data.innerHTML = event.currentTarget.innerHTML);
+                            }
+    
+                            if(currencyForm && currencyForm.querySelector('option')) {
+                                let selectCurrency;
+    
+                                currencyForm.querySelectorAll('option').forEach((option) => {
+                                    if(option.innerText == currentCode) {
+                                        selectCurrency = option;
+                                    }
+                                });
+    
+                                selectCurrency.setAttribute('selected', true);
+    
+                                currencyForm.submit();
+                            }
+                        }
+                    });
+                });
+            }
+        })
+    </script>
+{%- else -%}
+    {%- if settings.enable_multiple_currencies -%}
+        {{ "//cdn.shopify.com/s/javascripts/currencies.js" | script_tag }}
+        {{ "jquery.currencies.min.js" | asset_url | script_tag }}
+
+        {%- if settings.enable_auto_currency == false -%}
+            <script>
+                Currency.format = 'money_format';
+
+                if (window.shop_currency != '{{ cart.currency.iso_code }}') {
+                    window.location = window.location.href + '?currency=' + window.shop_currency;
+                }
+
+                Currency.moneyFormats[window.shop_currency].money_with_currency_format = {{ shop.money_with_currency_format | strip_html | json }};
+                Currency.moneyFormats[window.shop_currency].money_format = {{ shop.money_format | strip_html | json }};
+
+                var cookieCurrency = Currency.cookie.read();
+
+                if(document.querySelector('span.money')) {
+                    document.querySelectorAll('span.money').forEach((element) => {
+                        element.setAttribute('data-currency-{{ shop.currency }}', element.innerHTML);
+
+                        if(element.querySelector('span.money')) {
+                            element.classList.remove('money');
+                        }
+                    });
+                }
+
+                const currencySwitcher = document.querySelectorAll('#currencies');
+                currencySwitcher.forEach((index,element) => {
+                    if(currencySwitcher[element] && currencySwitcher[element].querySelector('[data-currency]')) {
+                        if (cookieCurrency == null || cookieCurrency == window.shop_currency) {
+                            Currency.currentCurrency = window.shop_currency;
+                        } else {
+                            var flag = 0;
+    
+                            currencySwitcher[element].querySelectorAll('[data-currency]').forEach((element) => {
+                                if (cookieCurrency == element.dataset.currency) {
+                                    flag = 1;
+                                }
+                            });
+    
+                            if (flag == 0) {
+                                cookieCurrency = window.shop_currency;
+                            }
+    
+                            Currency.currentCurrency = cookieCurrency;
+    
+                            const _currentCurrency = currencySwitcher[element].querySelector('.active');
+    
+                            _currentCurrency ?.classList.remove('active')
+                            _currentCurrency ?.parentNode.querySelector(`[data-currency="${Currency.currentCurrency}"]`).classList.add('active');
+    
+                            Currency.convertAll(window.shop_currency, cookieCurrency);
+                        }
+    
+                        if(document.querySelectorAll('[data-currency-label]') && currencySwitcher[element].querySelector('.active[data-currency]')) {
+                            document.querySelectorAll('[data-currency-label]').forEach(data => data.innerHTML = currencySwitcher[element].querySelector('.active[data-currency]').innerHTML);
+                        }
+    
+                        currencySwitcher[element].querySelectorAll('[data-currency]').forEach((button) => {
+                            button.addEventListener('click', (event) => {
+                                event.preventDefault();
+                                event.stopPropagation();
+    
+                                if(!event.currentTarget.classList.contains('active')) {
+                                    let currentCode = event.currentTarget.getAttribute('data-currency');
+    
+                                    if(currencySwitcher[element].querySelector('.active[data-currency]')) {
+                                        currencySwitcher[element].querySelector('.active[data-currency]').classList.remove('active');
+                                    }
+    
+                                    event.currentTarget.classList.add('active');
+    
+                                    if(document.querySelectorAll('#currencies [data-currency]')) {
+                                        document.querySelectorAll('#currencies [data-currency]').forEach(data => 
+                                            (event.currentTarget.getAttribute('data-currency') === data.dataset.currency) ? data.classList.add('active') : data.classList.remove('active'));
+                                    }
+    
+                                    if(document.querySelectorAll('[data-currency-label]')) {
+                                        document.querySelectorAll('[data-currency-label]').forEach(data => data.innerHTML = event.currentTarget.innerHTML);
+                                    }
+    
+                                    currentCode != Currency.currentCurrency && Currency.convertAll(Currency.currentCurrency, currentCode);
+                                }
+                            });
+                        });
+                    }
+                    Currency.convertAll(window.shop_currency, currencySwitcher[element].querySelector('.active[data-currency]')?.getAttribute('data-currency'));
+                });
+            </script>
+        {%- else -%}
+            <script>
+                Currency.format = 'money_format';
+                var shopCurrency = window.shop_currency;
+
+                if (window.shop_currency != '{{cart.currency.iso_code}}') {
+                    window.location = window.location.href + '?currency=' + window.shop_currency;
+                }
+
+                Currency.moneyFormats[window.shop_currency].money_with_currency_format = {{ shop.money_with_currency_format | strip_html | json }};
+                Currency.moneyFormats[window.shop_currency].money_format = {{ shop.money_format | strip_html | json }};
+
+                var cookieCurrency = Currency.cookie.read();
+
+                if(document.querySelector('span.money')) {
+                    document.querySelectorAll('span.money').forEach((element) => {
+                        element.setAttribute('data-currency-{{ shop.currency }}', element.innerHTML);
+
+                        if(element.querySelector('span.money')) {
+                            element.classList.remove('money');
+                        }
+                    });
+                }
+
+                const currencySwitcher = document.querySelectorAll('#currencies');
+
+                currencySwitcher.forEach((index,element) => {
+                    if (cookieCurrency == null) {
+                        $.getScript('https://ssl.geoplugin.net/javascript.gp?k=9247556ec91c71e9', function() {
+                            var newCurrency = geoplugin_currencyCode(),
+                                flag = 0;
+    
+                            if(currencySwitcher[element] && currencySwitcher[element].querySelector('[data-currency]')) {
+                                currencySwitcher[element].querySelectorAll('[data-currency]').forEach((button) => {
+                                    button.addEventListener('click', (event) => {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+    
+                                        if(!event.currentTarget.classList.contains('active')) {
+                                            let currentCode = event.currentTarget.getAttribute('data-currency');
+    
+                                            if(currencySwitcher[element].querySelector('.active[data-currency]')) {
+                                                currencySwitcher[element].querySelector('.active[data-currency]').classList.remove('active');
+                                            }
+    
+                                            event.currentTarget.classList.add('active');
+
+                                            if(document.querySelectorAll('#currencies [data-currency]')) {
+                                                document.querySelectorAll('#currencies [data-currency]').forEach(data => 
+                                                    (event.currentTarget.getAttribute('data-currency') === data.dataset.currency) ? data.classList.add('active') : data.classList.remove('active'));
+                                            }
+    
+                                            if(document.querySelectorAll('[data-currency-label]')) {
+                                                document.querySelectorAll('[data-currency-label]').forEach(data => data.innerHTML = event.currentTarget.innerHTML);
+                                            }
+                                        }
+                                    });
+                                });
+    
+                                if (cookieCurrency == null || cookieCurrency == window.shop_currency) {
+                                    Currency.currentCurrency = window.shop_currency;
+                                } else {
+                                    if (flag == 0 && newCurrency != window.shop_currency) {
+                                        cookieCurrency = window.shop_currency;
+                                    }
+    
+                                    Currency.currentCurrency = cookieCurrency;
+    
+                                    const _currentCurrency = currencySwitcher[element].querySelector('.active');
+    
+                                    _currentCurrency ?.classList.remove('active')
+                                    _currentCurrency ?.parentNode.querySelector(`[data-currency="${Currency.currentCurrency}"]`).classList.add('active');
+    
+                                    Currency.convertAll(window.shop_currency, cookieCurrency);
+                                }
+                            }
+                        });
+                    } else if (cookieCurrency == window.shop_currency) {
+                        Currency.currentCurrency = window.shop_currency;
+                    } else {
+                        var flag = 0;
+    
+                        if(currencySwitcher[element] && currencySwitcher[element].querySelector('[data-currency]')) {
+                            currencySwitcher[element].querySelectorAll('[data-currency]').forEach((element) => {
+                                if (cookieCurrency == element.dataset.currency) {
+                                    flag = 1;
+                                }
+                            });
+                        }
+    
+                        if (flag == 0) {
+                            cookieCurrency = window.shop_currency;
+                        }
+    
+                        Currency.currentCurrency = cookieCurrency;
+                        
+                        const _currentCurrency = currencySwitcher[element].querySelector('.active');
+                        
+                        _currentCurrency?.classList.remove('active')
+                        _currentCurrency?.parentNode.querySelector(`[data-currency="${Currency.currentCurrency}"]`).classList.add('active');
+                        
+                        Currency.convertAll(window.shop_currency, cookieCurrency);
+                    }
+    
+                    if(document.querySelectorAll('[data-currency-label]') && currencySwitcher[element].querySelector('.active[data-currency]')) {
+                        document.querySelectorAll('[data-currency-label]').forEach(data => data.innerHTML = currencySwitcher[element].querySelector('.active[data-currency]').innerHTML);
+                    }
+    
+                    if(currencySwitcher[element] && currencySwitcher[element].querySelector('[data-currency]')) {
+                        currencySwitcher[element].querySelectorAll('[data-currency]').forEach((button) => {
+                            button.addEventListener('click', (event) => {
+                                event.preventDefault();
+                                event.stopPropagation();
+    
+                                if(!event.currentTarget.classList.contains('active')) {
+                                    let currentCode = event.currentTarget.getAttribute('data-currency');
+    
+                                    if(currencySwitcher[element].querySelector('.active[data-currency]')) {
+                                        currencySwitcher[element].querySelector('.active[data-currency]').classList.remove('active');
+                                    }
+    
+                                    event.currentTarget.classList.add('active');
+    
+                                    if(document.querySelectorAll('#currencies [data-currency]')) {
+                                        document.querySelectorAll('#currencies [data-currency]').forEach(data => 
+                                            (event.currentTarget.getAttribute('data-currency') === data.dataset.currency) ? data.classList.add('active') : data.classList.remove('active'));
+                                    }
+    
+                                    if(document.querySelectorAll('[data-currency-label]')) {
+                                        document.querySelectorAll('[data-currency-label]').forEach(data => data.innerHTML = event.currentTarget.innerHTML);
+                                    }
+    
+                                    currentCode != Currency.currentCurrency && Currency.convertAll(Currency.currentCurrency, currentCode);
+                                }
+                            });
+                        });
+                    }
+    
+                    Currency.convertAll(window.shop_currency, currencySwitcher[element].querySelector('.active[data-currency]')?.getAttribute('data-currency'));
+                });
+            </script>
+        {%- endif -%}
+    {%- else -%}
+        {%- if settings.enable_auto_currency -%}
+            <div id="currencies" style="display: none;">
+                <a class="dropdown-item active" href="#" data-currency="{{ shop.currency }}">
+                    <span class="text">{{ shop.currency }}</span>
+                </a>
+            </div>
+            {{ "//cdn.shopify.com/s/javascripts/currencies.js" | script_tag }}
+            {{ "jquery.currencies.min.js" | asset_url | script_tag }}
+            <script>
+                Currency.format = 'money_format';
+                var shopCurrency = window.shop_currency;
+
+                if (window.shop_currency != '{{ cart.currency.iso_code }}') {
+                    window.location = window.location.href + '?currency=' + window.shop_currency;
+                }
+
+                Currency.moneyFormats[window.shop_currency].money_with_currency_format = {{ shop.money_with_currency_format | strip_html | json }};
+                Currency.moneyFormats[window.shop_currency].money_format = {{ shop.money_format | strip_html | json }};
+
+                var cookieCurrency = Currency.cookie.read();
+
+                const currencySwitcher = document.getElementById('currencies');
+
+                if(document.querySelector('span.money')) {
+                    document.querySelectorAll('span.money').forEach((element) => {
+                        element.setAttribute('data-currency-{{ shop.currency }}', element.innerHTML);
+
+                        if(element.querySelector('span.money')) {
+                            element.classList.remove('money');
+                        }
+                    });
+                }
+
+                var currencyCode = window.shop_currency;
+
+                $.getScript('https://ssl.geoplugin.net/javascript.gp?k=9247556ec91c71e9', function() {
+                    var newCurrency = geoplugin_currencyCode();
+
+                    if (newCurrency == null || newCurrency == window.shop_currency) {
+                        Currency.currentCurrency = window.shop_currency;
+
+                        if(currencySwitcher && currencySwitcher.querySelector('.active')) {
+                            currencySwitcher.querySelector('.active').setAttribute('data-currency', window.shop_currency)
+                        }
+                    } else {
+                        try {
+                            currencySwitcher.querySelector('.active')?.setAttribute('data-currency', newCurrency);
+                            currencyCode = newCurrency;
+                            Currency.currentCurrency = newCurrency;
+                            Currency.convertAll( window.shop_currency, newCurrency);
+                        } catch (error) {
+                            console.log(error);
+                        }
+
+                        $(document).ajaxComplete((event, xhr, settings) => {
+                            try {
+                                Currency.convertAll(shopCurrency, window.shop_currency);
+                            } catch (error) {
+                                console.log(error);
+                            }
+                        });
+                    }
+                });
+            </script>
+        {%- endif -%}
+    {%- endif -%}
+{%- endif -%}

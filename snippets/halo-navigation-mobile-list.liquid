@@ -1,0 +1,221 @@
+<div class="menu-lv__dropdownmenu{% if settings.layout == '2' %} menu-lv__dropdownmenu--border{% endif %}">
+	<ul class="menu-lv__list list-menu list-unstyled motion-reduce" role="list">
+		<li class="menu-lv-item menu-lv-2 nav-title-mobile text-center">
+            <span class="icon-dropdown">
+                {% render 'icon-long-arrow' %}
+            </span>
+            <a class="menu-lv-2__action link focus-inset" href="{{ menu_item_url }}" role="button">
+                <span class="text">
+                    {{ menu_item_heading | escape }}
+                </span>
+            </a>
+        </li>
+        <li class="menu-lv-item menu-lv-2 text-left nav-all-mobile">
+            <a href="{{ menu_item_url }}" class="menu-lv-2__action list-menu__item list-menu__item--end link focus-inset" role="button">
+                <span class="text">
+                    {{ 'general.navigation.go_to' | t : name : menu_item_heading | escape }}
+                </span>
+            </a>
+        </li>
+		{%- for link in menu -%}
+			<li class="menu-lv-item menu-lv-2 text-left{% if link.links != blank %} dropdown{% endif %}">
+				{%- if link.links == blank -%}
+					<a href="{{ link.url }}" class="menu-lv-2__action list-menu__item list-menu__item--end link focus-inset{% if show_icon %} menu-lv__flex{% endif %}" role="button">
+						{%- if show_icon -%}
+							{%- liquid
+								if image_type == 'jpg'
+					                assign item_image = link.handle | prepend: menu_handle | handleize | append: '.jpg'
+					            else
+					                assign item_image = link.handle | prepend: menu_handle | handleize |append: '.png'
+					            endif
+							-%}
+							{%- if images[item_image] != blank -%}
+								<span class="custom-icon">
+									{% assign image = item_image | file_url %}
+									<img src="{{ image }}" alt="{{ shop.name | escape }}">
+								</span>
+							{%- endif -%}
+						{%- endif -%}
+						<span class="text">
+                            {{ link.title | escape }}
+                        </span>
+					</a>
+				{%- else -%}
+					{%- if show_image -%}
+						<a href="{{ link.url }}" class="menu-lv-2__action list-menu__item list-menu__item--end link focus-inset" role="button">
+							<span class="text">
+	                            {{ link.title | escape }}
+	                        </span>
+						</a>
+						<div class="menu-lv__dropdownmenu menu-lv__dropdownmenu-3">
+							<ul class="menu-lv__grid grid-menu list-unstyled motion-reduce clearfix">
+								{%- for childlink in link.links -%}
+									<li class="menu-lv-item menu-lv-3 text-center">
+										<a href="{{ childlink.url }}" class="menu-lv-3__action grid-menu__item link focus-inset" role="button">
+											{%- liquid
+												if image_type == 'jpg'
+									                assign childitem_image = childlink.handle | prepend: menu_handle | handleize | append: '.jpg'
+									            else
+									                assign childitem_image = childlink.handle | prepend: menu_handle | handleize |append: '.png'
+									            endif
+											-%}
+											{%- if images[childitem_image] != blank -%}
+												<span class="custom-image">
+													{% assign image = childitem_image | file_url %}
+													<img src="{{ image }}" alt="{{ shop.name | escape }}">
+												</span>
+											{%- endif -%}
+                            				<span class="text">
+	                                            {{ childlink.title | escape }}
+	                                        </span>
+                            			</a>
+									</li>
+								{%- endfor -%}
+							</ul>
+						</div>
+					{%- else -%}
+						<a class="menu-lv-2__action link list-menu__item focus-inset{% if show_icon %} menu-lv__flex{% endif %}" href="{{ link.url }}" role="button">
+							{%- if show_icon -%}
+								{%- liquid
+									if image_type == 'jpg'
+						                assign item_image = link.handle | prepend: menu_handle | handleize | append: '.jpg'
+						            else
+						                assign item_image = link.handle | prepend: menu_handle | handleize |append: '.png'
+						            endif
+								-%}
+								{%- if images[item_image] != blank -%}
+									<span class="custom-icon">
+										{% assign image = item_image | file_url %}
+										<img src="{{ image }}" alt="{{ shop.name | escape }}">
+									</span>
+								{%- endif -%}
+							{%- endif -%}
+						 	<span class="text">
+	                            {{ link.title | escape }}
+	                        </span>
+	                        <span class="icon-dropdown" data-toggle-menu-mb>
+	                            {% render 'icon-caret-right' %}
+	                        </span>
+						</a>
+						<div class="menu-lv__dropdownmenu menu-lv__dropdownmenu-2">
+							<ul class="menu-lv__list list-menu list-unstyled motion-reduce">
+								<li class="menu-lv-item menu-lv-3 nav-title-mobile text-center">
+	                                <span class="icon-dropdown">
+	                                    {% render 'icon-long-arrow' %}
+	                                </span>
+	                                <a class="menu-lv-3__action link focus-inset" href="{{ link.url }}" role="button">
+	                                    <span class="text">
+	                                        {{ link.title | escape }}
+	                                    </span>
+	                                </a>
+	                            </li>
+	                            <li class="menu-lv-item menu-lv-3 text-left nav-all-mobile">
+	                                <a href="{{ link.url }}" class="menu-lv-3__action list-menu__item list-menu__item--end link focus-inset" role="button">
+	                                    <span class="text">
+	                                        {{ 'general.navigation.go_to' | t : name : link.title | escape }}
+	                                    </span>
+	                                </a>
+	                            </li>
+	                            {%- for childlink in link.links -%}
+	                            	<li class="menu-lv-item menu-lv-3 text-left{% if childlink.links != blank %} dropdown{% endif %}">
+	                            		{%- if childlink.links == blank -%}
+	                            			<a href="{{ childlink.url }}" class="menu-lv-3__action list-menu__item list-menu__item--end link focus-inset{% if show_icon %} menu-lv__flex{% endif %}" role="button">
+	                            				{%- if show_icon -%}
+													{%- liquid
+														if image_type == 'jpg'
+											                assign childitem_image = childlink.handle | prepend: menu_handle | handleize | append: '.jpg'
+											            else
+											                assign childitem_image = childlink.handle | prepend: menu_handle | handleize |append: '.png'
+											            endif
+													-%}
+													{%- if images[childitem_image] != blank -%}
+														<span class="custom-icon">
+															{% assign image = childitem_image | file_url %}
+															<img src="{{ image }}" alt="{{ shop.name | escape }}">
+														</span>
+													{%- endif -%}
+												{%- endif -%}
+	                            				<span class="text">
+		                                            {{ childlink.title | escape }}
+		                                        </span>
+	                            			</a>
+	                            		{%- else -%}
+	                            			<a class="menu-lv-3__action link list-menu__item focus-inset{% if show_icon %} menu-lv__flex{% endif %}" href="{{ childlink.url }}" role="button">
+	                            				{%- if show_icon -%}
+													{%- liquid
+														if image_type == 'jpg'
+											                assign childitem_image = childlink.handle | prepend: menu_handle | handleize | append: '.jpg'
+											            else
+											                assign childitem_image = childlink.handle | prepend: menu_handle | handleize |append: '.png'
+											            endif
+													-%}
+													{%- if images[childitem_image] != blank -%}
+														<span class="custom-icon">
+															{% assign image = childitem_image | file_url %}
+															<img src="{{ image }}" alt="{{ shop.name | escape }}">
+														</span>
+													{%- endif -%}
+												{%- endif -%}
+	                            				<span class="text">
+						                            {{ childlink.title | escape }}
+						                        </span>
+						                        <span class="icon-dropdown" data-toggle-menu-mb>
+						                            {% render 'icon-caret-right' %}
+						                        </span>
+	                            			</a>
+	                            			<div class="menu-lv__dropdownmenu menu-lv__dropdownmenu-2">
+	                            				<ul class="menu-lv__list list-menu list-unstyled motion-reduce">
+	                            					<li class="menu-lv-item menu-lv-3 nav-title-mobile text-center">
+						                                <span class="icon-dropdown">
+						                                    {% render 'icon-long-arrow' %}
+						                                </span>
+						                                <a class="menu-lv-3__action link focus-inset" href="{{ childlink.url }}" role="button">
+						                                    <span class="text">
+						                                        {{ childlink.title | escape }}
+						                                    </span>
+						                                </a>
+						                            </li>
+						                            <li class="menu-lv-item menu-lv-3 text-left nav-all-mobile">
+						                                <a href="{{ childlink.url }}" class="menu-lv-3__action list-menu__item list-menu__item--end link focus-inset" role="button">
+						                                    <span class="text">
+						                                        {{ 'general.navigation.go_to' | t : name : childlink.title | escape }}
+						                                    </span>
+						                                </a>
+						                            </li>
+						                            {%- for grandchildlink in childlink.links -%}
+						                            	<li class="menu-lv-item menu-lv-3 text-left">
+						                            		<a href="{{ grandchildlink.url }}" class="menu-lv-3__action list-menu__item list-menu__item--end link focus-inset{% if show_icon %} menu-lv__flex{% endif %}" role="button">
+						                            			{%- if show_icon -%}
+																	{%- liquid
+																		if image_type == 'jpg'
+															                assign grandchilditem_image = grandchildlink.handle | prepend: menu_handle | handleize | append: '.jpg'
+															            else
+															                assign grandchilditem_image = grandchildlink.handle | prepend: menu_handle | handleize |append: '.png'
+															            endif
+																	-%}
+																	{%- if images[grandchilditem_image] != blank -%}
+																		<span class="custom-icon">
+																			{% assign image = grandchilditem_image | file_url %}
+																			<img src="{{ grandchilditem_image | file_url }}" alt="{{ shop.name | escape }}">
+																		</span>
+																	{%- endif -%}
+																{%- endif -%}
+						                            			<span class="text">
+						                                            {{ grandchildlink.title | escape }}
+						                                        </span>
+						                            		</a>
+						                            	</li>
+						                            {%- endfor -%}
+						                        </ul>
+	                            			</div>
+	                            		{%- endif -%}
+	                            	</li>
+	                            {%- endfor -%}
+							</ul>
+						</div>
+					{%- endif -%}
+				{%- endif -%}
+			</li>
+		{%- endfor -%}
+	</ul>
+</div>

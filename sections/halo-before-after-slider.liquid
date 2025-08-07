@@ -1,0 +1,607 @@
+{%- if section.settings.show_before_after_slider -%}
+    {%- liquid
+        assign style = section.settings.style
+        assign container = section.settings.container
+        assign padding_top = section.settings.padding_top | append: 'px'
+        assign padding_bottom = section.settings.padding_bottom | append: 'px'
+        assign padding_top_tablet = section.settings.padding_top_tablet | append: 'px'
+        assign padding_bottom_tablet = section.settings.padding_bottom_tablet | append: 'px'
+        assign padding_top_mobile = section.settings.padding_top_mobile | append: 'px'
+        assign padding_bottom_mobile = section.settings.padding_bottom_mobile | append: 'px'
+        assign background_color = section.settings.background_color
+        assign image = section.settings.image
+        assign image_2 = section.settings.image_2
+        assign mobile_image = section.settings.mobile_image
+        assign mobile_image_2 = section.settings.mobile_image_2
+        assign title = section.settings.title
+        assign text = section.settings.text
+        assign button_text = section.settings.button_text
+        if button_text
+            assign button_url = section.settings.button_url
+            assign button_style = section.settings.button_style
+            assign transparent_button = section.settings.transparent_button
+            assign button_width = section.settings.button_width
+        endif
+        assign title_align = section.settings.title_align
+        assign title_font = section.settings.title_font
+        assign title_font_size = section.settings.title_font_size
+        if title_font_size >= 60
+            assign title_tablet_font_size = title_font_size | minus: 30 | append: 'px'
+            assign title_font_size = title_font_size | append: 'px'
+        else
+            assign title_tablet_font_size = title_font_size | append: 'px'
+            assign title_font_size = title_font_size | append: 'px'
+        endif
+        assign title_mobile_font_size = section.settings.title_mobile_font_size | append: 'px'
+        assign title_font_weight = section.settings.title_font_weight
+        assign title_text_transform = section.settings.title_text_transform
+
+        assign text_font_size = section.settings.text_font_size | append: 'px'
+        assign text_mobile_font_size = section.settings.text_mobile_font_size | append: 'px'
+        assign text_font_weight = section.settings.text_font_weight
+        assign text_text_transform = section.settings.text_text_transform
+    -%}
+    <div class="halo-block halo-banner halo-before-after-slider halo-block-padding style-{{ style }} gradient" id="halo-before-after-slider-{{ section.id }}"
+        style="--padding-top: {{ padding_top }};
+            --padding-bottom: {{ padding_bottom }};
+            --padding-top-tablet: {{ padding_top_tablet }};
+            --padding-bottom-tablet: {{ padding_bottom_tablet }};
+            --padding-top-mobile: {{ padding_top_mobile }};
+            --padding-bottom-mobile: {{ padding_bottom_mobile }};
+            --color-background: {{ background_color }};
+            {% if title_font == 'font_1' %}
+                --title-font: var(--font-1-family);
+            {% elsif title_font == 'font_2' %}
+                --title-font: var(--font-2-family);
+            {% elsif title_font == 'font_3' %}
+                --title-font: var(--font-3-family);
+            {% endif %}
+            --title-font-size: {{ title_font_size }};
+            --title-tablet-font-size: {{ title_tablet_font_size }};
+            --title-mobile-font-size: {{ title_mobile_font_size }};
+            --title-font-weight: {{ title_font_weight }};
+            --title-text-transform: {{ title_text_transform }};
+            --text-font-size: {{ text_font_size }};
+            --text-mobile-font-size: {{ text_mobile_font_size }};
+            --text-font-weight: {{ text_font_weight }};
+            --text-text-transform: {{ text_text_transform }};"
+    >
+        <div class="container container-{{ container }}">
+            <div class="halo-block-content">
+                {%- if title != blank or text != blank or button_text != blank -%}
+                    <div class="item block-content__left">
+                        <div class="halo-block-header text-{{ title_align }}">
+                            {%- if title != blank -%}
+                                <h3 class="title banner-title typography__mobile typography__tablet typography__desktop text-{{ title_align }}{% if style == '1' %} line{% endif %}">
+                                    <span class="text">
+                                        {{ title | escape }}
+                                    </span>
+                                </h3>
+                            {%- endif -%}
+                            {%- if text != blank -%}
+                                <span class="desc text-{{ title_align }}">
+                                    {{ text }}
+                                </span>
+                            {%- endif -%}
+                            {%- if button_text != blank -%}
+                                <div class="block-content-bottom content-bottom">
+                                    <{% if button_url != blank %}a{% else %}div{% endif %} class="{% if button_style == 'link' %}link link-underline text-underline{% else %}banner-button button button-{{ button_style }}{% if transparent_button %} button--transparent{% endif %}{% endif %}"{% if button_url == blank %} role="link" aria-disabled="true"{% else %} href="{{ button_url }}"{% endif %}
+                                        {% if button_style != 'link' %}
+                                            style="max-width: {{ button_width | append: 'px' }};"
+                                        {% endif %}
+                                    >
+                                        <span class="text">{{ button_text | escape }}</span>
+                                    </{% if button_url != blank %}a{% else %}div{% endif %}>
+                                </div>
+                            {%- endif -%}
+                        </div>
+                    </div>
+                {%- endif -%}
+                <div class="item block-content__right">
+                    <div class="banner-item">
+                        <before-after-slider class="img-box img-box--mobile{% if style == '3' %} image-effect-1{% endif %}" style="--percent: 50%">
+                            <loading-banner class="loading-banner">
+                                {%- if image != blank and image_2 != blank -%}
+                                    <{% if link != blank %}a{% else %}div{% endif %} 
+                                        class="image-slider-before image image-adapt{% if mobile_image != blank %} image-mobile{% endif %}" {% if link != blank %} 
+                                        href="{{ link }}"{% endif %} 
+                                        style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}; 
+                                        {%- if mobile_image != blank %} --padding-image-mobile: {{ 1 | divided_by: mobile_image.aspect_ratio | times: 100 | append: '%' }}{%- endif -%}"
+                                    >
+                                        {%- if mobile_image != blank -%}
+                                            <img srcset="{{ mobile_image | img_url: 'master' }} 1x, {{ mobile_image | img_url: 'master', scale: 2 }} 2x" src="{{ mobile_image | img_url: 'master' }}" alt="{{ mobile_image.alt | default: shop.name | escape }}" loading="lazy" class="image-before-after-mobile">
+                                        {%- endif -%}
+                                        <img srcset="{{ image | img_url: '1920x' }} 1x, {{ image | img_url: '1920x', scale: 2 }} 2x" src="{{ image | img_url: '1920x', crop: 'center' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
+                                    </{% if link != blank %}a{% else %}div{% endif %}>
+                                    <{% if link != blank %}a{% else %}div{% endif %} 
+                                        class="image-slider-after image image-adapt{% if mobile_image_2 != blank %} image-mobile{% endif %}" {% if link != blank %} 
+                                        href="{{ link }}"{% endif %} 
+                                        style="padding-top: {{ 1 | divided_by: image_2.aspect_ratio | times: 100 | append: '%' }}; 
+                                        {%- if mobile_image_2 != blank %} --padding-image-mobile: {{ 1 | divided_by: mobile_image_2.aspect_ratio | times: 100 | append: '%' }}{%- endif -%}"
+                                    >
+                                        {%- if mobile_image_2 != blank -%}
+                                            <img srcset="{{ mobile_image_2 | img_url: 'master' }} 1x, {{ mobile_image_2 | img_url: 'master', scale: 2 }} 2x" src="{{ mobile_image_2 | img_url: 'master' }}" alt="{{ mobile_image_2.alt | default: shop.name | escape }}" loading="lazy" class="image-before-after-mobile">
+                                        {%- endif -%}
+                                        <img srcset="{{ image_2 | img_url: '1920x' }} 1x, {{ image_2 | img_url: '1920x', scale: 2 }} 2x" src="{{ image_2 | img_url: '1920x', crop: 'center' }}" alt="{{ image_2.alt | default: shop.name | escape }}" loading="lazy">
+                                    </{% if link != blank %}a{% else %}div{% endif %}>
+                                {%- else -%}
+                                    <{% if link != blank %}a{% else %}div{% endif %} class="image" {% if link != blank %} href="{{ link }}"{% endif %}>
+                                        {% capture current %}{% cycle 1, 2 %}{% endcapture %}
+                                        {{ 'lifestyle-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}   
+                                    </{% if link != blank %}a{% else %}div{% endif %}>
+                                {%- endif -%}
+                                <button type="button" class="before-after-slider__button" aria-label="Scroll">
+                                    <span>
+                                        {% render 'icon-before-after', icon_style: style %}
+                                    </span>
+                                </button>
+                            </loading-banner>
+                        </before-after-slider>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{%- endif -%}
+{% schema %}
+    {
+        "name": "t:sections.before-after-slider.name",
+        "settings": [
+            {
+                "type": "header",
+                "content": "t:sections.before-after-slider.settings.header__1.content"
+            },
+            {
+                "type": "checkbox",
+                "id": "show_before_after_slider",
+                "label": "t:sections.before-after-slider.settings.general.label__1",
+                "default": true
+            },
+            {
+                "type" : "select",
+                "id" : "style",
+                "label" : "t:sections.general.settings.style.label__1",
+                "default": "1",
+                "options": [
+                {
+                    "value": "1",
+                    "label": "1"
+                },
+                {
+                    "value": "2",
+                    "label": "2"
+                },
+                {
+                    "value": "3",
+                    "label": "3"
+                }]
+            },
+            {
+                "type": "select",
+                "id": "container",
+                "label": "t:sections.general.settings.container.label__1",
+                "default": "full",
+                "options": [
+                {
+                    "value": "1370",
+                    "label": "t:sections.general.settings.container.options__2"
+                },
+                {
+                    "value": "1570",
+                    "label": "t:sections.general.settings.container.options__3"
+                },
+                {
+                    "value": "1770",
+                    "label": "t:sections.general.settings.container.options__4"
+                },
+                {
+                    "value": "1860",
+                    "label": "t:sections.general.settings.container.options__5"
+                },
+                {
+                    "value": "full",
+                    "label": "t:sections.general.settings.container.options__6"
+                }],
+                "info": "t:sections.general.settings.container.info"
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__1.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 0
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 0
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__2.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top_tablet",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 40
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom_tablet",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 40
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__3.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top_mobile",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 30
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom_mobile",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 30
+            },
+            {
+                "type": "header",
+                "content": "t:sections.marquee-promotion.settings.general.header__1"
+            },
+            {
+                "type": "color_background",
+                "id": "background_color",
+                "label": "t:sections.general.settings.color.label__1"
+            },
+            {
+                "type": "header",
+                "content": "t:sections.before-after-slider.settings.header__2.content"
+            },
+            {
+                "type": "image_picker",
+                "id": "image",
+                "label": "t:sections.before-after-slider.settings.general.options__1"
+            },
+            {
+                "type": "image_picker",
+                "id": "image_2",
+                "label": "t:sections.before-after-slider.settings.general.options__2"
+            },
+            {
+                "type": "image_picker",
+                "id": "mobile_image",
+                "label": "t:sections.before-after-slider.settings.general.options__3",
+                "info": "t:sections.general.settings.image.info"
+            },
+            {
+                "type": "image_picker",
+                "id": "mobile_image_2",
+                "label": "t:sections.before-after-slider.settings.general.options__4",
+                "info": "t:sections.general.settings.image.info"
+            },
+            {
+                "type": "header",
+                "content": "t:sections.before-after-slider.settings.header__3.content"
+            },
+            {
+                "type": "text",
+                "id": "title",
+                "label": "t:sections.general.settings.block-title.label__1",
+                "default": "Sample Static Block"
+            },
+            {
+                "type": "text",
+                "id": "text",
+                "label": "t:sections.general.settings.block-title.label__2",
+                "default": "Give customers details about the banner image(s) or content on the template."
+            },
+            {
+                "type": "text",
+                "id": "button_text",
+                "label": "t:sections.general.settings.content.label__5",
+                "default":"SHOP ALL"
+            },
+            {
+                "type": "url",
+                "id": "button_url",
+                "label": "t:sections.general.settings.content.label__6",
+                "info": "t:sections.general.settings.content.info__1"
+            },
+            {
+                "type": "select",
+                "id": "button_style",
+                "label": "t:sections.general.settings.button.label__1",
+                "default": "2",
+                "options": [
+                {
+                    "value": "1",
+                    "label": "t:sections.general.settings.button.options__1"
+                },
+                {
+                    "value": "2",
+                    "label": "t:sections.general.settings.button.options__2"
+                },
+                {
+                    "value": "3",
+                    "label": "t:sections.general.settings.button.options__3"
+                },
+                {
+                    "value": "4",
+                    "label": "t:sections.general.settings.button.options__4"
+                },
+                {
+                    "value": "5",
+                    "label": "t:sections.general.settings.button.options__5"
+                },
+                {
+                    "value": "6",
+                    "label": "t:sections.general.settings.button.options__9"
+                },
+                {
+                    "value": "7",
+                    "label": "t:sections.general.settings.button.options__10"
+                },
+                {
+                    "value": "8",
+                    "label": "t:sections.general.settings.button.options__11"
+                },
+                {
+                    "value": "link",
+                    "label": "t:sections.general.settings.button.options__7"
+                }]
+            },
+            {
+                "type": "checkbox",
+                "id": "transparent_button",
+                "label": "t:sections.general.settings.button.label__5",
+                "default": false
+            },
+            {
+                "type": "range",
+                "id": "button_width",
+                "label": "t:sections.general.settings.button.label__8",
+                "min": 150,
+                "max": 400,
+                "step": 10,
+                "unit": "t:sections.general.settings.button.unit",
+                "default": 300
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.typography.paragraph__1.content"
+            },
+            {
+                "type": "select",
+                "id": "title_align",
+                "label": "t:sections.general.settings.block-title.label__3",
+                "options": [
+                {
+                    "value": "left",
+                    "label": "t:sections.general.settings.block-title.options__1"
+                },
+                {
+                    "value": "center",
+                    "label": "t:sections.general.settings.block-title.options__2"
+                },
+                {
+                    "value": "right",
+                    "label": "t:sections.general.settings.block-title.options__3"
+                }],
+                "default": "center"
+            },
+            {
+                "type": "select",
+                "id": "title_font",
+                "label": "t:settings_schema.typography.settings.font.label",
+                "options": [
+                {
+                    "value": "font_1",
+                    "label": "t:settings_schema.typography.settings.font.options__1"
+                },
+                {
+                    "value": "font_2",
+                    "label": "t:settings_schema.typography.settings.font.options__2"
+                },
+                {
+                    "value": "font_3",
+                    "label": "t:settings_schema.typography.settings.font.options__3"
+                }],
+                "default": "font_2"
+            },
+            {
+                "type": "range",
+                "id": "title_font_size",
+                "label": "t:settings_schema.typography.settings.font_size.label",
+                "min": 10,
+                "max": 60,
+                "step": 1,
+                "unit": "t:settings_schema.typography.settings.font_size.unit",
+                "default": 26
+            },
+            {
+                "type": "range",
+                "id": "title_mobile_font_size",
+                "label": "t:settings_schema.typography.settings.font_size.label__2",
+                "min": 10,
+                "max": 40,
+                "step": 1,
+                "unit": "t:settings_schema.typography.settings.font_size.unit",
+                "default": 20
+            },
+            {
+                "type": "select",
+                "id": "title_font_weight",
+                "label": "t:settings_schema.typography.settings.font_weight.label",
+                "default": "700",
+                "options": [
+                {
+                    "value": "400",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__1"
+                },
+                {
+                    "value": "500",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__2"
+                },
+                {
+                    "value": "600",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__3"
+                },
+                {
+                    "value": "700",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__4"
+                },
+                {
+                    "value": "800",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__5"
+                },
+                {
+                    "value": "900",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__6"
+                }]
+            },
+            {
+                "type": "select",
+                "id": "title_text_transform",
+                "label": "t:settings_schema.typography.settings.text_transform.label",
+                "default": "none",
+                "options": [
+                    {
+                        "value": "none",
+                        "label": "t:settings_schema.typography.settings.text_transform.options__1"
+                    },
+                    {
+                        "value": "capitalize",
+                        "label": "t:settings_schema.typography.settings.text_transform.options__2"
+                    },
+                    {
+                        "value": "uppercase",
+                        "label": "t:settings_schema.typography.settings.text_transform.options__3"
+                    },
+                    {
+                        "value": "lowercase",
+                        "label": "t:settings_schema.typography.settings.text_transform.options__4"
+                    }
+                ]
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.typography.paragraph__2.content"
+            },
+            {
+                "type": "range",
+                "id": "text_font_size",
+                "label": "t:settings_schema.typography.settings.font_size.label",
+                "min": 10,
+                "max": 60,
+                "step": 1,
+                "unit": "t:settings_schema.typography.settings.font_size.unit",
+                "default": 26
+            },
+            {
+                "type": "range",
+                "id": "text_mobile_font_size",
+                "label": "t:settings_schema.typography.settings.font_size.label__2",
+                "min": 10,
+                "max": 40,
+                "step": 1,
+                "unit": "t:settings_schema.typography.settings.font_size.unit",
+                "default": 16
+            },
+            {
+                "type": "select",
+                "id": "text_font_weight",
+                "label": "t:settings_schema.typography.settings.font_weight.label",
+                "default": "400",
+                "options": [
+                {
+                    "value": "400",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__1"
+                },
+                {
+                    "value": "500",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__2"
+                },
+                {
+                    "value": "600",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__3"
+                },
+                {
+                    "value": "700",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__4"
+                },
+                {
+                    "value": "800",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__5"
+                },
+                {
+                    "value": "900",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__6"
+                }]
+            },
+            {
+                "type": "select",
+                "id": "text_text_transform",
+                "label": "t:settings_schema.typography.settings.text_transform.label",
+                "default": "none",
+                "options": [
+                    {
+                        "value": "none",
+                        "label": "t:settings_schema.typography.settings.text_transform.options__1"
+                    },
+                    {
+                        "value": "capitalize",
+                        "label": "t:settings_schema.typography.settings.text_transform.options__2"
+                    },
+                    {
+                        "value": "uppercase",
+                        "label": "t:settings_schema.typography.settings.text_transform.options__3"
+                    },
+                    {
+                        "value": "lowercase",
+                        "label": "t:settings_schema.typography.settings.text_transform.options__4"
+                    }
+                ]
+            }
+        ],
+        "presets": [
+            {
+                "name": "t:sections.before-after-slider.presets.name"
+            }
+        ],
+        "disabled_on": {
+            "groups": ["header", "footer"]
+        }
+    }
+{% endschema %}

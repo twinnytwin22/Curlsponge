@@ -1,0 +1,19 @@
+<div class="footer-block__item footer-block__info text-{{ text_align }}">
+
+    <div class="item column-{{ footer_text_custom.size }} clearfix">
+        {%- for column in footer_text_custom -%}
+            <div class="footer-block__column {% if show_separate_line %} separate-line{% endif %}">
+                {%- if column.settings.heading_1 != blank -%}
+                    <h2 class="footer-block__heading">
+                        {{- column.settings.heading_1 | escape -}}
+                    </h2>
+                {%- endif -%}
+                {%- if column.settings.subtext_1 != blank -%}
+                    <div class="footer-block__details rte">
+                        {{ column.settings.subtext_1 }}
+                    </div>
+                {%- endif -%}
+            </div>
+        {%- endfor -%}
+    </div>
+</div>

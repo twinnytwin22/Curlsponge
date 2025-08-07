@@ -1,0 +1,100 @@
+{%- liquid
+    assign product_swatch_option = settings.swatch | downcase
+    assign variant_img = ''
+    for option in product_card_product.options_with_values
+        assign option_name = option.name | downcase
+        if product_swatch_option contains option_name
+            assign variant_selected = option.selected_value
+            for variant in product_card_product.variants limit: 1
+                if variant.image != null  
+                    assign variant_img = variant.image
+                endif
+            endfor
+            break
+        endif
+    endfor
+-%}
+
+<div class="product-item product-item-custom product-item-custom-2" data-product-id="product-{{ product_card_product.id }}" data-json-product='{{ product_card_product | json | escape }}'>
+    <div class="card">
+        <div class="card-product{% if product_card_product.featured_media == nil %} card--text-only card--soft{% endif %}">
+            <a class="card-media" href="{{ product_card_product.url }}">
+                {%- if product_card_product.featured_media -%}
+                    {%- if variant_img != blank -%}
+                        {% assign image = variant_img %}
+                    {%- else -%}
+                        {% assign image = product_card_product.images[0].src %}
+                    {%- endif -%}
+                    {% render 'icon-external-link' %}
+                    <img srcset="{{ image | img_url: '95x' }}" 
+                        src="{{ image | img_url: '95x' }}"
+                        sizes="95px"
+                        alt="{{ image.alt | escape }}"
+                        loading="lazy"
+                        class="motion-reduce"
+                    >
+                {%- else -%}
+                    {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+                    {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
+            </a>
+        </div>
+        <div class="card-information">
+            <div class="card-information__wrapper text-left">
+                <a class="card-title link-underline{% if settings.product_title_line_text != 'full' %} card-title-ellipsis{% endif %}{% if variant_selected != blank %} card-title-change{% endif %}" href="{{ product_card_product.url }}">
+                    <span class="text">
+                        {{ product_card_product.title | escape }}
+                        {%- if variant_selected != blank -%}
+                            <span data-change-title> - {{ variant_selected }}</span>
+                        {%- endif -%}
+                    </span>
+                </a>
+                {%- if settings.show_review -%}
+                    <div class="card-review halo-productReview">
+                        {%- liquid
+                            assign average = product_card_product.metafields.reviews.rating.value
+                            assign rating = average | replace: '', '' | plus : 0 | round
+                        -%}
+                        <span class="spr-badge" id="spr_badge_{{ product_card_product.id }}" data-rating="{{ average }}" role="img" aria-label="{{ 'accessibility.star_reviews_info' | t: rating_value: product_card_product.metafields.reviews.rating.value, rating_max: product_card_product.metafields.reviews.rating.value.scale_max }}">
+                            <span class="spr-starrating spr-badge-starrating">
+                                {%- for review in (1..5) -%}
+                                    {%- if rating >= forloop.index -%}
+                                        <i class="spr-icon spr-icon-star" role="none"></i>
+                                    {%- else -%}
+                                        <i class="spr-icon spr-icon-star-empty" role="none"></i>
+                                    {%- endif -%}
+                                {%- endfor -%}
+                            </span>
+                        </span>
+                    </div>
+                {%- endif -%}
+                <div class="card-price">
+                    {% render 'price',
+                        product: product_card_product,
+                        price_class: ''
+                    %}
+                    <div class="details">
+                        <a class="details-icon" href="{{ product_card_product.url }}">
+                            <span class="visually-hidden">
+                                {{ 'products.product.details' | t }}
+                            </span>
+                            {% render 'icon-add-to-cart' %}
+                        </a>
+                    </div>
+                </div>
+                {%- if settings.show_wishlist_card and settings.show_wishlist -%}
+                    <div class="card-wishlist{% unless settings.show_wishlist_card_mobile %} card-mobile__hidden{% endunless %}">
+                        <a class="wishlist-icon" href="#" data-wishlist data-wishlist-handle="{{ product_card_product.handle }}" data-product-id="{{ product_card_product.id }}" role="button">
+                            <span class="visually-hidden">
+                                {{ 'wishlist.general.add' | t }}
+                            </span>
+                            {% render 'icon-heart',
+                                icon_heart: '1'
+                            %}
+                        </a>
+                    </div>
+                {%- endif -%}
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,447 @@
+{%- if section.settings.show_tiktok -%}
+    {%- liquid
+        assign padding_top = section.settings.padding_top | append: 'px'
+        assign padding_bottom = section.settings.padding_bottom | append: 'px'
+        assign padding_top_tablet = section.settings.padding_top_tablet | append: 'px'
+        assign padding_bottom_tablet = section.settings.padding_bottom_tablet | append: 'px'
+        assign padding_top_mobile = section.settings.padding_top_mobile | append: 'px'
+        assign padding_bottom_mobile = section.settings.padding_bottom_mobile | append: 'px'
+        assign container = section.settings.container
+        assign title = section.settings.title
+        assign text = section.settings.text
+        assign button_text = section.settings.button_text
+        if button_text
+            assign button_url = section.settings.button_url
+            assign button_style = section.settings.button_style
+            assign transparent_button = section.settings.transparent_button
+            assign button_width = section.settings.button_width
+        endif
+        assign title_align = section.settings.title_align
+        assign mobile_layout = section.settings.block_mobile_layout
+        assign col = section.settings.col
+        assign column = section.settings.block_show
+        assign show_tiktok_user = section.settings.show_tiktok_user
+        assign image = section.settings.image
+        assign link_title = section.settings.link_title
+        assign link = section.settings.link
+    -%}
+    <div class="halo-block halo-banner halo-tiktok halo-block-padding" id="halo-tiktok-{{ section.id }}"
+        style="--padding-top: {{ padding_top }};
+            --padding-bottom: {{ padding_bottom }};
+            --padding-top-tablet: {{ padding_top_tablet }};
+            --padding-bottom-tablet: {{ padding_bottom_tablet }};
+            --padding-top-mobile: {{ padding_top_mobile }};
+            --padding-bottom-mobile: {{ padding_bottom_mobile }};"
+    >
+        <div class="container container-{{ container }}{% if mobile_layout == 'swipe' %} container-no-padding{% endif %}">
+            {%- if title != blank or text != blank or button_text != blank -%}
+                <div class="halo-block-header text-{{ title_align }}">
+                    {%- if title != blank -%}
+                        <h3 class="title text-{{ title_align }}">
+                            <span class="text">
+                                {{ title | escape }}
+                            </span>
+                        </h3>
+                    {%- endif -%}
+                    {%- if text != blank -%}
+                        <span class="desc text-{{ title_align }}">
+                            {{ text }}
+                        </span>
+                    {%- endif -%}
+                    {%- if button_text != blank -%}
+                        <div class="block-content-bottom content-bottom">
+                            <{% if button_url != blank %}a{% else %}div{% endif %} class="{% if button_style == 'link' %}link link-underline text-underline{% else %}banner-button button button-{{ button_style }}{% if transparent_button %} button--transparent{% endif %}{% endif %}"{% if button_url == blank %} role="link" aria-disabled="true"{% else %} href="{{ button_url }}"{% endif %}
+                                {% if button_style != 'link' %}
+                                    style="max-width: {{ button_width | append: 'px' }};"
+                                {% endif %}
+                            >
+                                <span class="text">{{ button_text | escape }}</span>
+                            </{% if button_url != blank %}a{% else %}div{% endif %}>
+                        </div>
+                    {%- endif -%}
+                </div>
+            {%- endif -%}
+            <div class="halo-block-content">
+                <div class="tiktok-column">
+                    <div class="halo-row column-{{ column }} col-{{ col }} halo-row--{{ mobile_layout }} disable-scrollbar"
+                        data-item-to-show="{{ column }}"
+                        data-item-dots="{{ dots }}"
+                        data-item-arrows="{{ arrows }}"
+                    >
+                        {%- for block in section.blocks -%}
+                            <div class="halo-row-item item tiktok-column__item">
+                                {%- if block.settings.link_tiktok != blank -%}
+                                    <div class="tiktok-column__item-content">
+                                        {{ block.settings.link_tiktok }}
+                                    </div>
+                                {%- else -%}
+                                    {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                                {%- endif -%}
+                            </div>
+                        {%- endfor -%}
+                    </div>
+                </div>
+                {%- if show_tiktok_user -%}
+                    {%- if image != blank or link_title != blank -%}
+                        <span class="customer-info">
+                            {%- if link_title != blank -%}
+                                <a {% if link == blank %} role="link" aria-disabled="true"{% else %} href="{{ link }}"{% endif %}  class="link-title link">{{ link_title }}</a>
+                            {%- endif -%}
+                            <div class="img-box">
+                                <loading-banner class="loading-banner">
+                                    {%- if image != blank -%}
+                                        <{% if link != blank %}a{% else %}div{% endif %} class="image image-adapt" {% if link == blank %} href="{{ image | img_url: 'master' }}"{% else %} href="{{ link }}"{% endif %} style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
+                                            <img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x" src="{{ image | img_url: 'master' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
+                                        </{% if link != blank %}a{% else %}div{% endif %}>
+                                    {%- else -%}
+                                        <{% if link != blank %}a{% else %}div{% endif %} class="image"{% if link != blank %} href="{{ link }}"{% endif %}>
+                                            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                                        </{% if link != blank %}a{% else %}div{% endif %}>
+                                    {%- endif -%}
+                                </loading-banner>
+                            </div>
+                        </span>
+                    {%- endif -%}
+                {%- endif -%}
+            </div>
+        </div>
+    </div>
+{%- endif -%}
+{% schema %}
+    {
+        "name": "t:sections.tiktok.name",
+        "settings": [
+            {
+                "type": "header",
+                "content": "t:sections.tiktok.settings.header__1.content"
+            },
+            {
+                "type": "checkbox",
+                "id": "show_tiktok",
+                "label": "t:sections.tiktok.settings.general.label__1",
+                "default": true
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__1.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 0
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 0
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__2.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top_tablet",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 40
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom_tablet",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 40
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__3.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top_mobile",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 30
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom_mobile",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 30
+            },
+            {
+                "type": "select",
+                "id": "container",
+                "label": "t:sections.general.settings.container.label__1",
+                "default": "full",
+                "options": [
+                {
+                    "value": "1370",
+                    "label": "t:sections.general.settings.container.options__2"
+                },
+                {
+                    "value": "1570",
+                    "label": "t:sections.general.settings.container.options__3"
+                },
+                {
+                    "value": "1770",
+                    "label": "t:sections.general.settings.container.options__4"
+                },
+                {
+                    "value": "1860",
+                    "label": "t:sections.general.settings.container.options__5"
+                },
+                {
+                    "value": "full",
+                    "label": "t:sections.general.settings.container.options__6"
+                }],
+                "info": "t:sections.general.settings.container.info"
+            },
+            {
+                "type": "header",
+                "content": "t:sections.tiktok.settings.header__3.content"
+            },
+            {
+                "type": "text",
+                "id": "title",
+                "label": "t:sections.general.settings.block-title.label__1",
+                "default": "Sample Static Block"
+            },
+            {
+                "type": "text",
+                "id": "text",
+                "label": "t:sections.general.settings.block-title.label__2",
+                "default": "Give customers details about the banner image(s) or content on the template."
+            },
+            {
+                "type": "text",
+                "id": "button_text",
+                "label": "t:sections.general.settings.content.label__5",
+                "default":"SHOP ALL"
+            },
+            {
+                "type": "url",
+                "id": "button_url",
+                "label": "t:sections.general.settings.content.label__6",
+                "info": "t:sections.general.settings.content.info__1"
+            },
+            {
+                "type": "select",
+                "id": "button_style",
+                "label": "t:sections.general.settings.button.label__1",
+                "default": "2",
+                "options": [
+                {
+                    "value": "1",
+                    "label": "t:sections.general.settings.button.options__1"
+                },
+                {
+                    "value": "2",
+                    "label": "t:sections.general.settings.button.options__2"
+                },
+                {
+                    "value": "3",
+                    "label": "t:sections.general.settings.button.options__3"
+                },
+                {
+                    "value": "4",
+                    "label": "t:sections.general.settings.button.options__4"
+                },
+                {
+                    "value": "5",
+                    "label": "t:sections.general.settings.button.options__5"
+                },
+                {
+                    "value": "6",
+                    "label": "t:sections.general.settings.button.options__9"
+                },
+                {
+                    "value": "7",
+                    "label": "t:sections.general.settings.button.options__10"
+                },
+                {
+                    "value": "8",
+                    "label": "t:sections.general.settings.button.options__11"
+                },
+                {
+                    "value": "link",
+                    "label": "t:sections.general.settings.button.options__7"
+                }]
+            },
+            {
+                "type": "checkbox",
+                "id": "transparent_button",
+                "label": "t:sections.general.settings.button.label__5",
+                "default": false
+            },
+            {
+                "type": "range",
+                "id": "button_width",
+                "label": "t:sections.general.settings.button.label__8",
+                "min": 150,
+                "max": 400,
+                "step": 10,
+                "unit": "t:sections.general.settings.button.unit",
+                "default": 300
+            },
+            {
+                "type": "select",
+                "id": "title_align",
+                "label": "t:sections.general.settings.block-title.label__3",
+                "options": [
+                {
+                    "value": "left",
+                    "label": "t:sections.general.settings.block-title.options__1"
+                },
+                {
+                    "value": "center",
+                    "label": "t:sections.general.settings.block-title.options__2"
+                },
+                {
+                    "value": "right",
+                    "label": "t:sections.general.settings.block-title.options__3"
+                }],
+                "default": "center"
+            },
+            {
+                "type": "checkbox",
+                "id": "show_tiktok_user",
+                "label": "t:sections.tiktok.settings.general.label__2",
+                "default": true
+            },
+            {
+                "type": "image_picker",
+                "id": "image",
+                "label": "t:sections.general.settings.image.label__1"
+            },
+            {
+                "type": "text",
+                "id" : "link_title",
+                "label": "t:sections.general.settings.content.label__9",
+                "default": "Join Us on"
+            },
+            {
+                "type": "url",
+                "id": "link",
+                "label": "t:sections.general.settings.button.label__3"
+            },
+            {
+                "type": "header",
+                "content": "t:sections.tiktok.settings.header__2.content"
+            },
+            {
+                "type": "select",
+                "id": "block_mobile_layout",
+                "label": "t:sections.general.settings.block-layout.label__2",
+                "options": [
+                {
+                    "value": "grid",
+                    "label": "t:sections.general.settings.block-layout.options__1"
+                },
+                {
+                    "value": "swipe",
+                    "label": "t:sections.general.settings.block-layout.options__3"
+                }],
+                "default": "grid"
+            },
+            {
+                "type": "select",
+                "id": "col",
+                "label": "t:sections.general.settings.column.label__1",
+                "default": "wide",
+                "options": [
+                {
+                    "value": "narrow",
+                    "label": "t:sections.general.settings.column.options__2"
+                },
+                {
+                    "value": "wide",
+                    "label": "t:sections.general.settings.column.options__1"
+                },
+                {
+                    "value": "expand",
+                    "label": "t:sections.general.settings.column.options__5"
+                }]
+            },
+            {
+                "type": "select",
+                "id": "block_show",
+                "label": "t:sections.general.settings.slider.label__1",
+                "options": [
+                {
+                    "value": "3",
+                    "label": "3"
+                },
+                {
+                    "value": "4",
+                    "label": "4"
+                },
+                {
+                    "value": "5",
+                    "label": "5"
+                },
+                {
+                    "value": "6",
+                    "label": "6"
+                }],
+                "default": "4"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "image",
+                "name": "t:sections.tiktok.blocks.name",
+                "settings": [
+                    {
+                        "type": "textarea",
+                        "id": "link_tiktok",
+                        "label": "t:sections.tiktok.blocks.settings.header__1.name"
+                    }
+                ]
+            }
+        ],
+        "presets": [
+            {
+                "name": "t:sections.tiktok.presets.name",
+                "blocks": [
+                    {
+                        "type": "image"
+                    },
+                    {
+                        "type": "image"
+                    },
+                    {
+                        "type": "image"
+                    }
+                ]
+            }
+        ],
+        "disabled_on": {
+            "groups": ["header", "footer"]
+        }
+    }
+{% endschema %}

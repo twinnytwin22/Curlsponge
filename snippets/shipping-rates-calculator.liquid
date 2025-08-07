@@ -1,0 +1,66 @@
+<script src="/services/javascripts/countries.js"></script>
+<script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer="defer"></script>
+<script src="{{ 'jquery.cart.min.js' | asset_url }}" defer="defer"></script>
+<script src="{{ '//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js' }}" defer="defer"></script>
+<div class="cart-shipping clearfix" id="shipping-calculator">
+    <div id="shipping-calculator-form-wrapper" class="cart-shipping-calculator clearfix">
+        <div class="form-field form-group form-group-1" id="address_country_container">
+            <select id="address_country" class="select__select" name="address[country]" data-default="{% if shop.customer_accounts_enabled and customer %}{{ customer.default_address.country }}{% elsif default_country != '' %}{{ default_country }}{% endif %}">
+                {{ all_country_option_tags }}
+            </select>
+        </div>
+        <div class="form-field form-group form-group-2" id="address_province_container" style="display:none;">
+            <select id="address_province" class="select__select address_form" name="address[province]" data-default="{% if shop.customer_accounts_enabled and customer and customer.default_address.province != '' %}{{ customer.default_address.province }}{% endif %}"></select>
+        </div>
+        <div class="form-field form-group form-group-3" id="address_zip_container">
+            <input type="text" id="address_zip" class="form-input styled-input" name="address[zip]"{% if shop.customer_accounts_enabled and customer %} value="{{ customer.default_address.zip }}"{% endif %} />
+        </div>
+        <div id="get-rates-container" class="form-action">
+            <input type="submit" id="get-rates-submit" class="get-rates styled-submit button button-height" value="{{ 'sections.cart.shipping_calculator_button' | t }}"/>      
+        </div>
+    </div>
+    <div id="wrapper-response" class="cart-shipping-response"></div>
+</div>
+<script id="shipping-calculator-response-template" type="text/x-jquery-tmpl">
+    {% raw %}
+        <p id="shipping-rates-feedback" class="{{if success}}success{{else}}error{{/if}}">
+            {{if success}}
+                {{if rates.length > 1}}
+                    {% endraw %}{{'sections.cart.shipping_calculator_success_many_rates.there_are' |t}}{%raw%} ${rates.length} 
+                    {%endraw%}{{'sections.cart.shipping_calculator_success_many_rates.shipping_rates_available_for' |t}}{%raw%} ${address}
+                    {%endraw%}{{'sections.cart.shipping_calculator_success_many_rates.starting_at' |t}}{%raw%} 
+                    {{html Shopify.Cart.ShippingCalculator.formatRate(rates[0].price)}}.
+                {{else}}
+                    {{if rates.length == 1}}
+                        {%endraw%}{{'sections.cart.shipping_calculator_success_one_rate' |t}}{%raw%} ${address}.
+                    {{else}}
+                        {%endraw%}{{'sections.cart.shipping_calculator_success_no_rate' |t}}{%raw%}
+                    {{/if}}
+                {{/if}}
+            {{else}}
+                ${errorFeedback}
+            {{/if}}
+        </p>
+        <ul id="shipping-rates" class="list-unstyled">
+            {{each( index, rate ) rates}}
+                <li>
+                    ${rate.name} 
+                        {%endraw%}{{ 'sections.cart.shipping_calculator_success_at' |t }}{%raw%}
+                    {{html Shopify.Cart.ShippingCalculator.formatRate(rate.price)}}
+                </li>
+            {{/each}}
+        </ul>
+    {% endraw %} 
+</script>
+<script type="text/javascript">
+    setTimeout(() => {
+        Shopify.Cart.ShippingCalculator.show({
+            submitButton: `{{ 'sections.cart.shipping_calculator_button' | t }}`,
+            submitButtonDisabled: `{{ 'sections.cart.shipping_calculator_calculating' | t }}`,
+            {% if shop.customer_accounts_enabled and customer %}
+            customerIsLoggedIn: true,
+            {% endif %}
+            moneyFormat: {{ shop.money_format | json }}
+        });
+    }, 500);
+</script>

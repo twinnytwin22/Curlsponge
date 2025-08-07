@@ -1,0 +1,11 @@
+<div class="card-attr {{ class }}">
+	{% capture product_attribute_option %}{{ settings.product_attribute_option }}{% endcapture %}
+	{%- liquid
+		assign variant_size = product.options_by_name[product_attribute_option].values | size
+		assign product_attribute_option = product_attribute_option | append: 's'
+		assign product_attribute_text = settings.product_attribute_text | replace: '[option]' : product_attribute_option
+	-%}
+    {%- if variant_size > 0 -%}
+        <span class="text">{{ product_attribute_text }}</span>
+    {%- endif -%}
+</div>

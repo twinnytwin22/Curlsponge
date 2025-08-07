@@ -1,0 +1,85 @@
+<div class="banner-item image-{{ image_effect }} item{% if grid_style == '2' %} image-border-{{ image_border_radius }}{% endif %}">
+	{%-  liquid
+		assign label = block.settings.label_text
+		assign label_color = block.settings.label_color
+		assign label_bg_color = block.settings.label_bg_color
+	-%}
+	{%- if label != blank -%}
+		<span class="badge-label" style="--color-label: {{ label_color }};--bg-color-label: {{ label_bg_color }}; ">
+			{{ label }}
+		</span>
+	{%- endif -%}
+	<div class="img-box{% if grid_style == '1' %} image-border-{{ image_border_radius }}{% endif %}">
+		{%- liquid
+			if block.settings.image != blank
+				assign image = block.settings.image
+			else
+				assign image = collection.image
+			endif
+			if block.settings.link != blank
+				assign link = block.settings.link
+			else
+				assign link = collection.url
+			endif
+		-%}
+		{%- if image != blank -%}
+        	<a class="image image-{{ image_ratio }}{% if grid_style == '2' %} image-border-{{ image_border_radius }}{% endif %}" href="{{ link }}"
+        		{% if image_ratio == 'adapt' %}
+                    style="padding-bottom: {{ 1 | divided_by: image.aspect_ratio | times: 100 }}%;"
+                {% elsif image_ratio == 'square' %}
+                    style="padding-bottom: 100%;"
+                {% elsif image_ratio == 'portrait' %}
+                    {% if portrait_aspect_ratio != blank %}
+                        style="padding-bottom: {{ portrait_aspect_ratio }};"
+                    {% endif %}
+                {% endif %}
+        	>
+            	<img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x" src="{{ image | img_url: 'master' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
+            </a>
+        {%- else -%}
+            <a class="image" href="{{ link }}">
+                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+            </a>
+        {%- endif -%}
+	</div>
+	{%- if show_collection_product_count or block.settings.block_title != blank or block.settings.link_title != blank -%}
+		<div class="content-box text-{{ align }}">
+            {%- liquid
+            	assign custom_title = block.settings.block_title
+				assign text = block.settings.text
+            	assign custom_link_title = block.settings.link_title
+            	if block.settings.url_title != blank
+	    			assign custom_url_title = block.settings.url_title
+	    		else
+					assign custom_url_title = collection.url
+				endif
+            -%}
+            {%- if custom_title != blank or custom_link_title != blank -%}
+	            <div class="custom-content">
+	            	{%- if custom_title != blank -%}
+		            	<h4 class="title banner-title typography__mobile typography__tablet typography__desktop">
+		            		<a href="{{ link }}" class="link-underline">
+		            			<span class="text">{{ custom_title }}</span>
+		            		</a>
+		            	</h4>
+	            	{%- endif -%}
+					{%- if text != blank -%}
+						<div class="banner-text typography__text">
+							{{ text }}
+						</div>
+					{%- endif -%}
+                    {%- if show_collection_product_count -%}
+                        <p class="count">
+                        	{{ collection.all_products_count }} {{ collection.all_products_count | pluralize: 'product', 'products' }}
+						</p>
+                    {%- endif -%}
+	            	{%- if custom_link_title != blank -%}
+		            	<a href="{{ custom_url_title }}" class="link link-underline">
+		            		<span class="text">{{ custom_link_title }}</span>
+		            	</a>
+	            	{%- endif -%}
+	            </div>
+	        {%- endif -%}
+		</div>
+	{%- endif -%}
+</div>

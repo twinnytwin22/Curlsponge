@@ -1,0 +1,94 @@
+{%- liquid
+    assign file_extension = 'png'
+    assign variant_selected = variant_selected | handleize
+    assign variantCount = product.variants | size
+    assign swatch_type = settings.swatch_type
+    assign swatch_style = settings.swatch_style
+    if type_trigger
+        assign type = 'grid'
+    else
+        assign type = settings.product_swatch_type 
+    endif
+    assign colorList = ''
+    assign color = ''
+    assign count = 0
+-%}
+{%- if variantCount > 0 and product.variants.first.title != 'Default Title' -%}
+    <div class="card-swatch card-swatch--{{ type }} {{ class }} clearfix card-grid__hidden" id="product-swatch-{{ product.id }}">
+        <{% if type == 'grid' %}ul{% else %}div{% endif %} class="swatch list-unstyled">
+            {%- for variant in product.variants -%}
+                {% capture color %}
+                    {{ variant.options[index] }}
+                {% endcapture %}
+                {%- unless colorList contains color -%}
+                    {%- assign text = color | handleize -%}
+                    <{% if type == 'grid' %}li{% else %}div{% endif %} class="item">
+                        <div class="item-wrapper clearfix">
+                            <div
+                                {% if product.options_with_values.size == 1 %}
+                                    data-with-one-option="{{ variant.id }}"
+                                    data-quantity="{% if variant.available %}1{% else %}0{% endif %}"
+                                {% endif %}
+                                class="swatch-label swatch-{{ swatch_style }}{% if variant_selected != blank %}{% if variant_selected == text %} is-active{% endif %}{% else %}{% if count == 0 %} is-active{% endif %}{% endif %}{% if product.options_with_values.size == 1 and variant.unavailable %} is-soldout{% endif %}"
+                                data-value="{{ text }}"
+                                data-variant-id="{{ variant.id }}"
+                                title="{{ color | strip }}"
+                                {% if variant.image != null %} 
+                                    data-variant-img="{{ variant.image.src | product_img_url: '800x' }}"
+                                {% endif %}
+                            >   
+                                {%- if variant.image %}
+                                    <span class="pattern" style="background-image: url({{ variant.image.src | product_img_url: '40x'}});" role="none"></span>
+                                {%- else -%}
+                                    {%- if swatch_type == 'png' -%}
+                                        <span class="pattern" style="background-image: url({{ color | handle | append: '.' | append: file_extension | file_url }})" role="none"></span>
+                                    {%- else -%}
+                                        {% assign check_color = color | split: ' ' | last | handle %}
+                                        <span class="pattern{% if check_color == 'white' or check_color == 'White' %} pattern--white{% elsif check_color == 'black' or check_color == 'Black' %} pattern--black{% endif %}" style="background-color: {{ color | split: ' ' | last | handle }};" role="none"></span>
+                                    {%- endif -%}
+                                {%- endif -%}
+                            </div>
+                        </div>
+                        {% assign count = count | plus : 1 %}
+                    </{% if type == 'grid' %}li{% else %}div{% endif %}>
+                    {% capture tempList %}
+                        {{ colorList | append: color | append: ' ' }}
+                    {% endcapture %}
+                    {% assign colorList = tempList %}
+                {%- endunless -%}
+            {%- endfor -%}
+            {%- if type == 'grid' -%}
+                {%- if count > 4 -%}
+                    <li class="item item-show-more card-mobile__hidden card-tablet__hidden" data-count="{{ count }}">
+                        <div class="item-wrapper clearfix">
+                            <a href="javascript:void(0)" class="link">
+                                <span class="text text-1">{{ count | minus : 4 | prepend: '+' }}</span>
+                                <span class="text text-2">{{ count | minus : 4 | prepend: '-' }}</span>
+                            </a>
+                        </div>
+                    </li>
+                {%- endif -%}
+                {%- if count > 3 -%}
+                    <li class="item item-show-more card-tablet__visible card-mobile__hidden card-desktop__hidden" data-count="{{ count }}">
+                        <div class="item-wrapper clearfix">
+                            <a href="javascript:void(0)" class="link">
+                                <span class="text text-1">{{ count | minus : 3 | prepend: '+' }}</span>
+                                <span class="text text-2">{{ count | minus : 3 | prepend: '-' }}</span>
+                            </a>
+                        </div>
+                    </li>
+                {%- endif -%}
+                {%- if count > 2 -%}
+                    <li class="item item-show-more card-desktop__hidden card-tablet__hidden" data-count="{{ count }}">
+                        <div class="item-wrapper clearfix">
+                            <a href="javascript:void(0)" class="link">
+                                <span class="text text-1">{{ count | minus : 2 | prepend: '+' }}</span>
+                                <span class="text text-2">{{ count | minus : 2 | prepend: '-' }}</span>
+                            </a>
+                        </div>
+                    </li>
+                {%- endif -%}
+            {%- endif -%}
+        </{% if type == 'grid' %}ul{% else %}div{% endif %}>
+    </div>
+{%- endif -%}

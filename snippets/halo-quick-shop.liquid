@@ -1,0 +1,172 @@
+{%- liquid
+    assign file_extension = 'png'
+	assign current_variant = product.selected_or_first_available_variant
+    assign variantCount = product.variants | size
+    assign show_notify_form = settings.show_notify_form
+    assign hide_unavailable_variants = settings.hide_unavailable_variants
+-%}
+{%- if variantCount > 0 and product.has_only_default_variant != true  -%}
+    <script>
+        window.quick_shop_inven_array_{{ product.id }} = {
+            {%- for variant in product.variants -%}
+                '{{ variant.id }}': '{{ variant.inventory_quantity }}',
+            {%- endfor -%}
+        };
+    </script>
+{%- endif -%}
+<div class="card-QuickShop">
+	<div class="card-options">
+		<div class="card-variants halo-productOptions" id="product-card-option-{{ product.id }}" data-type="button">
+			{%- if variantCount > 0 and product.has_only_default_variant != true -%}
+				{%- assign product_swatch_option = settings.swatch | downcase -%}
+				<variant-quick-shop-radios class="no-js-hidden product-option has-default{% if hide_unavailable_variants %} hide-unavailable{% endif %}" data-product="{{ product.id }}" data-url="{{ product.url }}">
+                    {%- for option in product.options_with_values -%}
+                        {%- liquid
+                            assign is_swatch = false
+                            assign option_name = option.name | downcase
+                            if product_swatch_option contains option_name
+                                assign is_swatch = true
+                            endif
+                            assign swatch_type = settings.swatch_type
+                            assign option_index = forloop.index0
+                        -%}
+                        <fieldset class="js product-form__input{% if is_swatch %} product-form__swatch{% endif %} clearfix" data-product-attribute="set-rectangle" data-option-index="{{ forloop.index0 }}">
+                            <legend class="form__label">
+                                {{ option.name | append: ':' }}
+                                <span data-header-option>
+                                    {{ option.selected_value }}
+                                </span>
+                            </legend>
+                            {%- assign values = '' -%}
+                            {%- for variant in product.variants -%}
+                                {%- assign value = variant.options[option_index] -%}
+                                {%- unless values contains value -%}
+                                    {%- liquid
+                                        assign values = values | join: ';'
+                                        assign values = values | append: ';' | append: value
+                                        assign values = values | split: ';'
+                                    -%}
+                                    <input class="product-form__radio" type="radio" id="option-quick-view-{{ product.id }}-{{ option.name }}-{{ forloop.index0 }}"
+                                        name="{{ option.name }}"
+                                        value="{{ value | escape }}"
+                                        {% if option.selected_value == value %}checked{% endif %}
+                                    >
+                                    {%- if is_swatch -%}
+                                        <label class="product-form__label{% if variant.available %} available{% else %} soldout{% endif %}" for="option-quick-view-{{ product.id }}-{{ option.name }}-{{ forloop.index0 }}" role="button" tabindex="0">
+                                            {%- if variant.image %}
+                                                <span class="pattern" style="background-image: url({{ variant.image.src | product_img_url: '40x'}});" role="none"></span>
+                                                <span class="visually-hidden">{{ value | escape }}</span>
+                                                <span class="expand">
+                                                    <img srcset="{{ variant.image.src | product_img_url: '75x'}}" src="{{ variant.image.src | product_img_url: '75x'}}" sizes="75px" loading="lazy" alt="{{ value | escape }}">
+                                                </span>
+                                            {%- else -%}
+                                                {%- if swatch_type == 'png' -%}
+                                                    <span class="pattern" style="background-image: url({{ value | handle | append: '.' | append: file_extension | file_url }})" role="none"></span>
+                                                {%- else -%}
+                                                    {% assign check_color = color | split: ' ' | last | handle %}
+                                                    <span class="pattern{% if check_color == 'white' or check_color == 'White' %} pattern--white{% elsif check_color == 'black' or check_color == 'Black' %} pattern--black{% endif %}" style="background-color: {{ value | split: ' ' | last | handle }};" role="none"></span>
+                                                {%- endif -%}
+                                                <span class="visually-hidden">{{ value | escape }}</span>
+                                                <span class="tooltip">
+                                                    {{ value | escape }}
+                                                </span>
+                                            {%- endif -%}
+                                        </label>
+                                    {%- else -%}   
+                                        <label class="product-form__label{% if value.size >= 5 %} product-form__labelLagre{% endif %}{% if variant.available %} available{% else %} soldout{% endif %}" for="option-quick-view-{{ product.id }}-{{ option.name }}-{{ forloop.index0 }}" role="button" tabindex="0">
+                                            <span class="text">{{ value }}</span>
+                                        </label>
+                                    {%- endif -%}
+                                {%- endunless -%}
+                            {%- endfor -%}
+                        </fieldset>
+                    {%- endfor -%}
+                    <script type="application/json">
+                        {{ product.variants | json }}
+                    </script>
+                </variant-quick-shop-radios>
+			{%- endif -%}
+		</div>
+		<noscript>
+            <div class="product-form__input{% if product.has_only_default_variant %} hidden{% endif %}">
+                <label class="form__label" for="Variants-{{ section.id }}">
+                    {{ 'products.product.product_variants' | t }}
+                </label>
+                <div class="select">
+	                <select name="id" id="Variants-{{ section.id }}" class="select__select" form="product-form">
+	                    {%- for variant in product.variants -%}
+	                        <option
+	                            {% if variant == product.selected_or_first_available_variant %}selected="selected"{% endif %}
+	                            {% if variant.available == false %}disabled{% endif %}
+	                            value="{{ variant.id }}"
+	                        >
+	                            {{ variant.title }}
+	                            {%- if variant.available == false %} - {{ 'products.product.sold_out' | t }}{%- endif -%}
+	                            - {{ variant.price | money | strip_html }}
+	                        </option>
+	                    {%- endfor -%}
+	              	</select>
+	            </div>
+          	</div>
+        </noscript>
+	</div>
+    <div class="card-price no-js-hidden clearfix" id="product-quick-shop-price-{{ product.id }}">
+        {%- render 'price',
+            product: product,
+            use_variant: true,
+            price_class: 'price--large'
+        -%}
+    </div>
+	{%- assign product_form_id = 'product-quick-shop-form-' | append: product.id -%}
+	{%- form 'product', product, id: product_form_id, class: 'form card-form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+		<input type="hidden" name="id" value="{{ current_variant.id }}">
+		<div class="card-form--button">
+			{%- if current_variant.available -%}
+				{%- if current_variant.inventory_management -%}
+					{%- assign first_inventory = current_variant.inventory_quantity -%}
+                    <button
+                        type="submit"
+                        name="add"
+                        data-btn-addToCart
+                        class="card-form__submit button{% unless first_inventory > 0 %} button-text-change{% endunless %}"
+                        id="product-quick-shop-add-to-cart">
+                        {%- if first_inventory > 0 -%}
+                            {{ 'products.product.add_to_cart' | t}}
+                        {%- else -%}
+                            {{ 'products.product.pre_order' | t }}
+                        {%- endif -%}
+                    </button>
+				{%- else -%}
+					<button
+                        type="submit"
+                        name="add"
+                        data-btn-addToCart
+                        class="card-form__submit button"
+                        id="product-quick-shop-add-to-cart"
+                    >
+                        {{ 'products.product.add_to_cart' | t}}
+                    </button>
+				{%- endif -%}
+			{%- else -%}
+				<button
+                    type="submit"
+                    name="add"
+                    data-btn-addToCart
+                    class="card-form__submit button"
+                    id="product-quick-shop-add-to-cart"
+                    disabled
+                >
+                    {{ 'products.product.sold_out' | t }}
+                </button>
+			{%- endif -%}
+		</div>
+	{%- endform -%}
+	{%- if show_notify_form -%}
+        <div class="card-notifyMe halo-notifyMe" style="display: none;">
+            {% render 'halo-notify-sold-out',
+                id: product.id,
+                current_variant: current_variant
+            %}
+        </div>
+    {%- endif -%}
+</div>

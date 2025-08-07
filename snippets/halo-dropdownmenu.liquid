@@ -1,0 +1,67 @@
+<li class="menu-lv-item menu-lv-1 text-left no-megamenu{% if link.links != blank %} dropdown{% endif %}{% if sale_item_lv1 contains title %} menu-sale{% endif %}">
+    {%- if link.links != blank -%}
+        <a class="menu-lv-1__action list-menu__item link focus-inset" href="{{ link.url }}" role="button">
+            <span class="text">{{ link.title | escape }}</span>
+            {%- if sale_item_lv1 contains title -%}
+                {% render 'icon-flashy' %}
+            {%- endif -%}
+            {%- if new_label_1 contains title -%}
+                <span class="label new-label">
+                    {{ 'general.navigation.new_label' | t }}
+                </span>
+            {%- elsif sale_label_1 contains title -%}
+                <span class="label sale-label">
+                    {{ 'general.navigation.sale_label' | t }}
+                </span>
+            {%- elsif hot_label_1 contains title -%}
+                <span class="label hot-label">
+                    {{ 'general.navigation.hot_label' | t }}
+                </span>
+            {%- endif -%}
+            <span class="icon-dropdown" data-toggle-menu-mb>
+                {% render 'icon-caret-right' %}
+            </span>
+        </a>
+        {%- if load -%}
+            {% render 'halo-dropdownmenu-2',
+                link: link,
+                title: title,
+                show_label_blink: show_label_blink,
+                sale_item_lv1: sale_item_lv1,
+                sale_item_lv2: sale_item_lv2,
+                sale_item_lv3: sale_item_lv3,
+                new_label_1: new_label_1,
+                new_label_2: new_label_2,
+                new_label_3: new_label_3,
+                sale_label_1: sale_label_1,
+                sale_label_2: sale_label_2,
+                sale_label_3: sale_label_3,
+                hot_label_1: hot_label_1,
+                hot_label_2: hot_label_2,
+                hot_label_3: hot_label_3,
+                load: load,
+                resize_menu: false
+            %}
+        {%- endif -%}
+    {%- else -%}
+        <a href="{{ link.url }}" class="menu-lv-1__action list-menu__item list-menu__item--end link focus-inset"{% if link.current %} aria-current="page"{% endif %} role="button">
+            <span class="text">{{ link.title | escape }}</span>
+            {%- if sale_item_lv1 contains title -%}
+                {% render 'icon-flashy' %}
+            {%- endif -%}
+            {%- if new_label_1 contains title -%}
+                <span class="label new-label">
+                    {{ 'general.navigation.new_label' | t }}
+                </span>
+            {%- elsif sale_label_1 contains title -%}
+                <span class="label sale-label">
+                    {{ 'general.navigation.sale_label' | t }}
+                </span>
+            {%- elsif hot_label_1 contains title -%}
+                <span class="label hot-label">
+                    {{ 'general.navigation.hot_label' | t }}
+                </span>
+            {%- endif -%}
+        </a>
+    {%- endif -%}
+</li>

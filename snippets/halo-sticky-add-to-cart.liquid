@@ -1,0 +1,83 @@
+{{ 'component-sticky-add-to-cart.css' | asset_url | stylesheet_tag }}
+<sticky-add-to-cart class="productView-stickyCart no-js-hidden" data-sticky-add-to-cart id="product-sticky-{{ section.id }}-{{ product.id }}" {{ block.shopify_attributes }}>
+	{%- liquid 
+        if current_variant.image
+            assign image = current_variant.image
+        else
+            assign image = product.featured_image.src
+        endif
+        assign VariantPicker = section.blocks | where: "type", "variant_picker"
+        if VariantPicker.size > 0
+            assign picker_type = VariantPicker.first.settings.picker_type
+        endif
+        assign use_available_button_style = section.settings.use_available_button_style
+        if use_available_button_style
+            assign btn = section.settings.btn 
+        endif
+    -%}
+	<button class="sticky-product clearfix" type="button" data-toogle-content-sticky role="button">
+		<div class="sticky-image" id="product-sticky-featured-image-{{ section.id }}-{{ product.id }}">
+			<img srcset="{{ image | img_url: '110x' }}" src="{{ image | img_url: '110x' }}" alt="{{ image.alt | default: product.title | escape }}" sizes="110px" loading="lazy">
+		</div>
+		<div class="sticky-content text-left">
+            <div class="sticky-title">
+            	{{ product.title | escape }}
+            </div>
+            <div class="sticky-price clearfix" id="product-sticky-price-{{ section.id }}-{{ product.id }}">
+                {%- render 'price',
+                    product: product,
+                    use_variant: true,
+                    price_class: ''
+                -%}
+            </div>
+		</div>
+        <div class="sticky-toggle"></div>
+	</button>
+    <div class="sticky-inner">
+        <div class="sticky-inner--wrapper">
+        	{%- if variantCount > 0 and product.has_only_default_variant != true -%}
+        		<div class="sticky-options">
+        			<div class="sticky-variants halo-productOptions" id="product-sticky-{{ section.id }}-{{ product.id }}" data-type="button">
+                        {% render 'product-variant',
+                            type: 'main-product',
+                            product: product,
+                            updateURL: true,
+                            updateCart: false,
+                            updateTemplate: false,
+                            updateSticky: true,
+                            picker_type: picker_type,
+                            prefix: 'sticky-',
+                            show_variant_image_group: show_variant_image_group
+                        %}
+                    </div>
+        		</div>
+            {%- endif -%}
+            <div class="sticky-actions{% unless settings.show_wishlist %} sticky-actions-2{% endunless %}">
+            	{%- assign product_form_id = 'product-sticky-form-' | append: section.id | append: '-' | append: product.id -%}
+            	{%- form 'product', product, id: product_form_id, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+                	{% render 'product-action',
+                        product: product,
+                        current_variant: current_variant,
+                        prefix: 'sticky-',
+                        show_subtotal_text: false,
+                        use_available_button_style: use_available_button_style,
+                        btn: btn
+                    %}
+                    {%- if settings.show_wishlist -%}
+                    	<div class="sticky-wishlist clearfix">
+                    		<a data-wishlist href="#" data-wishlist-handle="{{ product.handle }}" data-product-id="{{ product.id }}" role="button">
+                                <span class="visually-hidden">
+                                    {{ 'wishlist.general.add' | t }}
+                                </span>
+                                {% render 'icon-heart',
+                                    icon_heart: '1'
+                                %}
+                            </a>
+                    	</div>
+                    {%- endif -%}
+                {%- endform -%}
+            </div>
+        </div>
+    </div>
+</sticky-add-to-cart>
+<script src="{{ 'sticky-add-to-cart.js' | asset_url }}" defer="defer"></script>

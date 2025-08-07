@@ -1,0 +1,68 @@
+{%- if countdown_type == 'all_product' -%}
+    <div class="productView-countDown halo-countDown countdown_{{ product.id }} style-{{ countdown_style }} text-left clearfix element-spacing"
+        {{ block.shopify_attributes }}
+        style="--countdown-bg: {{ countdown_bg }};
+        --countdown-color: {{ countdown_color }};
+        --countdown-number-color: {{ countdown_number_color }};
+        --spacing-top: {{ padding_top | append: 'px' }};
+        --spacing-bottom: {{ padding_bottom | append: 'px' }};
+        --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+        --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+        --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+        --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};" 
+    >
+        <count-down class="countdown-wrapper" data-countdown="{{ countdown_time }}" data-type="product">
+            <div class="countdown-coundtdown"></div>
+        </count-down>
+    </div>
+{%- elsif countdown_type == 'collection_product' -%}
+    {%- liquid
+        assign hasCountdown = false
+        if countdown_collection != blank
+            for collection in product.collections
+                assign collection_title = collection.title | downcase | handle
+                if collection_title == countdown_collection
+                    assign hasCountdown = true
+                endif
+            endfor
+        endif
+    -%}
+    {%- if hasCountdown -%}
+        <div class="productView-countDown halo-countDown countdown_{{ product.id }} style-{{ countdown_style }} text-left clearfix element-spacing"
+            {{ block.shopify_attributes }}
+            style="--countdown-bg: {{ countdown_bg }};
+            --countdown-color: {{ countdown_color }};
+            --countdown-number-color: {{ countdown_number_color }};
+            --spacing-top: {{ padding_top | append: 'px' }};
+            --spacing-bottom: {{ padding_bottom | append: 'px' }};
+            --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+            --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+            --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+            --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};" 
+        >
+            <count-down class="countdown-wrapper" data-countdown="{{ countdown_time }}" data-type="product">
+                <div class="countdown-coundtdown"></div>
+            </count-down>
+        </div>
+    {%- endif -%}
+{%- else -%}
+    {%- if product.metafields.c_f.countdown -%}
+        {% assign countdown_type = product.metafields.c_f.countdown %}
+        <div class="productView-countDown halo-countDown countdown_{{ product.id }} style-{{ countdown_style }} text-left clearfix element-spacing"
+            {{ block.shopify_attributes }}
+            style="--countdown-bg: {{ countdown_bg }};
+            --countdown-color: {{ countdown_color }};
+            --countdown-number-color: {{ countdown_number_color }};
+            --spacing-top: {{ padding_top | append: 'px' }};
+            --spacing-bottom: {{ padding_bottom | append: 'px' }};
+            --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+            --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+            --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+            --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};" 
+        >
+            <count-down class="countdown-wrapper" data-countdown="{{ countdown_time }}" data-type="product">
+                <div class="countdown-coundtdown"></div>
+            </count-down>
+        </div>
+    {%- endif -%}
+{%- endif -%}

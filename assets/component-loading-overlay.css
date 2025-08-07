@@ -1,0 +1,146 @@
+.animated {
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
+
+.loading-overlay {
+    position: absolute;
+    z-index: 1;
+    width: 3rem;
+    top: 0;
+    right: 0;
+}
+
+.loading-overlay__spinner {
+    width: 3rem;
+    display: inline-block;
+}
+
+.spinner {
+    animation: rotator 1.4s linear infinite;
+}
+
+.path {
+    stroke-dasharray: 280;
+    stroke-dashoffset: 0;
+    transform-origin: center;
+    stroke: var(--color-background-global);
+    animation: dash 1.4s ease-in-out infinite;
+}
+
+.loading-overlay:not(.hidden) + .cart-item__price-wrapper,
+.loading-overlay:not(.hidden) ~ cart-remove-button {
+    opacity: 50%;
+}
+
+.loading-overlay:not(.hidden) ~ cart-remove-button {
+    pointer-events: none;
+    cursor: default;
+}
+
+.loading-overlay--custom{
+    display: none;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    padding: 0 5rem;
+    background-color: var(--color-background-overylay);
+}
+
+.loading-overlay--custom .loading-overlay__spinner{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+}
+
+.loading-overlay--custom .spinner{
+    width: 100%;
+    height: 100%;
+}
+
+.is-loading > .loading-overlay{
+    display: block;
+}
+
+.animated-loading{
+    animation-duration: 2.2s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: shimmer;
+    animation-timing-function: linear;
+    border: none!important;
+    border-radius: 0!important;
+    background: #f6f6f6;
+    background: linear-gradient(to right,#f6f6f6 4%,#e6e6e6 25%,#f6f6f6 36%);
+    background-size: 1200px 100%;
+}
+
+.animated-loading > span,
+.animated-loading > img{
+    opacity: 0!important;
+}
+
+.halo-loader,
+.halo-block-loader {
+    display: none;
+    top: 50%;
+    left: 50%;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    animation: halo-loader 1s linear infinite;
+    transform: translate(-50%,-50%);
+    z-index: 10000;
+}
+
+.halo-loader{
+    position: fixed;
+}
+
+.halo-block-loader{
+    position: absolute;
+}
+
+.halo-block-loader:before,
+.halo-block-loader:after,
+.halo-loader:before,
+.halo-loader:after {
+    content: "";
+    box-sizing: border-box;
+    position: absolute;
+    inset: 0px;
+    border-radius: 50%;
+    border: 5px solid var(--color-global-bg);
+    animation: prixClipFix 2s linear infinite;
+}
+
+.halo-loader:after,
+.halo-block-loader:after{
+    border-color: var(--color-global);
+    animation: prixClipFix 2s linear infinite , halo-loader 0.5s linear infinite reverse;
+    inset: 6px;
+}
+
+.has-halo-block-loader > *:not(.halo-block-loader){
+    opacity: 0;
+}
+
+.has-halo-loader .halo-loader,
+.has-halo-loader .background-overlay,
+.has-halo-block-loader .halo-block-loader{
+    display: block;
+}
+
+@media (min-width: 768px) {
+    .loading-overlay {
+        left: 0;
+        right: auto;
+    }
+}

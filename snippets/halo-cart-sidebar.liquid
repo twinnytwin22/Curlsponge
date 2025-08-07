@@ -1,0 +1,28 @@
+<noscript>{{ 'component-quick-cart.css' | asset_url | stylesheet_tag }}</noscript>
+
+<div class="halo-sidebar halo-sidebar-right halo-cart-sidebar" id="halo-cart-sidebar" data-url-style-cart-sidebar="{{ 'component-quick-cart.css' | asset_url }}">
+	{%- if settings.quick_cart_sidebar_style == '1' -%}
+	    <button type="button" class="halo-sidebar-close" data-close-cart-sidebar aria-label="{{ 'general.common.close' | t }}">
+	    	<span class="visually-hidden">{{ 'general.common.close' | t }}</span>
+	        {% render 'icon-close' %}
+	    </button>
+	{%- endif -%}
+    <div class="halo-sidebar-header style-{{ settings.quick_cart_sidebar_style }}{% if settings.quick_cart_sidebar_style == '1' %} text-left{% else %} text-center{% endif %}">
+		<span class="title">
+			{{ 'sections.cart.my_cart' | t }}
+	        (<span data-cart-count>{{ cart.item_count }}</span>)
+		</span>
+		{%- if settings.quick_cart_sidebar_style == '2' -%}
+			<a href="#" class="close" data-close-cart-sidebar role="button">
+				<span class="visually-hidden">{{ 'general.common.close' | t }}</span>
+		        {% render 'icon-close' %}
+		    </a>
+		{%- endif -%}
+	</div>
+    <div class="halo-sidebar-wrapper custom-scrollbar">
+    	<quick-cart-items data-view="ajax_side_cart" data-section="Sidebar" data-add-class="false" data-empty-cart="false">
+    		<div class="halo-block-loader"></div>
+    		<div id="Cart-Content-Sidebar"></div>
+    	</quick-cart-items>
+    </div>
+</div>

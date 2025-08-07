@@ -1,0 +1,603 @@
+{%- if section.settings.show_custom_text -%}
+	{%- liquid
+        assign padding_top = section.settings.padding_top | append: 'px'
+        assign padding_bottom = section.settings.padding_bottom | append: 'px'
+        assign padding_top_tablet = section.settings.padding_top_tablet | append: 'px'
+        assign padding_bottom_tablet = section.settings.padding_bottom_tablet | append: 'px'
+        assign padding_top_mobile = section.settings.padding_top_mobile | append: 'px'
+        assign padding_bottom_mobile = section.settings.padding_bottom_mobile | append: 'px'
+        assign container = section.settings.container
+        assign block_title = section.settings.block_title
+        assign block_text = section.settings.block_text
+        assign block_title_align = section.settings.block_title_align
+        assign block_bg = section.settings.block_bg
+        assign block_logo = section.settings.block_logo
+        assign block_content = section.settings.block_content
+        assign block_align = section.settings.block_align
+        assign layout_style = section.settings.layout_style
+        assign show_custom_text_style = section.settings.show_custom_text_style
+        if show_custom_text_style
+        	assign background_color = section.settings.background_color
+            assign title_color = section.settings.title_color
+            assign text_color = section.settings.text_color
+            assign text_font = section.settings.text_font
+            assign text_font_size = section.settings.text_font_size | append: 'px'
+            assign text_font_weight = section.settings.text_font_weight
+            assign text_font_style = section.settings.text_font_style
+            assign text_text_transform = section.settings.text_text_transform
+        endif
+        assign show_customize_width = section.settings.show_customize_width
+        if show_customize_width
+            assign customize_width = section.settings.customize_width | append: 'px'
+        endif
+
+        if settings.show_dark_mode
+            assign dark_mode = false
+            unless background_color == blank or background_color == '#fff' or background_color == '#FFF' or background_color == '#ffffff' or background_color == '#FFFFFF' or background_color == 'rgb(255,255,255)' or background_color == 'rgba(255,255,255,1)' or background_color == 'rgba(0,0,0,0)' or background_color == 'rgb(0,0,0,0)'
+                assign dark_mode = true
+                assign dark_mode_background_color = section.settings.background_color
+                assign dark_mode_text_color = section.settings.text_color
+            endunless
+        endif
+    -%}
+    {%- if settings.show_dark_mode or layout_style == '2' -%}
+        <style type="text/css" media="screen">
+            {%- if settings.show_dark_mode -%}
+                body.dark-mode .custom-text.dark-mode {
+                    background: var(--color-background);
+                }
+                {%- if dark_mode -%}
+                    body.dark-mode .custom-text:not(.dark-mode) {
+                        background: {{ dark_mode_background_color }};
+                    }
+                    
+                    body.dark-mode .custom-text:not(.dark-mode) .custom-text-content.custom-text-content--style,
+                    body.dark-mode .custom-text:not(.dark-mode) .custom-text-content.custom-text-content--style .title,
+                    body.dark-mode .custom-text:not(.dark-mode) .custom-text-content.custom-text-content--style .text,
+                    body.dark-mode .custom-text:not(.dark-mode) .custom-text-content.custom-text-content--style .link,
+                    body.dark-mode .custom-text:not(.dark-mode) .custom-text-content.custom-text-content--style h4,
+                    body.dark-mode .custom-text:not(.dark-mode) .custom-text-content.custom-text-content--style p,
+                    body.dark-mode .custom-text:not(.dark-mode) .custom-text-content.custom-text-content--style a {
+                        color: {{ dark_mode_text_color }};
+                    }
+                {%- endif -%}
+            {%- endif -%}
+            {%- if layout_style == '2' -%}
+                @media (min-width: 1025px) {
+                    #halo-custom-text-{{ section.id }} .halo-block-content{
+                        padding-top: {{ padding_top }};
+                    }
+                }
+            {%- endif -%}
+        </style>
+    {%- endif -%}
+    <div class="halo-block custom-text style-{{ layout_style }} halo-block-padding halo-block-gradient{% unless dark_mode %} dark-mode{% endunless %}" id="halo-custom-text-{{ section.id }}" style="--padding-top: {{ padding_top }};
+        --padding-bottom: {{ padding_bottom }};
+        --padding-top-tablet: {{ padding_top_tablet }};
+        --padding-bottom-tablet: {{ padding_bottom_tablet }};
+        --padding-top-mobile: {{ padding_top_mobile }};
+        --padding-bottom-mobile: {{ padding_bottom_mobile }};
+        --bg-color: {{ background_color | default: settings.colors_bg }};
+        {% if show_custom_text_style %}
+            {% if text_font == 'font_1' %}
+                --text-font: var(--font-1-family);
+            {% elsif text_font == 'font_2' %}
+                --text-font: var(--font-2-family);
+            {% elsif text_font == 'font_3' %}
+                --text-font: var(--font-3-family);
+            {% endif %}
+            --text-font-size: {{ text_font_size }};
+            --text-font-weight: {{ text_font_weight }};
+            --text-font-style: {{ text_font_style }};
+            --text-text-transform: {{ text_text_transform }};
+            --text-color: {{ text_color }};
+        {% endif %}"
+    >
+    	<div class="container container-{{ container }}">
+    		{%- if block_title != blank -%}
+                <div class="halo-block-header">
+                    <h3 class="title text-{{ block_title_align }}"
+                        {% if show_custom_text_style %}
+                            style="color: {{ title_color }};"
+                        {% endif %}
+                    >
+                        <span class="text">
+                            {{ block_title | escape }}
+                        </span>
+                    </h3>
+                    {%- if block_text != blank -%}
+	                    <span class="desc text-{{ block_title_align }}"
+                            {% if show_custom_text_style %}
+                                style="color: {{ title_color }};"
+                            {% endif %}
+                        >
+	                    	{{ block_text }}
+	                    </span>
+	                {%- endif -%}
+                </div>
+            {%- endif -%}
+            <div class="halo-block-content">
+            	<div class="halo-content text-{{ block_align }}">
+            		{%- if block_logo != blank -%}
+                        <div class="custom-text-logo img-box" style="--max-width: {{ block_logo.width | append: 'px' }};">
+                        	<div class="image image-adapt" style="padding-bottom: {{ 1 | divided_by: block_logo.aspect_ratio | times: 100 | append: '%' }}">
+	                            <img
+                                    srcset="{{ block_logo | img_url: 'master' }} 1x, {{ block_logo | img_url: 'master', scale: 2 }} 2x"
+	                                src="{{ block_logo | img_url: 'master' }}"
+	                                loading="lazy"
+	                                alt="{{ block_logo.alt | default: shop.name | escape }}"
+                                    width="{{ block_logo.width | replace: 'px', '' }}"
+                                    height="{{ block_logo.height | replace: 'px', '' }}"
+                                >
+                        	</div>
+                        </div>
+                    {%- endif -%}
+                    {%- if block_content != blank -%}
+	                    <div class="custom-text-content{% if show_custom_text_style %} custom-text-content--style{% endif %}{% if show_customize_width %} customize-width{% endif %} context-box halo-text-format"
+                            {% if show_customize_width %}
+                                style="--customize-width: {{ customize_width }};" 
+                            {% endif %}
+                        >
+	                    	{{ block_content }}
+	                    </div>
+	                {%- endif -%}
+	                {%- if section.blocks.size > 0 -%}
+	                	<div class="custom-text-action clearfix">
+	                		{%- for block in section.blocks -%}
+	                			{%- liquid
+	                				assign type = block.type
+	                				assign btn = block.settings.btn
+	                				assign btn_icon = block.settings.btn_icon
+	                				assign btn_text = block.settings.btn_text
+	                				assign btn_link = block.settings.btn_link
+	                			-%}
+	                			{%- if btn_text != blank -%}
+		                			<{% if btn_link != blank %}a{% else %}div{% endif %} class="button button-{{ btn }}{% if btn_icon != blank %} button-icon{% endif %}" {% if btn_link != blank %}href="{{ btn_link }}"{% endif %}>
+	                                    {%- if btn_icon != blank -%}
+	                                        {{ btn_icon }}
+	                                    {%- endif -%}
+	                                    <span class="text">{{ btn_text }}</span>
+	                                </{% if btn_link != blank %}a{% else %}div{% endif %}>
+	                            {%- endif -%}
+	                		{%- endfor -%}
+	                	</div>
+	                {%- endif -%}
+            	</div>
+            </div>
+    	</div>
+    </div>
+{%- endif -%}
+{% schema %}
+	{
+		"name": "t:sections.custom-text.name",
+		"settings": [
+			{
+                "type": "header",
+                "content": "t:sections.custom-text.settings.header__1.content"
+            },
+            {
+                "type": "checkbox",
+                "id": "show_custom_text",
+                "label": "t:sections.custom-text.settings.general.label__1",
+                "default": true
+            },
+            {
+                "type": "select",
+                "id": "container",
+                "label": "t:sections.general.settings.container.label__1",
+                "default": "1770",
+                "options": [
+                {
+                    "value": "1170",
+                    "label": "t:sections.general.settings.container.options__1"
+                },
+                {
+                    "value": "1370",
+                    "label": "t:sections.general.settings.container.options__2"
+                },
+                {
+                    "value": "1570",
+                    "label": "t:sections.general.settings.container.options__3"
+                },
+                {
+                    "value": "1770",
+                    "label": "t:sections.general.settings.container.options__4"
+                },
+                {
+                    "value": "1860",
+                    "label": "t:sections.general.settings.container.options__5"
+                },
+                {
+                    "value": "full",
+                    "label": "t:sections.general.settings.container.options__6"
+                }],
+                "info": "t:sections.general.settings.container.info"
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__1.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 0
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 0
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__2.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top_tablet",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 40
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom_tablet",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 40
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__3.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top_mobile",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 30
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom_mobile",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 30
+            },
+            {
+                "type": "text",
+                "id": "block_title",
+                "label": "t:sections.general.settings.block-title.label__1",
+                "default": "Custom Text"
+            },
+            {
+                "type": "text",
+                "id": "block_text",
+                "label": "t:sections.general.settings.block-title.label__2",
+                "default": "Give customers details about the banner image(s) or content on the template."
+            },
+            {
+                "type": "select",
+                "id": "block_title_align",
+                "label": "t:sections.general.settings.block-title.label__3",
+                "options": [
+                {
+                    "value": "left",
+                    "label": "t:sections.general.settings.block-title.options__1"
+                },
+                {
+                    "value": "center",
+                    "label": "t:sections.general.settings.block-title.options__2"
+                },
+                {
+                    "value": "right",
+                    "label": "t:sections.general.settings.block-title.options__3"
+                }],
+                "default": "center"
+            },
+            {
+                "type": "select",
+                "id": "layout_style",
+                "label": "t:sections.general.settings.style.label__1",
+                "default": "1",
+                "options": [
+                {
+                    "value": "1",
+                    "label": "1"
+                },
+                {
+                    "value": "2",
+                    "label": "2"
+                }]
+            },
+            {
+                "type": "checkbox",
+                "id": "show_customize_width",
+                "label": "t:sections.custom-text.settings.general.label__2",
+                "info": "t:sections.custom-text.settings.general.info",
+                "default": false
+            },
+            {
+                "type": "range",
+                "id": "customize_width",
+                "label": "t:sections.custom-text.settings.general.label__3",
+                "min": 500,
+                "max": 1000,
+                "step": 10,
+                "unit": "t:sections.custom-text.settings.general.unit",
+                "default": 940
+            },
+            {
+                "type": "header",
+                "content": "t:sections.custom-text.settings.header__2.content"
+            },
+            {
+                "type": "image_picker",
+                "id": "block_logo",
+                "label": "t:sections.custom-text.settings.logo.label__1"
+            },
+            {
+                "type": "header",
+                "content": "t:sections.custom-text.settings.header__3.content"
+            },
+            {
+                "type": "html",
+                "id": "block_content",
+                "label": "t:sections.custom-text.settings.content.label__1"
+            },
+            {
+                "type": "select",
+                "id": "block_align",
+                "label": "t:sections.general.settings.aligmnent.label__1",
+                "options": [
+                {
+                    "value": "left",
+                    "label": "t:sections.general.settings.aligmnent.options__1"
+                },
+                {
+                    "value": "center",
+                    "label": "t:sections.general.settings.aligmnent.options__2"
+                },
+                {
+                    "value": "right",
+                    "label": "t:sections.general.settings.aligmnent.options__3"
+                },
+                {
+                    "value": "justify",
+                    "label": "t:sections.general.settings.aligmnent.options__4"
+                }],
+                "default": "center"
+            },
+            {
+                "type": "header",
+                "content": "t:sections.custom-text.settings.header__4.content"
+            },
+            {
+                "type": "checkbox",
+                "id": "show_custom_text_style",
+                "label": "t:sections.general.settings.style.label__3",
+                "default": true
+            },
+            {
+                "type": "color_background",
+                "id": "background_color",
+                "label": "t:sections.general.settings.color.label__1"
+            },
+            {
+                "type": "color",
+                "id": "text_color",
+                "label": "t:sections.general.settings.color.label__2",
+                "default": "#5A5A5A"
+            },
+            {
+                "type": "color",
+                "id": "title_color",
+                "label": "t:sections.general.settings.color.label__7",
+                "default": "#000000"
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.typography.paragraph__2.content"
+            },
+            {
+                "type": "select",
+                "id": "text_font",
+                "label": "t:settings_schema.typography.settings.font.label",
+                "options": [
+                {
+                    "value": "font_1",
+                    "label": "t:settings_schema.typography.settings.font.options__1"
+                },
+                {
+                    "value": "font_2",
+                    "label": "t:settings_schema.typography.settings.font.options__2"
+                },
+                {
+                    "value": "font_3",
+                    "label": "t:settings_schema.typography.settings.font.options__3"
+                }],
+                "default": "font_1"
+            },
+            {
+                "type": "range",
+                "id": "text_font_size",
+                "label": "t:settings_schema.typography.settings.font_size.label",
+                "min": 15,
+                "max": 40,
+                "step": 1,
+                "unit": "t:settings_schema.typography.settings.font_size.unit",
+                "default": 16
+            },
+            {
+                "type": "select",
+                "id": "text_font_weight",
+                "label": "t:settings_schema.typography.settings.font_weight.label",
+                "default": "400",
+                "options": [
+                {
+                    "value": "400",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__1"
+                },
+                {
+                    "value": "500",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__2"
+                },
+                {
+                    "value": "600",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__3"
+                },
+                {
+                    "value": "700",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__4"
+                },
+                {
+                    "value": "800",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__5"
+                },
+                {
+                    "value": "900",
+                    "label": "t:settings_schema.typography.settings.font_weight.options__6"
+                }]
+            },
+            {
+                "type": "select",
+                "id": "text_font_style",
+                "label": "t:settings_schema.typography.settings.font_style.label",
+                "default": "normal",
+                "options": [
+                    {
+                        "value": "normal",
+                        "label": "t:settings_schema.typography.settings.font_style.options__1"
+                    },
+                    {
+                        "value": "italic",
+                        "label": "t:settings_schema.typography.settings.font_style.options__2"
+                    }
+                ]
+            },
+            {
+                "type": "select",
+                "id": "text_text_transform",
+                "label": "t:settings_schema.typography.settings.text_transform.label",
+                "default": "none",
+                "options": [
+                    {
+                        "value": "none",
+                        "label": "t:settings_schema.typography.settings.text_transform.options__1"
+                    },
+                    {
+                        "value": "capitalize",
+                        "label": "t:settings_schema.typography.settings.text_transform.options__2"
+                    },
+                    {
+                        "value": "uppercase",
+                        "label": "t:settings_schema.typography.settings.text_transform.options__3"
+                    },
+                    {
+                        "value": "lowercase",
+                        "label": "t:settings_schema.typography.settings.text_transform.options__4"
+                    }
+                ]
+            }
+		],
+		"blocks": [
+        {
+            "type": "button-link",
+            "name": "t:sections.custom-text.blocks.button-link.name",
+            "settings": [
+            	{
+	                "type": "header",
+	                "content": "t:sections.custom-text.blocks.button-link.settings.header__1.content"
+	            },
+            	{
+                    "type": "select",
+                    "id": "btn",
+                    "label": "t:sections.general.settings.button.label__1",
+                    "default": "1",
+                    "options": [
+                    {
+                        "value": "1",
+                        "label": "t:sections.general.settings.button.options__1"
+                    },
+                    {
+                        "value": "2",
+                        "label": "t:sections.general.settings.button.options__2"
+                    },
+                    {
+                        "value": "3",
+                        "label": "t:sections.general.settings.button.options__3"
+                    },
+                    {
+                        "value": "4",
+                        "label": "t:sections.general.settings.button.options__4"
+                    },
+                    {
+                        "value": "5",
+                        "label": "t:sections.general.settings.button.options__5"
+                    },
+                    {
+                        "value": "6",
+                        "label": "t:sections.general.settings.button.options__9"
+                    },
+                    {
+                        "value": "7",
+                        "label": "t:sections.general.settings.button.options__10"
+                    },
+                    {
+                        "value": "8",
+                        "label": "t:sections.general.settings.button.options__11"
+                    }]
+                },
+                {
+                    "type" : "text",
+                    "id" : "btn_text",
+                    "label" : "t:sections.general.settings.button.label__2",
+                    "default" : "Button Label"
+                },
+                {
+                    "type" : "textarea",
+                    "id" : "btn_icon",
+                    "label" : "t:sections.general.settings.button.label__4"
+                },
+            	{
+                    "type": "url",
+                    "id": "btn_link",
+                    "label": "t:sections.general.settings.button.label__3",
+                    "info": "t:sections.general.settings.button.info"
+                }
+            ]
+        }],
+        "presets": [
+        {
+            "name": "t:sections.custom-text.presets.name",
+            "blocks": [
+            {
+                "type": "button-link"
+            },
+            {
+                "type": "button-link"
+            }]
+        }]
+	}
+{% endschema %}

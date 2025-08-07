@@ -1,0 +1,19 @@
+{%- layout none -%}
+
+{%- liquid
+    assign productList = search.results | where: "object_type", "product"
+-%}
+
+{%- capture results -%}
+    {%- for result in productList -%}
+        {
+            "handle": "{{ result.handle }}"
+        }{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+{%- endcapture -%}
+
+{
+    "results": [{{ results }}],
+    "results_count": {{ 'general.search.view_all' | t : count : search.results_count | json }},
+    "url": "{{ routes.search_url }}?q={{ search.terms }}"
+}

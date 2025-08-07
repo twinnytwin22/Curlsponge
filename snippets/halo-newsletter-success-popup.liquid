@@ -1,0 +1,12 @@
+<newsletter-message-popup class="halo-popup halo-newsletter-message-popup customPopup-small" data-newsletter-message-popup id="halo-newsletter-message-popup">
+    <div class="halo-popup-wrapper">
+        <a href="javascript:void(0)" class="halo-popup-close customPopup-close clearfix" data-close-newsletter-message-popup role="button">
+        	<span class="visually-hidden">{{ 'general.common.close' | t }}</span>
+            {% render 'icon-close' %}
+        </a>
+        <div class="halo-popup-content custom-scrollbar">
+            <div class="newsletter-message text-center"></div>
+        </div>
+    </div>
+</newsletter-message-popup>
+<script src="{{ 'halo-newsletter-message-popup.js' | asset_url }}" defer="defer"></script>

@@ -1,0 +1,130 @@
+.search-form{
+	display: block;
+	max-width: 500px;
+	margin: 32px auto 0 auto;
+}
+
+.search-form .form-input {
+	width: calc(100% - 70px);
+}
+
+.search-form .button{
+	width: 60px;
+	min-width: unset;
+	margin-left: 10px;
+	margin-top: 0;
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+.search-form .button svg{
+	width: 100%;
+	height: 100%;
+	margin-right: 0;
+}
+
+.resultTable{
+	display: block;
+	padding: 20px 0 0 0;
+}
+
+.resultTable li{
+	background-color: #f1f1f1;
+	border-radius: var(--image-border);
+	padding: 21px 30px 30px 30px;
+	margin: 0 0 15px 0;
+}
+
+.resultTable li:last-child{
+	margin-bottom: 0;
+}
+
+.resultTable .title{
+	font-size: var(--font-size);
+	font-weight: var(--font-weight-medium);
+	letter-spacing: var(--letter-spacing);
+	line-height: var(--line-height);
+	margin-top: 0;
+	margin-bottom: 14px;
+}
+
+.resultTable .summary{
+	font-size: var(--font-size);
+	font-weight: var(--font-weight-normal);
+	line-height: var(--line-height);
+	letter-spacing: var(--letter-spacing);
+	color: var(--color-text);
+	margin: 0 0 15px 0;
+}
+
+.resultTable .button{
+	display: inline-block;
+	vertical-align: top;
+	width: auto;
+}
+
+/*.resultTable .icon,
+.resultTable .text{
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.resultTable .icon{
+	fill: currentColor;
+	stroke: transparent;
+	width: 18px;
+	height: 18px;
+	margin-right: 5px;
+}*/
+
+.resultListing + .resultListing{
+	margin-top: 60px;
+	border-top: 1px solid #f1f1f1;
+	padding-top: 40px;
+}
+
+@media (min-width: 768px){
+	.resultTable{
+	    display: grid;
+	    grid-column-gap: 15px;
+    	grid-row-gap: 15px;
+    	grid-template-rows: auto;
+    	grid-template-columns: repeat(2,1fr);
+	}
+
+	.resultTable li{
+		min-height: 150px;
+		margin-bottom: 0!important;
+	}
+
+	.resultTable .title{
+		font-size: calc(var(--font-size) + 2px);
+		font-weight: var(--font-weight-semibold);
+	}
+
+	.resultTable .summary{
+		font-size: calc(var(--font-size) + 2px);
+		font-weight: var(--font-weight-light);
+		margin-bottom: 20px;
+	}
+
+	.resultTable li:nth-last-child(1):nth-child(odd){
+		flex: 0 0 100%;
+		max-width: 100%;
+	}
+}
+
+@media (min-width: 1025px){
+	.resultTable{
+		grid-column-gap: 20px;
+    	grid-row-gap: 20px;
+	}
+
+	.resultTable .title{
+		font-size: calc(var(--font-size) + 4px);
+	}
+
+	.resultTable .summary{
+		margin-bottom: 30px;
+	}
+}

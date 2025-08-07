@@ -1,0 +1,79 @@
+.custom-information{
+	margin: 25px 0 0;
+}
+
+.custom-information .item{
+    display: block;
+}
+
+.custom-information .item-wrapper{
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+}
+
+.custom-information [data-modal-opener]{
+    display: inline-block;
+    cursor: pointer;
+}
+
+.custom-information .item + .item{
+    margin-top: 10px;
+}
+
+.custom-information .icon{
+	margin-right: 10px;
+}
+
+.custom-information .icon svg{
+	position: relative;
+    width: 25px;
+    height: 25px;
+    color: var(--color-text);
+    fill: currentColor;
+    stroke: currentColor;
+}
+
+.custom-information .wrapper-content{
+    padding: 2px 0 0;
+}
+
+.custom-information .wrapper-content .title{
+    display: flex;
+    align-items: center;
+    font-family: var(--font-body-family);
+    font-weight: var(--font-weight-semibold);
+	font-size: calc(var(--font-size) - 1px);
+	color: var(--color-text);
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.custom-information .wrapper-content .title .symbol{
+	position: relative;
+    top: -2px;
+    margin-left: 10px;
+}
+
+.custom-information .wrapper-content .title .symbol svg{
+	width: 16px;
+	height: 16px;;
+    color: currentColor;
+    fill: currentColor;
+    stroke: transparent;
+    opacity: 0.2;
+}
+
+.custom-information .wrapper-content .desc{
+	font-size: calc(var(--font-size) - 2px);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height);
+    letter-spacing: var(--letter-spacing);
+    color: var(--color-text2);
+    padding: 3px 0px 0px;
+}
+
+.custom-information .wrapper-content .desc p{
+	margin: 0;
+	padding-bottom: 4px;
+}

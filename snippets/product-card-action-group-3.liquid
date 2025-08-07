@@ -1,0 +1,233 @@
+{%- liquid
+    assign product_action_group = false
+    assign show_quick_view = settings.show_quick_view
+    if show_quick_view
+        assign show_quick_view_card_mobile = settings.show_quick_view_card_mobile
+    endif
+    assign show_wishlist = false
+    if settings.show_wishlist_card and settings.show_wishlist
+        assign show_wishlist = true
+        assign show_wishlist_card_mobile = settings.show_wishlist_card_mobile
+    endif
+    assign show_compare = settings.show_compare
+    assign show_action = settings.show_action
+
+    if show_quick_view or show_wishlist or show_compare or show_action
+        assign product_action_group = true
+    endif
+-%}
+
+{%- if product_action_group -%}
+    <div class="card-product__group group-center group-visible group-bottom{% if show_action == false and show_quick_view_card_mobile == false %} card-mobile__hidden{% endif %}">
+        <div class="card-product__group-wrapper">
+            {%- if show_wishlist -%}
+                <div class="card-product__group-item item-square item-hover card-wishlist{% unless show_wishlist_card_mobile %} card-mobile__hidden{% endunless %}">
+                    <a class="wishlist-icon{% if wishlist_add %} wishlist-added{% endif %}" href="#" data-wishlist data-wishlist-handle="{{ product.handle }}" data-product-id="{{ product.id }}" role="button">
+                        <span class="visually-hidden">
+                            {%- if wishlist_add -%}
+                                {{ 'wishlist.general.added' | t }}
+                            {%- else -%}
+                                {{ 'wishlist.general.add' | t }}
+                            {%- endif -%}
+                        </span>
+                        <span class="text">
+                            {%- if wishlist_add -%}
+                                {{ 'wishlist.general.added' | t }}
+                            {%- else -%}
+                                {{ 'wishlist.general.add' | t }}
+                            {%- endif -%}
+                        </span>
+                        {% render 'icon-heart',
+                            icon_heart: icon_heart
+                        %}
+                    </a>
+                </div>
+            {%- endif -%}
+            {%- if show_action -%}
+                <div class="card-product__group-item item-square item-hover card-action card-actionIcon card-grid__hidden d-none">
+                    {%- liquid
+                        assign sold_out = false
+                        if product.available == false
+                            assign sold_out = true
+                        endif
+                        assign variantCount = product.variants | size
+                        assign option_name = product.options_with_values[0].name | downcase
+                        assign product_swatch_option = settings.swatch | downcase
+                    -%}
+
+                    <form action="{{ routes.cart_url }}/add" method="post" class="variants" id="{{ id }}-{{ product.id }}-{{ sectionId }}" data-product-id="{{ product.id }}" enctype="multipart/form-data">
+                        {%- if sold_out -%}
+                            {%- if settings.show_notify_form -%}
+                                <a class="action-icon is-notify-me" href="{{ product.url }}" data-btn-addToCart role="button">
+                                    <span class="text">
+                                        {{ 'notify_form.general.label' | t }}
+                                    </span>
+                                    {% render 'icon-mail',
+                                        icon_mail: '1'
+                                    %}
+                                </a>
+                            {%- else -%}
+                                <a class="action-icon" href="{{ product.url }}" disabled="disabled" role="button">
+                                    <span class="text">
+                                        {{ 'products.product.out_of_stock' | t }}
+                                    </span>
+                                    {% render 'icon-cart',
+                                        icon_cart: '6'
+                                    %}
+                                </a>
+                            {%- endif -%}
+                        {%- else -%}
+                            {%- if variantCount > 0 and product.variants.first.title != 'Default Title' -%}
+                                {%- if product.options_with_values.size == 1 and product_swatch_option contains option_name and settings.show_swatch -%}
+                                    {%- liquid
+                                        assign current_variant_grid = product.selected_or_first_available_variant
+                                        if current_variant_grid.available == false
+                                            assign sold_out = true
+                                        endif
+                                    -%}
+                                    <input type="hidden" name="id" value="{{ current_variant_grid.id }}" />
+                                    <input type="hidden" name="quantity" value="1" />
+                                    <button
+                                        class="action-icon{% if sold_out %}{% if settings.show_notify_form %} is-notify-me{% endif %}{% endif %}"
+                                        type="submit"
+                                        data-form-id="#{{ id }}-{{ product.id }}-{{ sectionId }}"
+                                        data-btn-addToCart
+                                    >   
+                                        {%- if sold_out -%}
+                                            {%- if settings.show_notify_form -%}
+                                                <span class="text">
+                                                    {{ 'notify_form.general.label' | t }}
+                                                </span>
+                                                {% render 'icon-mail',
+                                                    icon_mail: '1'
+                                                %}
+                                            {%- else -%}
+                                                <span class="text">
+                                                    {{ 'products.product.out_of_stock' | t }}
+                                                </span>
+                                                {% render 'icon-cart',
+                                                    icon_cart: '6'
+                                                %}
+                                            {%- endif -%}
+                                        {%- else -%}
+                                            <span class="text">
+                                                {{ 'products.product.add_to_cart' | t }}
+                                            </span>
+                                            {% render 'icon-cart',
+                                                icon_cart: '6'
+                                            %}
+                                        {%- endif -%}
+                                    </button>
+                                {%- else -%}
+                                    {%- if settings.show_quick_shop -%}
+                                        <a class="action-icon" href="{{ product.url }}" {% if settings.quick_shop_type == '3' %} data-open-quick-view-popup data-product-handle="{{ product.handle }}"{% else %} data-quickshop-popup{% endif %} role="button">
+                                            <span class="text">
+                                                {{ 'products.product.quick_shop' | t }}
+                                            </span>
+                                            {% render 'icon-cart',
+                                                icon_cart: '6'
+                                            %}
+                                        </a>
+                                    {%- else -%}
+                                        <a class="action-icon" href="{{ product.url }}" role="button">
+                                            <span class="text">
+                                                {{ 'products.product.select_options' | t }}
+                                            </span>
+                                            {% render 'icon-cart',
+                                                icon_cart: '6'
+                                            %}
+                                        </a>
+                                    {%- endif -%}
+                                {%- endif -%}
+                            {%- else -%}
+                                {%- liquid
+                                    assign current_variant_grid = product.selected_or_first_available_variant
+                                    assign first_inventory_grid = current_variant_grid.inventory_quantity
+                                -%}
+                                <input type="hidden" name="id" value="{{ current_variant_grid.id }}" />
+                                <input type="hidden" name="quantity" value="1" />
+                                {%- if first_inventory_grid > 0 -%}
+                                    <button
+                                        class="action-icon"
+                                        type="submit"
+                                        data-form-id="#{{ id }}-{{ product.id }}-{{ sectionId }}"
+                                        data-btn-addToCart
+                                    >
+                                        <span class="text">
+                                            {{ 'products.product.add_to_cart' | t }}
+                                        </span>
+                                        {% render 'icon-cart',
+                                            icon_cart: '6'
+                                        %}
+                                    </button>
+                                {%- else -%}
+                                    <button
+                                        class="action-icon"
+                                        type="submit"
+                                        data-form-id="#{{ id }}-{{ product.id }}-{{ sectionId }}"
+                                        data-btn-addToCart
+                                    >
+                                        <span class="text">
+                                            {{ 'products.product.pre_order' | t }}
+                                        </span>
+                                        {% render 'icon-cart',
+                                            icon_cart: '6'
+                                        %}
+                                    </button>
+                                {%- endif -%} 
+                            {%- endif -%}
+                        {%- endif -%}
+                    </form>
+                </div>
+            {%- endif -%}
+            {%- if show_quick_view -%}
+                <div class="card-product__group-item item-square item-hover card-quickview card-quickviewIcon{% unless show_quick_view_card_mobile %} card-mobile__hidden{% else %} card-mobile__visible card-tablet__visible{% endunless %}">
+                    <a class="quickview-icon{% unless show_quick_view_card_mobile %} card-mobile__hidden{% endunless %}" href="javascript:void(0)" data-product-id="{{ product.id }}" data-open-quick-view-popup data-product-handle="{{ product.handle }}" role="button">
+                        <span class="text">
+                            {{ 'products.product.quick_view' | t }}
+                        </span>
+                        {% render 'icon-eyes' %}
+                    </a>
+                </div>
+            {%- endif -%}
+            {%- if show_compare -%}
+                {% render 'product-compare',
+                    product: product,
+                    sectionId: sectionId,
+                    show_text: true,
+                    icon_compare: '2',
+                    class: 'card-product__group-item item-square item-hover card-compare card-compareIcon'
+                %}
+            {%- endif -%}
+        </div>
+    </div>
+    {%- if settings.show_quick_shop and product.available -%}
+        {%- if settings.quick_shop_type != '3' -%}
+            {%- liquid
+                assign has_popup = false
+                assign variantCount = product.variants | size
+                assign option_name = product.options_with_values[0].name | downcase
+                assign product_swatch_option = settings.swatch | downcase
+                if product.options_with_values.size == 1 and product_swatch_option contains option_name and settings.show_swatch
+                    assign has_popup = false
+                else
+                    assign has_popup = true
+                endif
+            -%}
+            {%- if variantCount > 0 and product.variants.first.title != 'Default Title' -%}
+                {%- if has_popup -%}
+                    <div class="variants-popup custom-scrollbar">
+                        {% render 'product-quick-shop-popup',
+                            product: product,
+                            id: 'form',
+                            list: 'list',
+                            position: position,
+                            sectionId: sectionId,
+                            show_internal_button: true
+                        %}
+                    </div>
+                {%- endif -%}
+            {%- endif -%}
+        {%- endif -%}
+    {%- endif -%}
+{%- endif -%}

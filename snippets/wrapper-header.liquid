@@ -1,0 +1,9 @@
+{%- if ajax_menu -%}
+	{% section 'header-navigation-full-elements' %}
+{%- endif -%}
+
+{%- if settings.mobile_menu != 'default' -%}
+	{% section 'halo-navigation-mobile' %}
+	{% section 'halo-navigation-mobile-2' %}
+	{% section 'halo-navigation-mobile-3' %}
+{%- endif -%}

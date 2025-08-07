@@ -1,0 +1,21 @@
+{%- if request.design_mode and request.locale.primary == false -%}
+    {% comment %}
+        Translation Lab notification for the Theme Editor, when different language than the default is selected.
+        This will cause issue when a text in the Theme Editor is modified and saved, where the selected language text will overwrite the text of the default language.
+    {% endcomment %}
+    <script>
+        (function() {
+            var secondaryLanguageName = '{{ request.locale.name }}';
+            var newDiv = document.createElement("div");
+            newDiv.style.cssText = "position:fixed;background-color:coral;top:0;width:100%;z-index:100;text-align:center;color:#fff;padding:50px;";
+            var newContent = document.createTextNode("You have selected a secondary language <" + secondaryLanguageName + "> in the Theme Editor! This may interfere with your default language texts.");
+            var newLink = document.createElement("a");
+            newLink.style.cssText = "display:block;color:midnightblue;";
+            newLink.setAttribute("href", "/");
+            newLink.innerHTML = "Switch to default language";
+            newDiv.appendChild(newContent);
+            newDiv.appendChild(newLink);
+            document.body.appendChild(newDiv);
+        })();
+    </script>
+{%- endif -%}

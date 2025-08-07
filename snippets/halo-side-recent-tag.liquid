@@ -1,0 +1,48 @@
+{%- if block.settings.show_block -%}
+    {%- liquid
+        assign heading = block.settings.heading
+        assign number = block.settings.number
+    -%}
+    <div class="sidebarBlock{% if show_collapse %} sidebarBlock-collapse{% endif %}">
+        {%- if show_collapse -%}
+            <collapse-button class="sidebarBlock-headingWrapper">
+        {%- endif -%}
+            {%- if heading != blank -%}
+                <h3 class="sidebarBlock-heading{% if show_collapse and sidebar_collapse == 'expand' %} is-clicked{% endif %}"{% if show_collapse %} data-collapse-button{% endif %}>
+                    {{ heading | escape }}
+                </h3>
+            {%- else -%}
+                {%- if show_collapse -%}
+                    <h3 class="sidebarBlock-heading{% if sidebar_collapse == 'expand' %} is-clicked{% endif %}"{% if show_collapse %} data-collapse-button{% endif %}>
+                        BLock Heading
+                    </h3>
+                {%- endif -%}
+            {%- endif -%}
+        {%- if show_collapse -%}
+            </collapse-button>
+            <div class="sidebarBlock-contentWrapper{% if sidebar_collapse == 'expand' %} is-clicked{% endif %}">
+        {%- endif -%}
+            <div class="sidebarBlock-content">
+                <ul class="recentTags-list list-unstyled">
+                    {%- for tag in blog.all_tags limit: number -%}
+                        {%- liquid
+                            assign tagCount = 0
+                            for article in blog.articles
+                                if article.tags contains tag
+                                    assign tagCount = tagCount | plus: 1
+                                endif
+                            endfor
+                        -%}
+                        <li class="tags-list-item">
+                            <a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="link">
+                                <span class="text">{{ tag }} ({{ tagCount }})</span>
+                            </a>
+                        </li>
+                    {%- endfor -%}
+                </ul>
+            </div>
+        {%- if show_collapse -%}
+            </div>
+        {%- endif -%}
+    </div>
+{%- endif -%}

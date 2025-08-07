@@ -1,0 +1,199 @@
+{%- assign btn = settings.newsletter_popup_btn -%}
+<newsletter-popup class="halo-popup halo-newsletter-popup customPopup-large style-{{ settings.newsletter_popup_style }} {% if settings.newsletter_popup_style == '1' or settings.newsletter_popup_style == '3' %} halo-popup-topDown{% if settings.show_newsletter_popup_image %} customPopup-banner custom-scrollbar{% endif %}{% else %} halo-popup-LeftRight{% endif %}" data-newsletter-popup data-delay="{{ settings.newsletter_popup_delay | times:1000 }}" data-expire="{{ settings.newsletter_popup_expire }}" id="halo-newsletter-popup">
+    {%- if settings.show_newsletter_popup_image -%}
+        {%- if settings.newsletter_popup_style == '1' or settings.newsletter_popup_style == '3' -%}
+            <div class="halo-popup-banner{% if settings.newsletter_popup_style == '3' %} halo-popup-banner-2{% endif %}">
+                <{% if settings.newsletter_popup_link != blank %}a{% else %}div{% endif %} {% if settings.newsletter_popup_link != blank %} href="{{ settings.newsletter_popup_link }}" {% if settings.newsletter_popup_link_target %}target="_blank"{% endif %}"{% endif %}>
+                    {%- if settings.newsletter_popup_image != blank -%}
+                        {% assign image =  settings.newsletter_popup_image %}
+                        <img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x"
+                            src="{{ image | img_url: 'master' }}"
+                            loading="lazy"
+                            alt="{{ image.alt | default: shop.name | escape }}"
+                            width="{{ image.width | replace: 'px', '' }}"
+                            height="{{ image.height | replace: 'px', '' }}"
+                        >
+                    {%- else -%}
+                        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                    {%- endif -%}
+                </{% if settings.newsletter_popup_link != blank %}a{% else %}div{% endif %}>
+                {%- if settings.newsletter_popup_style == '3' -%}
+                    <a href="javascript:void(0)" class="halo-popup-close clearfix" data-close-newsletter-popup role="button">
+                        <span class="visually-hidden">{{ 'general.common.close' | t }}</span>
+                        {% render 'icon-close' %}
+                    </a>
+                {%- endif -%}
+            </div>
+        {%- endif -%}
+    {%- endif -%}
+    <div class="halo-popup-wrapper{% if settings.newsletter_popup_style == '3' and settings.show_newsletter_popup_image %} halo-popup-wrapper-2{% endif %}">
+        <div class="halo-popup-header">
+            {%- if settings.newsletter_popup_style == '1' -%}
+                <a href="javascript:void(0)" class="halo-popup-close clearfix" data-close-newsletter-popup role="button">
+                    <span class="visually-hidden">{{ 'general.common.close' | t }}</span>
+                    {% render 'icon-close' %}
+                </a>
+            {%- elsif settings.newsletter_popup_style == '3' -%}
+                {%- unless settings.show_newsletter_popup_image -%}
+                    <a href="javascript:void(0)" class="halo-popup-close clearfix" data-close-newsletter-popup role="button">
+                        <span class="visually-hidden">{{ 'general.common.close' | t }}</span>
+                        {% render 'icon-close' %}
+                    </a>
+                {%- endunless -%}
+            {%- endif -%}
+            {%- if settings.newsletter_popup_style == '1' or settings.newsletter_popup_style == '3' -%}
+                {%- if settings.newsletter_popup_title != blank -%}
+                    <h5 class="halo-popup-title text-center">
+                        {{ settings.newsletter_popup_title | escape }}
+                    </h5>
+                {%- endif -%}
+                {%- if settings.newsletter_popup_desc != blank -%}
+                    <span class="halo-popup-desc text-center">
+                        {{ settings.newsletter_popup_desc }}
+                    </span>
+                {%- endif -%}
+            {%- endif -%}
+        </div>
+        <div class="halo-popup-content">
+            <div class="newsletter style-{{ settings.newsletter_popup_style }}">
+                {%- if settings.newsletter_popup_style == '2' or settings.newsletter_popup_style == '4' -%}
+                    {%- if settings.show_newsletter_popup_image -%}
+                        <div class="newsletter-left">
+                            <{% if settings.newsletter_popup_link != blank %}a{% else %}div{% endif %} class="newsletter-banner" {% if settings.newsletter_popup_link != blank %} href="{{ settings.newsletter_popup_link }}"{% endif %}>
+                                {%- if settings.newsletter_popup_image != blank -%}
+                                    {% assign image =  settings.newsletter_popup_image %}
+                                    <img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x"
+                                    src="{{ image | img_url: 'master' }}"
+                                    loading="lazy"
+                                    alt="{{ image.alt | default: shop.name | escape }}">
+                                {%- else -%}
+                                    {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                                {%- endif -%}
+                            </{% if settings.newsletter_popup_link != blank %}a{% else %}div{% endif %}>
+                        </div>
+                    {%- endif -%}
+                    <div class="newsletter-right">
+                        {%- if settings.newsletter_popup_style == '2' or settings.newsletter_popup_style == '4' -%}
+                            <a href="javascript:void(0)" class="halo-popup-close clearfix" data-close-newsletter-popup role="button">
+                                <span class="visually-hidden">{{ 'general.common.close' | t }}</span>
+                                {% render 'icon-close' %}
+                            </a>
+                        {%- endif -%}
+                        {%- if settings.newsletter_popup_title != blank -%}
+                            <h5 class="newsletter-title text-center">
+                                {{ settings.newsletter_popup_title | escape }}
+                            </h5>
+                        {%- endif -%}
+                        {%- if settings.newsletter_popup_desc != blank -%}
+                            <span class="newsletter-desc text-center">
+                                {{ settings.newsletter_popup_desc }}
+                            </span>
+                        {%- endif -%}
+                {%- endif -%}
+                {%- form 'customer', id: 'ContactPopup', class: 'newsletter-form' -%}
+                    <input type="hidden" name="contact[tags]" value="newsletter">
+                    <div class="newsletter-form__field-wrapper">
+                        {%- if settings.newsletter_popup_type == 'subscription' -%}
+                            <div class="form-field field">
+                                <label class="field__label hiddenLabels" for="NewsletterForm--Popup">
+                                    {{ 'newsletter.label' | t }}
+                                </label>
+                                <input
+                                    id="NewsletterForm--Popup"
+                                    type="email"
+                                    name="contact[email]"
+                                    class="field__input form-input-placeholder newsletter-form__input"
+                                    value="{{ form.email }}"
+                                    aria-required="true"
+                                    autocorrect="off"
+                                    autocapitalize="off"
+                                    autocomplete="email"
+                                    {% if form.errors %}
+                                        autofocus
+                                        aria-invalid="true"
+                                        aria-describedby="ContactFooter-error"
+                                    {% elsif form.posted_successfully? %}
+                                        aria-describedby="ContactFooter-success"
+                                    {% endif %}
+                                    placeholder="{{ 'newsletter.label' | t }}"
+                                >
+                            </div>
+                            {%- if form.posted_successfully? -%}
+                                <script>
+                                    window.onload = (event) => {
+                                        var newsletterMessagePopup = (function(){
+                                            var popup = document.getElementById('halo-newsletter-message-popup'),
+                                                message = popup.getElementsByClassName('newsletter-message')[0],
+                                                messageText = "{{ 'newsletter.success' | t }}";
+                                                messageIcon = '<svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-success" viewBox="0 0 13 13"><path d="M6.5 12.35C9.73087 12.35 12.35 9.73086 12.35 6.5C12.35 3.26913 9.73087 0.65 6.5 0.65C3.26913 0.65 0.65 3.26913 0.65 6.5C0.65 9.73086 3.26913 12.35 6.5 12.35Z" stroke="white" stroke-width="0.7"/><path d="M5.53271 8.66357L9.25213 4.68197" stroke="white"/><path d="M4.10645 6.7688L6.13766 8.62553" stroke="white"></svg>';
+
+                                            message.innerHTML = '<div class="alertBox alertBox--success">\
+                                                '+ messageIcon +'\
+                                                <span class="text alertBox-message">'+ messageText +'</span>\
+                                            </div>';
+
+                                            document.body.classList.add('newsletter-message-show');
+
+                                            setCookie('emailSubcribeModal', 'closed', {{ settings.newsletter_popup_expire }});
+                                        })();
+                                    };
+
+                                    var newURL = location.href.split("?")[0];
+                                    window.history.pushState('object', document.title, newURL);
+                                </script>
+                            {%- else -%}
+                                <script>
+                                    window.onload = (event) => {
+                                        if (window.location.href.indexOf('newsletter&form_type=customer') > -1) {
+                                            var newsletterMessagePopup = (function(){
+                                                var popup = document.getElementById('halo-newsletter-message-popup'),
+                                                    message = popup.getElementsByClassName('newsletter-message')[0],
+                                                    messageText = "{% if form.errors %}{{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}{% else %}{{ 'newsletter.error' | t }}{% endif %}";
+                                                    messageIcon = '<svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-error" viewBox="0 0 13 13"><circle cx="6.5" cy="6.50049" r="5.5" stroke="white" stroke-width="2"/><circle cx="6.5" cy="6.5" r="5.5" stroke-width="0.7"/><path d="M5.87413 3.52832L5.97439 7.57216H7.02713L7.12739 3.52832H5.87413ZM6.50076 9.66091C6.88091 9.66091 7.18169 9.37267 7.18169 9.00504C7.18169 8.63742 6.88091 8.34917 6.50076 8.34917C6.12061 8.34917 5.81982 8.63742 5.81982 9.00504C5.81982 9.37267 6.12061 9.66091 6.50076 9.66091Z" fill="white"/><path d="M5.87413 3.17832H5.51535L5.52424 3.537L5.6245 7.58083L5.63296 7.92216H5.97439H7.02713H7.36856L7.37702 7.58083L7.47728 3.537L7.48617 3.17832H7.12739H5.87413ZM6.50076 10.0109C7.06121 10.0109 7.5317 9.57872 7.5317 9.00504C7.5317 8.43137 7.06121 7.99918 6.50076 7.99918C5.94031 7.99918 5.46982 8.43137 5.46982 9.00504C5.46982 9.57872 5.94031 10.0109 6.50076 10.0109Z" fill="white" stroke-width="0.7"></svg>';
+
+                                                message.innerHTML = '<div class="alertBox alertBox--error">\
+                                                    '+ messageIcon +'\
+                                                    <span class="text alertBox-message">'+ messageText +'</span>\
+                                                </div>';
+
+                                                document.body.classList.add('newsletter-message-show');
+
+                                                setCookie('emailSubcribeModal', 'closed', {{ settings.newsletter_popup_expire }});
+                                            })();
+                                        }
+
+                                        var newURL = location.href.split("?")[0];
+                                        window.history.pushState('object', document.title, newURL);
+                                    };
+                                </script>
+                            {%- endif -%}
+                            <button type="submit" class="button button-{{ btn }} button-height newsletter-form__button" name="commit" id="Subscribe">
+                                {{ settings.newsletter_popup_btn_text | escape }}
+                            </button>
+                        {%- elsif settings.newsletter_popup_type == 'promotion' -%}
+                            <{% if settings.newsletter_popup_link != blank %}a{% else %}div{% endif %} {% if settings.newsletter_popup_link != blank %} href="{{ settings.newsletter_popup_link }}" {% if settings.newsletter_popup_link_target %}target="_blank"{% endif %}{% endif %} class="button button-{{ btn }} button-height newsletter-form__button">
+                                {{ settings.newsletter_popup_btn_text | escape }}
+                            </{% if settings.newsletter_popup_link != blank %}a{% else %}div{% endif %}>
+                        {%- endif -%}
+                    </div>
+                {%- endform -%}
+                {%- if settings.newsletter_popup_style == '2' or settings.newsletter_popup_style == '4' -%}
+                        {%- if settings.newsletter_popup_note != blank -%}
+                            <div class="newsletter-note text-center">
+                                {{ settings.newsletter_popup_note }}
+                            </div>
+                        {%- endif -%}
+                    </div>
+                {%- endif -%}
+            </div>
+            {%- if settings.newsletter_popup_style == '1' or settings.newsletter_popup_style == '3' -%}
+                {%- if settings.newsletter_popup_note != blank -%}
+                    <div class="newsletter-note text-center">
+                        {{ settings.newsletter_popup_note }}
+                    </div>
+                {%- endif -%}
+            {%- endif -%}
+        </div>
+    </div>
+</newsletter-popup>
+<script src="{{ 'halo-newsletter-popup.js' | asset_url }}" defer="defer"></script>

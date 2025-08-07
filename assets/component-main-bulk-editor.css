@@ -1,0 +1,207 @@
+.halo-bulk-editor{
+    display: block;
+	padding: 0 0 40px 0;
+}
+
+.bulk-editor-content:after{
+	content: '';
+    display: block;
+    clear: both;
+}
+
+.bulk-editor-selector{
+	display: inline-block;
+    vertical-align: middle;
+    width: 100%;
+    position: relative;
+}
+
+.bulk-editor-selector .label-tab{
+	background-color: var(--form-input-bg);
+    border: 1px solid var(--form-input-border);
+    padding: 7px 38px 7px 20px;
+    min-height: 40px;
+    min-width: 90px;
+    max-width: 200px;
+    cursor: pointer;
+    position: relative;
+}
+
+.bulk-editor-selector .label-text{
+	font-size: var(--font-size);
+    font-weight: var(--font-weight-normal);
+    letter-spacing: var(--letter-spacing);
+    line-height: var(--line-height);
+    color: var(--form_label);
+    overflow: hidden;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.bulk-editor-selector ul{
+	position: absolute;
+    top: 100%;
+    left: auto;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    font-size: 0;
+    letter-spacing: 0;
+    background-color: var(--bg-white);
+    z-index: 5;
+    width: 100%;
+    min-width: 200px;
+    max-width: 300px;
+    box-shadow: 0 6px 27px 0 rgb(0, 0, 0, .2);
+    padding: 13px 0 13px 20px;
+    transform: translate3d(0,-40px,0);
+    transition: opacity var(--duration-default) ease,transform var(--duration-default) ease;
+    will-change: transform;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.bulk-editor-selector ul li{
+	display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    width: 100%;
+    padding: 0 20px 0 0;
+}
+
+.bulk-editor-selector li a{
+	display: block;
+    padding: 7px 0 0 0;
+    font-size: var(--font-size);
+    font-weight: var(--font-weight-normal);
+    color: var(--color-text);
+    line-height: var(--line-height);
+    letter-spacing: var(--letter-spacing);
+    cursor: pointer;
+}
+
+.bulk-editor-selector li.is-active a{
+	text-decoration: underline;
+    text-underline-offset: 0.3rem;
+}
+
+.bulk-editor-selector [aria-expanded=true]+ ul{
+	opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translate3d(0,0,0);
+}
+
+.bulk-editor-listing{
+	font-size: 0;
+    letter-spacing: 0;
+    margin: 0 0 30px 0;
+}
+
+.bulk-editor-listing .content-item{
+	display: inline-block;
+    vertical-align: top;
+    width: 100%;
+    margin: 0 0 15px 0;
+}
+
+.bulk-editor-action{
+	padding: 40px 0 0 0;
+}
+
+.bulk-editor-action .button{
+	max-width: 250px;
+}
+
+.bulk-editor-sidebar + .bulk-editor-main{
+    margin-top: 30px;
+}
+
+body.dark-mode .bulk-editor-selector ul {
+    background: var(--color-background);
+    box-shadow: 0 6px 27px 0 rgba(255, 255, 255, 0.2);
+}
+
+@media (min-width: 375px){
+	.bulk-editor-listing{
+        margin-left: -8px;
+        margin-right: -8px;
+    }
+
+    .bulk-editor-listing .content-item{
+        padding-left: 8px;
+        padding-right: 8px;
+        margin-bottom: 0;
+        margin-top: 15px;
+        width: 50%;
+    }
+
+    .bulk-editor-listing .content-item:nth-child(-n+2){
+    	margin-top: 0;
+    }
+}
+
+@media (min-width: 768px){
+	.bulk-editor-listing .content-item{
+        width: 33.3333333%;
+    }
+
+    .bulk-editor-listing .content-item:nth-child(-n+3){
+    	margin-top: 0;
+    }
+}
+
+@media (min-width: 992px){
+	.bulk-editor-listing .content-item{
+        width: 25%;
+    }
+
+    .bulk-editor-listing .content-item:nth-child(-n+4){
+    	margin-top: 0;
+    }
+}
+
+@media (min-width: 1025px){
+	.bulk-editor-sidebar{
+		position: sticky;
+	    top: 30px;
+	    display: inline-block;
+	    vertical-align: top;
+	    width: 340px;
+	    float: left;
+	}
+
+	.bulk-editor-sidebar + .bulk-editor-main{
+		width: calc(100% - 340px);
+	    padding-left: 20px;
+	    float: left;
+        margin-top: 0;
+	}
+
+	.bulk-editor-listing{
+		margin-left: -15px;
+		margin-right: -15px;
+	}
+
+	.bulk-editor-listing .content-item{
+		padding-left: 15px;
+		padding-right: 15px;
+		margin-top: 30px;
+	}
+
+	.bulk-editor-listing .content-item:nth-child(-n+4){
+    	margin-top: 0;
+    }
+}
+
+@media (min-width: 1600px){
+	.bulk-editor-listing .content-item{
+        width: 20%;
+    }
+
+    .bulk-editor-listing .content-item:nth-child(-n+5){
+    	margin-top: 0;
+    }
+}

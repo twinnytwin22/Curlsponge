@@ -1,0 +1,533 @@
+{%- if section.settings.show_product_description and section.blocks.size > 0 -%}
+	{{ 'component-product-description.css' | asset_url | stylesheet_tag }}
+	{%- liquid
+        assign padding_top = section.settings.padding_top | append: 'px'
+        assign padding_bottom = section.settings.padding_bottom | append: 'px'
+        assign padding_top_tablet = section.settings.padding_top_tablet | append: 'px'
+        assign padding_bottom_tablet = section.settings.padding_bottom_tablet | append: 'px'
+        assign padding_top_mobile = section.settings.padding_top_mobile | append: 'px'
+        assign padding_bottom_mobile = section.settings.padding_bottom_mobile | append: 'px'
+        assign container = section.settings.container
+        assign block_title = section.settings.block_title
+        assign block_text = section.settings.block_text
+        assign block_title_align = section.settings.block_title_align
+        assign title_font = section.settings.title_font
+        assign title_font_size = section.settings.title_font_size | append: 'px'
+        assign title_tablet_font_size = section.settings.title_font_size | times: 0.75 | round: 0 | append: 'px'
+        assign title_mobile_font_size = section.settings.title_mobile_font_size | append: 'px'
+        assign title_font_weight = section.settings.title_font_weight
+        assign title_text_transform = section.settings.title_text_transform
+        assign title_color = section.settings.title_color
+        assign text_color = section.settings.text_color
+        assign style_section = section.settings.style_section
+    -%}
+    <div class="halo-block halo-product-description halo-block-padding style-{{ style_section }}" id="halo-product-description-{{ section.id }}"
+        style="--padding-top: {{ padding_top }};
+            --padding-bottom: {{ padding_bottom }};
+            --padding-top-tablet: {{ padding_top_tablet }};
+            --padding-bottom-tablet: {{ padding_bottom_tablet }};
+            --padding-top-mobile: {{ padding_top_mobile }};
+            --padding-bottom-mobile: {{ padding_bottom_mobile }};"
+    >
+    	<div class="container container-{{ container }}">
+    		{%- if block_title != blank -%}
+                <div class="halo-block-header">
+                    <h3 class="title text-{{ block_title_align }}">
+                        <span class="text">
+                            {{ block_title | escape }}
+                        </span>
+                    </h3>
+                    {%- if block_text != blank -%}
+                        <span class="desc text-{{ block_title_align }}">
+                            {{ block_text }}
+                        </span>
+                    {%- endif -%}
+                </div>
+            {%- endif -%}
+            <div class="halo-block-content">
+            	<div class="description-block"
+                    style="{% if title_font == 'font_1' %}
+                        --title-font: var(--font-1-family);
+                    {% elsif title_font == 'font_2' %}
+                        --title-font: var(--font-2-family);
+                    {% elsif title_font == 'font_3' %}
+                        --title-font: var(--font-3-family);
+                    {% endif %}
+                    --title-font-size: {{ title_font_size }};
+                    --title-tablet-font-size: {{ title_tablet_font_size }};
+                    --title-mobile-font-size: {{ title_mobile_font_size }};
+                    --title-font-weight: {{ title_font_weight }};
+                    --title-text-transform: {{ title_text_transform }};
+                    --title-color: {{ title_color }};
+                    --text-color: {{ text_color }};" 
+                >
+	            	{%- for block in section.blocks -%}
+	            		{%- if block.type == 'image' -%}
+	            			<div class="halo-items description-block-item">
+	            				{%- liquid
+		                            assign class = block.settings.style
+		                            assign image = block.settings.image
+		                            assign link = block.settings.link
+		                            assign title = block.settings.title
+		                            assign content = block.settings.content
+		                            assign has_content = false
+		                            if title != blank or content != blank
+		                                assign has_content = true
+		                                assign alignment = block.settings.alignment
+		                            endif
+                                    assign image_border_radius = settings.image_border_radius
+                                    assign image_effect = settings.image_effect
+		                        -%}
+		                        <div class="halo-item halo-item--{{ class }}">
+		                            <div class="item item-image{% if has_content %} item-first{% endif %}">
+		                                <div class="img-box">
+                                            <loading-banner class="loading-banner">
+    		                                    {%- if image != blank -%}
+                                                    <{% if link != blank %}a{% else %}div{% endif %} class="image image-{{ image_effect }} image-border-{{ image_border_radius }}" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
+    		                                            <img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x"
+    		                                                src="{{ image | img_url: 'master' }}"
+    		                                                loading="lazy"
+    		                                                alt="{{ image.alt | default: shop.name | escape }}"
+                                                            sizes="700px"
+                                                        >
+                                                    </{% if link != blank %}a{% else %}div{% endif %}>
+    		                                    {%- else -%}
+    		                                        <div class="image">
+    		                                            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+    		                                        </div>
+    		                                    {%- endif -%}
+                                            </loading-banner>
+		                                </div>
+		                            </div>
+		                            {%- if has_content -%}
+		                                <div class="item item-content item-second">
+		                                    <div class="content-box text-{{ alignment }}">
+		                                        {%- if title != blank -%}
+		                                            <h4 class="heading">
+                                                        {% if link != blank %}
+                                                            <a href="{{ link }}">{{ title | escape }}</a>
+                                                        {%- else -%}
+                                                            <span class="text">{{ title | escape }}</span>
+                                                        {%- endif -%}
+                                                    </h4>
+		                                        {%- endif -%}
+		                                        {%- if content != blank -%}
+		                                            <div class="content">{{ content }}</div>
+		                                        {%- endif -%}
+		                                    </div>
+		                                </div>
+		                            {%- endif -%}
+		                        </div>
+	            			</div>
+	            		{%- elsif block.type == 'description' -%}
+	            			{%- liquid
+	                           assign alignment = block.settings.alignment
+		                    -%}
+	            			<div class="halo-text-format description-block-item text-{{ alignment }}">
+	            				{{ product.description }}
+	            			</div>
+	            		{%- endif -%}
+	            	{%- endfor -%}
+            	</div>
+            </div>
+    	</div>
+    </div>
+{%- endif -%}
+{% schema %}
+{
+	"name": "t:sections.product-description.name",
+	"settings":
+	[
+		{
+            "type": "header",
+            "content": "t:sections.product-description.settings.header__1.content"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_product_description",
+            "label": "t:sections.product-description.settings.general.label__1",
+            "default": true
+        },
+        {
+            "type": "select",
+            "id": "style_section",
+            "label": "t:sections.general.settings.style.label__1",
+            "default": "1",
+            "options": [
+            {
+                "value": "1",
+                "label": "1"
+            },
+            {
+                "value": "2",
+                "label": "2"
+            }]
+        },
+        {
+            "type": "select",
+            "id": "container",
+            "label": "t:sections.general.settings.container.label__1",
+            "default": "1770",
+            "options": [
+            {
+                "value": "1170",
+                "label": "t:sections.general.settings.container.options__1"
+            },
+            {
+                "value": "1370",
+                "label": "t:sections.general.settings.container.options__2"
+            },
+            {
+                "value": "1570",
+                "label": "t:sections.general.settings.container.options__3"
+            },
+            {
+                "value": "1770",
+                "label": "t:sections.general.settings.container.options__4"
+            },
+            {
+                "value": "1860",
+                "label": "t:sections.general.settings.container.options__5"
+            },
+            {
+                "value": "full",
+                "label": "t:sections.general.settings.container.options__6"
+            }],
+            "info": "t:sections.general.settings.container.info"
+        },
+        {
+            "type": "paragraph",
+            "content": "t:sections.general.settings.padding.paragraph__1.content"
+        },
+        {
+            "type": "range",
+            "id": "padding_top",
+            "label": "t:sections.general.settings.padding.label__1",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom",
+            "label": "t:sections.general.settings.padding.label__2",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 0
+        },
+        {
+            "type": "paragraph",
+            "content": "t:sections.general.settings.padding.paragraph__2.content"
+        },
+        {
+            "type": "range",
+            "id": "padding_top_tablet",
+            "label": "t:sections.general.settings.padding.label__1",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 40
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom_tablet",
+            "label": "t:sections.general.settings.padding.label__2",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 40
+        },
+        {
+            "type": "paragraph",
+            "content": "t:sections.general.settings.padding.paragraph__3.content"
+        },
+        {
+            "type": "range",
+            "id": "padding_top_mobile",
+            "label": "t:sections.general.settings.padding.label__1",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 30
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom_mobile",
+            "label": "t:sections.general.settings.padding.label__2",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 30
+        },
+        {
+            "type": "text",
+            "id": "block_title",
+            "label": "t:sections.general.settings.block-title.label__1",
+            "default": "Product Description"
+        },
+        {
+            "type": "text",
+            "id": "block_text",
+            "label": "t:sections.general.settings.block-title.label__2",
+            "default": "Give customers details about the banner image(s) or content on the template."
+        },
+        {
+            "type": "select",
+            "id": "block_title_align",
+            "label": "t:sections.general.settings.block-title.label__3",
+            "options": [
+            {
+                "value": "left",
+                "label": "t:sections.general.settings.block-title.options__1"
+            },
+            {
+                "value": "center",
+                "label": "t:sections.general.settings.block-title.options__2"
+            },
+            {
+                "value": "right",
+                "label": "t:sections.general.settings.block-title.options__3"
+            }],
+            "default": "center"
+        },
+        {
+            "type": "header",
+            "content": "t:sections.product-description.settings.header__2.content"
+        },
+        {
+            "type": "paragraph",
+            "content": "t:settings_schema.typography.settings.paragraph__1.content"
+        },
+        {
+            "type": "select",
+            "id": "title_font",
+            "label": "t:settings_schema.typography.settings.font.label",
+            "options": [
+            {
+                "value": "font_1",
+                "label": "t:settings_schema.typography.settings.font.options__1"
+            },
+            {
+                "value": "font_2",
+                "label": "t:settings_schema.typography.settings.font.options__2"
+            },
+            {
+                "value": "font_3",
+                "label": "t:settings_schema.typography.settings.font.options__3"
+            }],
+            "default": "font_1"
+        },
+        {
+            "type": "range",
+            "id": "title_font_size",
+            "label": "t:settings_schema.typography.settings.font_size.label",
+            "min": 20,
+            "max": 100,
+            "step": 1,
+            "unit": "t:settings_schema.typography.settings.font_size.unit",
+            "default": 60
+        },
+        {
+            "type": "range",
+            "id": "title_mobile_font_size",
+            "label": "t:settings_schema.typography.settings.font_size.label__2",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "t:settings_schema.typography.settings.font_size.unit",
+            "default": 30
+        },
+        {
+            "type": "select",
+            "id": "title_font_weight",
+            "label": "t:settings_schema.typography.settings.font_weight.label",
+            "default": "700",
+            "options": [
+            {
+                "value": "400",
+                "label": "t:settings_schema.typography.settings.font_weight.options__1"
+            },
+            {
+                "value": "500",
+                "label": "t:settings_schema.typography.settings.font_weight.options__2"
+            },
+            {
+                "value": "600",
+                "label": "t:settings_schema.typography.settings.font_weight.options__3"
+            },
+            {
+                "value": "700",
+                "label": "t:settings_schema.typography.settings.font_weight.options__4"
+            },
+            {
+                "value": "800",
+                "label": "t:settings_schema.typography.settings.font_weight.options__5"
+            },
+            {
+                "value": "900",
+                "label": "t:settings_schema.typography.settings.font_weight.options__6"
+            }]
+        },
+        {
+            "type": "select",
+            "id": "title_text_transform",
+            "label": "t:settings_schema.typography.settings.text_transform.label",
+            "default": "none",
+            "options": [
+            {
+                "value": "none",
+                "label": "t:settings_schema.typography.settings.text_transform.options__1"
+            },
+            {
+                "value": "capitalize",
+                "label": "t:settings_schema.typography.settings.text_transform.options__2"
+            },
+            {
+                "value": "uppercase",
+                "label": "t:settings_schema.typography.settings.text_transform.options__3"
+            },
+            {
+                "value": "lowercase",
+                "label": "t:settings_schema.typography.settings.text_transform.options__4"
+            }]
+        },
+        {
+            "type": "paragraph",
+            "content": "t:sections.general.settings.color.paragraph__1.content"
+        },
+        {
+            "type": "color",
+            "id": "text_color",
+            "label": "t:sections.general.settings.color.label__3",
+            "default": "#202020"
+        },
+        {
+            "type": "color",
+            "id": "title_color",
+            "label": "t:sections.general.settings.color.label__7",
+            "default": "#202020"
+        }
+	],
+	"blocks":
+	[
+		{
+            "type": "image",
+            "name": "t:sections.product-description.blocks.image.name",
+            "settings": [
+            	{
+                    "type": "header",
+                    "content": "t:sections.product-description.blocks.image.settings.header__1.content"
+                },
+                {
+		            "type": "select",
+		            "id": "style",
+		            "label": "t:sections.general.settings.style.label__1",
+		            "default": "odd",
+		            "options": [
+		            {
+		                "value": "odd",
+		                "label": "1"
+		            },
+		            {
+		                "value": "even",
+		                "label": "2"
+		            }]
+		        },
+                {
+                    "type": "header",
+                    "content": "t:sections.product-description.blocks.image.settings.header__2.content"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "t:sections.general.settings.image.label__1"
+                },
+                {
+                    "type": "url",
+                    "id": "link",
+                    "label": "t:sections.general.settings.content.label__4",
+                    "info": "t:sections.general.settings.content.info__1"
+                },
+                {
+                    "type": "header",
+                    "content": "t:sections.product-description.blocks.image.settings.header__3.content"
+                },
+                {
+                    "type": "text",
+                    "id": "title",
+                    "label": "t:sections.general.settings.content.label__1",
+                    "default": "Heading"
+                },
+                {
+                    "type": "textarea",
+                    "id": "content",
+                    "label": "t:sections.general.settings.content.label__2",
+                    "default": "<p>Give customers details about the banner image(s) or content on the template.</p>"
+                },
+                {
+                    "type": "select",
+                    "id": "alignment",
+                    "label": "t:sections.general.settings.aligmnent.label__1",
+                    "options": [
+                    {
+                        "value": "left",
+                        "label": "t:sections.general.settings.aligmnent.options__1"
+                    },
+                    {
+                        "value": "center",
+                        "label": "t:sections.general.settings.aligmnent.options__2"
+                    },
+                    {
+                        "value": "right",
+                        "label": "t:sections.general.settings.aligmnent.options__3"
+                    }],
+                    "default": "center"
+                }
+            ]
+        },
+        {
+            "type": "description",
+            "name": "t:sections.product-description.blocks.description.name",
+            "limit": 1,
+            "settings":
+            [
+                {
+                    "type": "header",
+                    "content": "t:sections.product-description.blocks.description.settings.header__1.content"
+                },
+                {
+                    "type": "select",
+                    "id": "alignment",
+                    "label": "t:sections.general.settings.aligmnent.label__1",
+                    "options": [
+                    {
+                        "value": "left",
+                        "label": "t:sections.general.settings.aligmnent.options__1"
+                    },
+                    {
+                        "value": "center",
+                        "label": "t:sections.general.settings.aligmnent.options__2"
+                    },
+                    {
+                        "value": "right",
+                        "label": "t:sections.general.settings.aligmnent.options__3"
+                    },
+                    {
+                        "value": "justify",
+                        "label": "t:sections.general.settings.aligmnent.options__4"
+                    }],
+                    "default": "center"
+                }
+            ]
+        }
+	]
+}
+{% endschema %}

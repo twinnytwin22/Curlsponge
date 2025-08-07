@@ -1,0 +1,376 @@
+{{ 'component-main-bulk-editor.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+    assign padding_top = section.settings.padding_top | append: 'px'
+    assign padding_bottom = section.settings.padding_bottom | append: 'px'
+    assign padding_top_tablet = section.settings.padding_top_tablet | append: 'px'
+    assign padding_bottom_tablet = section.settings.padding_bottom_tablet | append: 'px'
+    assign padding_top_mobile = section.settings.padding_top_mobile | append: 'px'
+    assign padding_bottom_mobile = section.settings.padding_bottom_mobile | append: 'px'
+    assign show_breadcrumb = section.settings.show_breadcrumb
+    assign breadcrumb_alignment = section.settings.breadcrumb_alignment
+    assign show_page_title = section.settings.show_page_title
+    assign page_title_alignment = section.settings.page_title_alignment
+    assign container = section.settings.container
+-%}
+<div data-section-id="{{ section.id }}" data-section-type="page" id="BulkEditorSection-{{ section.id }}" data-section="{{ section.id }}" class="halo-page-padding"
+    style="--padding-top: {{ padding_top }};
+        --padding-bottom: {{ padding_bottom }};
+        --padding-top-tablet: {{ padding_top_tablet }};
+        --padding-bottom-tablet: {{ padding_bottom_tablet }};
+        --padding-top-mobile: {{ padding_top_mobile }};
+        --padding-bottom-mobile: {{ padding_bottom_mobile }};"
+>
+    <div class="container container-{{ container }}">
+        {%- if show_breadcrumb -%}
+            {% render 'breadcrumb', alignment: breadcrumb_alignment %}
+        {%- endif -%}
+        {%- if show_page_title -%}
+            <h1 class="page-header text-{{ page_title_alignment }}">
+                {{ page.title | escape }}
+            </h1>
+        {%- endif -%}
+        <div class="halo-page-content">
+            <bulk-editor class="halo-bulk-editor">
+                <div class="bulk-editor-content">
+                    <div class="bulk-editor-sidebar">
+                        <div class="bulk-editor-selector">
+                            <div class="label-tab" data-toggle="dropdown" aria-expanded="false" role="button">
+                                <span class="label-text">
+                                    {{ 'bulk_editor_page.general.select_collection' | t }}
+                                </span>
+                                <span class="halo-icon-dropdown icon-dropdown" role="none"></span>
+                            </div>
+                            <ul class="list-unstyled custom-scrollbar">
+                                <li>
+                                    <a class="all-products" href="javascript:void(0)" data-title="{{ 'bulk_editor_page.general.all_collection' | t }}" data-href="&ids={% for product in category.products %}{{ product.id }}%2C{% endfor %}" data-bulk-list-item role="button">
+                                        <span class="text">{{ 'bulk_editor_page.general.all_collection' | t }}</span>
+                                    </a>
+                                </li>
+                                {%- for category in collections -%}
+                                    <li>
+                                        <a class="product" href="javascript:void(0)" data-title="{{ category.title }}" data-href="&collection_id={{ category.id }}" data-bulk-list-item role="button">
+                                            <span class="text">{{ category.title | escape }}</span>
+                                        </a>
+                                    </li>
+                                {%- endfor -%}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="bulk-editor-main">
+                        <div class="bulk-editor-listing">
+                            <div class="content-item">
+                                <input id="tag" type="checkbox" name="tag" value="tags%2C" checked>
+                                <label class="form-label--checkbox" for="tag">Tag</label>
+                            </div>
+                            <div class="content-item">
+                                <input id="product_type" type="checkbox" name="product_type" value="product_type%2C" checked>
+                                <label class="form-label--checkbox" for="product_type">Type</label>
+                            </div>
+                            <div class="content-item">
+                                <input id="vendor" type="checkbox" name="vendor" value="vendor%2C" checked>
+                                <label class="form-label--checkbox" for="vendor">Vendor</label>
+                            </div>
+                            <div class="content-item">
+                                <input id="variants_sku" type="checkbox" name="variants_sku" value="variants.sku%2C" checked>
+                                <label class="form-label--checkbox" for="variants_sku">SKU</label>
+                            </div>
+                            <div class="content-item">
+                                <input id="variants_price" type="checkbox" name="variants_price" value="variants.price%2C" checked>
+                                <label class="form-label--checkbox" for="variants_price">Price</label>
+                            </div>
+                            <div class="content-item">
+                                <input id="variants_compare_at_price" type="checkbox" name="variants_compare_at_price%2C" value="variants.compare_at_price" checked>
+                                <label class="form-label--checkbox" for="variants_compare_at_price">Compare at price</label>
+                            </div>
+                            <div class="content-item">
+                                <input id="variants_cost" type="checkbox" name="variants_cost" value="variants.cost%2C" checked>
+                                <label class="form-label--checkbox" for="variants_cost">Cost per item</label>
+                            </div>
+                            <div class="content-item">
+                                <input id="variants_taxable" type="checkbox" name="variants_taxable" value="variants.taxable%2C" checked>
+                                <label class="form-label--checkbox" for="variants_taxable">Charges taxes</label>
+                            </div>
+                            <div class="content-item">
+                                <input id="variants_barcode" type="checkbox" name="variants_barcode" value="variants.barcode%2C" checked>
+                                <label class="form-label--checkbox" for="variants_barcode">Barcode</label>
+                            </div>
+                            <div class="content-item">
+                                <input id="variants_inventory_management" type="checkbox" name="variants_inventory_management" value="variants.inventory_management%2C" checked>
+                                <label class="form-label--checkbox" for="variants_inventory_management">Track quantity</label>
+                            </div>
+                            <div class="content-item">
+                                <input id="status" type="checkbox" name="status" value="status%2C" checked>
+                                <label class="form-label--checkbox" for="status">Status</label>
+                            </div>
+                            <div class="content-item">
+                                <input id="template_suffix" type="checkbox" name="template_suffix" value="template_suffix%2C" checked>
+                                <label class="form-label--checkbox" for="template_suffix">Template</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bulk-editor-action text-center">
+                    <a class="button button--primary bulk-editor-submit" href="" target="_blank" >{{ 'bulk_editor_page.general.submit' | t }}</a>
+                </div>
+            </bulk-editor>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    class BulkEditor extends HTMLElement {
+        constructor() {
+            super();
+            this.bESelect = this.querySelector('.bulk-editor-selector');
+            this.bEListing = this.querySelector('.bulk-editor-listing');
+            this.submitButton = this.querySelector('.bulk-editor-submit');
+
+            this.bESelect.querySelectorAll('.label-tab').forEach((button) => {
+                button.addEventListener('click', this.onToggleDropdown.bind(this));
+            });
+
+            this.bESelect.querySelectorAll('[data-bulk-list-item]').forEach((button) => {
+                button.addEventListener('click', this.onSelectDropdown.bind(this));
+            });
+
+            this.submitButton.addEventListener('click', this.onSubmit.bind(this));
+
+            document.body.addEventListener('click', this.onBodyClickEvent.bind(this));
+        }
+
+        onToggleDropdown(event) {
+            if (event.currentTarget.getAttribute('aria-expanded') === 'false'){
+                event.currentTarget.setAttribute('aria-expanded', true);
+            } else {
+                event.currentTarget.setAttribute('aria-expanded', false);
+            }
+        }
+
+        onSelectDropdown(event) {
+            if (!event.currentTarget.classList.contains('is-active')) {
+                let value = event.currentTarget.getAttribute('data-value'),
+                    href = event.currentTarget.getAttribute('data-href'),
+                    text = event.currentTarget.querySelector('.text').innerText;
+
+                this.bESelect.querySelector('.label-text').innerText = text;
+                this.bESelect.querySelector('.label-tab').setAttribute('aria-expanded', false);
+
+                this.bESelect.querySelectorAll('[data-bulk-list-item]').forEach((element) => {
+                    if(!element.contains(event.target)){
+                        element.classList.remove('is-active');
+                    } else{
+                        element.classList.add('is-active');
+                    }
+                });
+            }
+        }
+
+        onSubmit(event) {
+            event.preventDefault();
+
+            let arrEditor = [],
+                character,
+                id = '';
+
+            if(!this.bEListing.querySelectorAll('input:checked').length) {
+                alert('Please choose metafields');
+            } else {
+                this.bEListing.querySelectorAll('input:checked').forEach((element) => {
+                    arrEditor.push(element.value);
+                });
+            }
+
+            character = arrEditor.join(',');
+
+            event.currentTarget.setAttribute('href', `/admin/bulk?resource_name=Product&edit=${character}`);
+
+            this.bESelect.querySelectorAll('[data-bulk-list-item]').forEach((element) =>{
+                if(element.classList.contains('product')){
+                    if (element.classList.contains('is-active')) {
+                        id = element.dataset.href;
+                    }
+                } else if (element.classList.contains('all-products')){
+                    if (element.classList.contains('is-active')) {
+                        id = '';
+                    }
+                }
+            });
+
+            window.open(`/admin/bulk?resource_name=Product&edit=${character}${id}`, '_blank');
+        }
+
+        onBodyClickEvent(event) {
+            if (!(event.target).closest('.bulk-editor-selector')){
+                this.bESelect.querySelector('.label-tab').setAttribute('aria-expanded', false);
+            }
+        }
+    }
+
+    customElements.define('bulk-editor', BulkEditor);
+</script>
+
+{% schema %}
+    {
+        "name": "t:sections.main-page.name",
+        "settings":
+        [{
+            "type": "header",
+            "content": "t:sections.main-page.settings.header__1.content"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_breadcrumb",
+            "label": "t:sections.general.settings.breadcrumb.label__1",
+            "default": true
+        },
+        {
+            "type": "select",
+            "id": "breadcrumb_alignment",
+            "label": "t:sections.general.settings.breadcrumb.label__2",
+            "options": [
+            {
+                "value": "left",
+                "label": "t:sections.general.settings.breadcrumb.options__1"
+            },
+            {
+                "value": "center",
+                "label": "t:sections.general.settings.breadcrumb.options__2"
+            },
+            {
+                "value": "right",
+                "label": "t:sections.general.settings.breadcrumb.options__3"
+            }],
+            "default": "left"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_page_title",
+            "label": "t:sections.general.settings.page-title.label__1",
+            "default": true
+        },
+        {
+            "type": "select",
+            "id": "page_title_alignment",
+            "label": "t:sections.general.settings.page-title.label__2",
+            "options": [
+            {
+                "value": "left",
+                "label": "t:sections.general.settings.page-title.options__1"
+            },
+            {
+                "value": "center",
+                "label": "t:sections.general.settings.page-title.options__2"
+            },
+            {
+                "value": "right",
+                "label": "t:sections.general.settings.page-title.options__3"
+            }],
+            "default": "left"
+        },
+        {
+            "type": "select",
+            "id": "container",
+            "label": "t:sections.general.settings.container.label__1",
+            "default": "1370",
+            "options": [
+            {
+                "value": "1170",
+                "label": "t:sections.general.settings.container.options__1"
+            },
+            {
+                "value": "1370",
+                "label": "t:sections.general.settings.container.options__2"
+            },
+            {
+                "value": "1570",
+                "label": "t:sections.general.settings.container.options__3"
+            },
+            {
+                "value": "1770",
+                "label": "t:sections.general.settings.container.options__4"
+            },
+            {
+                "value": "1860",
+                "label": "t:sections.general.settings.container.options__5"
+            },
+            {
+                "value": "full",
+                "label": "t:sections.general.settings.container.options__6"
+            }],
+            "info": "t:sections.general.settings.container.info"
+        },
+        {
+            "type": "paragraph",
+            "content": "t:sections.general.settings.padding.paragraph__1.content"
+        },
+        {
+            "type": "range",
+            "id": "padding_top",
+            "label": "t:sections.general.settings.padding.label__1",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom",
+            "label": "t:sections.general.settings.padding.label__2",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 0
+        },
+        {
+            "type": "paragraph",
+            "content": "t:sections.general.settings.padding.paragraph__2.content"
+        },
+        {
+            "type": "range",
+            "id": "padding_top_tablet",
+            "label": "t:sections.general.settings.padding.label__1",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 40
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom_tablet",
+            "label": "t:sections.general.settings.padding.label__2",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 40
+        },
+        {
+            "type": "paragraph",
+            "content": "t:sections.general.settings.padding.paragraph__3.content"
+        },
+        {
+            "type": "range",
+            "id": "padding_top_mobile",
+            "label": "t:sections.general.settings.padding.label__1",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 30
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom_mobile",
+            "label": "t:sections.general.settings.padding.label__2",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 30
+        }]
+    }
+{% endschema %}

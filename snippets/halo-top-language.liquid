@@ -1,0 +1,28 @@
+<div class="halo-top-language">
+    <div class="disclosure">
+        {% assign logoActive = '' %}
+        {%- for i in (1..6) -%}
+            {% capture lang_unit %}lange_{{ i }}{% endcapture %}
+            {% capture i-lang_unit %}i-lang-{{ i }}{% endcapture %}
+            {%- liquid
+                assign currency_length = settings[i-lang_unit] | size
+                if settings[lang_unit] == localization.language.iso_code
+                    assign logoActive = settings[i-lang_unit]
+                endif
+            -%}
+        {%- endfor -%}
+        <button type="button" class="disclosure__button dropdown-toggle localization-form__select localization-selector link" aria-describedby="HeaderLanguageLabel" aria-label="{{ localization.language.endonym_name | capitalize }}">
+            <span class="icon">
+                {{ logoActive }}
+            </span>
+            <span class="text text-language hidden">
+                {{ localization.language.endonym_name | capitalize }}
+            </span>
+            {%- if settings.enable_currencies == false or settings.enable_auto_currency -%}
+                <span class="text">
+                    {{ localization.language.endonym_name | capitalize }}
+                </span>
+            {%- endif -%}
+        </button>
+    </div>
+</div>

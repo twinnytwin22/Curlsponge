@@ -1,0 +1,71 @@
+.halo-notifyMe{
+    padding: 30px 0 0 0;
+}
+
+.halo-notifyMe .form-field{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.halo-notifyMe .form-input{
+    min-height: var(--btn-min-height);
+    padding-top: var(--btn-padding-top);
+    padding-bottom: var(--btn-padding-bottom);
+    width: calc(100% - 185px);
+}
+
+.halo-notifyMe .form-label{
+    color: var(--color-text2);
+}
+
+.halo-notifyMe .button{
+    border-radius: 0;
+    width: 175px;
+    margin: 0 0 0 10px;
+}
+
+.notifyMe-text{
+    display: none;
+    margin: 20px 0 0 0;
+}
+
+.halo-notifyMe--popup{
+    padding-top: 0;
+}
+
+.halo-notifyMe--popup .form-label{
+    text-align: center;
+    margin-bottom: 23px;
+}
+
+.halo-notifyMe--popup .form-input{
+    width: 100%;
+}
+
+.halo-notifyMe--popup .button{
+    width: 100%;
+    margin-left: 0;
+    margin-top: 10px;
+}
+
+body.notify-me-show{
+    overflow: hidden;
+    height: 100%;
+}
+
+body.notify-me-show .background-overlay{
+    display: block;
+}
+
+body.notify-me-show .halo-notify-popup{
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translate3d(-50%,-50%,0);
+}
+
+@media (min-width: 1025px){
+    body.notify-me-show{
+        padding-right: 10px;
+    }
+}

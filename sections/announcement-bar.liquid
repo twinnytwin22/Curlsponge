@@ -1,0 +1,192 @@
+{%- if section.settings.show_announcement_bar -%}
+    {{ 'component-announcement-bar.css' | asset_url | stylesheet_tag }}
+    {%- liquid
+        assign layout = section.settings.announcement-bar-layout
+        assign show = section.settings.announcement-bar-show
+        assign content = section.settings.text
+        assign link = section.settings.link
+        assign text_transform = section.settings.text_transform
+        assign announcement_bar_bg = section.settings.background_color
+        assign announcement_bar_color_1 = section.settings.color_1
+        assign announcement_bar_color_2 = section.settings.color_2
+        assign has_announcement_bar = false
+        if show == 'home'
+            assign page_type = request.page_type | replace: 'customers/', ''
+            if page_type == 'index'
+                assign has_announcement_bar = true
+            endif
+        else
+            assign has_announcement_bar = true
+        endif
+
+        if settings.show_dark_mode
+            assign dark_mode = false
+            unless announcement_bar_bg == blank or announcement_bar_bg == '#fff' or announcement_bar_bg == '#FFF' or announcement_bar_bg == '#ffffff' or announcement_bar_bg == '#FFFFFF' or announcement_bar_bg == 'rgb(255,255,255)' or announcement_bar_bg == 'rgba(255,255,255,1)' or announcement_bar_bg == 'rgba(0,0,0,0)'
+                assign dark_mode = true
+                assign dark_mode_announcement_bar_bg = section.settings.background_color
+                assign dark_mode_announcement_bar_color_1 = section.settings.color_1
+                assign dark_mode_announcement_bar_color_2 = section.settings.color_2
+            endunless
+        endif
+    -%}
+    {%- if has_announcement_bar -%}
+        <div class="announcement-bar announcement-bar-1{% if layout == 'scroll' %} announcement-bar-scroll{% else %} announcement-bar-normal{% endif %}{% unless dark_mode %} dark-mode{% endunless %}" role="region" aria-label="{{ 'sections.header.announcement' | t }}" id="announcement-bar-{{ section.id }}"
+            style="--bg-color: {{ announcement_bar_bg | default: settings.colors_bg }};
+            --text-color-1: {{ announcement_bar_color_1 }};
+            --text-color-2: {{ announcement_bar_color_2 }};
+            {% if dark_mode %}
+                --dark-mode-bg-color: {{ dark_mode_announcement_bar_bg }};
+                --dark-mode-text-color-1: {{ dark_mode_announcement_bar_color_1 }};
+                --dark-mode-text-color-2: {{ dark_mode_announcement_bar_color_2 }};
+            {% endif %}"
+        >
+            <div class="wrapper-content">
+                {%- if link != blank -%}
+                    <a href="{{ link }}" class="announcement-bar__link link focus-inset">
+                {%- endif -%}
+                    <span class="announcement-bar__message text-center {{ text_transform }}">
+                        {%- if layout == 'scroll' -%}
+                            {%- for i in (1..20) -%}
+                                <span class="message">
+                                    {{ content }}
+                                    {% render 'icon-circle' %}
+                                </span>
+                            {%- endfor -%}
+                        {%- else -%}
+                            {{ content }}
+                        {%- endif -%}
+                    </span>
+                {%- if link != blank -%}
+                    </a>
+                {%- endif -%}
+            </div>
+        </div>
+    {%- endif -%}
+{%- endif -%}
+
+{% schema %}
+{
+    "name": "t:sections.announcement-bar.name",
+    "class": "header-line announcement-bar-1",
+    "settings": [
+        {
+            "type": "header",
+            "content": "t:sections.announcement-bar.settings.header__1.content"
+        },
+        {
+            "type": "checkbox",
+            "label": "t:sections.announcement-bar.settings.general.label__1",
+            "id": "show_announcement_bar",
+            "default": true
+        },
+        {
+            "type": "select",
+            "id": "announcement-bar-layout",
+            "label": "t:sections.announcement-bar.settings.general.label__2",
+            "default": "none",
+            "options":
+            [
+                {
+                    "value": "none",
+                    "label": "t:sections.announcement-bar.settings.general.options__1"
+                },
+                {
+                    "value": "scroll",
+                    "label": "t:sections.announcement-bar.settings.general.options__2"
+                }
+            ]
+        },
+        {
+            "type": "select",
+            "id": "announcement-bar-show",
+            "label": "t:sections.announcement-bar.settings.general.label__3",
+            "default": "all",
+            "options":
+            [
+                {
+                    "value": "home",
+                    "label": "t:sections.announcement-bar.settings.general.options__3"
+                },
+                {
+                    "value": "all",
+                    "label": "t:sections.announcement-bar.settings.general.options__4"
+                }
+            ]
+        },
+        {
+            "type": "html",
+            "id": "text",
+            "label": "t:sections.general.settings.content.label__2",
+            "default": "<p>Welcome to our store</p>"
+        },
+        {
+            "type": "url",
+            "id": "link",
+            "label": "t:sections.general.settings.content.label__4",
+            "info": "t:sections.general.settings.content.info__1"
+        },
+        {
+            "type": "select",
+            "id": "text_transform",
+            "label": "t:settings_schema.typography.settings.text_transform.label",
+            "default": "uppercase",
+            "options":
+            [
+                {
+                    "value": "capitalize",
+                    "label": "t:settings_schema.typography.settings.text_transform.options__2"
+                },
+                {
+                    "value": "uppercase",
+                    "label": "t:settings_schema.typography.settings.text_transform.options__3"
+                },
+                {
+                    "value": "lowercase",
+                    "label": "t:settings_schema.typography.settings.text_transform.options__4"
+                }
+            ]
+        },
+        {
+            "type": "header",
+            "content": "t:sections.announcement-bar.settings.header__2.content"
+        },
+        {
+            "type": "color_background",
+            "id": "background_color",
+            "label": "t:sections.general.settings.color.label__1",
+            "default": "#FF0033"
+        },
+        {
+            "type": "color",
+            "id": "color_1",
+            "label": "t:sections.general.settings.color.label__2",
+            "default": "#FFFFFF"
+        },
+        {
+            "type": "color",
+            "id": "color_2",
+            "label": "t:sections.general.settings.color.label__6",
+            "default": "#B91333"
+        }
+    ],
+    "presets": [
+        {
+            "name": "t:sections.announcement-bar.name",
+            "settings": {
+                "show_announcement_bar": true,
+                "announcement-bar-layout": "scroll",
+                "announcement-bar-show": "all",
+                "text": "<span class=\"text\">LIMITED TIME OFFER:<\/span><span class=\"text\">BUY HALO THEME -<\/span><span class=\"text\">GET FREE INSTALLATION SERVICE<\/span><span class=\"text-code\">ONLY $39<\/span>",
+                "link": "https:\/\/1.envato.market\/5bq3En",
+                "text_transform": "uppercase",
+                "background_color": "#ff0033",
+                "color_1": "#ffffff",
+                "color_2": "#ae0015"
+            }
+        }
+    ],
+    "enabled_on": {
+        "groups": ["header", "footer"]
+    }
+}
+{% endschema %}

@@ -1,0 +1,196 @@
+{%- liquid
+    assign padding_top = section.settings.padding_top | append: 'px'
+    assign padding_bottom = section.settings.padding_bottom | append: 'px'
+    assign padding_top_tablet = section.settings.padding_top_tablet | append: 'px'
+    assign padding_bottom_tablet = section.settings.padding_bottom_tablet | append: 'px'
+    assign padding_top_mobile = section.settings.padding_top_mobile | append: 'px'
+    assign padding_bottom_mobile = section.settings.padding_bottom_mobile | append: 'px'
+    assign show_breadcrumb = section.settings.show_breadcrumb
+    assign breadcrumb_alignment = section.settings.breadcrumb_alignment
+    assign show_page_title = section.settings.show_page_title
+    assign page_title_alignment = section.settings.page_title_alignment
+    assign container = section.settings.container
+-%}
+<div data-section-id="{{ section.id }}" data-section-type="lookbook" id="LOOKBOOKSection-{{ section.id }}" data-section="{{ section.id }}" class="halo-page-padding"
+    style="--padding-top: {{ padding_top }};
+        --padding-bottom: {{ padding_bottom }};
+        --padding-top-tablet: {{ padding_top_tablet }};
+        --padding-bottom-tablet: {{ padding_bottom_tablet }};
+        --padding-top-mobile: {{ padding_top_mobile }};
+        --padding-bottom-mobile: {{ padding_bottom_mobile }};"
+>
+	<div class="container container-{{ container }}">
+		{%- if show_breadcrumb -%}
+            {% render 'breadcrumb', alignment: breadcrumb_alignment %}
+        {%- endif -%}
+        {%- if show_page_title -%}
+            <h1 class="page-header text-{{ page_title_alignment }}">
+                {{ page.title | escape }}
+            </h1>
+        {%- endif -%}
+	</div>
+</div>
+{% schema %}
+	{
+		"name": "t:sections.main-lookbook-page.name",
+        "settings": [
+        {
+            "type": "header",
+            "content": "t:sections.main-lookbook-page.settings.header__1.content"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_breadcrumb",
+            "label": "t:sections.general.settings.breadcrumb.label__1",
+            "default": false
+        },
+        {
+            "type": "select",
+            "id": "breadcrumb_alignment",
+            "label": "t:sections.general.settings.breadcrumb.label__2",
+            "options": [
+            {
+                "value": "left",
+                "label": "t:sections.general.settings.breadcrumb.options__1"
+            },
+            {
+                "value": "center",
+                "label": "t:sections.general.settings.breadcrumb.options__2"
+            },
+            {
+                "value": "right",
+                "label": "t:sections.general.settings.breadcrumb.options__3"
+            }],
+            "default": "left"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_page_title",
+            "label": "t:sections.general.settings.page-title.label__1",
+            "default": false
+        },
+        {
+            "type": "select",
+            "id": "page_title_alignment",
+            "label": "t:sections.general.settings.page-title.label__2",
+            "options": [
+            {
+                "value": "left",
+                "label": "t:sections.general.settings.page-title.options__1"
+            },
+            {
+                "value": "center",
+                "label": "t:sections.general.settings.page-title.options__2"
+            },
+            {
+                "value": "right",
+                "label": "t:sections.general.settings.page-title.options__3"
+            }],
+            "default": "center"
+        },
+        {
+            "type": "select",
+            "id": "container",
+            "label": "t:sections.general.settings.container.label__1",
+            "default": "1370",
+            "options": [
+            {
+                "value": "1170",
+                "label": "t:sections.general.settings.container.options__1"
+            },
+            {
+                "value": "1370",
+                "label": "t:sections.general.settings.container.options__2"
+            },
+            {
+                "value": "1570",
+                "label": "t:sections.general.settings.container.options__3"
+            },
+            {
+                "value": "1770",
+                "label": "t:sections.general.settings.container.options__4"
+            },
+            {
+                "value": "1860",
+                "label": "t:sections.general.settings.container.options__5"
+            },
+            {
+                "value": "full",
+                "label": "t:sections.general.settings.container.options__6"
+            }],
+            "info": "t:sections.general.settings.container.info"
+        },
+        {
+            "type": "paragraph",
+            "content": "t:sections.general.settings.padding.paragraph__1.content"
+        },
+        {
+            "type": "range",
+            "id": "padding_top",
+            "label": "t:sections.general.settings.padding.label__1",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom",
+            "label": "t:sections.general.settings.padding.label__2",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 0
+        },
+        {
+            "type": "paragraph",
+            "content": "t:sections.general.settings.padding.paragraph__2.content"
+        },
+        {
+            "type": "range",
+            "id": "padding_top_tablet",
+            "label": "t:sections.general.settings.padding.label__1",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom_tablet",
+            "label": "t:sections.general.settings.padding.label__2",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 0
+        },
+        {
+            "type": "paragraph",
+            "content": "t:sections.general.settings.padding.paragraph__3.content"
+        },
+        {
+            "type": "range",
+            "id": "padding_top_mobile",
+            "label": "t:sections.general.settings.padding.label__1",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom_mobile",
+            "label": "t:sections.general.settings.padding.label__2",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 0
+        }]
+	}
+{% endschema %}

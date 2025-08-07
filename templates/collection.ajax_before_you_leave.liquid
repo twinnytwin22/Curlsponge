@@ -1,0 +1,24 @@
+{% layout none %}
+
+{%- liquid
+	assign collection = settings.before_you_leave_collection
+	assign limit = settings.before_you_leave_collection_limit
+	assign collection = collections[collection]
+-%}
+
+{%- for product in collection.products limit: limit -%}
+    <div class="product">
+        {% render 'product-card-custom',
+			product_card_product: product
+		%}
+    </div>
+{%- else -%}
+	{%- for product in (1..limit) -%}
+        <div class="product">
+            {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+            {% render 'product-card-custom-placeholder',
+                index: current
+            %}
+        </div>
+    {%- endfor -%}
+{%- endfor -%}

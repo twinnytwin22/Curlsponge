@@ -1,0 +1,44 @@
+{% layout none %}
+
+{%- for tag in current_tags -%}
+    {%- if tag contains 'limit=' -%}
+        {%- assign limit = tag | remove: 'limit=' -%}
+    {%- elsif tag contains 'page=' -%}
+        {%- assign page = tag | remove: 'page=' -%}    
+    {%- elsif tag contains 'sectionId=' -%}
+        {%- assign sectionId = tag | remove: 'sectionId=' -%}
+    {%- elsif tag contains 'imageRatio=' -%}
+        {%- assign image_ratio = tag | remove: 'imageRatio=' -%}
+    {%- elsif tag contains 'portraitAspectRatio=' -%}
+        {%- assign portrait_aspect_ratio = tag | remove: 'portraitAspectRatio=' -%}
+    {%- elsif tag contains 'action=' -%}
+        {%- assign show_add_to_cart = tag | remove: 'action=' -%}
+    {%- endif -%}
+{%- endfor -%}
+
+{%- for product in collections[collection.handle].products limit: limit -%}
+    {%- liquid
+        assign listTag = ''
+        for item in product.tags
+            if forloop.first
+                assign tagItem = item | handleize
+            else
+                assign tagItem = item | handleize | prepend: ','
+            endif
+            assign listTag = listTag | append: tagItem
+        endfor
+    -%}
+    <div class="product" data-tag="{{ listTag }}">
+        {% render 'product-card',
+            product_card_product: product,
+            media_size: image_ratio,
+            portrait_aspect_ratio: portrait_aspect_ratio,
+            show_add_to_cart: show_add_to_cart,
+            serial: forloop.index,
+            sectionId: sectionId,
+            list: false,
+            wishlist_add: false,
+            loading: true
+        %}
+    </div>
+{%- endfor -%}

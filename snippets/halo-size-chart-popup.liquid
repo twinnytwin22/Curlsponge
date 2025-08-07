@@ -1,0 +1,54 @@
+<link rel="stylesheet" href="{{ 'component-size-chart.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'component-size-chart.css' | asset_url | stylesheet_tag }}</noscript>
+<custom-modal class="halo-modal halo-modal__topDown" id="Modal-SizeChart">
+	<div class="halo-modal__dialog"
+      	role="dialog"
+      	aria-label="Dialog"
+      	aria-modal="true"
+      	tabindex="-1"
+    >
+    	<div class="halo-modal-header">
+            <button class="halo-modal-close clearfix" role="button" id="ModalClose-SizeChart" aria-label="{{ 'general.common.close' | t }}">
+		        {% render 'icon-close' %}
+		    </button>
+            <h3 class="halo-modal-title text-center">
+            	{{ 'size_chart.general.title' | t }}
+            </h3>
+    	</div>
+    	<div class="halo-modal-content halo-popup-scroll custom-scrollbar" id="ModalWrapper-SizeChart">
+    		<div class="halo-size-chart text-center">
+				{%- if size_chart_type == 'metafield' -%}
+					{% assign img = product.metafields.c_f.size_chart %}
+					<img srcset="{{ img }}"
+		                src="{{ img }}"
+		                loading="lazy"
+		                alt="{{ shop.name | escape }}"
+		            >
+				{%- elsif size_chart_type == 'product_type' -%}
+					{% assign img = size_chart_image | file_url %}
+					<img srcset="{{ img }}"
+		                src="{{ img }}"
+		                loading="lazy"
+		                alt="{{ shop.name | escape }}"
+		            >
+				{%- elsif size_chart_type == 'product_vendor' -%}
+					{% assign img = size_chart_image | file_url %}
+					<img srcset="{{ img }}"
+		                src="{{ img }}"
+		                loading="lazy"
+		                alt="{{ shop.name | escape }}"
+		            >
+				{%- elsif size_chart_type == 'custom_image' -%}
+					{% assign img = size_chart_image %}
+	                <img srcset="{{ img | img_url: 'master' }} 1x, {{ img | img_url: 'master', scale: 2 }} 2x"
+		                src="{{ img | img_url: 'master' }}"
+		                loading="lazy"
+		                alt="{{ img.alt | default: shop.name | escape }}"
+		                width="{{ img.width | replace: 'px', '' }}"
+                        height="{{ img.height | replace: 'px', '' }}"
+		            >
+				{%- endif -%}
+			</div>
+    	</div>
+    </div>
+</custom-modal>

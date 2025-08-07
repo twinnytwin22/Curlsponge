@@ -1,0 +1,11 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}" {% if settings.select_layout and enable_iso_rtl %} dir="rtl" {% endif %}>
+	<head>
+		{{ content_for_header }}
+	</head>
+	<body class="body-full">
+		<main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+            {{ content_for_layout }}
+        </main>
+	</body>
+</html>

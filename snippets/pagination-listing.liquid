@@ -1,0 +1,101 @@
+{% comment %}
+    Renders a set of links for paginated results. Must be used within paginate tags.
+
+    Usage:
+    {% paginate results by 2 %}
+        {% render 'pagination', paginate: paginate, anchor: '#yourID' %}
+    {% endpaginate %}
+
+    Accepts:
+    - paginate: {Object}
+    - anchor: {String} (optional) This can be added so that on page reload it takes you to wherever you've placed your anchor tag.
+    - class: {String} (optional) Appended to container element's class attribute
+{% endcomment %}
+
+{{ 'component-pagination.css' | asset_url | stylesheet_tag }}
+
+{%- if paginate.parts.size > 0 -%}
+    <div class="{{ class | default: 'pagination-wrapper' }}">
+        <nav class="pagination{% if settings.pagination_style == '2' %} pagination-2{% elsif settings.pagination_style == '3' %} pagination-3{% endif %}{% if show_infinite_scrolling %} pagination-infinite style-{{ settings.infinite_scroll_style }}{% endif %}" role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
+            <div class="pagination-page-item pagination-page-total">
+                <span>{{ 'sections.collection_template.start_count' | t }}</span>
+                <span data-total-start>{{ paginate.current_offset | plus: 1 }}</span>
+                <span> - </span>
+                {%- if paginate.next -%}
+                    <span data-total-end>{{ paginate.current_offset | plus: paginate.page_size }}</span>
+                {%- else -%}
+                    <span data-total-end>{{ paginate.items }}</span>
+                {%- endif -%}
+                <span>{{ 'sections.collection_template.end_count' | t : count : paginate.items }}</span>
+            </div>
+            {%- if show_infinite_scrolling -%}
+                <div class="pagination-page-item pagination-page-infinite">
+                    <a class="{% if settings.infinite_scroll_style == '1' %}link link-underline{% else %} button button--primary{% endif %}{% unless paginate.next %} disabled{% endunless %}"
+                        {% if paginate.next %}
+                            href="{{ paginate.next.url }}" data-href="{{ paginate.next.url }}"
+                            data-infinite-scrolling
+                            data-load-more="{{ 'sections.collection_template.load_more' | t }}"
+                            data-loading-more="{{ 'sections.collection_template.loading_more' | t }}"
+                        {% else %}
+                            href="javascript:void(0)"
+                        {% endif %}
+                    >
+                        {%- if paginate.next -%}
+                            {{ 'sections.collection_template.load_more' | t }}
+                        {%- else -%}
+                            {{ 'sections.collection_template.no_more' | t }}
+                        {%- endif -%}
+                    </a>
+                </div>
+            {%- else -%}
+                <ul class="pagination-page-item list-unstyled" role="list">
+                    {%- if paginate.previous -%}
+                        <li class="pagination-item pagination-item--prev">
+                            <a class="link{% if settings.pagination_style == '1' %} link-underline{% endif %}" href="{{ paginate.previous.url }}{{ anchor }}" aria-label="{{ 'general.pagination.previous' | t }}">
+                                {%- if settings.pagination_style == '1' -%}
+                                    <span class="text">{{ 'general.pagination.previous_label' | t }}</span>
+                                {%- elsif settings.pagination_style == '3' -%}
+                                    <span class="text">{{ 'general.pagination.previous_label' | t }}</span>
+                                {%- else -%}
+                                    {% render 'icon-previous' %}
+                                {%- endif -%}
+                            </a>
+                        </li>
+                    {%- endif -%}
+                    {%- for part in paginate.parts -%}
+                        <li class="pagination-item{% unless part.is_link %}{% if part.title == paginate.current_page %} active{%- endif -%}{% endunless %}">
+                            {%- if part.is_link -%}
+                                <a class="link{% if settings.pagination_style == '1' %} link-underline{% endif %}" href="{{ part.url }}{{ anchor }}" aria-label="{{ 'general.pagination.page' | t: number: part.title }}">
+                                    <span class="text">{{ part.title }}</span>
+                                </a>
+                            {%- else -%}
+                                {%- if part.title == paginate.current_page -%}
+                                    <span class="link" aria-current="page" aria-label="{{ 'general.pagination.page' | t: number: part.title }}">
+                                        <span class="text">{{ part.title }}</span>
+                                    </span>
+                                {%- else -%}
+                                    <span class="link">
+                                        <span class="text">{{ part.title }}</span>
+                                    </span>
+                                {%- endif -%}
+                            {%- endif -%}
+                        </li>
+                    {%- endfor -%}
+                    {%- if paginate.next -%}
+                        <li class="pagination-item pagination-item--next">
+                            <a class="link{% if settings.pagination_style == '1' %} link-underline{% endif %}" href="{{ paginate.next.url }}{{ anchor }}" aria-label="{{ 'general.pagination.next' | t }}">
+                                {%- if settings.pagination_style == '1' -%}
+                                    <span class="text">{{ 'general.pagination.next_label' | t }}</span>
+                                {%- elsif settings.pagination_style == '3' -%}
+                                    <span class="text">{{ 'general.pagination.next_label' | t }}</span>
+                                {%- else -%}
+                                    {% render 'icon-next' %}
+                                {%- endif -%}
+                            </a>
+                        </li>
+                    {%- endif -%}
+                </ul>
+            {%- endif -%}
+        </nav>
+    </div>
+{%- endif -%}

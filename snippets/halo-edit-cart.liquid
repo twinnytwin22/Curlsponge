@@ -1,0 +1,376 @@
+<div class="cart-edit" data-template-cart-edit data-count="1">
+    {%- liquid
+        assign current_variant = product.selected_or_first_available_variant
+        assign variantCount = product.variants | size
+        assign use_available_button_style = section.settings.use_available_button_style
+        if use_available_button_style
+            assign btn = section.settings.btn 
+        endif
+    -%}
+    <script>
+        window.product_inven_array_{{ product.id }} = {
+            {% for variant in product.variants %}
+                '{{ variant.id }}': '{{ variant.inventory_quantity }}',
+            {% endfor %}
+        };
+    </script>
+    <div class="product-edit-item product-edit-itemFirst isChecked clearfix" id="product-edit-{{ product.id }}" data-cart-edit-id="{{ product.id }}" data-position="0" data-product-detail>
+        <div class="product-edit-itemLeft">
+            {%- liquid 
+                if current_variant.image
+                    assign image = current_variant.image
+                else
+                    assign image = product.featured_image.src
+                endif
+                assign media_size = section.settings.image_ratio
+                assign portrait_aspect_ratio = section.settings.portrait_aspect_ratio | append: '%'
+            -%}
+            <a class="product-edit-image card-media--{{ media_size }}" href="{{ product.url }}" id="product-edit-featured-image-{{ section.id }}-{{ product.id }}" 
+                {% if media_size == 'adapt' %}
+                    style="padding-bottom: {{ 1 | divided_by: image.aspect_ratio | times: 100 }}%;"
+                {% elsif media_size == 'square' %}
+                    style="padding-bottom: 100%;"
+                {% elsif media_size == 'portrait' %}
+                    style="padding-bottom: {{ portrait_aspect_ratio }};"
+                {% endif %}
+            >
+                <img srcset="{% if image.width >= 288 %}{{ image | img_url: '288x' }} 288w,{% endif %}
+                        {% if image.width >= 576 %}{{ image | img_url: '576x' }} 576w,{% endif %}
+                        {% if image.width >= 550 %}{{ image | img_url: '550x' }} 550w,{% endif %}
+                        {% if image.width >= 1100 %}{{ image | img_url: '1100x' }} 1100w{% endif %}"
+                    src="{{ image | img_url: 'master' }}"
+                    alt="{{ product.title | escape }}"
+                    sizes="270px"
+                    loading="lazy"
+                >
+            </a>
+            <a href="javascript:void(0)" class="product-edit-remove" data-edit-cart-remove>
+                <span class="visually-hidden">{{ 'sections.cart.remove_title' | t: title : product.title }}</span>
+                {% render 'icon-close' %}
+            </a>
+        </div>
+        <div class="product-edit-itemRight">
+            {%- for block in section.blocks -%}
+                {%- case block.type -%}
+                    {%- when 'add_to_cart_form' -%}
+                        {%- liquid
+                            assign padding_top = block.settings.padding_top
+                            assign padding_bottom = block.settings.padding_bottom
+                            assign show_customization_option = settings.show_customization_option
+                            if show_customization_option
+                                assign has_customization_option = false
+                                assign customization_option_type = settings.customization_option_type
+                                assign customization_option_hidden = settings.customization_option_hidden
+                                if customization_option_type == 'all'
+                                    assign has_customization_option = true
+                                elsif customization_option_type == 'tag'
+                                    assign customization_option_tags = settings.customization_option_tags | split: "," | strip | downcase | handle
+                                    for tag in customization_option_tags
+                                        assign tagtitle = tag | escape | downcase | handle
+                                        if product.tags contains tagtitle
+                                            assign has_customization_option = true
+                                        endif
+                                    endfor
+                                elsif customization_option_type == 'collection'
+                                    assign customization_option_collection = settings.customization_option_collection | downcase | handle
+                                    if customization_option_collection != blank
+                                        for collection in product.collections
+                                            assign collection_title = collection.title | downcase | handle
+                                            if collection_title == customization_option_collection
+                                                assign has_customization_option = true
+                                            endif
+                                        endfor
+                                    endif
+                                endif
+                                assign customization_option_1 = settings.customization_option_1
+                                assign customization_option_2 = settings.customization_option_2
+                            endif
+                            assign show_qty = block.settings.show_qty
+                            if show_qty
+                                assign qty_style = block.settings.qty_style
+                            endif
+                        -%}
+                        <product-form class="product-form element-spacing"
+                            {{ block.shopify_attributes }}
+                            style="--spacing-top: {{ padding_top | append: 'px' }};
+                            --spacing-bottom: {{ padding_bottom | append: 'px' }};
+                            --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+                            --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+                            --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+                            --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};"
+                        >
+                            {%- assign product_form_id = 'product-form-' | append: section.id | append: '-' | append: product.id -%}
+                            {%- form 'product', product, id: product_form_id, novalidate: 'novalidate' -%}
+                                <input type="hidden" name="id" value="{{ current_variant.id }}">
+                                {%- if show_customization_option and has_customization_option -%}
+                                    {%- if customization_option_1 != blank or customization_option_2 != blank -%}
+                                        {%- if customization_option_1 != blank -%}
+                                            {%- liquid
+                                                assign property_id = product.id | append: customization_option_1 | handleize
+                                                assign property_name = customization_option_1 | escape
+                                                assign property_value = property_name
+                                                unless customization_option_hidden
+                                                    assign property_value = property_value | prepend: '_'
+                                                endunless
+                                            -%}
+                                            <div class="product-form__input clearfix line-item-property__field">
+                                                <label for="{{ property_id }}" class="form-label form__label">{{ property_name }}</label>
+                                                <input id="{{ property_id }}" type="text" name="properties[{{ property_value }}]" class="form__input form-input">
+                                            </div>
+                                        {%- endif -%}
+                                        {%- if customization_option_2 != blank -%}
+                                            {%- liquid
+                                                assign property_id = product.id | append: customization_option_2 | handleize
+                                                assign property_name = customization_option_2 | escape
+                                                assign property_value = property_name
+                                                unless customization_option_hidden
+                                                    assign property_value = property_value | prepend: '_'
+                                                endunless
+                                            -%}
+                                            <div class="product-form__input clearfix line-item-property__field">
+                                                <label for="{{ property_id }}" class="form-label form__label">{{ property_name }}</label>
+                                                <input id="{{ property_id }}" type="file" accept="image/*" name="properties[{{ property_value }}]" class="form__input form-input">
+                                            </div>
+                                        {%- endif -%}
+                                    {%- endif -%}
+                                {%- endif -%}
+                                <div class="product-edit-message" id="product-message-{{ section.id }}-{{ product.id }}" style="display: none;"></div>
+                                {%- if show_qty -%}
+                                    {% render 'product-quantity',
+                                        type: 'main-product',
+                                        style: qty_style,
+                                        product: product,
+                                        updateCart: true,
+                                        class: 'product-edit-quantity',
+                                        current_variant: current_variant
+                                    %}
+                                {%- else -%}
+                                    <input class="form-input quantity__input" type="hidden" name="quantity" aria-live="polite" min="1" value="1" inputmode="numeric" pattern="[0-9]*" id="quantity-{{ section.id }}-{{ product.id }}" data-product="{{ product.id }}" data-section="{{ section.id }}" data-price="{{ current_variant.price }}" data-update-cart="true" {% if current_variant.inventory_management == 'shopify' and current_variant.inventory_quantity > 0 %} data-inventory-quantity="{{ current_variant.inventory_quantity }}"{% endif %}>
+                                {%- endif -%}
+                            {%- endform -%}
+                        </product-form>
+                    {%- when 'countdown' -%}
+                        {%- if settings.show_countdown -%}
+                            {%- liquid
+                                assign countdown_type = settings.countdown_type
+                                assign countdown_style = settings.countdown_style
+                                assign countdown_time = settings.countdown_time
+                                assign countdown_collection = settings.countdown_collection | downcase | handle
+                                assign countdown_bg = settings.countdown_backg
+                                assign countdown_color = settings.countdown_color
+                                assign countdown_number_color = settings.countdown_num_color
+                            -%}
+                            {% render 'product-countdown',
+                                product: product,
+                                countdown_type: countdown_type,
+                                countdown_style: countdown_style,
+                                countdown_time: countdown_time,
+                                countdown_collection: countdown_collection,
+                                countdown_bg: countdown_bg,
+                                countdown_color: countdown_color,
+                                countdown_number_color: countdown_number_color,
+                                padding_top: padding_top,
+                                padding_bottom: padding_bottom
+                            %}
+                        {%- endif -%}
+                    {%- when 'inventory' -%}
+                        {%- if current_variant.inventory_management -%}
+                            {%- liquid
+                                assign text = block.settings.text
+                                assign stock = block.settings.stock
+                                assign progress_height = block.settings.progress_height | append: 'px'
+                                assign text_color = block.settings.color
+                                assign bg_color = block.settings.bg_color
+                                assign progress_bg_color = block.settings.progress_bg_color
+                                assign padding_top = block.settings.padding_top
+                                assign padding_bottom = block.settings.padding_bottom
+                                assign inventory_quantity = current_variant.inventory_quantity
+                                assign progress_percent = inventory_quantity | times: 100 | divided_by: stock | round: 2 | append: '%'
+                            -%}
+                            <div class="product-edit-inventory productView-inventory element-spacing{% if inventory_quantity <= 0 or inventory_quantity >= stock %} is-hide{% endif %}"
+                                {{ block.shopify_attributes }}
+                                style="--spacing-top: {{ padding_top | append: 'px' }};
+                                --spacing-bottom: {{ padding_bottom | append: 'px' }};
+                                --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+                                --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+                                --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+                                --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};
+                                --text-color: {{ text_color }};
+                                --bg-color: {{ bg_color }};
+                                --icon-color: {{ icon_color }};
+                                --progress-bg-color: {{ progress_bg_color }};
+                                --progress-height: {{ progress_height }};"
+                                id="product-inventory-{{ section.id }}-{{ product.id }}"
+                            >
+                                <div class="productView-inventory-wrapper">
+                                    <div class="text">{{ 'products.product.inventory' | t: stock: inventory_quantity }}</div>
+                                    <div class="progress" data-stock="{{ inventory_quantity }}" data-max-stock="{{ stock }}" data-progress-percent="{{ progress_percent }}" style="--progress-percent: {{ progress_percent }};"></div>
+                                </div>
+                            </div>
+                        {%- endif -%}
+                    {%- when 'notify_form' -%}
+                        {%- if settings.show_notify_form -%}
+                            {%- liquid
+                                assign padding_top = block.settings.padding_top
+                                assign padding_bottom = block.settings.padding_bottom
+                            -%}
+                            {%- if current_variant.available -%}
+                                <link rel="stylesheet" href="{{ 'component-notify-me.css' | asset_url }}" media="print" onload="this.media='all'">
+                                <noscript>{{ 'component-notify-me.css' | asset_url | stylesheet_tag }}</noscript>
+                            {%- else -%}
+                                {{ 'component-notify-me.css' | asset_url | stylesheet_tag }}
+                            {%- endif -%}
+                            <div class="product-edit-notifyMe halo-notifyMe element-spacing"
+                                {{ block.shopify_attributes }}
+                                style="--spacing-top: {{ padding_top | append: 'px' }};
+                                --spacing-bottom: {{ padding_bottom | append: 'px' }};
+                                --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+                                --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+                                --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+                                --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};
+                                {% if current_variant.available %}display: none;{% endif %}"
+                                id="product-sold-out-{{ section.id }}-{{ product.id }}"
+                            >
+                                {% render 'halo-notify-sold-out',
+                                    product: product,
+                                    id: product.id,
+                                    current_variant: current_variant
+                                %}
+                            </div>
+                        {%- endif -%}
+                    {%- when 'price' -%}
+                        {%- liquid
+                            assign padding_top = block.settings.padding_top
+                            assign padding_bottom = block.settings.padding_bottom
+                        -%}
+                        <div class="product-edit-price clearfix element-spacing" id="product-price-{{ section.id }}-{{ product.id }}"
+                            {{ block.shopify_attributes }}
+                            style="--spacing-top: {{ padding_top | append: 'px' }};
+                                --spacing-bottom: {{ padding_bottom | append: 'px' }};
+                                --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+                                --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+                                --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+                                --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};"
+                        >
+                            {%- render 'price',
+                                product: product,
+                                use_variant: true,
+                                price_class: 'price--large'
+                            -%}
+                        </div>
+                    {%- when 'title' -%}
+                        {%- liquid
+                            assign padding_top = block.settings.padding_top
+                            assign padding_bottom = block.settings.padding_bottom
+                            assign text = block.settings.text
+                            assign font_family = block.settings.font_family
+                            assign font_size = block.settings.font_size | append: 'px'
+                            assign font_weight = block.settings.font_weight
+                            assign text_transform = block.settings.text_transform
+                            assign text_color = block.settings.text_color
+                        -%}
+                        <h3 class="product-edit-title element-spacing"
+                            {{ block.shopify_attributes }}
+                            style="--spacing-top: {{ padding_top | append: 'px' }};
+                            --spacing-bottom: {{ padding_bottom | append: 'px' }};
+                            --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+                            --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+                            --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+                            --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};
+                            {% if font_family == 'font_1' %}
+                                --font-family: var(--font-1-family);
+                            {% elsif font_family == 'font_2' %}
+                                --font-family: var(--font-2-family);
+                            {% elsif font_family == 'font_3' %}
+                                --font-family: var(--font-3-family);
+                            {% endif %}
+                            --font-size: {{ font_size }};
+                            --font-weight: {{ font_weight }};
+                            --text-transform: {{ text_transform }};
+                            --text-color: {{ text_color }};"
+                        >
+                            <a class="link-underline" href="{{ product.url }}">
+                                <span class="text">{{ product.title | escape }}</span>
+                                <span class="text" data-change-title> - {{ current_variant.title }}</span>
+                            </a>
+                        </h3>
+                    {%- when 'variant_picker' -%}
+                        {%- if variantCount > 0 and product.has_only_default_variant != true -%}
+                            {%- liquid
+                                assign padding_top = block.settings.padding_top
+                                assign padding_bottom = block.settings.padding_bottom
+                                assign picker_type = block.settings.picker_type
+                                assign show_border_top = block.settings.show_border_top
+                                if show_border_top
+                                    assign option_border_top = block.settings.option_border_top
+                                    assign picker_border_color = block.settings.picker_border_color
+                                endif
+                            -%}
+                            <div class="product-edit-options halo-productOptions element-spacing" id="product-option-{{ section.id }}-{{ product.id }}" data-type="{{ picker_type }}"
+                                {{ block.shopify_attributes }}
+                                style="--spacing-top: {{ padding_top | append: 'px' }};
+                                --spacing-bottom: {{ padding_bottom | append: 'px' }};
+                                --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+                                --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+                                --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+                                --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};
+                                {% if show_border_top %}
+                                    border-top: 1px {{ option_border_top }} {{ picker_border_color }};
+                                {% endif %}"
+                            >
+                                {% render 'product-variant',
+                                    type: 'main-product',
+                                    product: product,
+                                    updateURL: false,
+                                    updateCart: true,
+                                    updateTemplate: false,
+                                    picker_type: picker_type,
+                                    show_variant_image_group: false
+                                %}
+                            </div>
+                        {%- endif -%}
+                    {%- when 'vendor' -%}
+                        {%- liquid
+                            assign padding_top = block.settings.padding_top
+                            assign padding_bottom = block.settings.padding_bottom
+                            assign text = block.settings.text
+                            assign font_family = block.settings.font_family
+                            assign font_size = block.settings.font_size | append: 'px'
+                            assign font_weight = block.settings.font_weight
+                            assign text_transform = block.settings.text_transform
+                            assign text_color = block.settings.text_color
+                        -%}
+                        <div class="product-edit-vendor element-spacing"
+                            {{ block.shopify_attributes }}
+                            style="--spacing-top: {{ padding_top | append: 'px' }};
+                                --spacing-bottom: {{ padding_bottom | append: 'px' }};
+                                --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+                                --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+                                --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+                                --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};
+                                {% if font_family == 'font_1' %}
+                                    --font-family: var(--font-1-family);
+                                {% elsif font_family == 'font_2' %}
+                                    --font-family: var(--font-2-family);
+                                {% elsif font_family == 'font_3' %}
+                                    --font-family: var(--font-3-family);
+                                {% endif %}
+                                --font-size: {{ font_size }};
+                                --font-weight: {{ font_weight }};
+                                --text-transform: {{ text_transform }};
+                                --text-color: {{ text_color }};"
+                        >
+                            <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
+                            {{ product.vendor | link_to_vendor }}
+                        </div>
+                {%- endcase -%}
+            {%- endfor -%}
+            <a href="javascript:void(0)" class="add-more link link-underline text-underline" data-edit-cart-add-more>
+                <span class="text">{{ 'products.product.add.label' | t }}</span>
+            </a>
+        </div>
+    </div>
+    <div class="product-edit-action">
+        <button type="button" data-update-cart-edit class="button{% if use_available_button_style %} button-{{ btn }}{% else %} button-style{% endif %} button-height" id="add-all-to-cart">{{ 'products.product.add_to_cart' | t }}</button>
+    </div>
+</div>

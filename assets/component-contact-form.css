@@ -1,0 +1,29 @@
+.contact-form{
+    margin: 27px 0 0 0;
+}
+
+.contact-form .form-message {
+	margin-bottom: 20px;
+}
+
+.contact-form .form-input{
+    min-height: var(--btn-min-height);
+    padding-top: var(--btn-padding-top);
+    padding-bottom: var(--btn-padding-bottom);
+}
+
+.contact-form .form-field + .form-field{
+    margin-top: 17px;
+}
+
+.contact-form .form-actions{
+    margin: 20px 0 0 0;
+}
+
+.contact-form .form-actions .button{
+    border-radius: 0;
+}
+
+.contact-form textarea{
+    min-height: 260px;
+}

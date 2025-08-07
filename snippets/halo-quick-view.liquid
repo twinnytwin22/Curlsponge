@@ -1,0 +1,783 @@
+{%- liquid
+    assign current_variant = product.selected_or_first_available_variant
+    assign variantCount = product.variants | size
+    assign thumnail_layout = section.settings.thumnail_layout
+    assign show_arrow_main_image = section.settings.show_arrow_main_image
+    assign show_dot_main_image = section.settings.show_dot_main_image
+    assign featured_media_aspect_ratio = product.featured_media.aspect_ratio
+    if product.featured_media.aspect_ratio == nil
+        assign featured_media_aspect_ratio = 1
+    endif
+    assign media_size = section.settings.product_image_ratio
+    assign portrait_aspect_ratio = section.settings.portrait_aspect_ratio | append: '%'
+    assign product_image_object_fit = section.settings.product_image_object_fit
+    assign zoomed_image = section.settings.zoomed_image
+    assign product_image_popup = section.settings.product_image_popup
+    assign show_badge = section.settings.show_badge
+    assign add_to_cart_bg = section.settings.add_to_cart_bg
+    assign add_to_cart_color = section.settings.add_to_cart_color
+    assign add_to_cart_border = section.settings.add_to_cart_border
+    assign add_to_cart_bg_hover = section.settings.add_to_cart_bg_hover
+    assign add_to_cart_color_hover = section.settings.add_to_cart_color_hover
+    assign add_to_cart_border_hover = section.settings.add_to_cart_border_hover
+    assign use_available_button_style = section.settings.use_available_button_style
+    if use_available_button_style
+        assign btn = section.settings.btn 
+    endif
+    assign add_to_cart_font = section.settings.add_to_cart_font
+    assign add_to_cart_font_size = section.settings.add_to_cart_font_size
+    assign add_to_cart_font_weight = section.settings.add_to_cart_font_weight
+    assign add_to_cart_text_transform = section.settings.add_to_cart_text_transform
+    if settings.show_wishlist
+        assign wishlist_border_radius = section.settings.wishlist_border_radius | append: 'px'
+        assign wishlist_btn_bg = section.settings.wishlist_btn_bg
+        assign wishlist_btn_color = section.settings.wishlist_btn_color
+        assign wishlist_btn_border = section.settings.wishlist_btn_border
+        assign wishlist_btn_bg_hover = section.settings.wishlist_btn_bg_hover
+        assign wishlist_btn_color_hover = section.settings.wishlist_btn_color_hover
+        assign wishlist_btn_border_hover = section.settings.wishlist_btn_border_hover
+    endif
+    assign buy_it_now_bg = section.settings.buy_it_now_bg
+    assign buy_it_now_color = section.settings.buy_it_now_color
+    assign buy_it_now_border = section.settings.buy_it_now_border
+    assign buy_it_now_bg_hover = section.settings.buy_it_now_bg_hover
+    assign buy_it_now_color_hover = section.settings.buy_it_now_color_hover
+    assign buy_it_now_border_hover = section.settings.buy_it_now_border_hover
+    assign first_3d_model = product.media | where: "media_type", "model" | first
+    assign show_variant_image_group = section.settings.show_variant_image_group
+    assign show_view_full_details = section.settings.show_view_full_details
+    if show_view_full_details
+        assign view_full_details_btn = section.settings.view_full_details_btn
+    endif
+    assign btn_border_width = settings.btn_border_width | times: 2
+    assign btn_min_height = add_to_cart_font_size | times: 1.5 | plus: settings.btn_padding_top | plus: settings.btn_padding_bottom | plus: btn_border_width | append: 'px'
+-%}
+<div class="productView quickView halo-quickView layout-{{ thumnail_layout }}{% if product.media.size == 0 %} productView-no-media{% endif %}" data-product-detail data-variant-image-grouped="{{ show_variant_image_group }}"
+    style="{% if add_to_cart_font == 'font_1' %}
+            --add-to-cart-font: var(--font-1-family);
+        {% elsif add_to_cart_font == 'font_2' %}
+            --add-to-cart-font: var(--font-2-family);
+        {% elsif add_to_cart_font == 'font_3' %}
+            --add-to-cart-font: var(--font-3-family);
+        {% endif %}
+        --add-to-cart-font-size: {{ add_to_cart_font_size | append: 'px' }};
+        --add-to-cart-font-weight: {{ add_to_cart_font_weight }};
+        --add-to-cart-text-transform: {{ add_to_cart_text_transform }};
+        --add-to-cart-bg: {{ add_to_cart_bg }};
+        --add-to-cart-color: {{ add_to_cart_color }};
+        --add-to-cart-border: {{ add_to_cart_border }};
+        --add-to-cart-bg-hover: {{ add_to_cart_bg_hover }};
+        --add-to-cart-color-hover: {{ add_to_cart_color_hover }};
+        --add-to-cart-border-hover: {{ add_to_cart_border_hover }};
+        --buy-it-now-bg: {{ buy_it_now_bg }};
+        --buy-it-now-color: {{ buy_it_now_color }};
+        --buy-it-now-border: {{ buy_it_now_border }};
+        --buy-it-now-bg-hover: {{ buy_it_now_bg_hover }};
+        --buy-it-now-color-hover: {{ buy_it_now_color_hover }};
+        --buy-it-now-border-hover: {{ buy_it_now_border_hover }};
+        --main-wishlist-border-radius: {{ wishlist_border_radius }};
+        --main-wishlist-bg: {{ wishlist_btn_bg }};
+        --main-wishlist-color: {{ wishlist_btn_color }};
+        --main-wishlist-border: {{ wishlist_btn_border }};
+        --main-wishlist-bg-hover: {{ wishlist_btn_bg_hover }};
+        --main-wishlist-color-hover: {{ wishlist_btn_color_hover }};
+        --main-wishlist-border-hover: {{ wishlist_btn_border_hover }};
+        --product-image-object-fit: {{ product_image_object_fit }};
+        --btn-min-height: {{ btn_min_height }};"
+>
+    <div class="productView-top">
+    	<div class="halo-productView-left halo-quickView-left productView-images clearfix" data-image-gallery>
+            <div class="productView-images-wrapper">
+                <div class="productView-image-wrapper">
+                    {%- if show_badge -%}
+                        {% render 'product-badge',
+                            product: product,
+                            class: 'productView-badge',
+                            badge_detail: true,
+                            serial: 1
+                        %}
+                    {%- endif -%}
+                    {% render 'product-media-1',
+                        product: product,
+                        featured_media_aspect_ratio: featured_media_aspect_ratio,
+                        portrait_aspect_ratio: portrait_aspect_ratio,
+                        media_size: media_size,
+                        product_image_popup: product_image_popup,
+                        zoomed_image: zoomed_image,
+                        show_arrow_main_image: show_arrow_main_image,
+                        show_dot_main_image: show_dot_main_image,
+                        show_variant_image_group: show_variant_image_group
+                    %}
+                </div>
+                <div class="productView-thumbnail-wrapper">
+                    {% render 'product-thumbnail-1',
+                        product: product,
+                        thumnail_layout: layout,
+                        thisId: section.id,
+                        media_size: media_size,
+                        portrait_aspect_ratio: portrait_aspect_ratio,
+                        show_variant_image_group: show_variant_image_group,
+                        product_to_show: '4'
+                    %}
+                </div>
+            </div>
+        </div>
+        <div class="halo-productView-right halo-quickView-right productView-details clearfix">
+            <div class="productView-product clearfix">
+                <div class="productView-options">
+                    {%- assign product_form_installment_id = 'product-form-installment-' | append: section.id | append: '-' | append: product.id -%}
+                    {%- form 'product', product, id: product_form_installment_id, class: 'installment caption-large' -%}
+                        <input type="hidden" name="id" value="{{ current_variant.id }}">
+                        {{ form | payment_terms }}
+                    {%- endform -%}
+                    {%- for block in section.blocks -%}
+                        {%- case block.type -%}
+                            {%- when 'countdown' -%}
+                                {%- if settings.show_countdown -%}
+                                    {%- liquid
+                                        assign countdown_type = settings.countdown_type
+                                        assign countdown_style = settings.countdown_style
+                                        assign countdown_time = settings.countdown_time
+                                        assign countdown_collection = settings.countdown_collection | downcase | handle
+                                        assign countdown_bg = settings.countdown_backg
+                                        assign countdown_color = settings.countdown_color
+                                        assign countdown_number_color = settings.countdown_num_color
+                                    -%}
+                                    {% render 'product-countdown',
+                                        product: product,
+                                        countdown_type: countdown_type,
+                                        countdown_style: countdown_style,
+                                        countdown_time: countdown_time,
+                                        countdown_collection: countdown_collection,
+                                        countdown_bg: countdown_bg,
+                                        countdown_color: countdown_color,
+                                        countdown_number_color: countdown_number_color,
+                                        padding_top: padding_top,
+                                        padding_bottom: padding_bottom
+                                    %}
+                                {%- endif -%}
+                            {%- when 'info' -%}
+                                {%- if block.settings.show_vendor or block.settings.show_availability or block.settings.show_sku or block.settings.show_product_type -%}
+                                    {%- liquid
+                                        assign show_vendor = block.settings.show_vendor
+                                        assign show_availability = block.settings.show_availability
+                                        assign show_sku = block.settings.show_sku
+                                        assign show_product_type = block.settings.show_product_type
+                                        assign padding_top = block.settings.padding_top
+                                        assign padding_bottom = block.settings.padding_bottom
+                                        assign text = block.settings.text
+                                        assign font_family = block.settings.font_family
+                                        assign font_size = block.settings.font_size | append: 'px'
+                                        assign font_weight = block.settings.font_weight
+                                        assign text_transform = block.settings.text_transform
+                                        assign text_color = block.settings.text_color
+                                        assign text_color_2 = block.settings.text_color_2
+                                    -%}
+                                    <div class="productView-info element-spacing"
+                                        {{ block.shopify_attributes }}
+                                        style="--spacing-top: {{ padding_top | append: 'px' }};
+                                            --spacing-bottom: {{ padding_bottom | append: 'px' }};
+                                            --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+                                            --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+                                            --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+                                            --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};
+                                            {% if font_family == 'font_1' %}
+                                                --font-family: var(--font-1-family);
+                                            {% elsif font_family == 'font_2' %}
+                                                --font-family: var(--font-2-family);
+                                            {% elsif font_family == 'font_3' %}
+                                                --font-family: var(--font-3-family);
+                                            {% endif %}
+                                            --font-size: {{ font_size }};
+                                            --font-weight: {{ font_weight }};
+                                            --text-transform: {{ text_transform }};
+                                            --text-color: {{ text_color }};
+                                            --text-color-2: {{ text_color_2 }};"
+                                    >
+                                        {% render 'product-info',
+                                            product: product,
+                                            show_sku: show_sku,
+                                            show_vendor: show_vendor,
+                                            show_availability: show_availability,
+                                            show_product_type: show_product_type,
+                                            current_variant: current_variant
+                                        %}
+                                    </div>
+                                {%- endif -%}
+                            {%- when 'inventory' -%}
+                                {%- if product.selected_or_first_available_variant.inventory_management -%}
+                                    {%- liquid
+                                        assign text = block.settings.text
+                                        assign stock = block.settings.stock
+                                        assign progress_height = block.settings.progress_height | append: 'px'
+                                        assign text_color = block.settings.color
+                                        assign bg_color = block.settings.bg_color
+                                        assign progress_bg_color = block.settings.progress_bg_color
+                                        assign padding_top = block.settings.padding_top
+                                        assign padding_bottom = block.settings.padding_bottom
+                                        assign inventory_quantity = product.selected_or_first_available_variant.inventory_quantity
+                                        assign progress_percent = inventory_quantity | times: 100 | divided_by: stock | round: 2 | append: '%'
+                                    -%}
+                                    <div class="productView-inventory element-spacing{% if inventory_quantity <= 0 or inventory_quantity >= stock %} {% unless request.design_mode %} is-hide{% endunless %}{% endif %}"
+                                        {{ block.shopify_attributes }}
+                                        style="--spacing-top: {{ padding_top | append: 'px' }};
+                                        --spacing-bottom: {{ padding_bottom | append: 'px' }};
+                                        --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+                                        --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+                                        --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+                                        --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};
+                                        --text-color: {{ text_color }};
+                                        --bg-color: {{ bg_color }};
+                                        --icon-color: {{ icon_color }};
+                                        --progress-bg-color: {{ progress_bg_color }};
+                                        --progress-height: {{ progress_height }};"
+                                        id="product-inventory-{{ section.id }}-{{ product.id }}"
+                                    >
+                                        <div class="productView-inventory-wrapper">
+                                            <div class="text">{{ 'products.product.inventory' | t: stock: inventory_quantity }}</div>
+                                            <div class="progress" data-stock="{{ inventory_quantity }}" data-max-stock="{{ stock }}" data-progress-percent="{{ progress_percent }}" style="--progress-percent: {{ progress_percent }};"></div>
+                                        </div>
+                                    </div>
+                                {%- endif -%}
+                            {%- when 'price' -%}
+                                {%- liquid
+                                    assign padding_top = block.settings.padding_top
+                                    assign padding_bottom = block.settings.padding_bottom
+                                -%}
+                                <div class="productView-price{% unless request.design_mode %} no-js-hidden{% endunless %} clearfix element-spacing" id="product-price-{{ section.id }}-{{ product.id }}"
+                                    {{ block.shopify_attributes }}
+                                    style="--spacing-top: {{ padding_top | append: 'px' }};
+                                        --spacing-bottom: {{ padding_bottom | append: 'px' }};
+                                        --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+                                        --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+                                        --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+                                        --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};"
+                                >
+                                    {%- render 'price',
+                                        product: product,
+                                        use_variant: true,
+                                        price_class: 'price--large'
+                                    -%}
+                                </div>
+                            {%- when 'promotion' -%}
+                                {%- liquid
+                                    assign padding_top = block.settings.padding_top
+                                    assign padding_bottom = block.settings.padding_bottom
+                                    assign show_sold_in_last = block.settings.show_sold_in_last
+                                    if show_sold_in_last
+                                        assign sold_in_number = block.settings.sold_in_number
+                                        assign sold_in_hours = block.settings.sold_in_hours
+                                        assign sold_in_icon = block.settings.sold_in_icon
+                                        assign text = block.settings.text
+                                        assign font_family = block.settings.font_family
+                                        assign font_size = block.settings.font_size | append: 'px'
+                                        assign font_weight = block.settings.font_weight
+                                        assign text_transform = block.settings.text_transform
+                                        assign text_color = block.settings.text_color
+                                    endif
+                                    assign show_rating = block.settings.show_rating
+                                -%}
+                                {%- if show_rating or show_sold_in_last -%}
+                                    <div class="productView-promotion clearfix"
+                                        {{ block.shopify_attributes }}
+                                        style="--spacing-top: {{ padding_top | append: 'px' }};
+                                        --spacing-bottom: {{ padding_bottom | append: 'px' }};
+                                        --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+                                        --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+                                        --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+                                        --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};"
+                                    >
+                                        {%- if show_rating -%}
+                                            <div class="productView-promotionItem">
+                                                <div class="productView-rating halo-productReview">
+                                                    {% render 'product-rating',
+                                                        product: product
+                                                    %}
+                                                </div>
+                                            </div>
+                                        {%- endif -%}
+                                        {%- if show_sold_in_last -%}
+                                            <div class="productView-promotionItem">
+                                                <sold-in-last-product class="productView-soldProduct"
+                                                    data-sold-out-product data-item="{{ sold_in_number }}"
+                                                    data-hours="{{ sold_in_hours }}"
+                                                    style="{% if font_family == 'font_1' %}
+                                                        --font-family: var(--font-1-family);
+                                                    {% elsif font_family == 'font_2' %}
+                                                        --font-family: var(--font-2-family);
+                                                    {% elsif font_family == 'font_3' %}
+                                                        --font-family: var(--font-3-family);
+                                                    {% endif %}
+                                                    --font-size: {{ font_size }};
+                                                    --font-weight: {{ font_weight }};
+                                                    --text-transform: {{ text_transform }};
+                                                    --text-color: {{ text_color }}{% if settings.show_dark_mode %} !important{% endif %};"
+                                                >
+                                                    {%- if sold_in_icon != blank -%}
+                                                        {{ sold_in_icon }}
+                                                    {%- else -%}
+                                                        {% render 'icon-fire' %}
+                                                    {%- endif -%}
+                                                    <span class="text">
+                                                        <span data-sold-out-number></span>
+                                                        {{ 'products.product.sold_in_last.text_1' | t }}
+                                                        <span data-sold-out-hours></span>
+                                                        {{ 'products.product.sold_in_last.text_2' | t }}
+                                                    </span>
+                                                </sold-in-last-product>
+                                            </div>
+                                        {%- endif -%}
+                                    </div>
+                                {%- endif -%}
+                            {%- when 'richtext' -%}
+                                {%- if block.settings.content != blank -%}
+                                    {%- liquid
+                                        assign padding_top = block.settings.padding_top
+                                        assign padding_bottom = block.settings.padding_bottom
+                                        assign content = block.settings.content
+                                    -%}
+                                    <div class="productView-richtext halo-text-format element-spacing"
+                                        {{ block.shopify_attributes }}
+                                        style="--spacing-top: {{ padding_top | append: 'px' }};
+                                            --spacing-bottom: {{ padding_bottom | append: 'px' }};
+                                            --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+                                            --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+                                            --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+                                            --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};"
+                                    >
+                                        {{ content }}
+                                    </div>
+                                {%- endif -%}
+                            {%- when 'text' -%}
+                                {%- if block.settings.text != blank -%}
+                                    {%- liquid
+                                        assign padding_top = block.settings.padding_top
+                                        assign padding_bottom = block.settings.padding_bottom
+                                        assign text = block.settings.text
+                                        assign font_family = block.settings.font_family
+                                        assign font_size = block.settings.font_size | append: 'px'
+                                        assign font_weight = block.settings.font_weight
+                                        assign text_transform = block.settings.text_transform
+                                        assign text_color = block.settings.text_color
+                                    -%}
+                                    <div class="productView-text element-spacing"
+                                        {{ block.shopify_attributes }}
+                                        style="--spacing-top: {{ padding_top | append: 'px' }};
+                                            --spacing-bottom: {{ padding_bottom | append: 'px' }};
+                                            --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+                                            --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+                                            --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+                                            --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};
+                                            {% if font_family == 'font_1' %}
+                                                --font-family: var(--font-1-family);
+                                            {% elsif font_family == 'font_2' %}
+                                                --font-family: var(--font-2-family);
+                                            {% elsif font_family == 'font_3' %}
+                                                --font-family: var(--font-3-family);
+                                            {% endif %}
+                                            --font-size: {{ font_size }};
+                                            --font-weight: {{ font_weight }};
+                                            --text-transform: {{ text_transform }};
+                                            --text-color: {{ text_color }}{% if settings.show_dark_mode %} !important{% endif %};"
+                                    >
+                                        {{ text }}
+                                    </div>
+                                {%- endif -%}
+                            {%- when 'title' -%}
+                                {%- liquid
+                                    assign padding_top = block.settings.padding_top
+                                    assign padding_bottom = block.settings.padding_bottom
+                                    assign text = block.settings.text
+                                    assign font_family = block.settings.font_family
+                                    assign font_size = block.settings.font_size | append: 'px'
+                                    assign font_weight = block.settings.font_weight
+                                    assign text_transform = block.settings.text_transform
+                                    assign text_color = block.settings.text_color
+                                -%}
+                                <h2 class="productView-title element-spacing"
+                                    {{ block.shopify_attributes }}
+                                    style="--spacing-top: {{ padding_top | append: 'px' }};
+                                        --spacing-bottom: {{ padding_bottom | append: 'px' }};
+                                        --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+                                        --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+                                        --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+                                        --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};
+                                        {% if font_family == 'font_1' %}
+                                            --font-family: var(--font-1-family);
+                                        {% elsif font_family == 'font_2' %}
+                                            --font-family: var(--font-2-family);
+                                        {% elsif font_family == 'font_3' %}
+                                            --font-family: var(--font-3-family);
+                                        {% endif %}
+                                        --font-size: {{ font_size }};
+                                        --font-weight: {{ font_weight }};
+                                        --text-transform: {{ text_transform }};
+                                        --text-color: {{ text_color }};"
+                                >
+                                    <a href="{{ product.url }}">{{ product.title | escape }}</a>
+                                </h2>
+                            {%- when 'vendor' -%}
+                                {%- liquid
+                                    assign padding_top = block.settings.padding_top
+                                    assign padding_bottom = block.settings.padding_bottom
+                                    assign text = block.settings.text
+                                    assign font_family = block.settings.font_family
+                                    assign font_size = block.settings.font_size | append: 'px'
+                                    assign font_weight = block.settings.font_weight
+                                    assign text_transform = block.settings.text_transform
+                                    assign text_color = block.settings.text_color
+                                -%}
+                                <div class="productView-vendor element-spacing"
+                                    {{ block.shopify_attributes }}
+                                    style="--spacing-top: {{ padding_top | append: 'px' }};
+                                        --spacing-bottom: {{ padding_bottom | append: 'px' }};
+                                        --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+                                        --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+                                        --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+                                        --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};
+                                        {% if font_family == 'font_1' %}
+                                            --font-family: var(--font-1-family);
+                                        {% elsif font_family == 'font_2' %}
+                                            --font-family: var(--font-2-family);
+                                        {% elsif font_family == 'font_3' %}
+                                            --font-family: var(--font-3-family);
+                                        {% endif %}
+                                        --font-size: {{ font_size }};
+                                        --font-weight: {{ font_weight }};
+                                        --text-transform: {{ text_transform }};
+                                        --text-color: {{ text_color }};"
+                                >
+                                    <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
+                                    {{ product.vendor | link_to_vendor }}
+                                </div>
+                            {%- when 'add_to_cart_form' -%}
+                                {%- liquid
+                                    assign padding_top = block.settings.padding_top
+                                    assign padding_bottom = block.settings.padding_bottom
+                                    assign enable_shake_affect = block.settings.enable_shake_affect
+                                    assign show_dynamic_checkout = block.settings.show_dynamic_checkout
+                                    assign show_customization_option = settings.show_customization_option
+                                    if show_customization_option
+                                        assign has_customization_option = false
+                                        assign customization_option_type = settings.customization_option_type
+                                        assign customization_option_hidden = settings.customization_option_hidden
+                                        if customization_option_type == 'all'
+                                            assign has_customization_option = true
+                                        elsif customization_option_type == 'tag'
+                                            assign customization_option_tags = settings.customization_option_tags | split: "," | strip | downcase | handle
+                                            for tag in customization_option_tags
+                                                assign tagtitle = tag | escape | downcase | handle
+                                                if product.tags contains tagtitle
+                                                    assign has_customization_option = true
+                                                endif
+                                            endfor
+                                        elsif customization_option_type == 'collection'
+                                            assign customization_option_collection = settings.customization_option_collection | downcase | handle
+                                            if customization_option_collection != blank
+                                                for collection in product.collections
+                                                    assign collection_title = collection.title | downcase | handle
+                                                    if collection_title == customization_option_collection
+                                                        assign has_customization_option = true
+                                                    endif
+                                                endfor
+                                            endif
+                                        endif
+                                        assign customization_option_1 = settings.customization_option_1
+                                        assign customization_option_2 = settings.customization_option_2
+                                    endif
+                                    if show_dynamic_checkout
+                                        assign show_global_checkbox = settings.show_global_checkbox
+                                        if show_global_checkbox
+                                            assign has_global_checkbox = false
+                                            assign global_checkbox_show = settings.global_checkbox_show
+                                            if global_checkbox_show == 'all' or global_checkbox_show == 'product'
+                                                assign has_global_checkbox = true
+                                                assign global_checkbox_text = settings.global_checkbox_text
+                                            endif
+                                        endif
+                                    endif
+                                    assign show_qty = block.settings.show_qty
+                                    if show_qty
+                                        assign qty_style = block.settings.qty_style
+                                    endif
+                                    assign show_subtotal = block.settings.show_subtotal
+                                    assign show_subtotal_text = false
+                                    if show_subtotal and show_qty
+                                        assign show_subtotal_text = true
+                                        assign subtotal_style= block.settings.subtotal_style
+                                    endif
+                                -%}
+                                <script>
+                                    {% if variantCount > 0 and product.has_only_default_variant != true %}
+                                        window.product_inven_array_{{ product.id }} = {
+                                            {%- for variant in product.variants -%}
+                                                {%- if variant.inventory_management == 'shopify' -%}
+                                                    '{{ variant.id }}': '{{ variant.inventory_quantity }}',
+                                                {%- endif -%}
+                                            {%- endfor- %}
+                                        };
+                                    {% endif %}
+                                    {%- if show_subtotal_text -%}
+                                        window.subtotal_{{ product.id }} = {
+                                            layout: {{ subtotal_style | default: 1 }},
+                                            text: `{{ 'products.product.sub_total' | t : value : '[value]' }}`,
+                                            text_2: `{{ 'products.product.sub_total_2' | t : value : '[value]' }}`
+                                        };
+                                    {%- endif -%}
+                                    window.quick_view_buy_it_now = {{ show_dynamic_checkout }};
+                                </script>
+                                <product-form class="productView-form product-form element-spacing"
+                                    {{ block.shopify_attributes }}
+                                    style="--spacing-top: {{ padding_top | append: 'px' }};
+                                    --spacing-bottom: {{ padding_bottom | append: 'px' }};
+                                    --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+                                    --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+                                    --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+                                    --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};"
+                                >
+                                    {%- assign product_form_id = 'product-form-' | append: section.id | append: '-' | append: product.id -%}
+                                    {%- form 'product', product, id: product_form_id, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+                                        {%- if show_customization_option and has_customization_option -%}
+                                            {%- if customization_option_1 != blank or customization_option_2 != blank -%}
+                                                <div class="productView-group">
+                                                    {% render 'product-customization',
+                                                        product: product,
+                                                        customization_option_hidden: customization_option_hidden,
+                                                        customization_option_1: customization_option_1,
+                                                        customization_option_2: customization_option_2
+                                                    %}
+                                                </div>
+                                            {%- endif -%}
+                                        {%- endif -%}
+                                        <div class="productView-message" id="product-message-{{ section.id }}-{{ product.id }}" style="display: none;"></div>
+                                        {%- if show_subtotal_text and subtotal_style == '2' -%}
+                                            <div class="productView-subTotal"{% unless current_variant.inventory_quantity > 0 %} style="display: none;"{% endunless %}>
+                                                <div class="productView-subTotal-name">{{ 'products.product.text.sub_total' | t }}</div>
+                                                <div class="productView-subTotal-value" data-product-subtotal>
+                                                    {%- if current_variant.inventory_quantity > 0 -%}
+                                                        {{ current_variant.price | money }}
+                                                    {%- endif -%}
+                                                </div>
+                                            </div>
+                                        {%- endif -%}
+                                        <div class="productView-group">
+                                            <div class="productView-groupTop">
+                                                {%- if show_qty -%}
+                                                    {% render 'product-quantity',
+                                                        type: 'main-product',
+                                                        style: qty_style,
+                                                        product: product,
+                                                        updateCart: false,
+                                                        current_variant: current_variant
+                                                    %}
+                                                {%- else -%}
+                                                    <input class="form-input quantity__input" type="hidden" name="quantity" aria-live="polite" min="1" value="1" inputmode="numeric" pattern="[0-9]*" id="quantity-{{ section.id }}-{{ product.id }}" data-product="{{ product.id }}" data-section="{{ section.id }}" data-price="{{ current_variant.price }}" data-update-cart="false" {% if current_variant.inventory_management == 'shopify' and current_variant.inventory_quantity > 0 %} data-inventory-quantity="{{ current_variant.inventory_quantity }}"{% endif %}>
+                                                {%- endif -%}
+                                                {% render 'product-action',
+                                                    product: product,
+                                                    current_variant: current_variant,
+                                                    show_subtotal_text: show_subtotal_text,
+                                                    subtotal: current_variant.price,
+                                                    subtotal_style: subtotal_style,
+                                                    enable_shake_affect: enable_shake_affect,
+                                                    use_available_button_style: use_available_button_style,
+                                                    btn: btn
+                                                %}
+                                                {%- if settings.show_wishlist -%}
+                                                    {% render 'product-wishlist',
+                                                        product: product
+                                                    %}
+                                                {%- endif -%}
+                                            </div>
+                                            {%- if show_dynamic_checkout -%}
+                                                <div class="productView-groupBottom">
+                                                    {%- if has_global_checkbox -%}
+                                                        <div class="productView-groupItem">
+                                                            <global-checkbox class="productView-checkbox global-checkbox">
+                                                                <input class="global-checkbox--input" type="checkbox" name="conditions" id="product_conditions_{{ product.id }}" data-target="#product-quick-view-checkout-{{ product.id }}">
+                                                                <label class="global-checkbox--label form-label--checkbox" for="product_conditions_{{ product.id }}">
+                                                                    {{ global_checkbox_text }}
+                                                                </label>
+                                                            </global-checkbox>
+                                                        </div>
+                                                    {%- endif -%}
+                                                    <div class="productView-groupItem">
+                                                        <div class="productView-payment" {% if has_global_checkbox %} disabled="disabled"{% endif %} id="product-quick-view-checkout-{{ product.id }}"> 
+                                                            {{ form | payment_button }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {%- endif -%}
+                                        </div>
+                                    {%- endform -%}
+                                </product-form>
+                            {%- when 'customer_viewing' -%}
+                                        {%- liquid
+                                            assign customer_viewing_number = block.settings.customer_viewing_number
+                                            assign customer_viewing_time = block.settings.customer_viewing_time
+                                            assign padding_top = block.settings.padding_top
+                                            assign padding_bottom = block.settings.padding_bottom
+                                            assign text = block.settings.text
+                                            assign font_family = block.settings.font_family
+                                            assign font_size = block.settings.font_size | append: 'px'
+                                            assign font_weight = block.settings.font_weight
+                                            assign text_transform = block.settings.text_transform
+                                            assign text_color = block.settings.text_color
+                                        -%}
+                                        <customer-viewing class="productView-ViewingProduct element-spacing"
+                                            {{ block.shopify_attributes }}
+                                            data-customer="{{ customer_viewing_number }}"
+                                            data-time="{{ customer_viewing_time }}"
+                                            style="--spacing-top: {{ padding_top | append: 'px' }};
+                                                --spacing-bottom: {{ padding_bottom | append: 'px' }};
+                                                --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+                                                --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+                                                --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+                                                --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};
+                                                {% if font_family == 'font_1' %}
+                                                    --font-family: var(--font-1-family);
+                                                {% elsif font_family == 'font_2' %}
+                                                    --font-family: var(--font-2-family);
+                                                {% elsif font_family == 'font_3' %}
+                                                    --font-family: var(--font-3-family);
+                                                {% endif %}
+                                                --font-size: {{ font_size }};
+                                                --font-weight: {{ font_weight }};
+                                                --text-transform: {{ text_transform }};
+                                                --text-color: {{ text_color }};"
+                                        >
+                                            {% render 'icon-eyes' %}
+                                            <span class="text">{{ 'customer_viewing.general.text' | t: number : '10' }}</span>
+                                        </customer-viewing>
+                            {%- when 'notify_form' -%}
+                                {%- if settings.show_notify_form -%}
+                                    {%- liquid
+                                        assign padding_top = block.settings.padding_top
+                                        assign padding_bottom = block.settings.padding_bottom
+                                    -%}
+                                    {%- if current_variant.available -%}
+                                        <link rel="stylesheet" href="{{ 'component-notify-me.css' | asset_url }}" media="print" onload="this.media='all'">
+                                        <noscript>{{ 'component-notify-me.css' | asset_url | stylesheet_tag }}</noscript>
+                                    {%- else -%}
+                                        {{ 'component-notify-me.css' | asset_url | stylesheet_tag }}
+                                    {%- endif -%}
+                                    <div class="productView-notifyMe halo-notifyMe element-spacing"
+                                        {{ block.shopify_attributes }}
+                                        style="--spacing-top: {{ padding_top | append: 'px' }};
+                                        --spacing-bottom: {{ padding_bottom | append: 'px' }};
+                                        --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+                                        --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+                                        --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+                                        --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};
+                                        {% if current_variant.available %}display: none;{% endif %}"
+                                        id="product-sold-out-{{ section.id }}-{{ product.id }}"
+                                    >
+                                        {% render 'halo-notify-sold-out',
+                                            product: product,
+                                            id: product.id,
+                                            current_variant: current_variant
+                                        %}
+                                    </div>
+                                {%- endif -%}
+                            {%- when 'trust_badge' -%}
+                                {%- liquid
+                                    assign padding_top = block.settings.padding_top
+                                    assign padding_bottom = block.settings.padding_bottom
+                                -%}
+                                <div class="productView-trustBadge element-spacing"
+                                    {{ block.shopify_attributes }}
+                                    style="--spacing-top: {{ padding_top | append: 'px' }};
+                                        --spacing-bottom: {{ padding_bottom | append: 'px' }};
+                                        --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+                                        --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+                                        --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+                                        --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};"
+                                >
+                                    {%- render 'halo-trust-image', block: block -%}
+                                </div>
+                            {%- when 'variant_picker' -%}
+                                {%- if variantCount > 0 and product.has_only_default_variant != true -%}
+                                    {%- liquid
+                                        assign padding_top = block.settings.padding_top
+                                        assign padding_bottom = block.settings.padding_bottom
+                                        assign picker_type = block.settings.picker_type
+                                        assign show_border_top = block.settings.show_border_top
+                                        if show_border_top
+                                            assign option_border_top = block.settings.option_border_top
+                                            assign picker_border_color = block.settings.picker_border_color
+                                        endif
+                                    -%}
+                                    <div class="productView-variants halo-productOptions element-spacing" id="product-option-{{ section.id }}-{{ product.id }}" data-type="{{ picker_type }}"
+                                        {{ block.shopify_attributes }}
+                                        style="--spacing-top: {{ padding_top | append: 'px' }};
+                                        --spacing-bottom: {{ padding_bottom | append: 'px' }};
+                                        --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
+                                        --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
+                                        --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
+                                        --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};
+                                        {% if show_border_top %}
+                                            --option-border-top: {{ option_border_top }};
+                                            --picker-border-color: {{ picker_border_color }};
+                                        {% endif %}"
+                                    >
+                                        {% render 'product-variant',
+                                            type: 'main-product',
+                                            product: product,
+                                            updateURL: false,
+                                            updateCart: false,
+                                            updateTemplate: false,
+                                            picker_type: picker_type,
+                                            show_variant_image_group: show_variant_image_group
+                                        %}
+                                    </div>
+                                    <noscript>
+                                        <div class="product-form__input{% if product.has_only_default_variant %} hidden{% endif %}">
+                                            <label class="form__label" for="Variants-{{ section.id }}">
+                                                {{ 'products.product.product_variants' | t }}
+                                            </label>
+                                            <div class="select">
+                                            <select name="id" id="Variants-{{ section.id }}" class="select__select" form="product-form">
+                                                {%- for variant in product.variants -%}
+                                                    <option
+                                                        {% if variant == product.selected_or_first_available_variant %}selected="selected"{% endif %}
+                                                        {% if variant.available == false %}disabled{% endif %}
+                                                        value="{{ variant.id }}"
+                                                    >
+                                                        {{ variant.title }}
+                                                        {%- if variant.available == false %} - {{ 'products.product.sold_out' | t }}{% endif %}
+                                                        - {{ variant.price | money | strip_html }}
+                                                    </option>
+                                                {%- endfor -%}
+                                            </select>
+                                            </div>
+                                        </div>
+                                    </noscript>
+                                {%- endif -%}
+                            {%- when 'icon-with-text' -%}
+                                {% render 'halo-icon-with-text',
+                                    block: block
+                                %}
+                        {%- endcase -%}
+                    {%- endfor -%}
+                    {%- if show_view_full_details -%}
+                        <div class="productView-detail">
+                            <a href="{{ product.url }}" class="{% if view_full_details_btn != 'link' %}button button-height button-{{ view_full_details_btn }}{% else %} link link-underline text-underline{% endif %}">
+                                <span class="text">{{ 'products.product.view_full_details' | t }}</span>
+                            </a>
+                        </div>
+                    {%- endif -%}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{%- if first_3d_model -%}
+    {{ 'component-product-model.css' | asset_url | stylesheet_tag }}
+    <link id="ModelViewerStyle" rel="stylesheet" href="https://cdn.shopify.com/shopifycloud/model-viewer-ui/assets/v1.0/model-viewer-ui.css" media="print" onload="this.media='all'">
+    <link id="ModelViewerOverride" rel="stylesheet" href="{{ 'component-model-viewer-ui.css' | asset_url }}" media="print" onload="this.media='all'">
+    <script type="application/json" id="ProductJSON-{{ product.id }}">
+        {{ product.media | where: 'media_type', 'model' | json }}
+    </script>
+    <script src="{{ 'product-model.js' | asset_url }}" defer></script>
+{%- endif -%}

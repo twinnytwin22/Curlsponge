@@ -1,0 +1,171 @@
+{{ 'vendor.js' | asset_url | script_tag }}
+{{ 'global.js' | asset_url | script_tag }}
+
+{%- liquid
+    if settings.select_layout
+        if settings.list_iso_rtl != blank
+            assign locale_iso_code = request.locale.iso_code
+            assign arr_list_rtl = settings.list_iso_rtl | remove:' ' | split:',' 
+            if arr_list_rtl contains locale_iso_code
+                assign enable_iso_rtl = true
+            else
+                assign enable_iso_rtl = false
+            endif
+        endif
+    else 
+        assign enable_iso_rtl = false
+    endif
+-%}
+
+<script>
+    window.shopUrl = '{{ request.origin }}';
+    window.rtl_slick = {{ enable_iso_rtl }};
+    window.layout = '{{ settings.layout }}';
+    window.mobile_menu = '{{ settings.mobile_menu }}';
+	window.money_format = '{{ shop.money_format }}';
+	window.shop_currency = '{{ shop.currency }}';
+    window.show_multiple_currencies = {{ settings.enable_currencies }};
+	window.routes = {
+        root: '{{  routes.cart_url | split: "/cart" | first }}',
+        cart: '{{ routes.cart_url }}',
+        cart_add_url: '{{ routes.cart_add_url }}',
+        cart_change_url: '{{ routes.cart_change_url }}',
+        cart_update_url: '{{ routes.cart_update_url }}',
+        collection_all: '{{ routes.all_products_collection_url }}',
+        predictive_search_url: '{{ routes.predictive_search_url }}'
+    };
+    window.card = {
+        layout: '{{ settings.product_card_style }}'
+    };
+    window.button_load_more = {
+        default: `{{ 'general.button_load_more.default' | t }}`,
+        loading: `{{ 'general.button_load_more.loading' | t }}`,
+        view_all: `{{ 'general.button_load_more.view_all' | t }}`,
+        no_more: `{{ 'general.button_load_more.no_more' | t }}`
+    };
+    window.after_add_to_cart = {
+        type: '{{ settings.after_add_to_cart }}',
+        message: `{{ 'products.product.add_to_cart_success_message' | t }}`
+    };
+    window.product_swatch = {{ settings.show_swatch }};
+    window.product_swatch_style = '{{ settings.product_swatch_type }}';
+    window.quick_shop = {
+        show: {{ settings.show_quick_shop }},
+        type: {{ settings.quick_shop_type }}
+    };
+    window.quick_cart = {
+        show: {{ settings.show_quick_cart }},
+        type: `{{ settings.quick_cart_type }}`
+    };
+    window.cartStrings = {
+        error: `{{ 'sections.cart.cart_error' | t }}`,
+        quantityError: `{{ 'sections.cart.cart_quantity_error_html' | t }}`
+    };
+    window.variantStrings = {
+        addToCart: `{{ 'products.product.add_to_cart' | t }}`,
+        addingToCart: `{{ 'products.product.adding_to_cart' | t }}`,
+        addedToCart: `{{ 'products.product.added_to_cart' | t }}`,
+        select: `{{ 'products.product.select_options' | t }}`,
+        soldOut: `{{ 'products.product.sold_out' | t }}`,
+        unavailable: `{{ 'products.product.unavailable' | t }}`,
+        soldOut_message: `{{ 'products.product.sold_out_message' | t }}`,
+        unavailable_message: `{{ 'products.product.unavailable_message' | t }}`,
+        addToCart_message: `{{ 'products.product.add_to_cart_message' | t }}`,
+        preOrder: `{{ 'products.product.pre_order' | t }}`
+    };
+    window.inventory_text = {
+        max: `{{ 'products.product.quantity.max' | t }}`,
+        warningQuantity: `{{ 'products.product.warning_quantity' | t : inventory: '[inventory]' }}`,
+        inStock: `{{ 'products.product.in_stock' | t : inventory: '[inventory]' }}`,
+        outOfStock: `{{ 'products.product.out_of_stock' | t : inventory: '[inventory]' }}`,
+        manyInStock: `{{ 'products.product.many_in_stock' | t : inventory: '[inventory]' }}`
+    };
+    window.notify_me = {
+        show: {{ settings.show_notify_form }},
+        mail: `{{ settings.notify_form_mail }}`,
+        subject: `{{ settings.notify_form_subject }}`,
+        label: `{{ settings.notify_form_label }}`,
+        success: `{{ 'notify_form.general.success' | t }}`,
+        error: `{{ 'notify_form.general.error' | t }}`,
+        button: `{{ 'notify_form.general.label' | t }}`
+    };
+    window.ask_an_expert = {
+        customer_name: "{{ 'ask_an_expert.general.customer_name' | t }}",
+        customer_mail: "{{ 'ask_an_expert.general.customer_mail' | t }}",
+        customer_phone: "{{ 'ask_an_expert.general.customer_phone' | t }}",
+        customer_message: "{{ 'ask_an_expert.general.customer_message' | t }}",
+        type_radio1: "{{ settings.ask_an_expert_option_1 }}",
+        type_radio2: "{{ settings.ask_an_expert_option_2 }}",
+        mail: "{{ settings.ask_an_expert_mail }}",
+        subject: "{{ settings.ask_an_expert_subject }}",
+        label: "{{ settings.ask_an_expert_label }}",
+        success: "{{ 'ask_an_expert.general.success' | t }}",
+        error_1: "{{ 'ask_an_expert.general.error_1' | t }}",
+        error_2: "{{ 'ask_an_expert.general.error_2' | t }}"
+    };
+    window.compare = {
+        show: {{ settings.show_compare }},
+        add: `{{ 'compare.general.add' | t }}`,
+        added: `{{ 'compare.general.added' | t }}`,
+        message: `{{ 'compare.general.message' | t }}`
+    };
+    window.wishlist = {
+        show: {{ settings.show_wishlist }},
+        add: `{{ 'wishlist.general.add' | t }}`,
+        added: `{{ 'wishlist.general.added' | t }}`
+    };
+    window.review = {
+        show: {{ settings.show_review }}
+    };
+    window.countdown = {
+        text: `{{ 'countdown.general.text' | t }}`,
+        style: {{ settings.countdown_style }},
+        day: `{{ 'countdown.general.day' | t }}`,
+        hour: `{{ 'countdown.general.hour' | t }}`,
+        min: `{{ 'countdown.general.min' | t }}`,
+        sec: `{{ 'countdown.general.sec' | t }}`,
+        days: `{{ 'countdown.general.days' | t }}`,
+        hours: `{{ 'countdown.general.hours' | t }}`,
+        mins: `{{ 'countdown.general.mins' | t }}`,
+        secs: `{{ 'countdown.general.secs' | t }}`
+    };
+    window.customer_view = {
+        text: `{{ 'customer_viewing.general.text' | t : number : '[number]' }}`
+    };
+    window.product_tabs = {
+        no_collection: `{{ 'product_tab.general.no_collection' | t }}`,
+        error: `{{ 'product_tab.general.error' | t }}`
+    };
+    window.show_mp4_video = {{ settings.show_mp4_video }};
+    window.accessibility = {
+        next_slide: `{{ 'accessibility.next_slide' | t }}`,
+        previous_slide: `{{ 'accessibility.previous_slide' | t }}`
+    };
+    window.enable_swatch_name = {{ settings.enable_swatch_name }};
+    window.dynamic_browser_title = {
+        show: {{ settings.show_dynamic_browser_title }},
+        text: '{{ settings.dynamic_browser_title_content | replace: "'","\'" }}'
+    };
+    window.search = {
+        type: '{{ settings.search_type }}'
+    };
+    window.slick ={
+        {% if settings.layout == '11' or settings.layout == '18' %}
+            prevArrow: `<svg viewBox="0 0 96 96" aria-hidden="true" focusable="false" role="presentation"><switch><g><path d="M83.999 43.999H21.656l21.172-21.172a4.001 4.001 0 0 0-5.657-5.657l-28 28a4 4 0 0 0-.001 5.656l28 28a3.989 3.989 0 0 0 2.829 1.172 3.999 3.999 0 0 0 2.829-6.828L21.655 51.999h62.344a4 4 0 0 0 0-8z"/></g></switch></svg>`,
+            nextArrow: `<svg viewBox="0 0 96 96" aria-hidden="true" focusable="false" role="presentation"><switch><g><path d="M12 52h62.344L53.172 73.172a4 4 0 1 0 5.657 5.656l28-28a4 4 0 0 0 0-5.656l-28-28A3.989 3.989 0 0 0 56 16a4 4 0 0 0-2.828 6.828L74.344 44H12a4 4 0 0 0 0 8z"/></g></switch></svg>`
+        {% elsif settings.layout == '16' or settings.layout == '17' %}
+            prevArrow: `<svg viewBox="0 0 256 512" class="icon-arrow-effect" aria-hidden="true" focusable="false" role="presentation"><path d="M238.475 475.535l7.071-7.07c4.686-4.686 4.686-12.284 0-16.971L50.053 256 245.546 60.506c4.686-4.686 4.686-12.284 0-16.971l-7.071-7.07c-4.686-4.686-12.284-4.686-16.97 0L10.454 247.515c-4.686 4.686-4.686 12.284 0 16.971l211.051 211.05c4.686 4.686 12.284 4.686 16.97-.001z"></path></svg>
+                        <svg viewBox="0 0 256 512" class="icon-arrow-effect--bis d-none" aria-hidden="true" focusable="false" role="presentation"><path d="M238.475 475.535l7.071-7.07c4.686-4.686 4.686-12.284 0-16.971L50.053 256 245.546 60.506c4.686-4.686 4.686-12.284 0-16.971l-7.071-7.07c-4.686-4.686-12.284-4.686-16.97 0L10.454 247.515c-4.686 4.686-4.686 12.284 0 16.971l211.051 211.05c4.686 4.686 12.284 4.686 16.97-.001z"></path></svg>
+                        `,
+            nextArrow: `<svg viewBox="0 0 256 512" class="icon-arrow-effect" aria-hidden="true" focusable="false" role="presentation"><path d="M17.525 36.465l-7.071 7.07c-4.686 4.686-4.686 12.284 0 16.971L205.947 256 10.454 451.494c-4.686 4.686-4.686 12.284 0 16.971l7.071 7.07c4.686 4.686 12.284 4.686 16.97 0l211.051-211.05c4.686-4.686 4.686-12.284 0-16.971L34.495 36.465c-4.686-4.687-12.284-4.687-16.97 0z"></path></svg>
+                        <svg viewBox="0 0 256 512" class="icon-arrow-effect--bis d-none" aria-hidden="true" focusable="false" role="presentation"><path d="M17.525 36.465l-7.071 7.07c-4.686 4.686-4.686 12.284 0 16.971L205.947 256 10.454 451.494c-4.686 4.686-4.686 12.284 0 16.971l7.071 7.07c4.686 4.686 12.284 4.686 16.97 0l211.051-211.05c4.686-4.686 4.686-12.284 0-16.971L34.495 36.465c-4.686-4.687-12.284-4.687-16.97 0z"></path></svg>
+                        `
+        {% else %}
+            prevArrow: `<svg viewBox="0 0 256 512" aria-hidden="true" focusable="false" role="presentation"><path d="M238.475 475.535l7.071-7.07c4.686-4.686 4.686-12.284 0-16.971L50.053 256 245.546 60.506c4.686-4.686 4.686-12.284 0-16.971l-7.071-7.07c-4.686-4.686-12.284-4.686-16.97 0L10.454 247.515c-4.686 4.686-4.686 12.284 0 16.971l211.051 211.05c4.686 4.686 12.284 4.686 16.97-.001z"></path></svg>`,
+            nextArrow: `<svg viewBox="0 0 256 512" aria-hidden="true" focusable="false" role="presentation"><path d="M17.525 36.465l-7.071 7.07c-4.686 4.686-4.686 12.284 0 16.971L205.947 256 10.454 451.494c-4.686 4.686-4.686 12.284 0 16.971l7.071 7.07c4.686 4.686 12.284 4.686 16.97 0l211.051-211.05c4.686-4.686 4.686-12.284 0-16.971L34.495 36.465c-4.686-4.687-12.284-4.687-16.97 0z"></path></svg>`
+        {% endif %}
+    };
+    window.accessibilityStrings = {
+        shareSuccess: `{{ 'general.share.success_message' | t }}`
+    }
+</script>

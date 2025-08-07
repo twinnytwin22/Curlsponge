@@ -1,0 +1,137 @@
+<!doctype html>
+{%- liquid
+    if settings.select_layout
+        if settings.list_iso_rtl != blank
+            assign locale_iso_code = request.locale.iso_code
+            assign arr_list_rtl = settings.list_iso_rtl | remove:' ' | split:',' 
+            if arr_list_rtl contains locale_iso_code
+                assign enable_iso_rtl = true
+            else
+                assign enable_iso_rtl = false
+            endif
+        endif
+    else
+        assign enable_iso_rtl = false
+    endif
+-%}
+<html class="no-js" lang="{{ request.locale.iso_code }}" {% if settings.select_layout and enable_iso_rtl %} dir="rtl" {% endif %}>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="theme-color" content="">
+        <link rel="canonical" href="{{ canonical_url }}">
+        <link canonical-shop-url="{{ shop.url }}/">
+        {%- if settings.favicon != blank -%}
+            <link rel="icon" type="image/png" href="{{ settings.favicon | img_url: '32x32' }}">
+        {%- endif -%}
+        <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+        {%- unless settings.type_font_1_shopify_name.system? and settings.type_font_2_shopify_name.system? and settings.type_font_3_shopify_name.system? -%}
+            <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+        {%- endunless -%}
+
+        <title>
+            {%- if request.page_type != 'search' -%}
+                {{ page_title }}
+                {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+                {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+                {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+            {%- else -%}
+                {{ 'general.search.title' | t }} | {{ shop.name }}
+            {%- endif -%}
+        </title>
+
+        {% if page_description %}
+            <meta name="description" content="{{ page_description | escape }}">
+        {% endif %}
+
+        {% render 'meta-tags' %}
+        {{ content_for_header }}
+
+        <style type="text/css" media="screen">
+            {% render 'variable' %}
+            {% render 'global' %}
+        </style>
+
+        {{ 'base.css' | asset_url | stylesheet_tag }}
+        {%- if settings.select_layout and enable_iso_rtl -%}
+            {{ 'rtl-base.css' | asset_url | stylesheet_tag }}
+        {%- endif -%}
+        {%- unless settings.type_font_1_shopify_name.system? -%}
+            <link rel="preload" as="font" href="{{ settings.type_font_1_shopify_name | font_url }}" type="font/woff2" crossorigin>
+        {%- endunless -%}
+        {%- unless settings.type_font_2_shopify_name.system? -%}
+            <link rel="preload" as="font" href="{{ settings.type_font_2_shopify_name | font_url }}" type="font/woff2" crossorigin>
+        {%- endunless -%}
+        {%- unless settings.type_font_3_shopify_name.system? -%}
+            <link rel="preload" as="font" href="{{ settings.type_font_3_shopify_name | font_url }}" type="font/woff2" crossorigin>
+        {%- endunless -%}
+        <script>
+            document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+            if (Shopify.designMode) {
+                document.documentElement.classList.add('shopify-design-mode');
+            }
+        </script>
+    </head>
+    {%- liquid
+        assign page_type = request.page_type | replace: 'customers/', ''
+        if settings.show_dark_mode
+            assign default_dark_mode = settings.default_dark_mode
+        endif
+    -%}
+    <body class="body-full template-{{ page_type }} skin-{{ settings.layout }}{% if settings.select_layout and enable_iso_rtl %} rtl{% endif %}{% if default_dark_mode %} dark-mode{% endif %}">
+        {%- if settings.show_dark_mode -%}
+            <script>
+                {%- if default_dark_mode -%}
+                    localStorage.getItem('theme') === 'light' ? document.body.classList.remove('dark-mode') : document.body.classList.add('dark-mode');
+                {%- else -%}
+                    localStorage.getItem('theme') === 'dark' ? document.body.classList.add('dark-mode') : document.body.classList.remove('dark-mode');
+                {%- endif -%}
+            </script>
+        {%- endif -%}
+        <a class="skip-to-content-link visually-hidden" href="#MainContent">
+            {{ "accessibility.skip_to_text" | t }}
+        </a>
+        {% render 'global-style' %}
+        {% render 'global-script' %}
+        {%- if settings.enable_preloading_screen -%}
+            {% render 'preload-screen' %}
+        {%- endif -%}
+        {{ 'section-header.css' | asset_url | stylesheet_tag }}
+        {{ 'component-header.css' | asset_url | stylesheet_tag }}
+        {{ 'component-search.css' | asset_url | stylesheet_tag }}
+        {{ 'component-menu.css' | asset_url | stylesheet_tag }}
+        {% sections 'header-group' %}
+        {% render 'wrapper-header', ajax_menu : false %}
+        {%- if settings.enable_currencies -%}
+            {% render 'halo-currency-js' %}
+        {%- endif -%}
+        
+        <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+            {{ content_for_layout }}
+        </main>
+        <div class="wrapper-footer">
+            {{ 'section-footer.css' | asset_url | stylesheet_tag }}
+            {% sections 'footer-group' %}
+        </div>
+        {% section 'halo-toolbar-mobile' %}
+        {{ 'rtl-section-header.css' | asset_url | stylesheet_tag }}
+        {{ 'rtl-section-footer.css' | asset_url | stylesheet_tag }}
+        {% render 'halo-popup' %}
+        {% render 'halo-sidebar' %}
+        {% render 'halo-gdpr-cookie-consent' %}
+        <div class="background-overlay"></div>
+        {%- if settings.show_background_effect -%}
+            <div class="background-effect {{ settings.background_effect }}" style="--duration-timing: {{ settings.background_effect_timing | append: 's' }};--opacity: {{ settings.background_effect_opacity | times: 0.01 }};"></div>
+        {%- endif -%}
+        <ul hidden>
+            <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
+        </ul>
+        {% render 'global-script-2' %}
+        {% capture notification %}{% render 'translation-lab-theme-editor-notification' %}{% endcapture %}{% unless notification contains "Liquid error" %}{{ notification }}{% endunless %}
+        {% render 'theme-editor-notification' %}
+        {% render 'theme-demo-notification' %}
+        <script src="{{ 'halo-quick-search.js' | asset_url }}" defer="defer"></script>
+    </body>
+</html>

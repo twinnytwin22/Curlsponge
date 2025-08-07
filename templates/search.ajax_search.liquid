@@ -1,0 +1,24 @@
+{%- layout none -%}
+
+<div class="header__seach--details" id="FooterSearch">
+    <div class="header__search-full">
+	    <form action="{{ routes.search_url }}" method="get" role="search" class="search search-modal__form">
+	        <div class="field">
+	            <button class="button button--primary search__button field__button focus-inset" aria-label="{{ 'general.search.search' | t }}">
+	                {% render 'icon-search' %}
+	            </button>
+	            <label class="field__label hiddenLabels" for="Search-In-Modal">{{ 'general.search.search' | t }}</label>
+	            <input class="search__input field__input form-input-placeholder" id="Search-In-Modal" type="search" name="q" value="{{ search.terms | escape}}" placeholder="{{ 'general.search.search' | t }}" autocomplete="off">
+	            <input type="hidden" name="type" value="product">
+	            <input type="hidden" name="options[prefix]" value="last" />
+	        </div>
+	    </form>
+	</div>
+	<div class="search-modal modal__content{% if settings.show_predictive_search %} quickSearch{% endif %}" role="dialog" aria-modal="true" aria-label="{{ 'general.search.search' | t }}">
+	    {%- if settings.show_predictive_search -%}
+	        {% render 'halo-quick-search',
+	            container: container
+	        %}
+	    {%- endif -%}
+	</div>
+</div>

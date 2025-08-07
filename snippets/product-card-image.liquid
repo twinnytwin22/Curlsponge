@@ -1,0 +1,55 @@
+{%- liquid
+    assign show_image_swap = settings.show_image_swap
+    assign show_mp4_video = settings.show_mp4_video
+    assign show_image_loading = settings.show_image_loading
+    assign featured_media_aspect_ratio = product.featured_media.aspect_ratio
+
+    if product.featured_media.aspect_ratio == nil
+        assign featured_media_aspect_ratio = 1
+    endif
+
+    if show_mp4_video
+        assign has_video = product.media | where: 'media_type', 'video'
+    endif
+-%}
+<a class="card-media card-media--{{ media_size }}{% if show_image_swap %} media--hover-effect{% endif %}{% if show_image_loading %} media--loading-effect{% endif %}"
+    href="{{ product.url }}"
+    {% if product.featured_media %}
+        {% if media_size == 'adapt' %}
+            style="padding-bottom: {{ 1 | divided_by: featured_media_aspect_ratio | times: 100 }}%;"
+        {% elsif media_size == 'square' %}
+            style="padding-bottom: 100%;"
+        {% elsif media_size == 'portrait' %}
+            {% if portrait_aspect_ratio != blank %}
+                style="padding-bottom: {{ portrait_aspect_ratio | append: '%' }};"
+            {% endif %}
+        {% endif %}
+    {% endif %}
+    draggable="false"
+    data-image-adapt="{{ 1 | divided_by: featured_media_aspect_ratio | times: 100 }}"
+>
+    {%- if product.featured_media -%}
+        <img {% render 'lazyload', preview_img: product.featured_media %} class="lazyload"/>
+        {%- if show_image_swap -%}
+            {%- if has_video != blank -%}
+                {{ has_video[0] | video_tag: muted: true, loop: true, image_size: 'master' }}
+            {%- else -%}
+                {% comment %} {%- if product.images[1] != nil -%}
+                    <img {% render 'lazyload', preview_img: product.images[1] %} class="lazyload"/>
+                {%- endif -%} {% endcomment %}
+                {%- if product.selected_or_first_available_variant.featured_media != null -%}
+                    {%- assign featured_media = product.selected_or_first_available_variant.featured_media -%}
+                    <img {% render 'lazyload', preview_img: featured_media %} class="lazyload"/>
+                {%- endif -%}
+            {%- endif -%}
+        {%- endif -%}
+        {%- if show_image_loading -%}
+            {%- if loading -%}
+                <div class="media-loading" data-title="{{ settings.image_loading_text }}">{{ settings.image_loading_text }}</div>
+            {%- endif -%}
+        {%- endif -%}
+    {%- else -%}
+        {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+        {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+    {%- endif -%}
+</a>

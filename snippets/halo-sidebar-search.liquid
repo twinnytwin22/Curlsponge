@@ -1,0 +1,100 @@
+<side-drawer class="drawer" id="Drawer-Search">
+    <div class="side-drawer">
+        <div id="Drawer-Overlay-Search" class="background-overlay"></div>
+        <div class="halo-sidebar halo-sidebar-left halo-sidebar-search" id="search-form-mobile">
+            {%- if settings.quick_search_sidebar_style == '1' -%}
+                <a href="#" class="halo-sidebar-close" data-search-close-sidebar role="button" onclick="this.closest('side-drawer').close()">
+                    <span class="visually-hidden">{{ 'general.common.close' | t }}</span>
+                    {% render 'icon-close' %}
+                </a>
+            {%- endif -%}
+            <div class="halo-sidebar-header style-{{ settings.quick_search_sidebar_style }}{% if settings.quick_search_sidebar_style == '1' %} text-left{% else %} text-center{% endif %}">
+                <span class="title">
+                    {{ 'general.search.title' | t }}
+                </span>
+                {%- if settings.quick_search_sidebar_style == '2' -%}
+                    <a href="#" class="close" data-search-close-sidebar role="button" onclick="this.closest('side-drawer').close()">
+                        <span class="visually-hidden">{{ 'general.common.close' | t }}</span>
+                        {% render 'icon-close' %}
+                    </a>
+                {%- endif -%}
+            </div>
+            <div class="halo-sidebar-wrapper custom-scrollbar disable-scrollbar">
+                <div class="header__search-icon">
+                    <a href="javascript:void(0)" class="header__icon header__icon--search header__icon--summary link focus-inset modal__toggle" data-open-search-popup role="button">
+                        <span class="group-icon">
+                            {% render 'icon-search',
+                                icon_search: icon_search,
+                                class: 'modal__toggle-open icon icon-search'
+                            %}
+                            {% render 'icon-close',
+                                class: 'modal__toggle-close icon icon-close'
+                            %}
+                        </span>
+                        {%- if show_text -%}
+                            <span class="text">
+                                {{ 'general.search.icon_header' | t }}
+                            </span>
+                        {%- else -%}
+                            <span class="visually-hidden">
+                                {{ 'general.search.icon_header' | t }}
+                            </span>
+                        {%- endif -%}
+                    </a>
+                    <div class="search-modal search-modal-popup modal__content{% if settings.show_quick_search %} quickSearch{% endif %}" role="dialog" aria-modal="true" aria-label="{{ 'general.search.search' | t }}">
+                        <div class="search-modal__content" tabindex="-1">
+                            {%- if settings.show_predictive_search -%}
+                                <predictive-search data-loading-text="{{ 'accessibility.loading' | t }}" data-product-to-show="{{ settings.quick_search_to_show }}" class="predictive-search-form">
+                            {%- endif -%}
+                                    <form action="{{ routes.search_url }}" method="get" role="search" class="search search-modal__form search-modal__form--custom">
+                                        <div class="field">
+                                            <input type="hidden" name="type" value="product">
+                                            <input type="hidden" name="options[prefix]" value="last" />
+                                            <label class="field__label hiddenLabels" for="Search-In-Modal">{{ 'general.search.search' | t }}</label>
+                                            <input 
+                                                class="search__input field__input form-input-placeholder" 
+                                                id="Search-In-Modal-Mobile" 
+                                                type="search"
+                                                name="q" 
+                                                value="{{ search.terms | escape | split:'*' | first }}" 
+                                                placeholder="{{ 'general.search.search' | t }}" 
+                                                autocomplete="off"
+                                                {%- if settings.show_predictive_search -%}
+                                                    role="combobox"
+                                                    aria-expanded="false"
+                                                    aria-owns="predictive-search-results-list"
+                                                    aria-controls="predictive-search-results-list"
+                                                    aria-haspopup="listbox"
+                                                    aria-autocomplete="list"
+                                                    autocorrect="off"
+                                                    autocomplete="off"
+                                                    autocapitalize="off"
+                                                    spellcheck="false"
+                                                {%- endif -%}
+                                            >
+                                            <button class="button button--primary search__button field__button focus-inset" aria-label="{{ 'general.search.search' | t }}">
+                                                {% render 'icon-search' %}
+                                            </button>
+                                        </div>
+                                    </form>
+                
+                                    {% render 'halo-quick-search',
+                                        container: container
+                                    %}
+                
+                                    {%- if settings.show_predictive_search -%}
+                                        {%- render 'predictive-search-results' -%}
+                                    {%- endif -%}
+                            {%- if settings.show_predictive_search -%}
+                                </predictive-search>
+                            {%- endif -%}
+                            <button type="button" class="search-modal__close-button modal__close-button button" aria-label="{{ 'accessibility.close' | t }}" data-close-search-popup>
+                                {% render 'icon-close' %}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</side-drawer>

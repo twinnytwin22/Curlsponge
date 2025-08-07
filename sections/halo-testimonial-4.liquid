@@ -1,0 +1,477 @@
+{% if section.settings.show_testimonial and section.blocks.size > 0 %}
+    {%- liquid
+        assign padding_top = section.settings.padding_top | append: 'px'
+        assign padding_bottom = section.settings.padding_bottom | append: 'px'
+        assign padding_top_tablet = section.settings.padding_top_tablet | append: 'px'
+        assign padding_bottom_tablet =section.settings.padding_bottom_tablet | append: 'px'
+        assign padding_top_mobile = section.settings.padding_top_mobile | append: 'px'
+        assign padding_bottom_mobile = section.settings.padding_bottom_mobile | append: 'px'
+        assign image = section.settings.image
+        assign block_layout = section.settings.block_layout 
+        assign bg_content = section.settings.bg_content
+        assign padding_textSlide = section.settings.padding_textSlide
+    -%}
+    <div class="halo-block halo-testimonial-4 halo-block-padding" id="halo-testimonial-{{ section.id }}" data-testimonial-4-block data-loader-script="{{ 'halo.slide-testimonial.js' | asset_url }}"
+        style="--padding-top: {{ padding_top }};
+            --padding-bottom: {{ padding_bottom }};
+            --padding-top-tablet: {{ padding_top_tablet }};
+            --padding-bottom-tablet: {{ padding_bottom_tablet }};
+            --padding-top-mobile: {{ padding_top_mobile }};
+            --padding-bottom-mobile: {{ padding_bottom_mobile }};"
+    >
+        <div class="halo-block-content testimonial-4 slide-{{ block_layout }}">
+            <div class="img-box">
+                <div class="image image-bg image-adapt">
+                    {%- if image != blank -%}
+                        <img srcset="{{ image | img_url: '1920x' }} 1x, {{ image | img_url: '1920x', scale: 2 }} 2x" src="{{ image | img_url: '1920x', crop: 'center' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
+                    {%- else -%}
+                        {% capture current %}{% cycle 1, 2 %}{% endcapture %}
+                        {{ 'lifestyle-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}   
+                    {%- endif -%}
+                </div>   
+            </div>
+            <div class="content-box content-box--overlay"
+                style="--bg-content-color: {{ bg_content }};
+                    --bg-content-overlay-color: {{ bg_content | color_modify: 'alpha', 0.7 }};
+                    --padding-content: {{ padding_textSlide }};" 
+            >
+                <div class="slide-banner">
+                    {%- for block in section.blocks -%}
+                        <div class="slide-item slide-item-{{ block.id }}">
+                            {%- liquid 
+                                assign text_align = block.settings.text_align
+                                assign color_content = block.settings.color_content
+                                assign slide_title = block.settings.slide_title
+                                assign range_star = block.settings.range_star
+                                assign slide_content_block = block.settings.slide_content_block
+                                assign slide_content_name = block.settings.slide_content_name
+                                assign title_font = block.settings.title_font
+                                assign title_font_size = block.settings.title_font_size | append: 'px'
+                                assign title_tablet_font_size = block.settings.title_font_size | times: 0.75 | round: 0 | append: 'px'
+                                assign title_mobile_font_size = block.settings.title_mobile_font_size | append: 'px'
+                                assign title_font_weight = block.settings.title_font_weight
+                                assign title_text_transform = block.settings.title_text_transform
+                                assign text_font_size = block.settings.text_font_size | append: 'px'
+                                assign text_font_weight = block.settings.text_font_weight
+                                assign text_text_transform = block.settings.text_text_transform
+                            -%}
+                            <div class="item item--{{ text_align }} text-{{ text_align }}"
+                                style="{% if title_font == 'font_1' %}
+                                        --item-title-font: var(--font-1-family);
+                                    {% elsif title_font == 'font_2' %}
+                                        --item-title-font: var(--font-2-family);
+                                    {% elsif title_font == 'font_3' %}
+                                        --item-title-font: var(--font-3-family);
+                                    {% endif %}
+                                   --item-title-mobile-font-size: {{ title_mobile_font_size }};
+                                   --item-title-tablet-font-size: {{ title_tablet_font_size }};
+                                   --item-title-font-size: {{ title_font_size }};
+                                   --item-title-font-weight: {{ title_font_weight }};
+                                   --item-title-text-transform: {{ title_text_transform }};
+                                   --item-color: {{ color_content }};
+                                   --item-text-font-size: {{ text_font_size }};
+                                   --item-text-font-weight: {{ text_font_weight }};
+                                   --item-text-text-transform: {{ text_text_transform }};" 
+                            >
+                                <div class="content">
+                                    <h4 class="title">
+                                        {{ slide_title | escape }}
+                                    </h4>
+                                    <p class="star">
+                                        {%- for i in (1..range_star) -%}
+                                            {% render 'icon-starYellow' %}
+                                        {%- endfor -%}
+                                    </p>
+                                    <p class="desc">{{ slide_content_block }}</p>
+                                    <p class="name">{{ slide_content_name }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {%- endfor -%}
+                </div>
+            </div>
+        </div>       
+    </div>
+{% endif %}
+
+{% schema %}
+    {
+        "name": "t:sections.testimonial.presets.name__4",
+        "settings": [
+            {
+                "type": "header",
+                "content": "t:sections.testimonial.settings.header__1.content"
+            },
+            {
+                "type": "checkbox",
+                "id": "show_testimonial",
+                "label": "t:sections.testimonial.settings.general.label__1",
+                "default": true
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__1.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 60
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 60
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__2.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top_tablet",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 40
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom_tablet",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 40
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__3.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top_mobile",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 30
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom_mobile",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 30
+            },
+            {
+                "type": "header",
+                "content": "t:sections.testimonial.settings.header__3.content"
+            },
+            {
+                "type": "image_picker",
+                "id": "image",
+                "label": "t:sections.general.settings.image.label__1"
+            },
+            {
+                "type": "color_background",
+                "id": "bg_content",
+                "label": "t:sections.general.settings.color.label__1",
+                "default": "#C38961"
+            },
+            {
+                "type": "select",
+                "id": "block_layout",
+                "label": "t:sections.general.settings.style.label__1",
+                "options": [
+                    {
+                        "value": "left",
+                        "label": "t:sections.general.settings.content-position.options__1"
+                    },
+                    {
+                        "value": "right",
+                        "label": "t:sections.general.settings.content-position.options__2"
+                    },
+                    {
+                        "value": "center",
+                        "label": "t:sections.general.settings.content-position.options__3"
+                    }
+                ],
+                "default": "left"
+            },
+            {
+                "type": "textarea",
+                "id": "padding_textSlide",
+                "label": "Padding Text Slide",
+                "default": "63px 43px 92px",
+                "info": "style= {padding: don't leave it empty ;}",
+                "placeholder": "text"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "image",
+                "name": "List Slide",
+                "settings": [
+                    {
+                        "type": "select",
+                        "id": "text_align",
+                        "label": "t:sections.general.settings.aligmnent.label__1",
+                        "options": [
+                            {
+                                "value": "left",
+                                "label": "t:sections.general.settings.aligmnent.options__1"
+                            },
+                            {
+                                "value": "center",
+                                "label": "t:sections.general.settings.aligmnent.options__2"
+                            },
+                            {
+                                "value": "right",
+                                "label": "t:sections.general.settings.aligmnent.options__3"
+                            }
+                        ],
+                        "default": "center"
+                    },  
+                    {
+                        "type": "color",
+                        "id": "color_content",
+                        "label": "t:sections.general.settings.color.label__2"
+                    },
+                    {
+                        "type": "text",
+                        "id" : "slide_title",
+                        "label": "t:sections.general.settings.content.label__2",
+                        "default": "our customers say"
+                    },
+                    {
+                        "type": "range",
+                        "id": "range_star",
+                        "label": "t:sections.general.settings.content.label__11",
+                        "min": 1,
+                        "max": 5,
+                        "step": 1,
+                        "default": 5
+                    },
+                    {
+                        "type": "textarea",
+                        "id" : "slide_content_block",
+                        "label": "t:sections.general.settings.content.label__13",
+                        "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed doLorem ipsum dolor sit amet, consectetur adipiscing elit, sed doLorem ipsum dolor sit amet"
+                    },
+                    {
+                        "type": "text",
+                        "id" : "slide_content_name",
+                        "label": "t:sections.general.settings.content.label__9",
+                        "default": "- Lauren Ferion -"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "t:sections.general.settings.typography.paragraph__1.content"
+                    },
+                    {
+                        "type": "select",
+                        "id": "title_font",
+                        "label": "t:settings_schema.typography.settings.font.label",
+                        "options": [
+                        {
+                            "value": "font_1",
+                            "label": "t:settings_schema.typography.settings.font.options__1"
+                        },
+                        {
+                            "value": "font_2",
+                            "label": "t:settings_schema.typography.settings.font.options__2"
+                        },
+                        {
+                            "value": "font_3",
+                            "label": "t:settings_schema.typography.settings.font.options__3"
+                        }],
+                        "default": "font_2"
+                    },
+                    {
+                        "type": "range",
+                        "id": "title_font_size",
+                        "label": "t:settings_schema.typography.settings.font_size.label",
+                        "min": 10,
+                        "max": 60,
+                        "step": 1,
+                        "unit": "t:settings_schema.typography.settings.font_size.unit",
+                        "default": 40
+                    },
+                    {
+                        "type": "range",
+                        "id": "title_mobile_font_size",
+                        "label": "t:settings_schema.typography.settings.font_size.label__2",
+                        "min": 10,
+                        "max": 40,
+                        "step": 1,
+                        "unit": "t:settings_schema.typography.settings.font_size.unit",
+                        "default": 20
+                    },
+                    {
+                        "type": "select",
+                        "id": "title_font_weight",
+                        "label": "t:settings_schema.typography.settings.font_weight.label",
+                        "default": "400",
+                        "options": [
+                        {
+                            "value": "300",
+                            "label": "t:settings_schema.typography.settings.font_weight.options__7"
+                        },
+                        {
+                            "value": "400",
+                            "label": "t:settings_schema.typography.settings.font_weight.options__1"
+                        },
+                        {
+                            "value": "500",
+                            "label": "t:settings_schema.typography.settings.font_weight.options__2"
+                        },
+                        {
+                            "value": "600",
+                            "label": "t:settings_schema.typography.settings.font_weight.options__3"
+                        },
+                        {
+                            "value": "700",
+                            "label": "t:settings_schema.typography.settings.font_weight.options__4"
+                        },
+                        {
+                            "value": "800",
+                            "label": "t:settings_schema.typography.settings.font_weight.options__5"
+                        },
+                        {
+                            "value": "900",
+                            "label": "t:settings_schema.typography.settings.font_weight.options__6"
+                        }]
+                    },
+                    {
+                        "type": "select",
+                        "id": "title_text_transform",
+                        "label": "t:settings_schema.typography.settings.text_transform.label",
+                        "default": "uppercase",
+                        "options": [
+                            {
+                                "value": "none",
+                                "label": "t:settings_schema.typography.settings.text_transform.options__1"
+                            },
+                            {
+                                "value": "capitalize",
+                                "label": "t:settings_schema.typography.settings.text_transform.options__2"
+                            },
+                            {
+                                "value": "uppercase",
+                                "label": "t:settings_schema.typography.settings.text_transform.options__3"
+                            },
+                            {
+                                "value": "lowercase",
+                                "label": "t:settings_schema.typography.settings.text_transform.options__4"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "t:sections.general.settings.typography.paragraph__2.content"
+                    },
+                    {
+                        "type": "range",
+                        "id": "text_font_size",
+                        "label": "t:settings_schema.typography.settings.font_size.label",
+                        "min": 10,
+                        "max": 20,
+                        "step": 1,
+                        "unit": "t:settings_schema.typography.settings.font_size.unit",
+                        "default": 18
+                    },
+                    {
+                        "type": "select",
+                        "id": "text_font_weight",
+                        "label": "t:settings_schema.typography.settings.font_weight.label",
+                        "default": "400",
+                        "options": [
+                        {
+                            "value": "300",
+                            "label": "t:settings_schema.typography.settings.font_weight.options__7"
+                        },
+                        {
+                            "value": "400",
+                            "label": "t:settings_schema.typography.settings.font_weight.options__1"
+                        },
+                        {
+                            "value": "500",
+                            "label": "t:settings_schema.typography.settings.font_weight.options__2"
+                        },
+                        {
+                            "value": "600",
+                            "label": "t:settings_schema.typography.settings.font_weight.options__3"
+                        },
+                        {
+                            "value": "700",
+                            "label": "t:settings_schema.typography.settings.font_weight.options__4"
+                        },
+                        {
+                            "value": "800",
+                            "label": "t:settings_schema.typography.settings.font_weight.options__5"
+                        },
+                        {
+                            "value": "900",
+                            "label": "t:settings_schema.typography.settings.font_weight.options__6"
+                        }]
+                    },
+                    {
+                        "type": "select",
+                        "id": "text_text_transform",
+                        "label": "t:settings_schema.typography.settings.text_transform.label",
+                        "default": "none",
+                        "options": [
+                            {
+                                "value": "none",
+                                "label": "t:settings_schema.typography.settings.text_transform.options__1"
+                            },
+                            {
+                                "value": "capitalize",
+                                "label": "t:settings_schema.typography.settings.text_transform.options__2"
+                            },
+                            {
+                                "value": "uppercase",
+                                "label": "t:settings_schema.typography.settings.text_transform.options__3"
+                            },
+                            {
+                                "value": "lowercase",
+                                "label": "t:settings_schema.typography.settings.text_transform.options__4"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "presets": [
+            {
+                "name": "t:sections.testimonial.presets.name__4",
+                "blocks": [
+                    {
+                        "type": "image"
+                    }
+                ]
+            }
+        ],
+        "disabled_on": {
+            "groups": ["header", "footer"]
+        }
+    }
+
+{% endschema %}

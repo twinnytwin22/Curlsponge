@@ -1,0 +1,37 @@
+{% layout none %}
+
+{%- for tag in current_tags -%}
+    {%- if tag contains 'limit=' -%}
+        {%- assign limit = tag | remove: 'limit=' -%}
+    {%- elsif tag contains 'sectionId=' -%}
+        {%- assign sectionId = tag | remove: 'sectionId=' -%}
+    {%- elsif tag contains 'imageRatio=' -%}
+        {%- assign image_ratio = tag | remove: 'imageRatio=' -%}
+    {%- elsif tag contains 'portraitAspectRatio=' -%}
+        {%- assign portrait_aspect_ratio = tag | remove: 'portraitAspectRatio=' -%}
+    {%- elsif tag contains 'action=' -%}
+        {%- assign show_add_to_cart = tag | remove: 'action=' -%}
+    {%- endif -%}
+{%- endfor -%}
+
+{%- for product in collections[collection.handle].products limit: limit -%}
+    <div class="product">
+        {%- if settings.search_product_style == 'default' -%}
+            {% render 'product-card',
+                product_card_product: product,
+                media_size: image_ratio,
+                portrait_aspect_ratio: portrait_aspect_ratio,
+                serial: forloop.index,
+                show_add_to_cart: show_add_to_cart,
+                sectionId: sectionId,
+                list: false,
+                wishlist_add: false,
+                loading: false
+            %}
+        {%- else -%}
+            {% render 'product-card-custom',
+                product_card_product: product
+            %}
+        {%- endif -%}
+    </div>
+{%- endfor -%}

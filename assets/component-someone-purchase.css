@@ -1,0 +1,306 @@
+.halo-notification-popup {
+    width: 100%;
+    max-width: 100%;
+    top: auto;
+    left: 0;
+    bottom: 0;
+    z-index: 98;
+    transition: transform var(--duration-default) ease, visibility var(--duration-default) ease;
+    transform: translate3d(-10px,0,0);
+}
+
+.skin-8 .halo-notification-popup{
+    border: 1px solid var(--color-grey);
+    box-shadow: unset;
+}
+
+.skin-11 .halo-notification-popup{
+    box-shadow: unset;
+    border: 2px solid var(--color-text);
+}
+
+.product-suggest{
+    font-size: 0;
+    letter-spacing: 0;
+    overflow: hidden;
+}
+
+.product-suggest .product-image {
+    display: inline-block;
+    vertical-align: top;
+    width: 75px;
+    height: 110px;
+    position: relative;
+    overflow: hidden;
+}
+
+.product-suggest .product-image svg{
+    display: block;
+    position: absolute;
+    z-index: 4;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 24px;
+    height: 24px;
+    fill: var(--color-white);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.product-suggest .product-image img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: translate(-50%,-50%);
+}
+
+.product-suggest .product-info {
+    display: inline-block;
+    vertical-align: top;
+    width: calc(100% - 75px);
+    padding: 8px 35px 10px 20px;
+}
+
+.skin-9 .product-suggest .product-info{
+    padding-top: 16px;
+}
+
+.skin-10 .product-suggest .product-info{
+    padding-right: 20px;
+}
+
+.product-suggest .product-info .text{
+    padding: 0 0 6px 0;
+}
+
+.skin-8 .product-suggest .product-info .text{
+    padding-bottom: 0;
+}
+
+.product-suggest .product-info .word,
+.product-suggest .product-info .time{
+    display: block;
+    font-size: calc(var(--font-size) - 2px);
+    line-height: var(--line-height);
+    letter-spacing: var(--letter-spacing);
+}
+
+.product-suggest .product-info .text .word{
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+}
+
+.skin-8 .product-suggest .product-info .text .word{
+    font-size: calc(var(--font-size) - 4px);
+    font-weight: var(--font-weight-normal);
+    letter-spacing: .1em;
+    color: var(--color-text);
+    text-transform: uppercase;
+}
+
+.skin-9 .product-suggest .product-info .text .word{
+    font-size: calc(var(--font-size) + 2px);
+    line-height: 20px;
+}
+
+.product-suggest .product-info .text .time{
+    font-weight: var(--font-weight-normal);
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    text-overflow: ellipsis;
+    color: var(--color-grey);
+}
+
+.skin-8 .product-suggest .product-info .text .time{
+    font-size: calc(var(--font-size) - 4px);
+}
+
+.skin-9 .product-suggest .product-info .text .time{
+    font-size: var(--font-size);
+    font-style: italic;
+    line-height: 20px;
+}
+
+.product-suggest .product-info .product-name{
+    font-size: calc(var(--font-size) - 1px);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height);
+    letter-spacing: var(--letter-spacing);
+    color: var(--color-text2);
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    text-overflow: ellipsis;
+}
+
+.product-suggest .product-info .product-name .text{
+    padding-bottom: 0;
+}
+
+.skin-8 .product-suggest .product-info .product-name{
+    font-size: calc(var(--font-size) - 2px);
+    color: var(--color-text);
+    text-transform: uppercase;
+    margin-top: 8px;
+}
+
+.skin-8 .product-suggest .product-info .product-name .text{
+    text-decoration: none;
+}
+
+.skin-9 .product-suggest .product-info .product-name{
+    font-size: var(--font-size);
+    color: var(--color-text);
+}
+
+.skin-11 .product-suggest .product-info .product-name{
+    font-size: var(--font-size);
+}
+
+.skin-5 .product-suggest .product-image{
+    padding: 10px 0 10px 10px;
+}
+
+.skin-5 .product-suggest .product-image img{
+    top: 10px;
+    left: 10px;
+    width: calc(100% - 10px);
+    height: calc(100% - 20px);
+    transform: unset;
+}
+
+.skin-5 .product-suggest .product-info .text{
+    padding-bottom: 10px;
+}
+
+.skin-9 .product-suggest .product-info .text{
+    padding-bottom: 8px;
+}
+
+.skin-5 .product-suggest .product-info .word,
+.skin-5 .product-suggest .product-info .time{
+    font-size: calc(var(--font-size) - 3px);
+}
+
+.skin-11 .product-suggest .product-info .word,
+.skin-11 .product-suggest .product-info .time{
+    font-size: calc(var(--font-size) - 1px);
+}
+
+.halo-notification-popup.is-active {
+    transform: translate3d(0,0,0);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+@media (min-width: 551px){
+    .halo-notification-popup {
+        max-width: 420px!important;
+        bottom: 15px;
+    }
+
+    .halo-notification-popup.halo-popup-left{
+        left: 15px;
+    }
+
+    .halo-notification-popup.halo-popup-right{
+        left: auto;
+        right: 15px;
+        transform: translate3d(10px,0,0);
+    }
+
+    .skin-4 .halo-notification-popup,
+    .skin-5 .halo-notification-popup,
+    .skin-8 .halo-notification-popup{
+        max-width: 460px!important;
+    }
+
+    .skin-9 .halo-notification-popu{
+        max-width: 430px!important;
+    }
+
+    .skin-8 .product-suggest{
+        padding-top: 10px;
+        padding-bottom: 10px;
+        padding-left: 10px;
+    }
+
+    .skin-4 .product-suggest .product-image,
+    .skin-5 .product-suggest .product-image,
+    .skin-9 .product-suggest .product-image{
+        width: 120px;
+        height: 120px;
+    }
+
+    .skin-8 .product-suggest .product-image{
+        width: 100px;
+        height: 100px;
+        vertical-align: middle;
+    }
+
+    .skin-4 .product-suggest .product-info,
+    .skin-5 .product-suggest .product-info,
+    .skin-9 .product-suggest .product-info{
+        width: calc(100% - 120px);
+    }
+
+    .skin-5 .product-suggest .product-info{
+        padding-top: 18px;
+    }
+
+    .skin-8 .product-suggest .product-info{
+        width: calc(100% - 100px);
+        padding-top: 0;
+        padding-bottom: 0;
+        vertical-align: middle;
+    }
+}
+
+@media (min-width: 1025px){
+    .halo-notification-popup {
+        bottom: 40px;
+    }
+
+    .product-suggest .product-image:before{
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 3;
+        opacity: 0;
+        visibility: hidden;
+        background: rgba(0,0,0,.3);
+        transition: var(--anchor-transition);
+    }
+
+    .product-suggest .product-image:hover:before,
+    .product-suggest .product-image:hover svg{
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .skin-8 .product-suggest .product-info{
+        padding-left: 30px;
+    }
+
+    .halo-notification-popup.halo-popup-left{
+        left: 40px;
+    }
+
+    .halo-notification-popup.halo-popup-right{
+        right: 40px;
+    }
+}

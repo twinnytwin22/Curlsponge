@@ -1,0 +1,436 @@
+{% comment %}
+    List out your main-menu linklist (default)
+    More info on linklists:
+    - http://docs.shopify.com/themes/liquid-variables/linklists
+{% endcomment %}
+<ul class="{{ listClass }} vertical-menu list-unstyled" role="list"
+	style="--sale-item-color: {{ block.settings.sale_item_color }};
+    {% if block.settings.lv_1_font == 'font_1' %}
+        --lv-1-font: var(--font-1-family);
+    {% elsif block.settings.lv_1_font == 'font_2' %}
+        --lv-1-font: var(--font-2-family);
+    {% elsif block.settings.lv_1_font == 'font_3' %}
+        --lv-1-font: var(--font-3-family);
+    {% endif %}
+    {% if block.settings.lv_2_font == 'font_1' %}
+        --lv-2-font: var(--font-1-family);
+    {% elsif block.settings.lv_2_font == 'font_2' %}
+        --lv-2-font: var(--font-2-family);
+    {% elsif block.settings.lv_2_font == 'font_3' %}
+        --lv-2-font: var(--font-3-family);
+    {% endif %}
+    {% if block.settings.lv_2_mega_font == 'font_1' %}
+        --lv-2-mega-font: var(--font-1-family);
+    {% elsif block.settings.lv_2_mega_font == 'font_2' %}
+        --lv-2-mega-font: var(--font-2-family);
+    {% elsif block.settings.lv_2_mega_font == 'font_3' %}
+        --lv-2-mega-font: var(--font-3-family);
+    {% endif %}
+    --lv-1-font-size: {{ block.settings.lv_1_font_size | append: 'px' }};
+    --lv-1-font-weight: {{ block.settings.lv_1_font_weight }};
+    --lv-1-text-transform: {{ block.settings.lv_1_text_transform }};
+    --lv-1-color: {{ block.settings.lv_1_color }};
+    --lv-1-color-hover: {{ block.settings.lv_1_color_hover }};
+    --lv-1-color-mobile: {{ block.settings.lv_1_color_mobile }};
+
+    --lv-2-font-size: {{ block.settings.lv_2_font_size | append: 'px' }};
+    --lv-2-font-weight: {{ block.settings.lv_2_font_weight }};
+    --lv-2-text-transform: {{ block.settings.lv_2_text_transform }};
+
+    --lv-2-mega-font-size: {{ block.settings.lv_2_mega_font_size | append: 'px' }};
+    --lv-2-mega-font-weight: {{ block.settings.lv_2_mega_font_weight }};
+    --lv-2-mega-text-transform: {{ block.settings.lv_2_mega_text_transform }};
+    --lv-2-color: {{ block.settings.lv_2_color }};
+    --lv-2-color-hover: {{ block.settings.lv_2_color_hover }};
+    --lv-2-color-mobile: {{ block.settings.lv_2_color_mobile }};
+    --lv-2-bg: {{ block.settings.lv_2_bg }};
+    {% if block.settings.show_label %}
+        --new-label-color: {{ block.settings.new_label_color }};
+        --new-label-bg: {{ block.settings.new_label_bg }};
+        --sale-label-color: {{ block.settings.sale_label_color }};
+        --sale-label-bg: {{ block.settings.sale_label_bg }};
+        --hot-label-color: {{ block.settings.hot_label_color }};
+        --hot-label-bg: {{ block.settings.hot_label_bg }};
+    {% endif %}"
+>
+	{%- liquid
+        if section.blocks.size > 0 and block.settings.show_custom_menu_mega
+            assign megamenu = section.blocks | where: "type", "custom_megamenu"
+            if megamenu.size > 0
+				assign container = container | plus: 0
+				assign dropdownW = dropdownW | minus: 2
+				assign megamenuW = container | minus: dropdownW
+            endif
+        endif
+        assign menu = block.settings.custom_menu.links
+        assign custom_menu_name = block.settings.custom_menu_name
+        assign custom_menu_icon = block.settings.custom_menu_icon
+        assign custom_menu_link = block.settings.custom_menu_link
+		if custom_menu_name == blank
+			assign custom_menu_name = block.settings.custom_menu.title
+		endif
+		assign image_border_radius = settings.image_border_radius
+		
+    -%}
+    <li class="menu-lv-item menu-lv-1 text-left no-megamenu{% if menu != blank %} dropdown{% endif %}">
+		{%- if menu != blank -%}
+			<a class="menu-lv-1__action list-menu__item link focus-inset" href="{{ custom_menu_link }}" role="button">
+				{%- if custom_menu_icon != blank -%}
+					<span class="custom-icon">
+						{{ custom_menu_icon }}
+					</span>
+				{%- endif -%}
+				<span class="text">{{ custom_menu_name | escape }}</span>
+				{%- if showIconDropdown -%}
+					<span class="icon-dropdown show-icon-dropdown d-none-mw-l">
+						{% render 'icon-sort-down' %}
+					</span>
+				{%- endif -%}
+				<span class="icon-dropdown" data-toggle-menu-mb>
+					{% render 'icon-caret-right' %}
+				</span>
+			</a>
+			{%- if load -%}
+				<div class="menu-lv__dropdownmenu category-menu{% if settings.layout == '2' %} menu-lv__dropdownmenu--border{% endif %}">
+					<ul class="menu-lv__list list-menu list-unstyled motion-reduce" role="list">
+						<li class="menu-lv-item menu-lv-2 nav-title-mobile text-center">
+							<span class="icon-dropdown">
+								{% render 'icon-long-arrow' %}
+							</span>
+							<a class="menu-lv-2__action link focus-inset" href="{{ custom_menu_link }}" role="button">
+								<span class="text">
+									{{ custom_menu_name | escape }}
+								</span>
+							</a>
+						</li>
+						<li class="menu-lv-item menu-lv-2 text-left nav-all-mobile">
+							<a href="{{ custom_menu_link }}" class="menu-lv-2__action list-menu__item list-menu__item--end link focus-inset" role="button">
+								<span class="text">
+									{{ 'general.navigation.go_to' | t : name : custom_menu_name | escape }}
+								</span>
+							</a>
+						</li>
+						{%- for link in menu -%}
+							{%- liquid
+								assign title = link.title | escape | downcase | handle
+								for menuItem in megamenu
+									assign check_menu = false
+									assign item = menuItem.settings.item | escape | downcase | handle
+									case item
+										when title
+											assign check_menu = true
+											assign column = menuItem.settings.column
+											assign show_custom_text = menuItem.settings.show_custom_text
+											if show_custom_text
+												assign custom_text_title = menuItem.settings.custom_text_title
+												assign custom_text_text = menuItem.settings.custom_text_text
+												assign custom_text_link_text = menuItem.settings.custom_text_link_text
+												assign custom_text_url = menuItem.settings.custom_text_url
+											endif
+											assign show_banner = menuItem.settings.show_banner
+											if show_banner
+												assign banner_width = menuItem.settings.banner_width
+												assign banner = menuItem.settings.banner
+												assign banner_url = menuItem.settings.banner_url
+											endif
+											assign show_az_brand = menuItem.settings.show_az_brand
+											if show_az_brand
+												assign az_brand_title = menuItem.settings.az_brand_title
+												assign az_brand_link_text = menuItem.settings.az_brand_link_text
+												assign az_brand_url = menuItem.settings.az_brand_url
+											endif
+											break
+									endcase
+								endfor
+							-%}
+							<li class="menu-lv-item menu-lv-2 text-left{% if link.links != blank %} dropdown{% if check_menu %} has-custom-megamenu{% else %} no-custom-megamenu{% endif %}{% else %} no-custom-megamenu{% endif %}">
+								{%- if link.links != blank -%}
+									<a class="menu-lv-2__action list-menu__item link focus-inset" href="{{ link.url }}" role="button">
+										<span class="text">{{ link.title | escape }}</span>
+										<span class="icon-dropdown" data-toggle-menu-mb>
+											{% render 'icon-caret-right' %}
+										</span>
+									</a>
+									{%- if check_menu -%}
+										<div class="menu-lv__dropdownmenu menu-lv__megamenu{% if settings.layout == '2' %} menu-lv__dropdownmenu--border{% endif %}" style="width: {{ megamenuW | append: 'px' }}; {% if settings.select_layout and enable_iso_rtl %}right: {{ dropdownW | append: 'px' }};{% else %}left: {{ dropdownW | append: 'px' }};{% endif %}">
+											{%- liquid
+												if show_banner
+													if banner_width contains "%"
+														assign column_width =  100 | minus: banner_width | append: "%"
+													elsif banner_width contains "px"
+														assign column_width =  "calc(100% - " | append: banner_width
+														assign column_width =  column_width | append: ")"
+													endif
+												endif
+											-%}
+											<div class="menu-dropdown__wrapper{% unless show_banner %} menu-dropdown__wrapper-2{% endunless %}">
+												<div class="menu-dropdown__column column-{{ column }}{% unless show_banner %} column-full{% endunless %}" {%- if show_banner -%}style="width: {{ column_width }};"{%- endif -%}>
+													<div class="menu-lv__list list-menu list-unstyled motion-reduce">
+														<div class="menu-lv-item menu-lv-2 nav-title-mobile text-center">
+															<span class="icon-dropdown">
+																{% render 'icon-long-arrow' %}
+															</span>
+															<span class="menu-lv-2__action link focus-inset">
+																<span class="text">
+																	{{ link.title | escape }}
+																</span>
+															</span>
+														</div>
+														<div class="menu-lv-item menu-lv-2 nav-all-mobile text-left">
+															<a href="{{ link.url }}" class="menu-lv-2__action list-menu__item list-menu__item--end link focus-inset"{% if childlink.current %} aria-current="page"{% endif %} role="button">
+																<span class="text">
+																	{{ 'general.navigation.go_to' | t : name : link.title | escape }}
+																</span>
+															</a>
+														</div>
+														{%- if show_custom_text -%}
+															<div class="menu-lv-item menu-lv-2 dropdown menu-custom-text text-left">
+																<a class="menu-lv-2__action list-menu__item link site-nav-title" href="{{ link.url }}" role="button">
+																	<span class="text">
+																		{{ custom_text_title | escape }}
+																	</span>
+																	<span class="icon-dropdown" data-toggle-menu-mb>
+																		{% render 'icon-caret-right' %}
+																	</span>
+																</a>
+																<div class="menu-lv__dropdownmenu menu-lv__dropdownmenu-2 menu-lv__megamenu site-nav-content">
+																	<ul class="menu-lv__list list-menu list-unstyled motion-reduce">
+																		<li class="menu-lv-item menu-lv-3 nav-title-mobile text-center">
+																			<span class="icon-dropdown">
+																				{% render 'icon-long-arrow' %}
+																			</span>
+																			<span class="menu-lv-3__action link focus-inset">
+																				<span class="text">
+																					{{ custom_text_title | escape }}
+																				</span>
+																			</span>
+																		</li>
+																		<li class="menu-lv-item menu-lv-3 text-left">
+																			<div class="site-nav-dropdown">
+																				<span class="site-nav-text">
+																					{{ custom_text_text }}
+																				</span>
+																				{%- if custom_text_link_text != blank -%}
+																					<a href="{{ custom_text_url }}" class="site-nav-action link link-underline" role="button">
+																						<span class="text">{{ custom_text_link_text | escape }}</span>
+																					</a>
+																				{%- endif -%}
+																			</div>
+																		</li>
+																	</ul>
+																</div>
+															</div>
+														{%- endif -%}
+														{%- for childlink in link.links -%}
+															<div class="menu-lv-item menu-lv-2{% if childlink.links != blank %} dropdown{% endif %}">
+																<div class="site-nav-list">
+																	{%- if childlink.links == blank -%}
+																		<a href="{{ childlink.url }}" class="menu-lv-2__action list-menu__item list-menu__item--end site-nav-title focus-inset"{% if childlink.current %} aria-current="page"{% endif %} role="button">
+																			<span class="text">
+																				{{ childlink.title | escape }}
+																			</span>
+																		</a>
+																	{%- else -%}
+																		<a class="menu-lv-2__action link list-menu__item site-nav-title focus-inset" href="{{ childlink.url }}" role="button">
+																			<span class="text">
+																				{{ childlink.title | escape }}
+																			</span>
+																		</a>
+																		<div class="menu-lv__dropdownmenu menu-lv__dropdownmenu-2 menu-lv__megamenu">
+																			<ul class="menu-lv__list list-menu list-unstyled motion-reduce" role="list">
+																				<li class="menu-lv-item menu-lv-3 nav-title-mobile text-center">
+																					<span class="icon-dropdown">
+																						{% render 'icon-long-arrow' %}
+																					</span>
+																					<span class="menu-lv-3__action link focus-inset">
+																						<span class="text">
+																							{{ childlink.title | escape }}
+																						</span>
+																					</span>
+																				</li>
+																				<li class="menu-lv-item menu-lv-3 text-left nav-all-mobile">
+																					<a href="{{ childlink.url }}" class="menu-lv-3__action list-menu__item list-menu__item--end link focus-inset" role="button">
+																						<span class="text">
+																							{{ 'general.navigation.go_to' | t : name : childlink.title | escape }}
+																						</span>
+																					</a>
+																				</li>
+																				{%- for grandchildlink in childlink.links -%}
+																					<li class="menu-lv-item menu-lv-3 text-left">
+																						<a href="{{ grandchildlink.url }}" class="menu-lv-3__action list-menu__item list-menu__item--end link focus-inset"{% if grandchildlink.current %} aria-current="page"{% endif %} role="button">
+																							<span class="text">
+																								{{ grandchildlink.title | escape }}
+																							</span>
+																						</a>
+																					</li>
+																				{%- endfor -%}
+																			</ul>
+																		</div>
+																	{%- endif -%}
+																</div>
+															</div>
+														{%- endfor -%}
+													</div>
+												</div>
+												{%- if show_banner -%}
+													<div class="menu-dropdown__banner clearfix" style="width: {{ banner_width }};">
+														<div class="site-nav-banner custom-scrollbar-x column-1 disable-scrollbar">
+															<div class="site-nav-banner--item">
+																<div class="banner">
+																	<a href="{{ banner_url }}" class="image image-adapt image-zoom image-border-{{ image_border_radius }}" {% if banner != blank %} style="padding-top: {{ 1 | divided_by: banner.aspect_ratio | times: 100 | append: '%' }}"{% else %}style="padding-top: 100%;"{% endif %} role="button">
+																		{%- if banner != blank -%}
+																			<img srcset="{{ banner | img_url: 'master' }} 1x, {{ banner | img_url: 'master', scale: 2 }} 2x"
+																			src="{{ banner | img_url: 'master' }}"
+																			loading="lazy"
+																			alt="{{ banner.alt | default: shop.name | escape }}">
+																		{%- else -%}
+																			{{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+																		{%- endif -%}
+																	</a>
+																</div>
+															</div>
+														</div>
+													</div>
+												{%- endif -%}
+												{%- if show_az_brand -%}
+													<div class="menu-dropdown__block menu-dropdown__brand">
+														{% if az_brand_title != blank %}
+															<h3 class="menu-dropdown__block--title text-center">
+																<span class="text">{{ az_brand_title | escape }}</span>
+															</h3>
+														{% endif %}
+														<div class="menu-dropdown__block--content">
+															<div class="site-nav-brand">
+																<ul class="azbrandsTable clearfix list-unstyled">
+																	{% assign list_vendor = '' %}
+																	{% assign array = "0-9|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z" | split: "|" %}
+																	{%- for brand in shop.vendors -%}
+																		{% assign first = brand | strip_html | capitalize | truncate: 1, '' %}
+																		{%- unless list_vendor contains first -%}
+																			{% assign list_vendor = list_vendor | append: first %}
+																		{%- endunless -%}
+																	{%- endfor -%}
+																	{%- for item in array -%} 
+																		<li>
+																			{%- if forloop.first -%}
+																				{% if list_vendor contains '1' or list_vendor contains '2' or list_vendor contains '3' or list_vendor contains '4' or list_vendor contains '5' or list_vendor contains '6' or list_vendor contains '7' or list_vendor contains '8' or list_vendor contains '9' or list_vendor contains '0' %}
+																					<a href="{{ az_brand_url }}#{{ item | downcase }}" class="link link-underline is-active">
+																						<span class="text">{{ item }}</span>
+																					</a>
+																				{% else %}
+																					<a href="{{ az_brand_url }}#{{ item | downcase }}" class="link link-underline">
+																						<span class="text">{{ item }}</span>
+																					</a>
+																				{% endif %}
+																			{%- else -%}
+																				<a href="{{ az_brand_url }}#{{ item | downcase }}" class="link link-underline{% if list_vendor contains item %} is-active{% endif %}">
+																					<span class="text">{{ item }}</span>
+																				</a>
+																			{%- endif -%}
+																		</li>
+																	{%- endfor -%}
+																</ul>
+																<div class="nazbrandsLink">
+																	{%- if az_brand_link_text -%}
+																		<a href="{{ az_brand_url }}" class="site-nav-action link link-underline">
+																			<span class="text">{{ az_brand_link_text | escape }}</span>
+																		</a>
+																	{%- endif -%}
+																</div>
+															</div>
+														</div>
+													</div>
+												{%- endif -%}
+											</div>
+										</div>
+									{%- else -%}
+										<div class="menu-lv__dropdownmenu menu-lv__dropdownmenu-2">
+											<ul class="menu-lv__list list-menu list-unstyled motion-reduce">
+												<li class="menu-lv-item menu-lv-3 nav-title-mobile text-center">
+													<span class="icon-dropdown">
+														{% render 'icon-long-arrow' %}
+													</span>
+													<a class="menu-lv-3__action link focus-inset" href="{{ link.url }}" role="button">
+														<span class="text">
+															{{ link.title | escape }}
+														</span>
+													</a>
+												</li>
+												<li class="menu-lv-item menu-lv-3 text-left nav-all-mobile">
+													<a href="{{ link.url }}" class="menu-lv-3__action list-menu__item list-menu__item--end link focus-inset" role="button">
+														<span class="text">
+															{{ 'general.navigation.go_to' | t : name : link.title | escape }}
+														</span>
+													</a>
+												</li>
+												{%- for childlink in link.links -%}
+													<li class="menu-lv-item menu-lv-3 text-left">
+														{%- if childlink.links != blank -%}
+															<a class="menu-lv-3__action list-menu__item link focus-inset" href="{{ childlink.url }}" role="button">
+																<span class="text">{{ childlink.title | escape }}</span>
+																<span class="icon-dropdown" data-toggle-menu-mb>
+																	{% render 'icon-caret-right' %}
+																</span>
+															</a>
+															<div class="menu-lv__dropdownmenu menu-lv__dropdownmenu-2">
+																<ul class="menu-lv__list list-menu list-unstyled motion-reduce">
+																	<li class="menu-lv-item menu-lv-3 nav-title-mobile text-center">
+																		<span class="icon-dropdown">
+																			{% render 'icon-long-arrow' %}
+																		</span>
+																		<span class="menu-lv-3__action link focus-inset">
+																			<span class="text">
+																				{{ childlink.title | escape }}
+																			</span>
+																		</span>
+																	</li>
+																	<li class="menu-lv-item menu-lv-3 text-left nav-all-mobile">
+																		<a href="{{ childlink.url }}" class="menu-lv-3__action list-menu__item list-menu__item--end link focus-inset" role="button">
+																			<span class="text">
+																				{{ 'general.navigation.go_to' | t : name : childlink.title | escape }}
+																			</span>
+																		</a>
+																	</li>
+																	{%- for grandchildlink in childlink.links -%}
+																		<li class="menu-lv-item menu-lv-3 text-left">
+																			<a href="{{ grandchildlink.url }}" class="menu-lv-3__action list-menu__item list-menu__item--end link focus-inset" role="button">
+																				<span class="text">
+																					{{ grandchildlink.title | escape }}
+																				</span>
+																			</a>
+																		</li>
+																	{%- endfor -%}
+																</ul>
+															</div>
+														{%- else -%}
+															<a href="{{ childlink.url }}" class="menu-lv-3__action list-menu__item list-menu__item--end link focus-inset" role="button">
+																<span class="text">{{ childlink.title | escape }}</span>
+															</a>
+														{%- endif -%}
+													</li>
+												{%- endfor -%}
+											</ul>
+										</div>
+									{%- endif -%}
+								{%- else -%}
+									<a href="{{ link.url }}" class="menu-lv-2__action list-menu__item list-menu__item--end link focus-inset" role="button">
+										<span class="text">{{ link.title | escape }}</span>
+									</a>
+								{%- endif -%}
+							</li>
+						{%- endfor -%}
+					</ul>
+				</div>
+			{%- endif -%}
+		{%- else -%}
+			<a href="{{ custom_menu_link }}" class="menu-lv-1__action list-menu__item list-menu__item--end link focus-inset" role="button">
+				{%- if custom_menu_icon != blank -%}
+					<span class="custom-icon">
+						{{ custom_menu_icon }}
+					</span>
+				{%- endif -%}
+				<span class="text">{{ custom_menu_name | escape }}</span>
+			</a>
+		{%- endif -%}
+	</li>
+</ul>

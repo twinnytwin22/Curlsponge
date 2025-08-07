@@ -1,0 +1,18 @@
+{%- if section.blocks.size > 0 -%}
+	<div class="container">
+	    {%- for block in section.blocks -%}
+	        {% render block %}
+	    {%- endfor -%}
+	</div>
+{%- endif -%}
+
+{% schema %}
+	{
+	    "name": "t:sections.apps.name",
+	    "settings": [],
+	    "blocks": [{"type": "@app"}],
+	    "presets": [{
+	        "name": "t:sections.apps.presets.name"
+	    }]
+	}
+{% endschema %}

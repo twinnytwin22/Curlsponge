@@ -1,0 +1,963 @@
+{%- if section.settings.show_fixed_banner -%}
+	{%- liquid
+        assign padding_top = section.settings.padding_top | append: 'px'
+        assign padding_bottom = section.settings.padding_bottom | append: 'px'
+        assign padding_top_tablet = section.settings.padding_top_tablet | append: 'px'
+        assign padding_bottom_tablet = section.settings.padding_bottom_tablet | append: 'px'
+        assign padding_top_mobile = section.settings.padding_top_mobile | append: 'px'
+        assign padding_bottom_mobile = section.settings.padding_bottom_mobile | append: 'px'
+        assign container = section.settings.container
+        assign block_title = section.settings.block_title
+        assign block_text = section.settings.block_text
+        assign block_title_align = section.settings.block_title_align
+        assign lookbook = section.settings.lookbook
+        assign lookbook_style = section.settings.lookbook_style
+        assign style = section.settings.style
+        assign image_border_radius = settings.image_border_radius
+        assign image_effect = settings.image_effect
+    -%}
+	<div class="halo-block halo-banner fixed-banner fixed-banner-4 halo-block-padding" id="halo-fixed-banner-{{ section.id }}"
+        style="--padding-top: {{ padding_top }};
+            --padding-bottom: {{ padding_bottom }};
+            --padding-top-tablet: {{ padding_top_tablet }};
+            --padding-bottom-tablet: {{ padding_bottom_tablet }};
+            --padding-top-mobile: {{ padding_top_mobile }};
+            --padding-bottom-mobile: {{ padding_bottom_mobile }};"
+    >
+		<div class="container container-{{ container }}">
+			{%- if block_title != blank -%}
+                <div class="halo-block-header">
+                    <h3 class="title text-{{ block_title_align }}">
+                        <span class="text">
+                            {{ block_title | escape }}
+                        </span>
+                    </h3>
+                    {%- if block_text != blank -%}
+	                    <span class="desc text-{{ block_title_align }}">
+	                    	{{ block_text }}
+	                    </span>
+	                {%- endif -%}
+                </div>
+            {%- endif -%}
+			<div class="halo-block-content lookbook-box">
+				<div class="halo-row mansory-layout style-{{ style }}">
+                    <div class="mansory-layout-item one-item">
+                        <div class="img-box">
+                            <loading-banner class="loading-banner">
+                                {%- liquid
+                                    assign image1 = section.settings.image_1
+                                    assign link1 = section.settings.link_1
+                                -%}
+                                {%- if image1 != blank -%}
+                                    <{% if link != blank %}a{% else %}div{% endif%} class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-adapt" {% if link != blank %}href="{{ link }}"{% endif %} style="padding-top: {{ 1 | divided_by: image1.aspect_ratio | times: 100 | append: '%' }}">
+                                        <img srcset="{{ image1 | img_url: 'master' }} 1x, {{ image1 | img_url: 'master', scale: 2 }} 2x" src="{{ image1 | img_url: 'master' }}" alt="{{ image1.alt | default: shop.name | escape }}" loading="lazy">
+                                        {%- if image_effect == 'liquid' -%}
+                                            <span class="hover"></span>
+                                        {%- endif -%}
+                                    </{% if link != blank %}a{% else %}div{% endif%}>
+                                {%- else -%}
+                                    <div class="image image-not-found">
+                                        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                                    </div>
+                                {%- endif -%}
+                            </loading-banner>
+                        </div>
+                        {%- if lookbook -%}
+                            {%- for i in (1..3) -%}
+                                {% capture cap_product %}product_1_{{ i }}{% endcapture %}
+                                {% capture cap_point_y %}point_y_1_{{ i }}{% endcapture %}
+                                {% capture cap_point_x %}point_x_1_{{ i }}{% endcapture %}
+                                {%- liquid
+                                    assign handle = section.settings[cap_product]
+                                    assign product = all_products[handle]
+                                    assign point_y = section.settings[cap_point_y]
+                                    assign point_x = section.settings[cap_point_x]
+                                -%}
+                                {%- if product != blank and section.settings.lookbook-%}
+                                    <lookbook-point class="point-box style-{{ lookbook_style }}" data-popup="#LOOKBOOK-{{ block.id }}-{{ product.id }}-{{ forloop.index }}"
+                                        style="top: {{ point_y | append: '%' }};
+                                            left: {{ point_x | append: '%' }};"
+                                    >
+                                        <a href="{{ product.url }}" class="point-icon">
+                                            <span class="text{% if lookbook_style == '3' %} visually-hidden{% endif %}">
+                                                {%- if lookbook_style == '4' or lookbook_style == '6' -%}
+                                                    {% render 'icon-plus' %}
+                                                {%- else -%}
+                                                    {{ forloop.index }}
+                                                {%- endif -%}
+                                            </span>
+                                        </a>
+                                    </lookbook-point>
+                                    <lookbook-popup class="popup-box{% if lookbook_style == '6' %} style-6{% endif %}" id="LOOKBOOK-{{ block.id }}-{{ product.id }}-{{ forloop.index }}">
+                                        {%- liquid
+                                            assign target = product.selected_or_first_available_variant
+                                            assign compare_at_price = target.compare_at_price
+                                            assign price = target.price
+                                        -%}
+                                        <div class="popup-box__wrapper">
+                                            <a href="{{ product.url }}" class="link-with-arrow">
+                                                <span class="text">{{ product.title }}</span>
+                                                <span class="info">
+                                                    {%- if compare_at_price > price %}
+                                                        <span class="price old-price">{{ compare_at_price | money }}</span>
+                                                        <span class="price">{{ price | money }}</span>
+                                                    {%- else -%}
+                                                        <span class="price">{{ price | money }}</span>
+                                                    {%- endif -%}
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </lookbook-popup>
+                                {%- endif -%}
+                            {%- endfor -%}
+                        {%- endif -%}
+                    </div>
+                    <div class="mansory-layout-item group-items">
+                        <div class="halo-row-left">
+                            <div class="item-top halo-row-item">
+                                <div class="img-box">
+                                    {%- liquid
+                                        assign image2 = section.settings.image_2
+                                        assign link2 = section.settings.link_2
+                                    -%}
+                                    {%- if image2 != blank -%}
+                                        <{% if link2 != blank %}a{% else %}div{% endif%} class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-adapt" {% if link2 != blank %}href="{{ link2 }}"{% endif %} style="padding-top: {{ 1 | divided_by: image2.aspect_ratio | times: 100 | append: '%' }}">
+                                            <img srcset="{{ image2 | img_url: 'master' }} 1x, {{ image2 | img_url: 'master', scale: 2 }} 2x" src="{{ image2 | img_url: 'master' }}" alt="{{ image2.alt | default: shop.name | escape }}" loading="lazy">
+                                            {%- if image_effect == 'liquid' -%}
+                                                <span class="hover"></span>
+                                            {%- endif -%}
+                                        </{% if link2 != blank %}a{% else %}div{% endif%}>
+                                    {%- else -%}
+                                        <div class="image image-not-found">
+                                            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                                        </div>
+                                    {%- endif -%}
+                                </div>
+                                {%- if lookbook -%}
+                                    {%- for i in (1..3) -%}
+                                        {% capture cap_product %}product_2_{{ i }}{% endcapture %}
+                                        {% capture cap_point_y %}point_y_2_{{ i }}{% endcapture %}
+                                        {% capture cap_point_x %}point_x_2_{{ i }}{% endcapture %}
+                                        {%- liquid
+                                            assign handle = section.settings[cap_product]
+                                            assign product = all_products[handle]
+                                            assign point_y = section.settings[cap_point_y]
+                                            assign point_x = section.settings[cap_point_x]
+                                        -%}
+                                        {%- if product != blank and section.settings.lookbook -%}
+                                            <lookbook-point class="point-box style-{{ lookbook_style }}" data-popup="#LOOKBOOK-{{ block.id }}-{{ product.id }}-{{ forloop.index }}"
+                                                style="top: {{ point_y | append: '%' }};
+                                                    left: {{ point_x | append: '%' }};"
+                                            >
+                                                <a href="{{ product.url }}" class="point-icon">
+                                                    <span class="text{% if lookbook_style == '3' %} visually-hidden{% endif %}">
+                                                        {%- if lookbook_style == '4' or lookbook_style == '6' -%}
+                                                            {% render 'icon-plus' %}
+                                                        {%- else -%}
+                                                            {{ forloop.index }}
+                                                        {%- endif -%}
+                                                    </span>
+                                                </a>
+                                            </lookbook-point>
+                                            <lookbook-popup class="popup-box" id="LOOKBOOK-{{ block.id }}-{{ product.id }}-{{ forloop.index }}">
+                                                {%- liquid
+                                                    assign target = product.selected_or_first_available_variant
+                                                    assign compare_at_price = target.compare_at_price
+                                                    assign price = target.price
+                                                -%}
+                                                <div class="popup-box__wrapper">
+                                                    <a href="{{ product.url }}" class="link-with-arrow">
+                                                        <span class="text">{{ product.title }}</span>
+                                                        <span class="info">
+                                                            {%- if compare_at_price > price %}
+                                                                <span class="price old-price">{{ compare_at_price | money }}</span>
+                                                                <span class="price">{{ price | money }}</span>
+                                                            {%- else -%}
+                                                                <span class="price">{{ price | money }}</span>
+                                                            {%- endif -%}
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            </lookbook-popup>
+                                        {%- endif -%}
+                                    {%- endfor -%}
+                                {%- endif -%}
+                            </div>
+                            <div class="item-bottom halo-row-item">
+                                <div class="img-box">
+                                    {%- liquid
+                                        assign image3 = section.settings.image_3
+                                        assign link3 = section.settings.link_3
+                                    -%}
+                                    {%- if image3 != blank -%}
+                                        <{% if link3 != blank %}a{% else %}div{% endif%} class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-adapt" {% if link3 != blank %}href="{{ link }}"{% endif %} style="padding-top: {{ 1 | divided_by: image3.aspect_ratio | times: 100 | append: '%' }}">
+                                            <img srcset="{{ image3 | img_url: 'master' }} 1x, {{ image3 | img_url: 'master', scale: 2 }} 2x" src="{{ image3 | img_url: 'master' }}" alt="{{ image3.alt | default: shop.name | escape }}" loading="lazy">
+                                            {%- if image_effect == 'liquid' -%}
+                                                <span class="hover"></span>
+                                            {%- endif -%}
+                                        </{% if link3 != blank %}a{% else %}div{% endif%}>
+                                    {%- else -%}
+                                        <div class="image image-not-found">
+                                            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                                        </div>
+                                    {%- endif -%}
+                                </div>
+                                {%- if lookbook -%}
+                                    {%- for i in (1..3) -%}
+                                        {% capture cap_product %}product_3_{{ i }}{% endcapture %}
+                                        {% capture cap_point_y %}point_y_3_{{ i }}{% endcapture %}
+                                        {% capture cap_point_x %}point_x_3_{{ i }}{% endcapture %}
+                                        {%- liquid
+                                            assign handle = section.settings[cap_product]
+                                            assign product = all_products[handle]
+                                            assign point_y = section.settings[cap_point_y]
+                                            assign point_x = section.settings[cap_point_x]
+                                        -%}
+                                        {%- if product != blank and section.settings.lookbook -%}
+                                            <lookbook-point class="point-box style-{{ lookbook_style }}" data-popup="#LOOKBOOK-{{ block.id }}-{{ product.id }}-{{ forloop.index }}"
+                                                style="top: {{ point_y | append: '%' }};
+                                                    left: {{ point_x | append: '%' }};"
+                                            >
+                                                <a href="{{ product.url }}" class="point-icon">
+                                                    <span class="text{% if lookbook_style == '3' %} visually-hidden{% endif %}">
+                                                        {%- if lookbook_style == '4' or lookbook_style == '6' -%}
+                                                            {% render 'icon-plus' %}
+                                                        {%- else -%}
+                                                            {{ forloop.index }}
+                                                        {%- endif -%}
+                                                    </span>
+                                                </a>
+                                            </lookbook-point>
+                                            <lookbook-popup class="popup-box" id="LOOKBOOK-{{ block.id }}-{{ product.id }}-{{ forloop.index }}">
+                                                {%- liquid
+                                                    assign target = product.selected_or_first_available_variant
+                                                    assign compare_at_price = target.compare_at_price
+                                                    assign price = target.price
+                                                -%}
+                                                <div class="popup-box__wrapper">
+                                                    <a href="{{ product.url }}" class="link-with-arrow">
+                                                        <span class="text">{{ product.title }}</span>
+                                                        <span class="info">
+                                                            {%- if compare_at_price > price %}
+                                                                <span class="price old-price">{{ compare_at_price | money }}</span>
+                                                                <span class="price">{{ price | money }}</span>
+                                                            {%- else -%}
+                                                                <span class="price">{{ price | money }}</span>
+                                                            {%- endif -%}
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            </lookbook-popup>
+                                        {%- endif -%}
+                                    {%- endfor -%}
+                                {%- endif -%}
+                            </div>
+                        </div>
+                        <div class="halo-row-right">
+                            <div class="halo-row-item">
+                                <div class="img-box">
+                                    {%- liquid
+                                        assign image4 = section.settings.image_4
+                                        assign link4 = section.settings.link_4
+                                    -%}
+                                    {%- if image4 != blank -%}
+                                        <{% if link4 != blank %}a{% else %}div{% endif%} class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-adapt" {% if link4 != blank %}href="{{ link4 }}"{% endif %} style="padding-top: {{ 1 | divided_by: image4.aspect_ratio | times: 100 | append: '%' }}">
+                                            <img srcset="{{ image4 | img_url: 'master' }} 1x, {{ image4 | img_url: 'master', scale: 2 }} 2x" src="{{ image4 | img_url: 'master' }}" alt="{{ image4.alt | default: shop.name | escape }}" loading="lazy">
+                                            {%- if image_effect == 'liquid' -%}
+                                                <span class="hover"></span>
+                                            {%- endif -%}
+                                        </{% if link4 != blank %}a{% else %}div{% endif%}>
+                                    {%- else -%}
+                                        <div class="image image-not-found">
+                                            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                                        </div>
+                                    {%- endif -%}
+                                </div>
+                                {%- if lookbook -%}
+                                    {%- for i in (1..3) -%}
+                                        {% capture cap_product %}product_4_{{ i }}{% endcapture %}
+                                        {% capture cap_point_y %}point_y_4_{{ i }}{% endcapture %}
+                                        {% capture cap_point_x %}point_x_4_{{ i }}{% endcapture %}
+                                        {%- liquid
+                                            assign handle = section.settings[cap_product]
+                                            assign product = all_products[handle]
+                                            assign point_y = section.settings[cap_point_y]
+                                            assign point_x = section.settings[cap_point_x]
+                                        -%}
+                                        {%- if product != blank and section.settings.lookbook -%}
+                                            <lookbook-point class="point-box style-{{ lookbook_style }}" data-popup="#LOOKBOOK-{{ block.id }}-{{ product.id }}-{{ forloop.index }}"
+                                                style="top: {{ point_y | append: '%' }};
+                                                    left: {{ point_x | append: '%' }};"
+                                            >
+                                                <a href="{{ product.url }}" class="point-icon">
+                                                    <span class="text{% if lookbook_style == '3' %} visually-hidden{% endif %}">
+                                                        {%- if lookbook_style == '4' or lookbook_style == '6' -%}
+                                                            {% render 'icon-plus' %}
+                                                        {%- else -%}
+                                                            {{ forloop.index }}
+                                                        {%- endif -%}
+                                                    </span>
+                                                </a>
+                                            </lookbook-point>
+                                            <lookbook-popup class="popup-box" id="LOOKBOOK-{{ block.id }}-{{ product.id }}-{{ forloop.index }}">
+                                                {%- liquid
+                                                    assign target = product.selected_or_first_available_variant
+                                                    assign compare_at_price = target.compare_at_price
+                                                    assign price = target.price
+                                                -%}
+                                                <div class="popup-box__wrapper">
+                                                    <a href="{{ product.url }}" class="link-with-arrow">
+                                                        <span class="text">{{ product.title }}</span>
+                                                        <span class="info">
+                                                            {%- if compare_at_price > price %}
+                                                                <span class="price old-price">{{ compare_at_price | money }}</span>
+                                                                <span class="price">{{ price | money }}</span>
+                                                            {%- else -%}
+                                                                <span class="price">{{ price | money }}</span>
+                                                            {%- endif -%}
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            </lookbook-popup>
+                                        {%- endif -%}
+                                    {%- endfor -%}
+                                {%- endif -%}
+                            </div>
+                        </div>
+                    </div>
+            	</div>
+			</div>
+		</div>
+	</div>
+{%- endif -%}
+{% schema %}
+	{
+		"name": "t:sections.fixed-banner-4.name",
+		"settings": [
+			{
+                "type": "header",
+                "content": "t:sections.fixed-banner-4.settings.header__1.content"
+            },
+            {
+                "type": "checkbox",
+                "id": "show_fixed_banner",
+                "label": "t:sections.fixed-banner-4.settings.general.label__1",
+                "default": true
+            },
+            {
+                "type": "select",
+                "id": "container",
+                "label": "t:sections.general.settings.container.label__1",
+                "default": "full",
+                "options": [
+                {
+                    "value": "1170",
+                    "label": "t:sections.general.settings.container.options__1"
+                },
+                {
+                    "value": "1370",
+                    "label": "t:sections.general.settings.container.options__2"
+                },
+                {
+                    "value": "1570",
+                    "label": "t:sections.general.settings.container.options__3"
+                },
+                {
+                    "value": "1770",
+                    "label": "t:sections.general.settings.container.options__4"
+                },
+                {
+                    "value": "1860",
+                    "label": "t:sections.general.settings.container.options__5"
+                },
+                {
+                    "value": "full",
+                    "label": "t:sections.general.settings.container.options__6"
+                }],
+                "info": "t:sections.general.settings.container.info"
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__1.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 0
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 0
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__2.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top_tablet",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 0
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom_tablet",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 0
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__3.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top_mobile",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 0
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom_mobile",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 0
+            },
+            {
+                "type": "text",
+                "id": "block_title",
+                "label": "t:sections.general.settings.block-title.label__1",
+                "default": "Top Banner"
+            },
+            {
+                "type": "text",
+                "id": "block_text",
+                "label": "t:sections.general.settings.block-title.label__2",
+                "default": "Give customers details about the banner image(s) or content on the template."
+            },
+            {
+                "type": "select",
+                "id": "block_title_align",
+                "label": "t:sections.general.settings.block-title.label__3",
+                "options": [
+                {
+                    "value": "left",
+                    "label": "t:sections.general.settings.block-title.options__1"
+                },
+                {
+                    "value": "center",
+                    "label": "t:sections.general.settings.block-title.options__2"
+                },
+                {
+                    "value": "right",
+                    "label": "t:sections.general.settings.block-title.options__3"
+                }],
+                "default": "center"
+            },
+            {
+                "type":"header",
+                "content":"t:sections.fixed-banner-4.settings.header__2.content"
+            },
+            {
+                "type": "select",
+                "label": "t:sections.general.settings.style.label__1",
+                "id": "style",
+                "default": "1",
+                "options":
+                [
+                    {
+                        "value": "1",
+                        "label": "1"
+                    },
+                    {
+                        "value": "2",
+                        "label": "2"
+                    }
+                ]
+            },
+            {
+                "type": "header",
+                "content": "t:sections.fixed-banner-4.settings.header__3.content"
+            },
+            {
+                "type": "checkbox",
+                "id": "lookbook",
+                "label": "t:sections.general.settings.lookbook.label__1",
+                "default": true
+            },
+            {
+                "type": "select",
+                "id": "lookbook_style",
+                "label": "t:sections.general.settings.lookbook.label__3",
+                "default": "1",
+                "options": [
+                {
+                    "value": "1",
+                    "label": "1"
+                },
+                {
+                    "value": "2",
+                    "label": "2"
+                },
+                {
+                    "value": "3",
+                    "label": "3"
+                },
+                {
+                    "value": "4",
+                    "label": "4"
+                },
+                {
+                    "value": "5",
+                    "label": "5"
+                },
+                {
+                    "value": "6",
+                    "label": "6"
+                }]
+            },
+            {
+                "type": "header",
+                "content": "t:sections.fixed-banner-4.settings.header__4.content"
+            },
+            {
+                "type": "image_picker",
+                "id": "image_1",
+                "label": "t:sections.general.settings.image.label__1"
+            },
+            {
+                "type": "url",
+                "id": "link_1",
+                "label": "t:sections.general.settings.content.label__4",
+                "info": "t:sections.general.settings.content.info__1"
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.lookbook.paragraph__1.content"
+            },
+            {
+                "type": "product",
+                "label": "t:sections.general.settings.lookbook.label__4",
+                "id": "product_1_1"
+            },
+            {
+                "type": "range",
+                "id": "point_x_1_1",
+                "label": "t:sections.general.settings.lookbook.label__5",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type": "range",
+                "id": "point_y_1_1",
+                "label": "t:sections.general.settings.lookbook.label__6",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.lookbook.paragraph__2.content"
+            },
+            {
+                "type": "product",
+                "label": "t:sections.general.settings.lookbook.label__4",
+                "id": "product_1_2"
+            },
+            {
+                "type": "range",
+                "id": "point_x_1_2",
+                "label": "t:sections.general.settings.lookbook.label__5",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type": "range",
+                "id": "point_y_1_2",
+                "label": "t:sections.general.settings.lookbook.label__6",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.lookbook.paragraph__3.content"
+            },
+            {
+                "type": "product",
+                "label": "t:sections.general.settings.lookbook.label__4",
+                "id": "product_1_3"
+            },
+            {
+                "type": "range",
+                "id": "point_x_1_3",
+                "label": "t:sections.general.settings.lookbook.label__5",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type": "range",
+                "id": "point_y_1_3",
+                "label": "t:sections.general.settings.lookbook.label__6",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type":"header",
+                 "content":"t:sections.fixed-banner-4.settings.header__5.content"
+            },
+            {
+                "type": "image_picker",
+                "id": "image_2",
+                "label": "t:sections.general.settings.image.label__1"
+            },
+            {
+                "type": "url",
+                "id": "link_2",
+                "label": "t:sections.general.settings.content.label__4",
+                "info": "t:sections.general.settings.content.info__1"
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.lookbook.paragraph__1.content"
+            },
+            {
+                "type": "product",
+                "label": "t:sections.general.settings.lookbook.label__4",
+                "id": "product_2_1"
+            },
+            {
+                "type": "range",
+                "id": "point_x_2_1",
+                "label": "t:sections.general.settings.lookbook.label__5",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type": "range",
+                "id": "point_y_2_1",
+                "label": "t:sections.general.settings.lookbook.label__6",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.lookbook.paragraph__2.content"
+            },
+            {
+                "type": "product",
+                "label": "t:sections.general.settings.lookbook.label__4",
+                "id": "product_2_2"
+            },
+            {
+                "type": "range",
+                "id": "point_x_2_2",
+                "label": "t:sections.general.settings.lookbook.label__4",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type": "range",
+                "id": "point_y_2_2",
+                "label": "t:sections.general.settings.lookbook.label__6",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.lookbook.paragraph__3.content"
+            },
+            {
+                "type": "product",
+                "label": "t:sections.general.settings.lookbook.label__4",
+                "id": "product_2_3"
+            },
+            {
+                "type": "range",
+                "id": "point_x_2_3",
+                "label": "t:sections.general.settings.lookbook.label__5",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type": "range",
+                "id": "point_y_2_3",
+                "label": "t:sections.general.settings.lookbook.label__6",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type":"header",
+                 "content":"t:sections.fixed-banner-4.settings.header__6.content"
+            },
+            {
+                "type": "image_picker",
+                "id": "image_3",
+                "label": "t:sections.general.settings.image.label__1"
+            },
+            {
+                "type": "url",
+                "id": "link_3",
+                "label": "t:sections.general.settings.content.label__4",
+                "info": "t:sections.general.settings.content.info__1"
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.lookbook.paragraph__1.content"
+            },
+            {
+                "type": "product",
+                "label": "t:sections.general.settings.lookbook.label__4",
+                "id": "product_3_1"
+            },
+            {
+                "type": "range",
+                "id": "point_x_3_1",
+                "label": "t:sections.general.settings.lookbook.label__5",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type": "range",
+                "id": "point_y_3_1",
+                "label": "t:sections.general.settings.lookbook.label__6",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.lookbook.paragraph__2.content"
+            },
+            {
+                "type": "product",
+                "label": "t:sections.general.settings.lookbook.label__4",
+                "id": "product_3_2"
+            },
+            {
+                "type": "range",
+                "id": "point_x_3_2",
+                "label": "t:sections.general.settings.lookbook.label__5",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type": "range",
+                "id": "point_y_3_2",
+                "label": "t:sections.general.settings.lookbook.label__6",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.lookbook.paragraph__3.content"
+            },
+            {
+                "type": "product",
+                "label": "t:sections.general.settings.lookbook.label__4",
+                "id": "product_3_3"
+            },
+            {
+                "type": "range",
+                "id": "point_x_3_3",
+                "label": "t:sections.general.settings.lookbook.label__5",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type": "range",
+                "id": "point_y_3_3",
+                "label": "t:sections.general.settings.lookbook.label__6",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type":"header",
+                 "content":"t:sections.fixed-banner-4.settings.header__7.content"
+            },
+            {
+                "type": "image_picker",
+                "id": "image_4",
+                "label": "t:sections.general.settings.image.label__1"
+            },
+            {
+                "type": "url",
+                "id": "link_4",
+                "label": "t:sections.general.settings.content.label__4",
+                "info": "t:sections.general.settings.content.info__1"
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.lookbook.paragraph__1.content"
+            },
+            {
+                "type": "product",
+                "label": "t:sections.general.settings.lookbook.label__4",
+                "id": "product_4_1"
+            },
+            {
+                "type": "range",
+                "id": "point_x_4_1",
+                "label": "t:sections.general.settings.lookbook.label__5",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type": "range",
+                "id": "point_y_4_1",
+                "label": "t:sections.general.settings.lookbook.label__6",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.lookbook.paragraph__2.content"
+            },
+            {
+                "type": "product",
+                "label": "t:sections.general.settings.lookbook.label__4",
+                "id": "product_4_2"
+            },
+            {
+                "type": "range",
+                "id": "point_x_4_2",
+                "label": "t:sections.general.settings.lookbook.label__5",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type": "range",
+                "id": "point_y_4_2",
+                "label": "t:sections.general.settings.lookbook.label__6",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.lookbook.paragraph__3.content"
+            },
+            {
+                "type": "product",
+                "label": "t:sections.general.settings.lookbook.label__4",
+                "id": "product_4_3"
+            },
+            {
+                "type": "range",
+                "id": "point_x_4_3",
+                "label": "t:sections.general.settings.lookbook.label__5",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            },
+            {
+                "type": "range",
+                "id": "point_y_4_3",
+                "label": "t:sections.general.settings.lookbook.label__6",
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unit": "%",
+                "default": 10
+            }
+
+		],
+		"presets": [
+            {
+                "name": "t:sections.fixed-banner-4.presets.name"
+            }
+        ],
+        "disabled_on": {
+            "groups": ["header", "footer"]
+        }
+	}
+{% endschema %}

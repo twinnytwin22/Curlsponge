@@ -1,0 +1,99 @@
+.halo-currency{
+	position: relative;
+}
+
+.halo-currency.border-left{
+	border-left: 1px solid #e2e2e2;
+}
+
+.halo-currency .currency-menu{
+    padding: 0px 0px 18px;
+    min-width: 135px;
+    outline: 0;
+    background: var(--bg-white);
+    max-height: 300px;
+    overflow: auto;
+}
+
+.halo-currency .title {
+    font-size: calc(var(--font-size) - 1px);
+    text-transform: uppercase;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-link);
+    line-height: var(--line-height);
+    letter-spacing: var(--letter-spacing);
+    padding: 10px 19px 22px;
+    text-align: left;
+    margin: 0;
+}
+
+.halo-currency .currency-menu .icon{
+    width: 35px;
+    height: 35px;
+    margin-right: 6px;
+}
+
+.halo-currency .currency-menu .icon svg{
+    width: 100%;
+    height: 100%;
+    stroke: initial;
+    vertical-align: top;
+}
+
+.halo-currency .currency-menu [data-currency="EUR"] .icon svg{
+    padding: 2px!important;
+}
+
+.halo-currency .currency-menu .dropdown-item{
+	display: flex;
+	align-items: center;
+}
+
+.halo-currency .currency-menu .dropdown-item  {
+    font-size: calc( var(--font-size) - 1px);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-link);
+    line-height: var(--line-height);
+    letter-spacing: var(--letter-spacing);
+    padding: 3px 17px;
+}
+
+.halo-currency .currency-menu .dropdown-item .text span{
+	padding-right: 3px;
+}
+
+.halo-currency .currency-menu .dropdown-item.active .text {
+    position: relative;
+}
+
+.halo-currency .currency-menu .dropdown-item.active .text:before{
+	content: "";
+	height: 1px;
+	width: 100%;
+	background: var(--color-link);
+	position: absolute;
+	bottom: 2px;
+}
+
+.shopify-currency .img-icon{
+    width: 30px;
+    height: 30px;
+    border: 1px solid rgb(128,128,128,17%);
+    overflow: hidden;
+    border-radius: 50%;
+    position: relative;
+    display: inline-block;
+    margin: 4px 9px 3px 0px;
+}
+
+.shopify-currency .img-icon img{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 100%;
+}
+
+body.dark-mode .halo-currency .currency-menu{
+    background: var(--color-background);
+}

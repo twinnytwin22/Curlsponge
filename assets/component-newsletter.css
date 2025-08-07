@@ -1,0 +1,281 @@
+.halo-newsletter-popup.style-3{
+    overflow: hidden;
+}
+
+.halo-newsletter-popup .halo-popup-wrapper{
+    padding-top: 26px;
+}
+
+.halo-newsletter-popup .halo-popup-wrapper-2{
+    position: absolute;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px 15px 27px 15px;
+}
+
+.halo-newsletter-popup .halo-popup-wrapper-2 .halo-popup-title,
+.halo-newsletter-popup .halo-popup-wrapper-2 .halo-popup-desc,
+.halo-newsletter-popup .halo-popup-wrapper-2 .newsletter-note,
+.halo-newsletter-popup .halo-popup-wrapper-2 .newsletter-note a{
+    color: var(--color-white);
+}
+
+.halo-newsletter-popup .halo-popup-header{
+    padding-top: 0;
+}
+
+.newsletter-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    position: relative;
+}
+
+.newsletter .newsletter-form {
+    flex-wrap: wrap;
+}
+
+.newsletter .newsletter-form__input{
+    font-size: var(--font-size);
+    font-weight: var(--font-weight-normal);
+    text-align: center;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    border-radius: var(--image-border);
+}
+
+.newsletter .newsletter-form__button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    border-radius: var(--image-border);
+    min-height: unset;
+}
+
+.newsletter .form-field ~ .newsletter-form__button{ 
+    margin-top: 15px;
+}
+
+.newsletter-left {
+    display: none;
+}
+
+.newsletter-right{
+    padding: 30px;
+}
+
+.newsletter-title{
+    position: relative;
+    font-size: calc(var(--font-size) + 5px);
+    font-weight: var(--font-weight-bold);
+    margin: 0 0 10px 0;
+    text-transform: uppercase;
+}
+
+.newsletter-desc{
+    display: block;
+    font-size: var(--font-size);
+    font-weight: var(--font-weight-normal);
+    color: var(--color-text2);
+    line-height: var(--line-height);
+    letter-spacing: var(--letter-spacing);
+    padding: 2px 0 36px 0;
+}
+
+.newsletter-banner{
+    position: relative;
+    overflow: hidden;
+}
+
+.newsletter-banner img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.newsletter-note{
+    display: block;
+    width: 100%;
+    font-size: calc(var(--font-size) - 3px);
+    font-weight: var(--font-weight-normal);
+    letter-spacing: var(--letter-spacing);
+    line-height: var(--line-height);
+    color: var(--color-text2);
+    margin: 12px 0 0 0;
+    padding: 0 0 6px 0;
+}
+
+.newsletter-note a{
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+.newsletter-note a .text{
+    text-decoration: underline;
+    text-underline-position: under;
+}
+
+.newsletter-form__field-wrapper {
+    width: 100%;
+}
+
+.newsletter-form__message{
+    margin: 10px 0 0 0;
+}
+
+.halo-newsletter-popup.halo-popup-LeftRight .halo-popup-wrapper{
+    padding: 0;
+}
+
+.halo-newsletter-popup.halo-popup-LeftRight .halo-popup-header{
+    padding-top: 0;
+    margin-bottom: 0;
+}
+
+.subscription-form > form{
+    display: block;
+    max-width: 600px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin: 0 auto;
+}
+
+.subscription-form .newsletter-form__field-wrapper{
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+}
+
+.subscription-form .field__input,
+.subscription-form .newsletter-form__button {
+    padding-top: var(--btn-padding-top);
+    padding-bottom: var(--btn-padding-bottom);
+    background: transparent!important;
+    border-width: var(--btn-border-width);
+}
+
+.subscription-form .field__input{
+    border-right: 0;
+}
+
+.subscription-form .field__input::-webkit-input-placeholder { 
+    color: inherit;
+}
+
+.subscription-form .field__input:-ms-input-placeholder { 
+    color: inherit;
+}
+
+.subscription-form .field__input::placeholder {
+    color: inherit;
+}
+
+.subscription-form .newsletter-form__button{
+    max-width: 180px;
+}
+
+body.newsletter-show{
+    overflow: hidden;
+    height: 100%;
+}
+
+body.newsletter-show .background-overlay,
+body.newsletter-message-show .background-overlay{
+    display: block;
+}
+
+body.newsletter-show .halo-newsletter-popup{
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translate3d(-50%,-50%,0);
+}
+
+body.newsletter-show .halo-newsletter-popup.halo-popup-topDown{
+    transform: translate3d(-50%,0,0);
+}
+
+body.newsletter-message-show .halo-newsletter-message-popup{
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translate3d(-50%,-50%,0);
+}
+
+.newsletter-style-5.newsletter-item__form .newsletter-form__button,
+.newsletter-style-4.newsletter-item__form .newsletter-form__button,
+.newsletter-style-10.newsletter-item__form .newsletter-form__button,
+.newsletter-style-1.newsletter-item__form .newsletter-form__button {
+    margin: 0;
+}
+
+@media (min-width: 768px){
+    .newsletter .newsletter-form {
+        flex-direction: row;
+        align-items: flex-start;
+        margin: 0 auto;
+        max-width: 560px;
+    }
+
+    .newsletter .newsletter-form__input{
+        padding-top: var(--btn-padding-top);
+        padding-bottom: var(--btn-padding-bottom);
+        min-height: var(--btn-min-height);
+    }
+
+    .newsletter .newsletter-form__button{
+        min-height: var(--btn-min-height);
+        padding-top: var(--btn-padding-top);
+        padding-bottom: var(--btn-padding-bottom);
+    }
+
+    .newsletter .form-field ~ .newsletter-form__button{ 
+        margin-top: 20px;
+    }
+
+    .newsletter-left {
+        display: inline-block;
+        position: relative;
+        width: 50%;
+        overflow: hidden;
+    }
+
+    .newsletter-right{
+        width: 50%;
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
+
+    .newsletter.style-2,
+    .newsletter.style-4{
+        display: flex;
+        align-items: center;
+    }
+
+    .newsletter.style-4{
+        flex-direction: row-reverse;
+    }
+}
+
+@media (min-width: 1025px){
+    .newsletter-right{
+        padding-left: 50px;
+        padding-right: 50px;
+    }
+
+    .newsletter-title{
+        font-size: 30px;
+        margin: 0 0 24px 0;
+    }
+
+    body.newsletter-show{
+        padding-right: 10px;
+    }
+}

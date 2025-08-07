@@ -1,0 +1,17 @@
+{%- unless request.page_type == 'product' -%}
+	<noscript>{{ 'component-product.css' | asset_url | stylesheet_tag }}</noscript>
+{%- endunless -%}
+<noscript>{{ 'component-quick-view.css' | asset_url | stylesheet_tag }}</noscript>
+
+<div class="halo-popup halo-quick-view-popup halo-popup-topDown{% if settings.quick_view_popup == '1' %} customPopup-extraLarge{% elsif settings.quick_view_popup == '2' %} customPopup-minimal{% elsif settings.quick_view_popup == '3' %} customPopup-medium{% endif %} content-style-{{ settings.quick_view_popup }}" data-quick-view-popup id="halo-quick-view-popup" 
+	data-url-style-product="{% unless request.page_type == 'product' %}{{ 'component-product.css' | asset_url }}{% endunless %}" 
+	data-url-style-quick-view="{{ 'component-quick-view.css' | asset_url }}"
+>
+	<div class="halo-popup-wrapper">
+		<a href="javascript:void(0)" class="halo-popup-close clearfix" data-close-quick-view-popup role="button">
+			<span class="visually-hidden">{{ 'general.common.close' | t }}</span>
+	        {% render 'icon-close' %}
+	    </a>
+	    <div class="halo-popup-content halo-popup-scroll custom-scrollbar"></div>
+	</div>
+</div>

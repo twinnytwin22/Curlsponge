@@ -1,0 +1,119 @@
+<div class="product-item product-item--border product-item--box-shadow" data-product-id="{{ product.id }}" data-json-product='{"title": {{ product.title | json | escape }}, "id": {{ product.id }}, "url": {{ product.url | json }}, "price_min": {{ product.price_min | json }},  "handle": "{{ product.handle }}", "media": {{ product.media | json | escape }}, "variants": {{ product.variants | json | escape }}}'>
+    <div class="card style-12">
+        <div class="card-product{% if product.featured_media == nil %} card--text-only card--soft{% endif %}">
+            <div class="card-product__wrapper">
+                {%- if settings.show_badge -%}
+                    {%- liquid
+                        unless settings.show_badge_mobile
+                            assign badge_class = 'card__badge card-mobile__hidden'
+                        else
+                            assign badge_class = 'card__badge'
+                        endunless
+                    -%}
+                    {% render 'product-badge',
+                        product: product,
+                        class: badge_class,
+                        badge_detail: true,
+                        serial: serial
+                    %}
+                {%- endif -%}
+
+                {% render 'product-card-image',
+                    product: product,
+                    media_size: media_size,
+                    portrait_aspect_ratio: portrait_aspect_ratio,
+                    loading: loading
+                %}
+
+                {% render 'product-card-action-group-3',
+                    product: product,
+                    position: position,
+                    show_add_to_cart: show_add_to_cart,
+                    wishlist_add: wishlist_add,
+                    icon_heart: '1',
+                    sectionId: sectionId
+                %}
+            </div>
+        </div>
+        <div class="card-information">
+            {%- liquid
+                assign product_content_text_align = settings.product_content_text_align
+                assign product_title_line_text = settings.product_title_line_text
+                assign enable_swatch_name = settings.enable_swatch_name
+            -%}
+            <div class="card-information__wrapper text-{{ product_content_text_align }}">
+                {%- if settings.show_vendor -%}
+                    <div class="card-vendor">
+                        <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
+                        {{ product.vendor | link_to_vendor }}
+                    </div>
+                {%- endif -%}
+                <div class="card-price" id="card-price-{{ product.id }}">
+                    {% render 'price',
+                        product: product,
+                        price_class: ''
+                    %}
+                </div>
+                <a class="card-title link-underline{% if product_title_line_text != 'full' %} card-title-ellipsis{% endif %}" href="{{ product.url }}" data-product-title="{{ product.title | escape }}" data-product-url="{{ product.url }}">
+                    <span class="text">{{ product.title | strip }}</span>
+                </a>
+                {%- if settings.show_review -%}
+                    {% render 'product-card-review',
+                        product: product
+                    %}
+                {%- endif -%}
+                {%- if show_list -%}
+                    {% render 'product-card-summary',
+                        product: product,
+                        class: 'card-list__hidden'
+                    %}
+                {%- endif -%}
+                {%- if settings.show_swatch and isColor -%}
+                    {% render 'product-swatch',
+                        product: product,
+                        variant_selected: variant_selected,
+                        class: '',
+                        type_trigger: true,
+                        index: index
+                    %}
+                {%- endif -%}
+                {%- if settings.show_product_attribute -%}
+                    {% render 'product-attribute',
+                        class: 'card-grid__hidden',
+                        product: product
+                    %}
+                {%- endif -%}
+            </div>
+            {%- if show_list -%}
+                <div class="card-action__group card-list__hidden">
+                    {%- if settings.show_action -%}
+                        {%- if show_add_to_cart == true or show_add_to_cart == 'true' -%}
+                            <div class="card-action">
+                                {% render 'add-to-cart-form-list',
+                                    product: product,
+                                    sectionId: sectionId
+                                %}
+                            </div>
+                        {%- else -%}
+                            <div class="card-action d-none">
+                                {% render 'add-to-cart-form-list',
+                                    product: product,
+                                    sectionId: sectionId
+                                %}
+                            </div>
+                        {%- endif -%}
+                    {%- endif -%}
+                    {%- if settings.show_quick_shop -%}
+                        <div class="card-popup card-list__hidden custom-scrollbar">
+                            <a href="javascript:void(0)" title="{{ 'general.common.close' | t }}" data-close-quickshop-popup-list role="button">
+                                <span class="visually-hidden">{{ 'general.common.close' | t }}</span>
+                                {% render 'icon-close' %}
+                            </a>
+                            <div class="card-popup-content"></div>
+                        </div>
+                    {%- endif -%}
+                </div>
+            {%- endif -%}
+        </div>
+    </div>
+</div>

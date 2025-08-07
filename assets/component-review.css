@@ -1,0 +1,85 @@
+.halo-productReview .spr-badge--flex{
+    display: flex;
+    align-items: center;
+}
+
+.card-information__wrapper.text-left .halo-productReview .spr-badge--flex{
+    justify-content: flex-start;
+}
+
+.card-information__wrapper.text-center .halo-productReview .spr-badge--flex{
+    justify-content: center;
+}
+
+.card-information__wrapper.text-right .halo-productReview .spr-badge--flex{
+    justify-content: flex-end;
+}
+
+.halo-productReview .spr-badge-starrating{
+    display: block;
+    margin-right: 0;
+    font-size: 0;
+    letter-spacing: 0;
+}
+
+.halo-productReview .spr-badge-starrating .spr-icon{
+    display: inline-block;
+    vertical-align: top;
+    font-size: 0;
+    letter-spacing: 0;
+    line-height: 1;
+    width: auto;
+    height: auto;
+    position: relative;
+    top: unset;
+    opacity: 1;
+}
+
+.halo-productReview .spr-badge-starrating .spr-icon:before{
+    font-family: inherit;
+    font-size: 18px;
+    font-style: normal;
+    width: auto;
+    height: auto;
+    line-height: 1;
+    vertical-align: top;
+}
+
+.halo-productReview .spr-badge-starrating .spr-icon.spr-icon-star:before{
+    content: "\2605";
+    color: var(--product-review-full-color);
+}
+
+.halo-productReview .spr-badge-starrating .spr-icon.spr-icon-star-empty:before{
+    content: "\2605";
+    color: var(--product-review-empty-color);
+}
+
+.halo-productReview .spr-badge-starrating .spr-icon + .spr-icon {
+    margin-left: 3px;
+}
+
+.halo-productReview .spr-badge-caption{
+    display: inline-block;
+    vertical-align: middle;
+    font-size: var(--font-size);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height);
+    color: var(--color-text);
+    margin: 0 0 0 10px;
+    text-transform: capitalize;
+}
+
+.halo-productReview .spr-badge--flex .spr-badge-caption{
+    line-height: 1;
+    margin-left: 5px;
+    color: var(--color-grey);
+}
+
+body.dark-mode .halo-productReview .spr-badge-starrating .spr-icon.spr-icon-star:before {
+    color: #faa900;
+}
+
+body.dark-mode .halo-productReview .spr-badge-starrating .spr-icon.spr-icon-star-empty:before{
+    color: #E0E0E0;
+}

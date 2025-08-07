@@ -1,0 +1,12 @@
+<small class="copyright__content">&copy; {{ 'now' | date: "%Y" }}, 
+	{% if block.settings.copyright_link != blank %}
+		<a href="{{block.settings.copyright_link}}" title="{{shop.name}}">
+			{{ shop.name }}
+		</a>
+	{% else %}
+		{{ shop.name | link_to: routes.root_url }}{% endif %}.
+</small>
+{%- if footer_layout == '9' -%}
+	<br/>
+{%- endif -%}
+<small class="copyright__content">{{ block.settings.copyright }}</small>

@@ -1,0 +1,129 @@
+{% comment %}
+    This template will be automatically generated for you if the file doesn't exist,
+    but where's the fun in having no control? Define your layout below.
+
+    The 'layout settings.customer_layout' line is inserted at the top of every customer account template.
+    Your theme's settings determine to use the 'default' or 'theme' customer templates.
+    More info:
+    - http://www.tetchi.ca/shopify-theme-from-scratch-part-11/
+{% endcomment %}
+
+{{ 'customer.css' | asset_url | stylesheet_tag }}
+
+<div class="account-page">
+    <div class="halo-page-header">
+        <div class="container">
+            {% render 'breadcrumb' %}
+            <h1 class="page-header">
+               {{ 'customer.register.title' | t }}
+            </h1>
+        </div>
+    </div>
+    <div class="halo-page-content">
+        <div class="login-row clearfix">
+            <div class="login-rowItem login-rowRight">
+                <div class="login-item">
+                    <h2 class="halo-page-title page-subheader text-left">
+                        {{ 'customer.register.heading' | t }}
+                    </h2>
+                    <div class="halo-page-wrapper">
+                        <div class="login-text">
+                            {{ 'customer.register.text' | t }}
+                        </div>
+                        {%- form 'create_customer', novalidate: 'novalidate' -%}
+                            {%- if form.errors -%}
+                                <div class="login-message form-message">
+                                    <div class="alertBox alertBox--error">
+                                        <div class="alertBox-message">
+                                            <ul>
+                                                {%- for field in form.errors -%}
+                                                    <li>
+                                                        {%- if field == 'form' -%}
+                                                            {{ form.errors.messages[field] }}
+                                                        {%- else -%}
+                                                          <a href="#RegisterForm-{{ field }}" class="link link-underline">
+                                                            <span class="text">
+                                                                {{ form.errors.translated_fields[field] | capitalize }}
+                                                                {{ form.errors.messages[field] }}
+                                                            </span>
+                                                          </a>
+                                                        {%- endif -%}
+                                                    </li>
+                                                {%- endfor -%}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {%- endif -%}
+                            <div class="form-field{% if form.errors contains "first_name" %} form-field--error{% endif %}">
+                                <label class="form-label" for="RegisterForm-FirstName">
+                                    {{ 'customer.register.first_name' | t }}
+                                </label>
+                                <input class="form-input form-input-placeholder{% if form.errors contains "first_name" %} error{% endif %}"
+                                    type="text"
+                                    name="customer[first_name]"
+                                    id="RegisterForm-FirstName"
+                                    {% if form.first_name %}value="{{ form.first_name }}"{% endif %}
+                                    autocomplete="given-name"
+                                    placeholder="{{ 'customer.register.first_name' | t }}"
+                                >
+                            </div>
+                            <div class="form-field{% if form.errors contains "last_name" %} form-field--error{% endif %}">
+                                <label class="form-label" for="RegisterForm-LastName">
+                                    {{ 'customer.register.last_name' | t }}
+                                </label>      
+                                <input class="form-input form-input-placeholder{% if form.errors contains "last_name" %} error{% endif %}"
+                                    type="text"
+                                    name="customer[last_name]"
+                                    id="RegisterForm-LastName"
+                                    {% if form.last_name %}value="{{ form.last_name }}"{% endif %}
+                                    autocomplete="family-name"
+                                    placeholder="{{ 'customer.register.last_name' | t }}"
+                                >
+                            </div>
+                            <div class="form-field{% if form.errors contains "email" %} form-field--error{% endif %}">
+                                <label class="form-label" for="RegisterForm-email">
+                                    {{ 'customer.register.email' | t }}
+                                </label>      
+                                <input class="form-input form-input-placeholder{% if form.errors contains "email" %} error{% endif %}"
+                                    type="email"
+                                    name="customer[email]"
+                                    id="RegisterForm-email"
+                                    {% if form.email %} value="{{ form.email }}"{% endif %}
+                                    spellcheck="false"
+                                    autocapitalize="off"
+                                    autocomplete="email"
+                                    aria-required="true"
+                                    {% if form.errors contains 'email' %}
+                                        aria-invalid="true"
+                                        aria-describedby="RegisterForm-email-error"
+                                    {% endif %}
+                                    placeholder="{{ 'customer.register.email' | t }}"
+                                >
+                            </div>
+                            <div class="form-field{% if form.errors contains "password" %} form-field--error{% endif %}">
+                                <label class="form-label" for="password">
+                                    {{ 'customer.register.password' | t }}
+                                </label>      
+                                <input class="form-input form-input-placeholder{% if form.errors contains "password" %} error{% endif %}"
+                                    type="password"
+                                    name="customer[password]"
+                                    id="RegisterForm-password"
+                                    aria-required="true"
+                                    {% if form.errors contains 'password' %}
+                                        aria-invalid="true"
+                                        aria-describedby="RegisterForm-password-error"
+                                    {% endif %}
+                                    placeholder="{{ 'customer.register.password' | t }}"
+                                >
+                            </div>
+                            <div class="form-actions">
+                                <input type="submit" value="{{ 'customer.register.submit' | t }}" class="button button-height button--primary">
+                            </div>
+                        {%- endform -%}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

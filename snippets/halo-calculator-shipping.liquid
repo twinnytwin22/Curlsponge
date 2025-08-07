@@ -1,0 +1,16 @@
+{{ 'component-calculator-shipping.css' | asset_url | stylesheet_tag }}
+<div id="{{ sectionId }}">
+    <cart-shipping-message class="haloCalculatorShipping style-{{ settings.calculator_free_shipping_message_style }}"
+        data-price="{{ settings.calculator_free_shipping_message_price }}"
+        data-first-text="{{ 'calculator_free_shipping_message.general.free_shipping_message_1' | t }}"
+        data-second-text="{{ 'calculator_free_shipping_message.general.free_shipping_message_2' | t }}"
+        data-third-text="{{ 'calculator_free_shipping_message.general.free_shipping_message_3' | t }}"
+    >
+        <div class="progress" data-shipping-progress>
+            <div class="progress_shipping" role="progressbar" aria-label="">
+                <div class="progress-meter"></div>
+            </div>
+        </div>
+        <div class="message" data-shipping-message></div>
+    </cart-shipping-message>
+</div>

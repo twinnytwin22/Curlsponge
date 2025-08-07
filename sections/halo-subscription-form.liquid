@@ -1,0 +1,310 @@
+{%- if section.settings.show_subscription_form -%}
+	{%- liquid
+        assign padding_top = section.settings.padding_top | append: 'px'
+        assign padding_bottom = section.settings.padding_bottom | append: 'px'
+        assign padding_top_tablet = section.settings.padding_top_tablet | append: 'px'
+        assign padding_bottom_tablet = section.settings.padding_bottom_tablet | append: 'px'
+        assign padding_top_mobile = section.settings.padding_top_mobile | append: 'px'
+        assign padding_bottom_mobile = section.settings.padding_bottom_mobile | append: 'px'
+        assign container = section.settings.container
+        assign block_title = section.settings.block_title
+        assign block_text = section.settings.block_text
+        assign block_title_align = section.settings.block_title_align
+        assign block_bg = section.settings.block_bg
+        assign text_color = section.settings.text_color
+        assign border_color = section.settings.border_color
+
+        if settings.show_dark_mode
+            assign dark_mode = false
+            unless block_bg == blank or block_bg == '#fff' or block_bg == '#FFF' or block_bg == '#ffffff' or block_bg == '#FFFFFF' or block_bg == 'rgb(255,255,255)' or block_bg == 'rgba(255,255,255,1)' or block_bg == 'rgba(0,0,0,0)' or block_bg == 'rgb(0,0,0,0)'
+                assign dark_mode = true
+                assign dark_mode_background_color = section.settings.block_bg
+                assign dark_mode_text_color = section.settings.text_color
+                assign dark_mode_border_color = section.settings.border_color
+            endunless
+        endif
+    -%}
+    <style type="text/css" media="screen">
+        #halo-subscription-form-{{ section.id }} .subscription-form .field__input,
+		#halo-subscription-form-{{ section.id }} .subscription-form .newsletter-form__button {
+			border-color: {{ border_color }};
+			color: {{ text_color }};
+		}
+
+        {%- if settings.show_dark_mode -%}
+            body.dark-mode .halo-subscription-form.dark-mode {
+                background: var(--color-background);
+            }
+            
+            body.dark-mode .halo-subscription-form.dark-mode .halo-block-header .title {
+                color: var(--color-text);
+            }
+            
+            body.dark-mode .halo-subscription-form.dark-mode .halo-block-header .desc {
+                color: var(--color-text2);
+            }
+            
+            body.dark-mode .halo-subscription-form.dark-mode .subscription-form .field__input,
+            body.dark-mode .halo-subscription-form.dark-mode .subscription-form .newsletter-form__button {
+                color: var(--color-text) !important;
+                border-color: var(--color-text) !important;
+            }
+            {%- if dark_mode -%}
+                {%- if container == 'full' -%}
+                    body.dark-mode .halo-subscription-form:not(.dark-mode) {
+                        background: {{ dark_mode_background_color }};
+                    }
+                {%- endif -%}
+                
+                body.dark-mode .halo-subscription-form:not(.dark-mode) .halo-block-header .title,
+                body.dark-mode .halo-subscription-form:not(.dark-mode) .halo-block-header .desc {
+                    filter: invert(1);
+                }
+                
+                body.dark-mode .halo-subscription-form:not(.dark-mode) .subscription-form .field__input,
+                body.dark-mode .halo-subscription-form:not(.dark-mode) .subscription-form .newsletter-form__button {
+                    color: {{ dark_mode_text_color }} !important;
+                    border-color: {{ dark_mode_border_color }} !important;
+                }
+            {%- endif -%}
+        {%- endif -%}
+    </style>
+    <div class="halo-block halo-subscription-form halo-block-padding{% if block_bg != 'rgba(0,0,0,0)' and block_bg != blank %}{% if container == 'full' %} halo-block-gradient{% endif %}{% endif %}{% unless dark_mode %} dark-mode{% endunless %}" id="halo-subscription-form-{{ section.id }}"
+        style="--padding-top: {{ padding_top }};
+            --padding-bottom: {{ padding_bottom }};
+            --padding-top-tablet: {{ padding_top_tablet }};
+            --padding-bottom-tablet: {{ padding_bottom_tablet }};
+            --padding-top-mobile: {{ padding_top_mobile }};
+            --padding-bottom-mobile: {{ padding_bottom_mobile }};
+            {% if block_bg != 'rgba(0,0,0,0)' and block_bg != blank %}
+                {% if container == 'full' %}
+                    --bg-color: {{ block_bg | default: settings.colors_bg }};
+                {% endif %}
+            {% endif %}"
+    >
+    	<div class="container container-{{ container }}">
+            {%- if block_title != blank -%}
+                <div class="halo-block-header"
+                    {% if block_bg != 'rgba(0,0,0,0)' and block_bg != blank %}
+                        {% if container != 'full' %}
+                            style="--bg-color: {{ block_bg | default: settings.colors_bg }};
+                                background: var(--bg-color);" 
+                        {% endif %}
+                    {% endif %}
+                    {% if dark_mode %}
+                        {% if container != 'full' %}
+                            style="--dark-mode-bg-color: {{ dark_mode_background_color }};"
+                        {% endif %}
+                    {% endif %}
+                >
+                    <h3 class="title text-{{ block_title_align }}">
+                        <span class="text">
+                            {{ block_title | escape }}
+                        </span>
+                    </h3>
+                    {%- if block_text != blank -%}
+                        <span class="desc text-{{ block_title_align }}">
+                            {{ block_text }}
+                        </span>
+                    {%- endif -%}
+                </div>
+            {%- endif -%}
+            <div class="halo-block-content subscription-form"
+                {% if block_bg != 'rgba(0,0,0,0)' and block_bg != blank %}
+                    {% if container != 'full' %}
+                        style="--bg-color: {{ block_bg | default: settings.colors_bg }};
+                            background: var(--bg-color);" 
+                    {% endif %}
+                {% endif %}
+                {% if dark_mode %}
+                    {% if container != 'full' %}
+                        style="--dark-mode-bg-color: {{ dark_mode_background_color }};"
+                    {% endif %}
+                {% endif %}
+            >
+                {% render 'newsletter-form',
+                    form_id: section.id
+                %}
+            </div>
+        </div>
+    </div>
+{%- endif -%}
+{% schema %}
+    {
+        "name": "t:sections.subscription-form.name",
+        "settings": [
+        {
+            "type": "header",
+            "content": "t:sections.subscription-form.settings.header__1.content"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_subscription_form",
+            "label": "t:sections.subscription-form.settings.general.label__1",
+            "default": true
+        },
+        {
+            "type": "color_background",
+            "id": "block_bg",
+            "label": "t:sections.general.settings.color.label__1"
+        },
+        {
+            "type": "select",
+            "id": "container",
+            "label": "t:sections.general.settings.container.label__1",
+            "default": "1770",
+            "options": [
+            {
+                "value": "1170",
+                "label": "t:sections.general.settings.container.options__1"
+            },
+            {
+                "value": "1370",
+                "label": "t:sections.general.settings.container.options__2"
+            },
+            {
+                "value": "1570",
+                "label": "t:sections.general.settings.container.options__3"
+            },
+            {
+                "value": "1770",
+                "label": "t:sections.general.settings.container.options__4"
+            },
+            {
+                "value": "1860",
+                "label": "t:sections.general.settings.container.options__5"
+            },
+            {
+                "value": "full",
+                "label": "t:sections.general.settings.container.options__6"
+            }],
+            "info": "t:sections.general.settings.container.info"
+        },
+        {
+            "type": "paragraph",
+            "content": "t:sections.general.settings.padding.paragraph__1.content"
+        },
+        {
+            "type": "range",
+            "id": "padding_top",
+            "label": "t:sections.general.settings.padding.label__1",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom",
+            "label": "t:sections.general.settings.padding.label__2",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 0
+        },
+        {
+            "type": "paragraph",
+            "content": "t:sections.general.settings.padding.paragraph__2.content"
+        },
+        {
+            "type": "range",
+            "id": "padding_top_tablet",
+            "label": "t:sections.general.settings.padding.label__1",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 40
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom_tablet",
+            "label": "t:sections.general.settings.padding.label__2",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 40
+        },
+        {
+            "type": "paragraph",
+            "content": "t:sections.general.settings.padding.paragraph__3.content"
+        },
+        {
+            "type": "range",
+            "id": "padding_top_mobile",
+            "label": "t:sections.general.settings.padding.label__1",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 30
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom_mobile",
+            "label": "t:sections.general.settings.padding.label__2",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "t:sections.general.settings.padding.unit",
+            "default": 30
+        },
+        {
+            "type": "text",
+            "id": "block_title",
+            "label": "t:sections.general.settings.block-title.label__1",
+            "default": "Join Our Mailing List"
+        },
+        {
+            "type": "textarea",
+            "id": "block_text",
+            "label": "t:sections.general.settings.block-title.label__2",
+            "default": "Give customers details about the banner image(s) or content on the template."
+        },
+        {
+            "type": "select",
+            "id": "block_title_align",
+            "label": "t:sections.general.settings.block-title.label__3",
+            "options": [
+            {
+                "value": "left",
+                "label": "t:sections.general.settings.block-title.options__1"
+            },
+            {
+                "value": "center",
+                "label": "t:sections.general.settings.block-title.options__2"
+            },
+            {
+                "value": "right",
+                "label": "t:sections.general.settings.block-title.options__3"
+            }],
+            "default": "center"
+        },
+        {
+            "type": "header",
+            "content": "t:sections.subscription-form.settings.header__2.content"
+        },
+        {
+            "type": "color",
+            "id": "text_color",
+            "label": "t:sections.general.settings.color.label__2",
+            "default": "#2D2D2D"
+        },
+        {
+            "type": "color",
+            "id": "border_color",
+            "label": "t:sections.general.settings.color.label__3",
+            "default": "#2D2D2D"
+        }],
+        "presets": [
+        {
+            "name": "t:sections.subscription-form.presets.name"
+        }],
+        "disabled_on": {
+            "groups": ["header", "footer"]
+        }
+    }
+{% endschema %}

@@ -1,0 +1,212 @@
+
+{% liquid
+    assign footer_bottom_bg = block.settings.footer_bottom_bg
+    assign footer_bottom_color = block.settings.footer_bottom_color
+    assign footer_bottom_des_color = block.settings.footer_bottom_des_color
+
+    assign social_bg = block.settings.social_bg
+    assign social_color = block.settings.social_color
+    assign social_bg_hover = block.settings.social_bg_hover
+    assign social_color_hover = block.settings.social_color_hover
+
+    assign show_separate_line = block.settings.show_separate_line
+    assign separate_line_color = block.settings.separate_line_color
+%}
+
+<style>
+    {% if footer_bottom_bg != 'rgba(0,0,0,0)' and footer_bottom_bg != blank %}
+        .footer-{{ footer_layout }} .footer__content-bottom{
+            background: {{ footer_bottom_bg }};
+        }
+
+        .footer-{{ footer_layout }} .copyright__content{
+            color: {{ footer_bottom_color }};
+        }
+
+        {% if footer_bottom_color != 'rgba(0,0,0,0)' and footer_bottom_des_color != blank %}
+            .footer-{{ footer_layout }} .copyright__content{
+                color: {{ footer_bottom_des_color }};
+            }
+        {% endif %}
+    {% endif %}
+
+    {% if social_bg != 'rgba(0,0,0,0)' and social_bg != blank %}
+        .footer.footer-{{ footer_layout }}  .list-social__link{
+            background: {{ social_bg }}!important;
+        }
+    {% endif %}
+
+    {% if social_color != 'rgba(0,0,0,0)' and social_color != blank %}
+        .footer.footer-{{ footer_layout }}  .list-social--label{
+            color: {{ social_color }};
+        }
+
+        .footer-{{ footer_layout }} .list-social__link .icon{
+            fill: {{ social_color }}!important;
+        }
+    {% endif %}
+
+    {% if show_separate_line %}
+        .footer-{{ footer_layout }} .footer-block__bottom.separate-line{
+            border-color: {{ separate_line_color }};
+        }
+
+        {% if footer_layout == '1' %}
+            .footer-{{ footer_layout }} .footer__content-bottom.separate-line {
+                border-top: 1px solid {{ separate_line_color }};
+            }
+        {% elsif footer_layout == '2' %}
+            .footer-2 .footer__content-middle {
+                border-top: 1px solid {{ separate_line_color }};
+            }
+        {% elsif footer_layout == '4' %}
+            .footer-4 .footer__content-middle .footer-block__middle-wrapper{
+                border-top: 1px solid {{ separate_line_color }};
+                border-bottom: 1px solid {{ separate_line_color }};
+            }
+            {% unless section.settings.show_footer_top %}
+                .footer-4 .footer__content-middle .footer-block__middle-wrapper{
+                    border-top: none;
+                }
+            {% endunless %}
+        {% endif %}
+    {% endif %}
+
+    @media (min-width: 1025px){
+        {% if social_bg_hover != 'rgba(0,0,0,0)' and social_bg_hover != blank %}
+            .footer.footer-{{ footer_layout }} .list-social__link:hover{
+                background: {{ social_bg_hover }}!important;
+            }
+        {% endif %}
+
+        {% if social_color_hover != 'rgba(0,0,0,0)' and social_color_hover != blank %}
+            .footer.footer-{{ footer_layout }} .list-social__link:hover .icon{
+                fill: {{ social_color_hover }}!important;
+            }
+        {% endif %}
+
+        {% if show_separate_line %}
+            .footer-2 .footer-block__middle .footer-block__column.separate-line:after,
+            .footer-2 .footer-block__middle .footer-block__column.separate-line:before,
+            .footer-3 .footer-block__middle .footer-block__column.separate-line:before{
+                background-color: {{ separate_line_color }};
+            }
+        {% endif %}
+    }
+</style>
+
+{%- unless footer_layout == '11' -%}
+<div class="footer__content-bottom{% if footer_layout == '1' %}{% if show_separate_line or block.settings.show_separate_line %} separate-line{% endif %}{% endif %}" {{ block.shopify_attributes }}
+    {%- if footer_layout == '5' %} style="--separate-line-color: {{ footer_bottom_color }};"{% endif -%}
+>
+    <div class="container container-{{ block.settings.footer_bottom_container }}">
+{%- endunless -%}
+        <div class="footer-block__bottom{% if text_center %} text-center{% endif %}{% unless footer_layout == '1' %}{% if show_separate_line or block.settings.show_separate_line %} separate-line{% endif %}{% endunless %}"{% if footer_layout == '11' %} {{ block.shopify_attributes }}{% endif %}>
+            {%- if footer_layout == '8' -%}
+                {%- if block.settings.show_footer_logo and block.settings.footer_logo != blank -%}
+                    <div class="footer__column-item footer__logo">
+                        <div class="image image-adapt">
+                            <img
+                                srcset="{{ block.settings.footer_logo | img_url: 'master' }} 1x, {{ block.settings.footer_logo | img_url: 'master', scale: 2 }} 2x"
+                                src="{{ block.settings.footer_logo | img_url: 'master' }}"
+                                loading="lazy"
+                                alt="{{ block.settings.footer_logo.alt | default: shop.name | escape }}"
+                                width="{{ block.settings.footer_logo.width | replace: 'px', '' }}"
+                                height="{{ block.settings.footer_logo.height | replace: 'px', '' }}"
+                            >
+                        </div>
+                    </div>
+                {%- endif -%}
+            {%- endif -%}
+            {%- if footer_layout == '3' or footer_layout == '4' or  footer_layout == '5' or  footer_layout == '10' or  footer_layout == '11' -%}
+                {%- if block.settings.show_copyright -%}
+                    <div class="footer__column-item footer__copyright">
+                        {% render 'footer-copyright',
+                            block: block
+                        %}
+                    </div>
+                {%- endif -%}
+                {%- if block.settings.show_payment -%}
+                    <div class="footer__column-item footer__payment">
+                        {% render 'footer-payment',
+                            block: block,
+                            payment_type: block.settings.payment_type
+                        %}
+                    </div>
+                {%- endif -%}
+            {%- elsif footer_layout == '7' -%}
+                {%- if block.settings.show_copyright -%}
+                    <div class="wrapper-footer-bottom-block">
+                        <div class="footer__column-item footer__copyright">
+                            {% render 'footer-copyright',
+                                block: block
+                            %}
+                        </div>
+                    </div>
+                {%- endif -%}
+                {%- if block.settings.show_social -%}
+                    <div class="footer_social-media">
+                        {% render 'halo-social-media-icons' %}
+                    </div>
+                {%- endif -%}
+                {%- if block.settings.show_payment -%}
+                    <div class="footer__column-item footer__payment">
+                        {% render 'footer-payment',
+                            block: block,
+                            payment_type: block.settings.payment_type
+                        %}
+                    </div>
+                {%- endif -%}
+            {%- elsif footer_layout == '9' -%}
+                {%- if block.settings.show_social -%}
+                    <div class="footer__column-item footer__list-social footer_social-media">
+                        {% render 'halo-social-media-icons',
+                            show_label: true
+                        %}
+                    </div>
+                {%- endif -%}
+                {%- if block.settings.show_copyright -%}
+                    <div class="footer__column-item footer__copyright text-center">
+                        {% render 'footer-copyright',
+                            block: block,
+                            footer_layout: '9'
+                        %}
+                    </div>
+                {%- endif -%}
+                {%- if block.settings.show_payment -%}
+                    <div class="footer__column-item footer__payment">
+                        {% render 'footer-payment',
+                            block: block,
+                            payment_type: block.settings.payment_type
+                        %}
+                    </div>
+                {%- endif -%}
+            {%- else -%}
+                {%- if block.settings.show_payment -%}
+                    <div class="footer__column-item footer__payment">
+                        {% render 'footer-payment',
+                            block: block,
+                            payment_type: block.settings.payment_type
+                        %}
+                    </div>
+                {%- endif -%}
+                {%- if block.settings.show_copyright -%}
+                    <div class="footer__column-item footer__copyright">
+                        {% render 'footer-copyright',
+                            block: block
+                        %}
+                    </div>
+                {%- endif -%}
+            {%- endif -%}
+            {%- if footer_layout == '3' -%}
+                {%- if block.settings.show_social -%}
+                    <div class="footer__column-item footer__list-social">
+                        {% render 'halo-social-media-icons' %}
+                    </div>
+                {%- endif -%}
+            {%- endif -%}
+        </div>
+{%- unless footer_layout == '11' -%}
+    </div>
+</div>
+{%- endunless -%}

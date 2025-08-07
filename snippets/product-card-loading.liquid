@@ -1,0 +1,255 @@
+{%- liquid
+    if settings.product_card_style == '4'
+        assign padding_bottom = 0
+        assign position_bottom = 0
+        assign line_height = settings.line_height | plus: 0
+        if show_add_to_cart == true or show_add_to_cart == 'true'
+            assign border = settings.btn_border_width | times: 2
+            assign action_btn_height = settings.product_action_font_size | times: line_height | plus: settings.btn_padding_top | plus: settings.btn_padding_bottom | plus: border | plus: 9
+            assign position_bottom = action_btn_height | divided_by: 2 | append: 'px'
+        else
+            assign action_btn_height = 0
+            assign position_bottom = action_btn_height | append: 'px'
+        endif
+        assign padding_bottom = action_btn_height | divided_by: 2
+        if settings.show_compare and settings.product_compare_type == 'default'
+            assign compare_height = settings.type_body_font_size | times: line_height | plus: 9
+            assign padding_bottom = padding_bottom | plus: compare_height | append: 'px'
+        endif
+    endif
+-%}
+
+<div class="product-item{% if settings.product_card_style == '4' %} product-item--box-shadow{% elsif settings.product_card_style == '7' or settings.product_card_style == '12' %} product-item--border product-item--box-shadow{% endif %}" {% if settings.product_card_style == '4' %} style="padding-bottom: {{ padding_bottom }}"{% endif %}>
+    <div class="card style-{{ settings.product_card_style }}">
+        <div class="card-product{% if product_card_product.featured_media == nil %} card--text-only card--soft{% endif %}">
+            <div class="card-product__wrapper">
+                {%- liquid
+                    assign featured_media_aspect_ratio = product_card_product.featured_media.aspect_ratio
+
+                    if product_card_product.featured_media.aspect_ratio == nil
+                        assign featured_media_aspect_ratio = 1
+                    endif
+                -%}
+                <div class="card-media card-media--{{ media_size }}{% if settings.show_image_loading %} card-media--loading{% endif %}"
+                    {% if product_card_product.featured_media %}
+                        {% if media_size == 'adapt' %}
+                            style="padding-bottom: {{ 1 | divided_by: featured_media_aspect_ratio | times: 100 }}%;"
+                        {% elsif media_size == 'square' %}
+                            style="padding-bottom: 100%;"
+                        {% elsif media_size == 'portrait' %}
+                            {% if portrait_aspect_ratio != blank %}
+                                style="padding-bottom: {{ portrait_aspect_ratio | append: '%' }};"
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        style="padding-bottom: 100%;"
+                    {% endif %}
+                >
+                    {%- if settings.show_image_loading -%}
+                        <div class="media-loading" data-title="{{ settings.image_loading_text }}">{{ settings.image_loading_text }}</div>
+                    {%- else -%}
+                        {%- if product_card_product.featured_media -%}
+                            <img srcset="
+                                {%- if product_card_product.featured_media.width >= 165 -%}
+                                    {{ product_card_product.featured_media | img_url: '165x' }} 165w,
+                                {%- endif -%}
+                                {%- if product_card_product.featured_media.width >= 360 -%}
+                                    {{ product_card_product.featured_media | img_url: '360x' }} 360w,
+                                {%- endif -%}
+                                {%- if product_card_product.featured_media.width >= 533 -%}
+                                    {{ product_card_product.featured_media | img_url: '533x' }} 533w,
+                                {%- endif -%}
+                                {%- if product_card_product.featured_media.width >= 720 -%}
+                                    {{ product_card_product.featured_media | img_url: '720x' }} 720w,
+                                {%- endif -%}
+                                {%- if product_card_product.featured_media.width >= 940 -%}
+                                    {{ product_card_product.featured_media | img_url: '940x' }} 940w,
+                                {%- endif -%}
+                                {%- if product_card_product.featured_media.width >= 1066 -%}
+                                    {{ product_card_product.featured_media | img_url: '1066x' }} 1066w
+                                {%- endif -%}"
+                                src="{{ product_card_product.featured_media | img_url: '533x' }}"
+                                sizes="(min-width: 1100px) 535px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)"
+                                alt="{{ product_card_product.featured_media.alt | escape }}"
+                                class="lazyload"
+                            >
+                        {%- else -%}
+                            {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+                            {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+                        {%- endif -%}
+                    {%- endif -%}
+                </div>
+            </div>
+        </div>
+        <div class="card-information">
+            <div class="card-information__wrapper text-{{ settings.product_content_text_align }}">
+                {%- if settings.product_card_style == '1' -%}
+                    {%- if settings.show_vendor or settings.show_review -%}
+                        <div class="card-information__group{% if settings.show_vendor == false or settings.show_review == false %} card-information__group-2{% endif %}{% if settings.show_review %} halo-productReview{% endif %}">
+                            {%- if settings.show_vendor -%}
+                                <div class="card-vendor">
+                                    <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
+                                    {{ product_card_product.vendor | link_to_vendor }}
+                                </div>
+                            {%- endif -%}
+                            
+                            {%- if settings.show_review -%}
+                                {% render 'product-card-review',
+                                    product: product_card_product,
+                                    class: 'card-grid__hidden'
+                                %}
+                            {%- endif -%}
+                        </div>
+                    {%- endif -%}
+                {%- else -%}
+                    {%- if settings.show_vendor -%}
+                        <div class="card-information__group card-information__group-2">
+                            <div class="card-vendor">
+                                <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
+                                {{ product_card_product.vendor | link_to_vendor }}
+                            </div>
+                        </div>
+                    {%- endif -%}
+                {%- endif -%}
+
+                {%- if settings.product_card_style == '7' or settings.product_card_style == '12' -%}
+                    <div class="card-price">
+                    {%- liquid
+                        if use_variant
+                            assign target = product_card_product.selected_or_first_available_variant
+                        else
+                            assign target = product_card_product
+                        endif
+
+                        assign compare_at_price = target.compare_at_price
+                        assign price = target.price | default: 1999
+                        assign available = target.available | default: false
+                        assign money_price = price | money
+
+                        if target == product_card_product and product_card_product.price_varies
+                            assign money_price = 'products.product.price.from_price_html' | t: price: money_price
+                        endif
+                    -%}
+                        <div class="price
+                            {%- if price_class %} {{ price_class }}{% endif -%}
+                            {%- if available == false %} price--sold-out {% endif -%}
+                            {%- if compare_at_price > price %} price--on-sale {% endif -%}
+                            {%- if product_card_product.price_varies == false and product_card_product.compare_at_price_varies %} price--no-compare{% endif -%}">
+                            <dl>
+                                <div class="price__regular">
+                                    <dt>
+                                        <span class="visually-hidden visually-hidden--inline">{{ 'products.product.price.regular_price' | t }}</span>
+                                    </dt>
+                                    <dd class="price__last">
+                                        <span class="price-item price-item--regular">
+                                            {{ money_price }}
+                                        </span>
+                                    </dd>
+                                </div>
+                                <div class="price__sale">
+                                    <dt class="price__compare">
+                                        <span class="visually-hidden visually-hidden--inline">{{ 'products.product.price.regular_price' | t }}</span>
+                                    </dt>
+                                    <dd class="price__compare">
+                                        <s class="price-item price-item--regular">
+                                            {{ compare_at_price | money }}
+                                        </s>
+                                    </dd>
+                                    <dt>
+                                        <span class="visually-hidden visually-hidden--inline">{{ 'products.product.price.sale_price' | t }}</span>
+                                    </dt>
+                                    <dd class="price__last">
+                                        <span class="price-item price-item--sale">
+                                            {{ money_price }}
+                                        </span>
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+                {%- endif -%}
+                
+                <a class="card-title link-underline{% if settings.product_title_line_text != 'full' %} card-title-ellipsis{% endif %}" href="{{ product_card_product.url }}">
+                    <span class="text">
+                        {{ product_card_product.title | escape }}
+                    </span>
+                </a>
+
+                {%- if settings.product_card_style == '2' or settings.product_card_style == '3' or settings.product_card_style == '5' -%}
+                    {%- if settings.show_review -%}
+                        {% render 'product-card-review',
+                            product: product_card_product,
+                            class: 'card-grid__hidden'
+                        %}
+                    {%- endif -%}
+                {%- endif -%}
+
+                {%- if settings.product_card_style != '7' or settings.product_card_style != '12' -%}
+                    <div class="card-price">
+                        {%- liquid
+                             if use_variant
+                                assign target = product_card_product.selected_or_first_available_variant
+                            else
+                                assign target = product_card_product
+                            endif
+
+                            assign compare_at_price = target.compare_at_price
+                            assign price = target.price | default: 1999
+                            assign available = target.available | default: false
+                            assign money_price = price | money
+
+                            if target == product_card_product and product_card_product.price_varies
+                                assign money_price = 'products.product.price.from_price_html' | t: price: money_price
+                            endif
+                        -%}
+                        <div class="price
+                            {%- if price_class %} {{ price_class }}{% endif -%}
+                            {%- if available == false %} price--sold-out {% endif -%}
+                            {%- if compare_at_price > price %} price--on-sale {% endif -%}
+                            {%- if product_card_product.price_varies == false and product_card_product.compare_at_price_varies %} price--no-compare{% endif -%}">
+                            <dl>
+                                <div class="price__regular">
+                                    <dt>
+                                        <span class="visually-hidden visually-hidden--inline">{{ 'products.product.price.regular_price' | t }}</span>
+                                    </dt>
+                                    <dd class="price__last">
+                                        <span class="price-item price-item--regular">
+                                            {{ money_price }}
+                                        </span>
+                                    </dd>
+                                </div>
+                                <div class="price__sale">
+                                    <dt class="price__compare">
+                                        <span class="visually-hidden visually-hidden--inline">{{ 'products.product.price.regular_price' | t }}</span>
+                                    </dt>
+                                    <dd class="price__compare">
+                                        <s class="price-item price-item--regular">
+                                            {{ compare_at_price | money }}
+                                        </s>
+                                    </dd>
+                                    <dt>
+                                        <span class="visually-hidden visually-hidden--inline">{{ 'products.product.price.sale_price' | t }}</span>
+                                    </dt>
+                                    <dd class="price__last">
+                                        <span class="price-item price-item--sale">
+                                            {{ money_price }}
+                                        </span>
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+                {%- endif -%}
+
+                {%- if settings.product_card_style == '6' or settings.product_card_style == '7' or settings.product_card_style == '12' -%}
+                    {%- if settings.show_review -%}
+                        {% render 'product-card-review',
+                            product: product_card_product,
+                            class: 'card-grid__hidden'
+                        %}
+                    {%- endif -%}
+                {%- endif -%}
+            </div>
+        </div>
+    </div>
+</div>

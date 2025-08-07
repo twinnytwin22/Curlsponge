@@ -1,0 +1,386 @@
+{{ 'component-main-blog-article.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+    assign padding_top = section.settings.padding_top | append: 'px'
+    assign padding_bottom = section.settings.padding_bottom | append: 'px'
+    assign padding_top_tablet = section.settings.padding_top_tablet | append: 'px'
+    assign padding_bottom_tablet = section.settings.padding_bottom_tablet | append: 'px'
+    assign padding_top_mobile = section.settings.padding_top_mobile | append: 'px'
+    assign padding_bottom_mobile = section.settings.padding_bottom_mobile | append: 'px'
+    assign container = section.settings.container
+    assign media_size = section.settings.image_ratio
+    assign show_breadcrumb = section.settings.show_breadcrumb
+    assign breadcrumb_alignment = section.settings.breadcrumb_alignment
+    assign show_author = section.settings.show_author
+    assign show_date = section.settings.show_date
+    assign show_next_prev = section.settings.show_next_prev
+    assign show_share = section.settings.show_share
+    assign title_font = section.settings.title_font
+    assign title_font_size = section.settings.title_font_size | append: 'px'
+    assign title_mobile_font_size = section.settings.title_mobile_font_size | append: 'px'
+    assign title_font_weight = section.settings.title_font_weight
+    assign title_text_transform = section.settings.title_text_transform
+-%}
+<article data-section-id="{{ section.id }}" data-section-type="article-template" id="ArticleSection-{{ section.id }}" data-section="{{ section.id }}" class="article-template halo-page-padding" itemscope itemtype="http://schema.org/BlogPosting"
+    style="--padding-top: {{ padding_top }};
+        --padding-bottom: {{ padding_bottom }};
+        --padding-top-tablet: {{ padding_top_tablet }};
+        --padding-bottom-tablet: {{ padding_bottom_tablet }};
+        --padding-top-mobile: {{ padding_top_mobile }};
+        --padding-bottom-mobile: {{ padding_bottom_mobile }};"
+>
+    <div class="container container-{{ container }}">
+        {%- if show_breadcrumb -%}
+            {% render 'breadcrumb',
+                alignment: breadcrumb_alignment
+            %}
+        {%- endif -%}
+        <div class="halo-article-content">
+            <div class="article-header">
+                <div class="article-heading text-center"
+                    style="{% if title_font == 'font_1' %}
+                        --title-font: var(--font-1-family);
+                        {% elsif title_font == 'font_2' %}
+                            --title-font: var(--font-2-family);
+                        {% elsif title_font == 'font_3' %}
+                            --title-font: var(--font-3-family);
+                        {% endif %}
+                        --title-font-size: {{ title_font_size }};
+                        --title-mobile-font-size: {{ title_mobile_font_size }};
+                        --title-font-weight: {{ title_font_weight }};
+                        --title-text-transform: {{ title_text_transform }};"
+                >
+                    <h1 class="title title__relative{% unless article.image %} title__relative{% endunless %}">
+                        {{ article.title }}
+                        {%- unless article.image -%}
+                            {%- if show_share -%}
+                                {% render 'halo-share',
+                                    target: 'Article',
+                                    class: '',
+                                    url: article.url
+                                %}
+                            {%- endif -%}
+                        {%- endunless -%}
+                    </h1>
+                    {%- if show_author or show_date or blog.comments_enabled? -%}
+                        <div class="info">
+                            {%- if show_author -%}
+                                <span class="info-item author">
+                                    <em>{{ 'blogs.article.by' | t }}</em>
+                                    <span class="text">{{ article.author }}</span>
+                                </span>
+                            {%- endif -%}
+                            {%- if show_date -%}
+                                <span class="info-item date">
+                                    {{ article.published_at | date: "%d %b %Y" }}
+                                </span>
+                            {%- endif -%}
+                            {%- if blog.comments_enabled? -%}
+                                <a class="info-item comment" href="{{ article.url }}#comments">
+                                    {{ 'blogs.article.comments' | t: count: article.comments_count }}
+                                </a>      
+                            {%- endif -%}
+                        </div>
+                    {%- endif -%}
+                </div>
+                {%- if article.image -%}
+                    <div class="article-image">
+                        <div class="article-image__wrapper">
+                            <a href="{{ article.url }}" class="image">
+                               <img srcset="{% if article.image.width >= 350 %}{{ article.image | img_url: '350x' }} 350w,{% endif %}
+                                {% if article.image.width >= 700 %}{{ article.image | img_url: '700x' }} 700w,{% endif %}
+                                {% if article.image.width >= 749 %}{{ article.image | img_url: '749x' }} 749w,{% endif %}
+                                {% if article.image.width >= 1498 %}{{ article.image | img_url: '1498x' }} 1498w,{% endif %}
+                                {% if article.image.width >= 1100 %}{{ article.image | img_url: '1100x' }} 1100w,{% endif %}
+                                {% if article.image.width >= 2200 %}{{ article.image | img_url: '2200x' }} 2200w,{% endif %}"
+                                sizes="(min-width: 1200px) 1100px, (min-width: 750px) calc(100vw - 10rem), 100vw"
+                                src="{{ article.image | img_url: '1100x' }}"
+                                loading="lazy"
+                                width="{{ article.image.width }}"
+                                height="{{ article.image.height }}"
+                                alt="{{ article.image.alt | escape }}">
+                            </a>
+                            {%- if show_share -%}
+                                {% render 'halo-share',
+                                    target: 'Article',
+                                    class: 'share-button__absolute',
+                                    url: article.url
+                                %}
+                            {%- endif -%}
+                        </div>
+                    </div>
+                {%- endif -%}
+            </div>
+            <div class="article-body">
+                <div class="article-content halo-text-format">
+                    {{ article.content }}
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+
+{% render 'schema',
+    article: article
+%}
+
+{% schema %}
+{
+    "name": "t:sections.main-article.name",
+    "settings": [
+    {
+        "type": "header",
+        "content": "t:sections.main-article.settings.header__1.content"
+    },
+    {
+        "type": "checkbox",
+        "id": "show_breadcrumb",
+        "label": "t:sections.general.settings.breadcrumb.label__1",
+        "default": false
+    },
+    {
+        "type": "select",
+        "id": "breadcrumb_alignment",
+        "label": "t:sections.general.settings.breadcrumb.label__2",
+        "options": [
+        {
+            "value": "left",
+            "label": "t:sections.general.settings.breadcrumb.options__1"
+        },
+        {
+            "value": "center",
+            "label": "t:sections.general.settings.breadcrumb.options__2"
+        },
+        {
+            "value": "right",
+            "label": "t:sections.general.settings.breadcrumb.options__3"
+        }],
+        "default": "left"
+    },
+    {
+        "type": "select",
+        "id": "container",
+        "label": "t:sections.general.settings.container.label__1",
+        "default": "1770",
+        "options": [
+        {
+            "value": "1170",
+            "label": "t:sections.general.settings.container.options__1"
+        },
+        {
+            "value": "1370",
+            "label": "t:sections.general.settings.container.options__2"
+        },
+        {
+            "value": "1570",
+            "label": "t:sections.general.settings.container.options__3"
+        },
+        {
+            "value": "1770",
+            "label": "t:sections.general.settings.container.options__4"
+        },
+        {
+            "value": "1860",
+            "label": "t:sections.general.settings.container.options__5"
+        },
+        {
+            "value": "full",
+            "label": "t:sections.general.settings.container.options__6"
+        }],
+        "info": "t:sections.general.settings.container.info"
+    },
+    {
+        "type": "paragraph",
+        "content": "t:sections.general.settings.padding.paragraph__1.content"
+    },
+    {
+        "type": "range",
+        "id": "padding_top",
+        "label": "t:sections.general.settings.padding.label__1",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "t:sections.general.settings.padding.unit",
+        "default": 0
+    },
+    {
+        "type": "range",
+        "id": "padding_bottom",
+        "label": "t:sections.general.settings.padding.label__2",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "t:sections.general.settings.padding.unit",
+        "default": 0
+    },
+    {
+        "type": "paragraph",
+        "content": "t:sections.general.settings.padding.paragraph__2.content"
+    },
+    {
+        "type": "range",
+        "id": "padding_top_tablet",
+        "label": "t:sections.general.settings.padding.label__1",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "t:sections.general.settings.padding.unit",
+        "default": 40
+    },
+    {
+        "type": "range",
+        "id": "padding_bottom_tablet",
+        "label": "t:sections.general.settings.padding.label__2",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "t:sections.general.settings.padding.unit",
+        "default": 40
+    },
+    {
+        "type": "paragraph",
+        "content": "t:sections.general.settings.padding.paragraph__3.content"
+    },
+    {
+        "type": "range",
+        "id": "padding_top_mobile",
+        "label": "t:sections.general.settings.padding.label__1",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "t:sections.general.settings.padding.unit",
+        "default": 30
+    },
+    {
+        "type": "range",
+        "id": "padding_bottom_mobile",
+        "label": "t:sections.general.settings.padding.label__2",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "t:sections.general.settings.padding.unit",
+        "default": 30
+    },
+    {
+        "type": "header",
+        "content": "t:sections.main-article.settings.header__2.content"
+    },
+    {
+        "type": "checkbox",
+        "id": "show_author",
+        "label": "t:sections.main-article.settings.general.label__1",
+        "default": true
+    },
+    {
+        "type": "checkbox",
+        "id": "show_date",
+        "label": "t:sections.main-article.settings.general.label__2",
+        "default": true
+    },
+    {
+        "type": "checkbox",
+        "id": "show_share",
+        "label": "t:sections.main-article.settings.general.label__3",
+        "default": false
+    },
+    {
+        "type": "paragraph",
+        "content": "t:sections.general.settings.typography.paragraph__1.content"
+    },
+    {
+        "type": "select",
+        "id": "title_font",
+        "label": "t:settings_schema.typography.settings.font.label",
+        "options": [
+        {
+            "value": "font_1",
+            "label": "t:settings_schema.typography.settings.font.options__1"
+        },
+        {
+            "value": "font_2",
+            "label": "t:settings_schema.typography.settings.font.options__2"
+        },
+        {
+            "value": "font_3",
+            "label": "t:settings_schema.typography.settings.font.options__3"
+        }],
+        "default": "font_2"
+    },
+    {
+        "type": "range",
+        "id": "title_font_size",
+        "label": "t:settings_schema.typography.settings.font_size.label",
+        "min": 20,
+        "max": 40,
+        "step": 1,
+        "unit": "t:settings_schema.typography.settings.font_size.unit",
+        "default": 40
+    },
+    {
+        "type": "range",
+        "id": "title_mobile_font_size",
+        "label": "t:settings_schema.typography.settings.font_size.label__2",
+        "min": 10,
+        "max": 30,
+        "step": 1,
+        "unit": "t:settings_schema.typography.settings.font_size.unit",
+        "default": 30
+    },
+    {
+        "type": "select",
+        "id": "title_font_weight",
+        "label": "t:settings_schema.typography.settings.font_weight.label",
+        "default": "600",
+        "options": [
+        {
+            "value": "400",
+            "label": "t:settings_schema.typography.settings.font_weight.options__1"
+        },
+        {
+            "value": "500",
+            "label": "t:settings_schema.typography.settings.font_weight.options__2"
+        },
+        {
+            "value": "600",
+            "label": "t:settings_schema.typography.settings.font_weight.options__3"
+        },
+        {
+            "value": "700",
+            "label": "t:settings_schema.typography.settings.font_weight.options__4"
+        },
+        {
+            "value": "800",
+            "label": "t:settings_schema.typography.settings.font_weight.options__5"
+        },
+        {
+            "value": "900",
+            "label": "t:settings_schema.typography.settings.font_weight.options__6"
+        }]
+    },
+    {
+        "type": "select",
+        "id": "title_text_transform",
+        "label": "t:settings_schema.typography.settings.text_transform.label",
+        "default": "capitalize",
+        "options": [
+        {
+            "value": "none",
+            "label": "t:settings_schema.typography.settings.text_transform.options__1"
+        },
+        {
+            "value": "capitalize",
+            "label": "t:settings_schema.typography.settings.text_transform.options__2"
+        },
+        {
+            "value": "uppercase",
+            "label": "t:settings_schema.typography.settings.text_transform.options__3"
+        },
+        {
+            "value": "lowercase",
+            "label": "t:settings_schema.typography.settings.text_transform.options__4"
+        }]
+    }]
+}
+{% endschema %}
+
+

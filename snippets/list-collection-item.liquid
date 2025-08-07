@@ -1,0 +1,95 @@
+<div class="banner-item image-{{ image_effect }} item{% if content_style == '2'%} image-border-{{ image_border_radius }}{% endif %}">
+	<div class="img-box{% if content_style == '1'%} image-border-{{ image_border_radius }}{% endif %}">
+		{%- liquid
+			if type == 'all'
+				assign image = collection.image
+				assign link = collection.url
+			else
+				if block.settings.image != blank
+	    			assign image = block.settings.image
+	    		else
+					assign image = collection.image
+				endif
+				if block.settings.link != blank
+	    			assign link = block.settings.link
+	    		else
+					assign link = collection.url
+				endif
+			endif
+		-%}
+		{%- if image != blank -%}
+			{%- if layout == 'masonry' -%}
+	            <a class="image image-adapt{% if content_style == '2'%} image-border-{{ image_border_radius }}{% endif %}" href="{{ link }}" style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
+	            	<img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x" src="{{ image | img_url: 'master' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
+	            </a>
+	        {%- else -%}
+	        	<a class="image image-{{ image_ratio }}{% if content_style == '2'%} image-border-{{ image_border_radius }}{% endif %}" href="{{ link }}"
+	        		{% if image_ratio == 'adapt' %}
+                        style="padding-bottom: {{ 1 | divided_by: image.aspect_ratio | times: 100 }}%;"
+                    {% elsif image_ratio == 'square' %}
+                        style="padding-bottom: 100%;"
+                    {% elsif image_ratio == 'portrait' %}
+                        {% if portrait_aspect_ratio != blank %}
+                            style="padding-bottom: {{ portrait_aspect_ratio }};"
+                        {% endif %}
+                    {% endif %}
+	        	>
+	            	<img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x" src="{{ image | img_url: 'master' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
+	            </a>
+	        {%- endif -%}
+        {%- else -%}
+            <a class="image" href="{{ link }}">
+                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+            </a>
+        {%- endif -%}
+	</div>
+	{%- if show_collection_title or show_collection_product_count or block.settings.sub_title != blank or block.settings.block_title != blank or block.settings.link_title != blank -%}
+		<div class="content-box style-{{ content_style }} text-{{ align }}{% if bg_color != 'rgba(0,0,0,0)' and bg_color != blank %} content-box--bg{% endif %}"
+			style="--bg-color: {{ bg_color }};" 
+		>
+			{%- if show_collection_title -%}
+                <h4 class="heading">
+                    <a href="{{ link }}">
+                        {{ collection.title | escape }}
+                    </a>
+                </h4>
+            {%- endif -%}
+            {%- if show_collection_product_count -%}
+                <span class="count">
+                    {{ 'sections.collection_list.count' | t: count: collection.all_products_count }}
+                </span>
+            {%- endif -%}
+            {%- liquid
+            	assign custom_subtitle = block.settings.sub_title
+            	assign custom_title = block.settings.block_title
+            	assign custom_link_title = block.settings.link_title
+            	if block.settings.url_title != blank
+	    			assign custom_url_title = block.settings.url_title
+	    		else
+					assign custom_url_title = collection.url
+				endif
+            -%}
+            {%- if custom_subtitle != blank or custom_title != blank or custom_link_title != blank -%}
+	            <div class="custom-content">
+	            	{%- if custom_subtitle != blank -%}
+		            	<span class="subtitle">
+		            		{{ custom_subtitle }}
+		            	</span>
+	            	{%- endif -%}
+	            	{%- if custom_title != blank -%}
+		            	<h4 class="title">
+		            		<a href="{{ link }}">
+		            			{{ custom_title }}
+		            		</a>
+		            	</h4>
+	            	{%- endif -%}
+	            	{%- if custom_link_title != blank -%}
+		            	<a href="{{ custom_url_title }}" class="link link-underline">
+		            		<span class="text">{{ custom_link_title }}</span>
+		            	</a>
+	            	{%- endif -%}
+	            </div>
+	        {%- endif -%}
+		</div>
+	{%- endif -%}
+</div>

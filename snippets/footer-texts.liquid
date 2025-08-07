@@ -1,0 +1,38 @@
+<div class="footer-block__item footer-block__info text-{{ text_align }}" {{ block.shopify_attributes }}>
+    <div class="item column-{{ footer_text.size }} clearfix">
+        {%- for column in footer_text -%}
+            <div class="footer-block__column{% if show_separate_line %} separate-line{% endif %}{% if column.settings.show_social %} footer_social-media{% endif %}" {{ column.shopify_attributes }}>
+                {%- if column.settings.show_social -%}
+                    {%- if column.settings.heading_social != blank -%}
+                        <h2 class="footer-block__heading">
+                            {{ column.settings.heading_social | escape }}
+                        </h2>
+                    {%- endif -%}
+                    {% render 'halo-social-media-icons',
+                        block: column,
+                        show_social: true,
+                        footer_layout: footer_layout
+                    %}
+                {%- endif -%}
+                {%- if column.settings.heading != blank -%}
+                    <h2 class="footer-block__heading">
+                        {{ column.settings.heading | escape }}
+                    </h2>
+                {%- endif -%}
+                {%- if column.settings.subtext != blank -%}
+                    <div class="footer-block__details rte">
+                        {{ column.settings.subtext }}
+                    </div>
+                {%- endif -%}
+            </div>
+        {%- endfor -%}
+    </div>
+    {%- if block.settings.show_payment -%}
+        <div class="item footer__payment footer__payment-2">
+            {% render 'footer-payment',
+                block: block,
+                payment_type: block.settings.payment_type
+            %}
+        </div>
+    {%- endif -%}
+</div>

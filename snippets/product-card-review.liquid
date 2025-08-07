@@ -1,0 +1,20 @@
+<div class="card-review halo-productReview clearfix {{ class }}">
+    {%- liquid
+        assign average = product.metafields.reviews.rating.value
+        assign rating = average | replace: '', '' | plus : 0 | round
+    -%}
+    <span class="spr-badge{% if settings.show_review_count %} spr-badge--flex{% endif %}" id="spr_badge_{{ product.id }}" data-rating="{{ average }}">
+        <span class="spr-starrating spr-badge-starrating">
+            {%- for review in (1..5) -%}
+                {%- if rating >= forloop.index -%}
+                    <i class="spr-icon spr-icon-star"></i>
+                {%- else -%}
+                    <i class="spr-icon spr-icon-star-empty"></i>
+                {%- endif -%}
+            {%- endfor -%}
+        </span>
+        {%- if settings.show_review_count and product.metafields.reviews.rating_count > 0 -%}
+            <span class="spr-badge-caption">{{ product.metafields.reviews.rating_count }}</span>
+        {%- endif -%}
+    </span>
+</div>

@@ -1,0 +1,203 @@
+.image-zoom,
+.image-flash,
+.image-run{
+	overflow: hidden;
+	position: relative;
+}
+
+.image-zoom img{
+    will-change: transform;
+    transition: transform .64s ease;
+}
+
+.image.image-overlay,
+.image.image-overlay-2,
+.image.image-overlay-3,
+.image.image-shine{
+	overflow: hidden;
+	position: relative;
+}
+
+.image-overlay .image:before,
+.image.image-overlay:before{
+	content: "";
+    display: block;
+    position: absolute;
+    left: -100%;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    transition: all .3s ease 0s;
+    z-index: 2;
+    background-color: rgb(255, 255, 255, .2);
+}
+
+.image-overlay-2 .image:before,
+.image.image-overlay-2:before{
+	content: "";
+    width: 100%;
+    height: 100%;
+    top: 100%;
+    right: 0;
+    left: auto;
+    z-index: 2;
+    transform: none;
+    position: absolute;
+    transition: all .3s ease;
+    background-color: rgba(0,0,0,.25);
+    background: linear-gradient(to bottom,transparent 0,rgba(0,0,0,.25) 100%);
+}
+
+.image-overlay-3 .image:before,
+.image.image-overlay-3:before{
+    content: "";
+    display: block;
+	position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    width: 0;
+    height: 0;
+    background: rgba(255,255,255,.2);
+    border-radius: 100%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    opacity: 0;
+}
+
+.image-overlay-4 .image:before,
+.image.image-overlay-4:before{
+	content: "";
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    transform: scale(.9);
+    position: absolute;
+    transition: opacity var(--duration-short) ease,transform .5s ease;
+    background-color: rgba(45,45,45,.3);
+    opacity: 0;
+    visibility: hidden;
+}
+
+.image-shine .image:before,
+.image.image-shine:before{
+    position: absolute;
+	top: 0;
+	left: -75%;
+	z-index: 2;
+	display: block;
+	content: '';
+	width: 50%;
+	height: 100%;
+	background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,.3) 100%);
+	background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,.3) 100%);
+	-webkit-transform: skewX(-25deg);
+	transform: skewX(-25deg);
+}
+
+.image-run:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 100%;
+    background-color: rgb(255, 255, 255, .2);
+    /* transition: all .3s ease-in; */
+    transition: all 0.6s cubic-bezier(0.75, 0, 0.125, 1);
+    -webkit-tap-highlight-color: initial;
+    z-index: 2;
+}
+
+.image-liquid .hover {
+    position: absolute;
+    display: block;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background-color: rgba(45,45,45,.3);
+    transition: width .6s ease .3s, height .6s ease .3s;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+/*.loading-banner img{
+	opacity: 0;
+    transition: unset;
+}*/
+
+.img-box.loading .loading-banner img{
+    opacity: 0;
+}
+
+.img-box.loaded .loading-banner img{
+	animation: loadingBanner 1s ease forwards;
+}
+
+.img-box.completed .loading-banner img{
+    animation: inherit;
+}
+
+@media (max-width: 1024px){
+    .img-box:not(.loading) .loading-banner img,
+    .img-box.loading .loading-banner img{
+        opacity: 1!important;
+    }
+
+    .img-box.loaded .loading-banner img{
+        animation: unset;
+    }
+}
+
+@media (min-width: 1025px){
+	.image-zoom:hover img{
+		transform: scale(1.06);
+	}
+
+	.image-flash:hover img{
+		animation: flash 1.5s!important;
+		-webkit-animation: flash 1.5s!important;
+	}
+
+	.image-overlay:hover .image:before,
+	.image.image-overlay:hover:before{
+		left: 0;
+	}
+
+	.image-overlay-2:hover .image:before,
+	.image.image-overlay-2:hover:before{
+		top: 0;
+	}
+
+	.image-overlay-3:hover .image:before,
+	.image.image-overlay-3:hover:before{
+    	animation: circle .75s;
+		-webkit-animation: circle .75s;
+	}
+
+	.image-overlay-4:hover .image:before,
+	.image.image-overlay-4:hover:before{
+		 transform: scale(1);
+		 opacity: 1;
+		 visibility: visible;
+	}
+
+	.image-shine:hover .image:before,
+	.image.image-shine:hover:before{
+		animation: shine .75s;
+    	-webkit-animation: shine .75s;
+	}
+
+	.image-run:hover:before {
+		left: 0;
+		width: 100%;
+		transition: all .3s ease .2s;
+	}
+
+	.image-liquid:hover .hover {
+		width: calc(100vh * 3);
+		height: calc(100vh * 3);
+	}
+}

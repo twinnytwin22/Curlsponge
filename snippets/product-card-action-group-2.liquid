@@ -1,0 +1,76 @@
+{%- liquid
+    assign product_action_group = false
+    
+    assign show_quick_view = false
+    if settings.show_quick_view
+        assign show_quick_view = true
+        assign show_quick_view_card_mobile = settings.show_quick_view_card_mobile
+    endif
+
+    assign show_wishlist = false
+    if settings.show_wishlist_card and settings.show_wishlist
+        assign show_wishlist = true
+        assign show_wishlist_card_mobile = settings.show_wishlist_card_mobile
+    endif
+
+    assign show_action = settings.show_action
+
+    if show_quick_view or show_wishlist or show_action
+        assign product_action_group = true
+    endif
+-%}
+
+{%- if product_action_group -%}
+    <div class="card-product__group-2">
+        {%- if show_wishlist -%}
+            <div class="card-product__group-item card-wishlist{% unless show_wishlist_card_mobile %} card-mobile__hidden{% endunless %}">
+                <a class="card-product__group-icon wishlist-icon{% if wishlist_add %} wishlist-added{% endif %}" href="#" data-wishlist data-wishlist-handle="{{ product.handle }}" data-product-id="{{ product.id }}" role="button">
+                    <span class="visually-hidden">
+                        {%- if wishlist_add -%}
+                            {{ 'wishlist.general.added' | t }}
+                        {%- else -%}
+                            {{ 'wishlist.general.add' | t }}
+                        {%- endif -%}
+                    </span>
+                    {%- if show_text -%}
+                        <span class="text">
+                            {%- if wishlist_add -%}
+                                {{ 'wishlist.general.added' | t }}
+                            {%- else -%}
+                                {{ 'wishlist.general.add' | t }}
+                            {%- endif -%}
+                        </span>
+                    {%- endif -%}
+                    {% render 'icon-heart',
+                        icon_heart: icon_heart
+                    %}
+                </a>
+            </div>
+        {%- endif -%}
+        {%- if show_action -%}
+            <div class="card-product__group-item card-product__group-item-2 card-action card-grid__hidden d-none{% if narrowClass %} narrow{% endif %}">
+                {% render 'add-to-cart-form',
+                    product: product,
+                    id: 'form',
+                    list: 'list',
+                    position: position,
+                    sectionId: sectionId,
+                    positionQuick: 'top'
+                %}
+            </div>
+        {%- endif -%}
+        {%- if show_quick_view -%}
+            <div class="card-product__group-item card-quickview card-quickviewIcon{% unless show_quick_view_card_mobile %} card-mobile__hidden{% endunless %}">
+                <a class="card-product__group-icon quickview-icon{% unless show_quick_view_card_mobile %} card-mobile__hidden{% endunless %}" href="javascript:void(0)" data-product-id="{{ product.id }}" data-open-quick-view-popup data-product-handle="{{ product.handle }}" role="button">
+                    <span class="visually-hidden">{{ 'products.product.quick_view' | t }}</span>
+                    {%- if show_text -%}
+                        <span class="text">
+                            {{ 'products.product.quick_view' | t }}
+                        </span>
+                    {%- endif -%}
+                    {% render 'icon-lookup' %}
+                </a>
+            </div>
+        {%- endif -%}
+    </div>
+{%- endif -%}

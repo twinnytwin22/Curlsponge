@@ -1,0 +1,52 @@
+<div class="collection-info collection-info--{{ position }}">
+	{%- if show_page_title -%}
+        <h1 class="collection-title page-header text-{{ page_title_alignment }}">
+            {{ collection.title | escape }}
+        </h1>
+    {%- endif -%}
+    {%- if collection.description != blank -%}
+		<div class="collection-info-item">
+			<{% if show_read_more_read_less %}more-less-content{% else %}div{% endif %} class="collection-description halo-text-format text-{{ collection_description_align }}" data-show-more-text="{{ 'sections.collection_template.read_more' | t }}" data-show-less-text="{{ 'sections.collection_template.read_less' | t }}">
+				{%- if show_read_more_read_less -%}
+					<div class="short-description">
+						{%- liquid
+	                        assign desc = collection.description | strip_html
+	                        assign word_number = 400
+	                    -%}
+						{{ desc | truncate: word_number }}
+					</div>
+					<div class="full-description">
+						{{ collection.description }}
+					</div>
+					{%- if desc.size > 400 -%}
+						<button type="button" class="link link-underline read-description more">
+							<span class="text">{{ 'sections.collection_template.read_more' | t }}</span>
+						</button>
+					{%- endif -%}
+				{%- else -%}
+					{{ collection.description }}
+				{%- endif -%}
+			</{% if show_read_more_read_less %}more-less-content{% else %}div{% endif %}>
+		</div>
+	{%- endif -%}
+	{%- if show_sub_collection -%}
+		{%- if linklists[collection.handle] != blank -%}
+			<div class="collection-info-item">
+				<ul class="collection-sub-list list-unstyled text-{{ collection_description_align }}">
+					{%- liquid
+						if sub_collection_type == 'some'
+							assign limit = 5
+						else
+							assign limit = 10000
+						endif
+					-%}
+					{%- for link in linklists[collection.handle].links limit: limit -%}
+                        <li class="item">
+                            <a href="{{ link.url }}">{{ link.title | escape }}</a>
+                        </li>
+                    {%- endfor -%}
+				</ul>
+			</div>
+		{%- endif -%}
+	{%- endif -%}
+</div>

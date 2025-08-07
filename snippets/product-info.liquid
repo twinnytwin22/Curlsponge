@@ -1,0 +1,48 @@
+{%- if show_sku -%}
+    <div class="productView-info-item" data-sku {% unless current_variant.sku != blank %} style="display: none;"{% endunless %}>
+        <span class="productView-info-name">
+            {{ 'products.product.text.sku' | t }}
+        </span>
+        <span class="productView-info-value">{{ current_variant.sku }}</span>
+    </div>
+{%- endif -%}
+{%- if show_vendor -%}
+    <div class="productView-info-item">
+        <span class="productView-info-name">
+            {{ 'products.product.text.vendor' | t }}
+        </span>
+        <span class="productView-info-value">{{ product.vendor | link_to_vendor }}</span>
+    </div>
+{%- endif -%}
+{%- if show_availability -%}
+    <div class="productView-info-item" data-inventory>
+        <span class="productView-info-name">
+            {{ 'products.product.text.availability' | t }}
+        </span>
+        <span class="productView-info-value">
+            {%- if current_variant.inventory_management -%}
+                {%- assign first_inventory = current_variant.inventory_quantity -%}
+
+                {%- if first_inventory > 0 -%}
+                    {{ 'products.product.in_stock' | t }}
+                {%- else -%}
+                    {{ 'products.product.out_of_stock' | t }}
+                {%- endif -%}
+            {%- else -%}
+                {{ 'products.product.many_in_stock' | t }}
+            {%- endif -%}
+        </span>
+    </div>
+{%- endif -%}
+{%- if show_product_type -%}
+    {%- if product.type != blank -%}
+        <div class="productView-info-item">
+            <span class="productView-info-name">
+                {{ 'products.product.text.type' | t }}
+            </span>
+            <span class="productView-info-value">
+                {{ product.type | escape | link_to_type }}
+            </span>
+        </div>
+    {%- endif -%}
+{%- endif -%}

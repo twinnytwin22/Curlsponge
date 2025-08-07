@@ -1,0 +1,10 @@
+<div class="productView-wishlist clearfix">
+    <a data-wishlist href="#" data-wishlist-handle="{{ product.handle }}" data-product-id="{{ product.id }}" role="button">
+        <span class="visually-hidden">
+            {{ 'wishlist.general.add' | t }}
+        </span>
+        {% render 'icon-heart',
+        	icon_heart: '1'
+        %}
+    </a>
+</div>

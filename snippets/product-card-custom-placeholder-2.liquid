@@ -1,0 +1,26 @@
+<div class="product-item product-item-custom product-item-custom-2">
+    <div class="card">
+        <div class="card-product card--text-only card--soft">
+            <div class="card-media card-media--square">
+                {{ 'product-' | append: index | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
+        </div>
+        <div class="card-information">
+            <div class="card-information__wrapper text-left">
+                <a class="card-title link-underline {{ settings.product_title_text_transform }}{% if settings.product_title_line_text != 'full' %} card-title-ellipsis{% endif %}" href="#">
+                    <span class="text">
+                        {{ 'onboarding.product_title' | t }}
+                    </span>
+                </a>
+                <div class="card-price">
+                    {% render 'price' %}
+                    <div class="details">
+                        <div class="details-icon">
+                            {% render 'icon-add-to-cart' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

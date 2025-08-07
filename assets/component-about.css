@@ -1,0 +1,152 @@
+.about-title{
+    text-transform: unset;
+    font-size: 40px;
+    font-weight: var(--font-weight-semibold);
+    padding-bottom: 24px;
+    max-width: 580px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.about-content{
+    padding: 0 0 40px 0;
+}
+
+.about-content > span{
+    display: block;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.about-content > span + span{
+    margin-top: 15px;
+}
+
+.about-row{
+    font-size: 0;
+    letter-spacing: 0;
+    margin: 0 -8px;
+}
+
+.about-row-item{
+    display: inline-block;
+    vertical-align: top;
+    width: calc(100% + 16px);
+    padding: 0 8px;
+    margin: 0 -8px;
+}
+
+.halo-about-content .halo-text-format ol{
+    list-style: square;
+}
+
+.about-row-item .item{
+    display: inline-block;
+    vertical-align: top;
+    width: 100%;
+    padding: 0 8px;
+}
+
+.about-row-item .image img{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    object-fit: cover;
+    object-position: center;
+}
+
+.about-row-item .item + .item{
+    margin-top: 15px;
+}
+
+.about-row-itemFirst{
+    margin-bottom: 15px;
+}
+
+.about-row.style-2 {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.about-row.style-2 .about-row-itemFirst{
+    margin-top: 15px;
+    margin-bottom: 0;
+}
+
+.about-row.style-2 .about-row-itemSecond{
+    order: -1;
+}
+
+.about-item + .about-item{
+    margin-top: 64px;
+}
+
+@media (min-width: 551px) and (max-width: 991px){
+    .about-row-itemSecond .item{
+        width: 50%;
+    }
+
+    .about-row-itemSecond .item + .item{
+        margin-top: 0;
+    }
+}
+
+@media (min-width: 992px){
+    .about-row{
+        display: flex;
+        flex-wrap: nowrap;
+    }
+
+    .about-row-item{
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .about-row-itemFirst{
+        width: calc(100% - 440px);
+        margin-top: 0!important;
+        margin-bottom: 0;
+    }
+
+    .about-row-itemSecond{
+        width: 440px;
+    }
+
+    .about-row-item .item{
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .about-row-itemFirst .item,
+    .about-row-itemFirst .image,
+    .about-row-itemSecond .image{
+        height: 100%;
+    }
+
+    .about-row-itemSecond .item{
+        height: calc(50% - 8px);
+    }
+}
+
+@media (min-width: 1025px){
+    .about-row{
+        margin-left: -10px;
+        margin-right: -10px;
+    }
+
+    .about-row-item{
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .about-row-item .item + .item{
+        margin-top: 20px;
+    }
+
+    .about-row-itemSecond .item{
+        height: calc(50% - 10px);
+    }
+}

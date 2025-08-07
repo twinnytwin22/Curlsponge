@@ -1,0 +1,88 @@
+{{ 'component-tab.css' | asset_url | stylesheet_tag }}
+<product-tab class="productView-tab productView-tab-{{ tab_layout }}">
+	{%- if tab_layout == 'horizontal' -%}
+		<ul class="tabs tabs-horizontal list-unstyled">
+			{%- for block in section.blocks -%}
+				{%- if block.type == 'description' or block.type == 'review' or block.type == 'custom' -%}
+					{%- liquid
+						assign title = block.settings.title
+					-%}
+					{%- if title != blank -%}
+						<li class="tab" {{ block.shopify_attributes }}>
+					        <a class="tab-title{% if forloop.first %} is-open{% endif %}" href="#tab-{{ title | escape | handleize }}" role="button">
+					            {{ title | escape }}
+					        </a>
+					    </li>
+					{%- endif -%}
+				{%- endif -%}
+			{%- endfor -%}
+		</ul>
+	{%- endif -%}
+	<div class="tabs-contents tabs-contents-{{ tab_layout }} clearfix halo-text-format">
+		{%- for block in section.blocks -%}
+			{%- if block.type == 'description' or block.type == 'review' or block.type == 'custom' -%}
+				{%- liquid
+					assign title = block.settings.title
+					if block.type == 'custom'
+				        assign content = block.settings.content
+						assign content_html = block.settings.content_html
+						if content == blank
+							assign content = content_html
+						endif
+					elsif block.type == 'description'
+						assign current_variant = product.selected_or_first_available_variant
+						if current_variant.metafields.c_f.variant_description != blank
+							assign content = current_variant.metafields.c_f.variant_description
+						else
+							assign content = product.description
+						endif
+					elsif block.type == 'review'
+						assign content = product.metafields.spr.reviews
+					endif
+				-%}
+				{%- if title != blank -%}
+					<div class="tab-content{% if tab_layout == 'horizontal' %}{% if forloop.first %} is-active{% endif %}{% endif %}" id="tab-{{ title | escape | handleize }}"
+						{{ block.shopify_attributes }}
+					>
+						<div class="toggle-title">
+			                <a class="toggleLink" data-collapsible href="#tab-{{ title | escape | handleize }}-mobile" role="button">
+			                    <span class="text">
+			                        {{ title | escape }}
+			                    </span>
+			                    <span class="icon-plus" role="none">&nbsp;</span>
+			                </a>
+			            </div>
+			            {%- liquid
+			            	if block.type == 'description'
+				            	assign letter = content | size
+				            	assign show_readmore = block.settings.show_readmore
+			            	endif
+			            -%}
+			            <div class="toggle-content{% if block.type == 'description' %}{% if letter > 200 and show_readmore %} toggle-content--height{% endif %}{% endif %}" id="tab-{{ title | escape | handleize }}-mobile" {% if block.type == 'description' %} data-product-description-{{ section.id }}-{{ product.id }}{% endif %}>
+			            	{%- if block.type == 'review' -%}
+			            		<div class="productView-review" id="shopify-product-reviews" data-id="{{ product.id }}">
+			            	{%- endif -%}
+			            	{{ content }}
+							{%- if block.type == 'custom' and block.settings.content != blank -%}
+								{{ content_html }}
+							{%- endif -%}
+			            	{%- if block.type == 'description' -%}
+			            		{%- if letter > 200 and show_readmore -%}
+			            			<div class="tab-descriptionShowmore">
+				                        <more-less-button class="button button--secondary is-more" data-target="#tab-{{ title | escape | handleize }}-mobile" data-show-more-text="{{ 'products.product.read_more' | t }}" data-show-less-text="{{ 'products.product.read_less' | t }}" data-description-toogle> 
+				                            {{ 'products.product.read_more' | t }}
+				                        </more-less-button>
+				                    </div>
+			            		{%- endif -%}
+			            	{%- endif -%}
+			            	{%- if block.type == 'review' -%}
+			            		</div>
+			            	{%- endif -%}
+			            </div>
+					</div>
+				{%- endif -%}
+			{% endif %}
+		{%- endfor -%}
+	</div>
+</product-tab>
+<script src="{{ 'tabs.js' | asset_url }}" defer="defer"></script>

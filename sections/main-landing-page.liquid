@@ -1,0 +1,28 @@
+{%- assign background_color = section.settings.colors_bg -%}
+
+{%- if background_color != 'rgba(0,0,0,0)' and background_color != blank and background_color != settings.colors_bg -%}
+    <style type="text/css">
+        :root {
+            --color-background: {{ background_color }};
+        }
+    </style>
+{%- endif -%}
+
+{% schema %}
+	{
+		"name": "t:sections.main-landing-page.name",
+        "settings":
+        [
+            {
+                "type": "header",
+                "content": "t:sections.main-landing-page.settings.header__1.content"
+            },
+            {
+                "id": "colors_bg",
+                "type": "color",
+                "default": "#f9f9f9",
+                "label": "t:sections.general.settings.color.label__1"
+            }
+        ]
+	}
+{% endschema %}

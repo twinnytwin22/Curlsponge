@@ -1,0 +1,601 @@
+{%- if  section.blocks.size > 0 and section.settings.show_lookbook_image_product -%}
+	{%- liquid
+        assign padding_top = section.settings.padding_top | append: 'px'
+        assign padding_bottom = section.settings.padding_bottom | append: 'px'
+        assign padding_top_tablet = section.settings.padding_top_tablet | append: 'px'
+        assign padding_bottom_tablet = section.settings.padding_bottom_tablet | append: 'px'
+        assign padding_top_mobile = section.settings.padding_top_mobile | append: 'px'
+        assign padding_bottom_mobile = section.settings.padding_bottom_mobile | append: 'px'
+        assign block_title = section.settings.block_title
+        assign block_text = section.settings.block_text
+        assign block_title_align = section.settings.block_title_align
+        assign container = section.settings.container
+        assign lookbook_style = section.settings.lookbook_style
+        assign show_price_lookbook = section.settings.show_price_lookbook
+        assign show_bg_image = section.settings.show_bg_image
+        if show_bg_image
+            assign bg_image = section.settings.bg_image
+            assign bg_mobile_image = section.settings.bg_mobile_image
+            assign bg_bottom = section.settings.bg_bottom | append: '%'
+        endif
+        assign colors_lookbook_button = section.settings.colors_lookbook_button
+    -%}
+    <div class="halo-block halo-banner lookbook-image-product halo-block-padding{% if show_bg_image and settings.show_dark_mode %} background-image{% endif %}" id="halo-lookbook-image-product-{{ section.id }}"
+        style="--padding-top: {{ padding_top }};
+            --padding-bottom: {{ padding_bottom }};
+            --padding-top-tablet: {{ padding_top_tablet }};
+            --padding-bottom-tablet: {{ padding_bottom_tablet }};
+            --padding-top-mobile: {{ padding_top_mobile }};
+            --padding-bottom-mobile: {{ padding_bottom_mobile }};
+            {% if show_bg_image %}
+            --bg-bottom: {{ bg_bottom }};
+            {% endif %}
+            --lookbook-point-button-2: {{ colors_lookbook_button }};"
+    >
+        {%- if show_bg_image != blank -%}
+            <div class="lookbook-bg-image img-box img-box--mobile">
+                {%- if bg_image != blank -%}
+                    <div class="image image-adapt" style="padding-top: {{ 1 | divided_by: bg_image.aspect_ratio | times: 100 | append: '%' }};">
+                        <img srcset="{{ bg_image | img_url: '1920x' }} 1x, {{ bg_image | img_url: '1920x', scale: 2 }} 2x" src="{{ bg_image | img_url: '1920x', crop: 'center' }}" alt="{{ bg_image.alt | default: shop.name | escape }}" loading="lazy">
+                    </div>
+                {%- else -%}
+                    <div class="image">
+                        {% capture current %}{% cycle 1, 2 %}{% endcapture %}
+                        {{ 'lifestyle-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}   
+                    </div>
+                {%- endif -%}
+                {%- if bg_mobile_image != blank -%}
+                    <div class="image image-mobile image-adapt" style="padding-top: {{ 1 | divided_by: bg_mobile_image.aspect_ratio | times: 100 | append: '%' }}">
+                        <img srcset="{{ bg_mobile_image | img_url: 'master' }} 1x, {{ bg_mobile_image | img_url: 'master', scale: 2 }} 2x" src="{{ bg_mobile_image | img_url: 'master' }}" alt="{{ bg_mobile_image.alt | default: shop.name | escape }}" loading="lazy">
+                    </div>
+                {%- else -%}
+                    {%- if bg_image != blank -%}
+                        <div class="image image-mobile image-adapt" style="padding-top: 100%">
+                            <img srcset="{{ bg_image | img_url: '420x', crop: 'center' }} 1x, {{ bg_image | img_url: '420x', crop: 'center',  scale: 2 }} 2x" src="{{ bg_image | img_url: '420x', crop: 'center' }}" alt="{{ bg_image.alt | default: shop.name | escape }}" loading="lazy">
+                        </div>
+                    {%- else -%}
+                        <div class="image image-mobile">
+                            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                        </div>
+                    {%- endif -%}
+                {%- endif -%}
+            </div>
+        {%- endif -%}
+    	{%- if container != 'full' -%}
+	    	<div class="container container-{{ container }}">
+	    {%- endif -%}
+            {%- if block_title != blank -%}
+                <div class="halo-block-header">
+                    {%- if container == 'full' -%}
+                        <div class="container container-{{ container }}">
+                    {%- endif -%}
+                        <h3 class="title text-{{ block_title_align }}">
+                            <span class="text">
+                                {{ block_title | escape }}
+                            </span>
+                        </h3>
+                        {%- if block_text != blank -%}
+                            <span class="desc text-{{ block_title_align }}">
+                                {{ block_text }}
+                            </span>
+                        {%- endif -%}
+                    {%- if container == 'full' -%}
+                        </div>
+                    {%- endif -%}
+                </div>
+            {%- endif -%}
+	    	<div class="halo-block-content lookbook-box">
+                {%- for block in section.blocks -%}
+                    {%- liquid
+                        assign lookbook = block.settings.lookbook
+                        assign image = block.settings.image
+                        assign mobile_image = block.settings.mobile_image
+                    -%}
+                        <div class="heroCarousel-image img-box img-box--mobile">
+                            {%- if image != blank -%}
+                                <{% if link != blank %}a{% else %}div{% endif %} class="image image-adapt" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }};">
+                                    <img srcset="{{ image | img_url: '1920x' }} 1x, {{ image | img_url: '1920x', scale: 2 }} 2x" src="{{ image | img_url: '1920x', crop: 'center' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
+                                </{% if link != blank %}a{% else %}div{% endif %}>
+                            {%- else -%}
+                                <{% if link != blank %}a{% else %}div{% endif %} class="image" {% if link != blank %} href="{{ link }}"{% endif %}>
+                                    {% capture current %}{% cycle 1, 2 %}{% endcapture %}
+                                    {{ 'lifestyle-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}   
+                                </{% if link != blank %}a{% else %}div{% endif %}>
+                            {%- endif -%}
+                            {%- if mobile_image != blank -%}
+                                <{% if link != blank %}a{% else %}div{% endif %} class="image image-mobile image-adapt" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: {{ 1 | divided_by: mobile_image.aspect_ratio | times: 100 | append: '%' }}">
+                                    <img srcset="{{ mobile_image | img_url: 'master' }} 1x, {{ mobile_image | img_url: 'master', scale: 2 }} 2x" src="{{ mobile_image | img_url: 'master' }}" alt="{{ mobile_image.alt | default: shop.name | escape }}" loading="lazy">
+                                </{% if link != blank %}a{% else %}div{% endif %}>
+                            {%- else -%}
+                                {%- if image != blank -%}
+                                    <{% if link != blank %}a{% else %}div{% endif %} class="image image-mobile image-adapt" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: 100%">
+                                        <img srcset="{{ image | img_url: '420x', crop: 'center' }} 1x, {{ image | img_url: '420x', crop: 'center',  scale: 2 }} 2x" src="{{ image | img_url: '420x', crop: 'center' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
+                                    </{% if link != blank %}a{% else %}div{% endif %}>
+                                {%- else -%}
+                                    <{% if link != blank %}a{% else %}div{% endif %} class="image image-mobile" {% if link != blank %} href="{{ link }}"{% endif %}>
+                                        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                                    </{% if link != blank %}a{% else %}div{% endif %}>
+                                {%- endif -%}
+                            {%- endif -%}
+                        </div>
+                        {%- if lookbook -%}
+                            <div class="heroCarousel-lookbook">
+                                {%- for i in (1..5) -%}
+                                    {% capture cap_product %}product_{{ i }}{% endcapture %}
+                                    {% capture cap_point_y %}point_y_{{ i }}{% endcapture %}
+                                    {% capture cap_point_x %}point_x_{{ i }}{% endcapture %}
+                                    {%- liquid
+                                        assign handle = block.settings[cap_product]
+                                        assign product = all_products[handle]
+                                        assign point_y = block.settings[cap_point_y]
+                                        assign point_x = block.settings[cap_point_x]
+                                    -%}
+                                    {%- if product != blank -%}
+                                        <lookbook-point class="point-box style-{{ lookbook_style }}" data-popup="#LOOKBOOK-{{ block.id }}-{{ product.id }}-{{ forloop.index }}"
+                                            style="top: {{ point_y | append: '%' }};
+                                                left: {{ point_x | append: '%' }};"
+                                        >
+                                            <a href="{{ product.url }}" class="point-icon">
+                                                <span class="text{% if lookbook_style == '3' %} visually-hidden{% endif %}">
+                                                    {%- if lookbook_style == '4' or lookbook_style == '6' -%}
+                                                        {% render 'icon-plus' %}
+                                                    {%- else -%}
+                                                        {{ forloop.index }}
+                                                    {%- endif -%}
+                                                </span>
+                                            </a>
+                                        </lookbook-point>
+                                        <lookbook-popup class="popup-box{% if lookbook_style == '6' %} style-6{% endif %}" id="LOOKBOOK-{{ block.id }}-{{ product.id }}-{{ forloop.index }}">
+                                            {%- liquid
+                                                assign target = product.selected_or_first_available_variant
+                                                assign compare_at_price = target.compare_at_price
+                                                assign price = target.price
+                                            -%}
+                                            <div class="popup-box__wrapper">
+                                                <a href="{{ product.url }}" class="link-with-arrow">
+                                                    <span class="text">{{ product.title }}</span>
+                                                    {%- if show_price_lookbook -%}
+                                                        <span class="info">
+                                                            {%- if compare_at_price > price %}
+                                                                <span class="price old-price">{{ compare_at_price | money }}</span>
+                                                                <span class="price">{{ price | money }}</span>
+                                                            {%- else -%}
+                                                                <span class="price">{{ price | money }}</span>
+                                                            {%- endif -%}
+                                                        </span>
+                                                    {%- endif -%}
+                                                </a>
+                                            </div>
+                                        </lookbook-popup>
+                                    {%- endif -%}
+                                {%- endfor -%}
+                            </div>
+                        {%- endif -%}
+                {%- endfor -%}
+	    	</div>
+	    {%- if container != 'full' -%}
+	    	</div>
+	    {%- endif -%}
+    </div>
+{%- endif -%}
+{% schema %}
+	{
+        "name": "t:sections.image-gallery.name__5",
+        "settings": [
+            {
+                "type": "header",
+                "content": "t:sections.slideshow.settings.header__1.content"
+            },
+            {
+                "type": "checkbox",
+                "id": "show_lookbook_image_product",
+                "label": "t:sections.image-gallery.settings.general.label__3",
+                "default": true
+            },
+            {
+                "type": "select",
+                "id": "container",
+                "label": "t:sections.general.settings.container.label__1",
+                "default": "full",
+                "options": [
+                {
+                    "value": "1170",
+                    "label": "t:sections.general.settings.container.options__1"
+                },
+                {
+                    "value": "1370",
+                    "label": "t:sections.general.settings.container.options__2"
+                },
+                {
+                    "value": "1570",
+                    "label": "t:sections.general.settings.container.options__3"
+                },
+                {
+                    "value": "1770",
+                    "label": "t:sections.general.settings.container.options__4"
+                },
+                {
+                    "value": "1860",
+                    "label": "t:sections.general.settings.container.options__5"
+                },
+                {
+                    "value": "full",
+                    "label": "t:sections.general.settings.container.options__6"
+                }],
+                "info": "t:sections.general.settings.container.info"
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__1.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 0
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 0
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__2.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top_tablet",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 0
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom_tablet",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 0
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.padding.paragraph__3.content"
+            },
+            {
+                "type": "range",
+                "id": "padding_top_mobile",
+                "label": "t:sections.general.settings.padding.label__1",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 0
+            },
+            {
+                "type": "range",
+                "id": "padding_bottom_mobile",
+                "label": "t:sections.general.settings.padding.label__2",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.general.settings.padding.unit",
+                "default": 0
+            },
+            {
+                "type": "text",
+                "id": "block_title",
+                "label": "t:sections.general.settings.block-title.label__1",
+                "default": "Slideshow"
+            },
+            {
+                "type": "text",
+                "id": "block_text",
+                "label": "t:sections.general.settings.block-title.label__2",
+                "default": "Give customers details about the banner image(s) or content on the template."
+            },
+            {
+                "type": "select",
+                "id": "block_title_align",
+                "label": "t:sections.general.settings.block-title.label__3",
+                "options": [
+                {
+                    "value": "left",
+                    "label": "t:sections.general.settings.block-title.options__1"
+                },
+                {
+                    "value": "center",
+                    "label": "t:sections.general.settings.block-title.options__2"
+                },
+                {
+                    "value": "right",
+                    "label": "t:sections.general.settings.block-title.options__3"
+                }],
+                "default": "center"
+            },
+            {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.background-image.paragraph__1.content"
+            },
+            {
+                "type": "checkbox",
+                "id": "show_bg_image",
+                "label": "t:sections.general.settings.background-image.label__1",
+                "default": false
+            },
+            {
+                "type": "image_picker",
+                "id": "bg_image",
+                "label": "t:sections.general.settings.image.label__1"
+            },
+            {
+                "type": "image_picker",
+                "id": "bg_mobile_image",
+                "label": "t:sections.general.settings.image.label__2",
+                "info": "t:sections.general.settings.image.info"
+            },
+            {
+                "type": "range",
+                "id": "bg_bottom",
+                "label": "t:sections.image-gallery.settings.general.name",
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "unit": "t:sections.image-gallery.settings.general.unit",
+                "default": 0
+            },
+            {
+                "type": "header",
+                "content": "t:sections.slideshow.settings.header__3.content"
+            },
+            {
+                "type": "select",
+                "id": "lookbook_style",
+                "label": "t:sections.general.settings.lookbook.label__3",
+                "default": "1",
+                "options": [
+                {
+                    "value": "1",
+                    "label": "1"
+                },
+                {
+                    "value": "2",
+                    "label": "2"
+                },
+                {
+                    "value": "3",
+                    "label": "3"
+                },
+                {
+                    "value": "4",
+                    "label": "4"
+                },
+                {
+                    "value": "5",
+                    "label": "5"
+                },
+                {
+                    "value": "6",
+                    "label": "6"
+                }]
+            },
+            {
+                "type": "checkbox",
+                "id": "show_price_lookbook",
+                "label": "t:sections.general.settings.lookbook.label__7",
+                "default": false
+            },
+            {
+                "id": "colors_lookbook_button",
+                "type": "color_background",
+                "default": "#D8D8D8",
+                "label": "t:sections.general.settings.color.label__24"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "image",
+                "name": "t:sections.slideshow.blocks.image.settings.header__3.content",
+                "limit": 1,
+                "settings": [
+                {
+                    "type": "header",
+                    "content": "t:sections.slideshow.blocks.image.settings.header__1.content"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "t:sections.general.settings.image.label__1"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "mobile_image",
+                    "label": "t:sections.general.settings.image.label__2",
+                    "info": "t:sections.general.settings.image.info"
+                },
+                {
+                    "type": "header",
+                    "content": "t:sections.slideshow.blocks.image.settings.header__3.content"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "lookbook",
+                    "label": "t:sections.general.settings.lookbook.label__1",
+                    "default": false
+                },
+                {
+                    "type": "paragraph",
+                    "content": "t:sections.general.settings.lookbook.paragraph__1.content"
+                },
+                {
+                    "type": "product",
+                    "label": "t:sections.general.settings.lookbook.label__4",
+                    "id": "product_1"
+                },
+                {
+                    "type": "range",
+                    "id": "point_x_1",
+                    "label": "t:sections.general.settings.lookbook.label__5",
+                    "max": 100,
+                    "min": 0,
+                    "step": 1,
+                    "unit": "%",
+                    "default": 10
+                },
+                {
+                    "type": "range",
+                    "id": "point_y_1",
+                    "label": "t:sections.general.settings.lookbook.label__6",
+                    "max": 100,
+                    "min": 0,
+                    "step": 1,
+                    "unit": "%",
+                    "default": 10
+                },
+                {
+                    "type": "paragraph",
+                    "content": "t:sections.general.settings.lookbook.paragraph__2.content"
+                },
+                {
+                    "type": "product",
+                    "label": "t:sections.general.settings.lookbook.label__4",
+                    "id": "product_2"
+                },
+                {
+                    "type": "range",
+                    "id": "point_x_2",
+                    "label": "t:sections.general.settings.lookbook.label__5",
+                    "max": 100,
+                    "min": 0,
+                    "step": 1,
+                    "unit": "%",
+                    "default": 10
+                },
+                {
+                    "type": "range",
+                    "id": "point_y_2",
+                    "label": "t:sections.general.settings.lookbook.label__6",
+                    "max": 100,
+                    "min": 0,
+                    "step": 1,
+                    "unit": "%",
+                    "default": 10
+                },
+                {
+                    "type": "paragraph",
+                    "content": "t:sections.general.settings.lookbook.paragraph__3.content"
+                },
+                {
+                    "type": "product",
+                    "label": "t:sections.general.settings.lookbook.label__4",
+                    "id": "product_3"
+                },
+                {
+                    "type": "range",
+                    "id": "point_x_3",
+                    "label": "t:sections.general.settings.lookbook.label__5",
+                    "max": 100,
+                    "min": 0,
+                    "step": 1,
+                    "unit": "%",
+                    "default": 10
+                },
+                {
+                    "type": "range",
+                    "id": "point_y_3",
+                    "label": "t:sections.general.settings.lookbook.label__6",
+                    "max": 100,
+                    "min": 0,
+                    "step": 1,
+                    "unit": "%",
+                    "default": 10
+                },
+                {
+                    "type": "paragraph",
+                    "content": "t:sections.general.settings.lookbook.paragraph__4.content"
+                },
+                {
+                    "type": "product",
+                    "label": "t:sections.general.settings.lookbook.label__4",
+                    "id": "product_4"
+                },
+                {
+                    "type": "range",
+                    "id": "point_x_4",
+                    "label": "t:sections.general.settings.lookbook.label__5",
+                    "max": 100,
+                    "min": 0,
+                    "step": 1,
+                    "unit": "%",
+                    "default": 10
+                },
+                {
+                    "type": "range",
+                    "id": "point_y_4",
+                    "label": "t:sections.general.settings.lookbook.label__6",
+                    "max": 100,
+                    "min": 0,
+                    "step": 1,
+                    "unit": "%",
+                    "default": 10
+                },
+                {
+                    "type": "paragraph",
+                    "content": "t:sections.general.settings.lookbook.paragraph__5.content"
+                },
+                {
+                    "type": "product",
+                    "label": "t:sections.general.settings.lookbook.label__4",
+                    "id": "product_5"
+                },
+                {
+                    "type": "range",
+                    "id": "point_x_5",
+                    "label": "t:sections.general.settings.lookbook.label__5",
+                    "max": 100,
+                    "min": 0,
+                    "step": 1,
+                    "unit": "%",
+                    "default": 10
+                },
+                {
+                    "type": "range",
+                    "id": "point_y_5",
+                    "label": "t:sections.general.settings.lookbook.label__6",
+                    "max": 100,
+                    "min": 0,
+                    "step": 1,
+                    "unit": "%",
+                    "default": 10
+                }]
+            }
+        ],
+        "presets": [
+            {
+                "name": "t:sections.image-gallery.presets.name__5",
+                "blocks": [
+                    {
+                        "type": "image"
+                    }
+                ]
+            }
+        ],
+        "disabled_on": {
+            "groups": ["header", "footer"]
+        }
+    }
+{% endschema %}
