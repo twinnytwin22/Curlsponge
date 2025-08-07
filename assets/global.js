@@ -397,7 +397,15 @@ Shopify.onItemAdded = function(line_item) {
 };
 
 Shopify.onError = function(XMLHttpRequest, textStatus) {
-    var data = eval('(' + XMLHttpRequest.responseText + ')');
+    var data;
+
+    try {
+        data = JSON.parse(XMLHttpRequest.responseText);
+    } catch (e) {
+        console.error('Could not parse error response', e);
+        alert('An unexpected error occurred.');
+        return;
+    }
 
     if (!!data.message) {
         alert(data.message + '(' + data.status  + '): ' + data.description);
