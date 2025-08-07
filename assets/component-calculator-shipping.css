@@ -1,5 +1,4 @@
 .haloCalculatorShipping{
-    display: block;
     position: relative;
     margin: 0 0 32px 0;
     min-height: var(--free-shipping-min-height);
@@ -35,14 +34,13 @@
 .haloCalculatorShipping .progress .progress-meter{
     position: relative;
     display: block;
-    width: var(--percent, 100%);
+    width: 100%;
     height: 100%;
     font-size: calc(var(--font-size) - 5px);
     font-weight: var(--font-weight-normal);
     letter-spacing: var(--letter-spacing);
     line-height: calc(var(--free-shipping-height) + 2px);
     color: var(--color-white);
-    transition: width 1s ease;
 }
 
 .haloCalculatorShipping .progress.progress-free .progress_shipping{
@@ -57,7 +55,7 @@
     border-color: var(--free-shipping-bg-2);
 }
 
-.haloCalculatorShipping .progress.progress-99 .progress_shipping{
+.haloCalculatorShipping .progress.progress-100 .progress_shipping{
     border-color: var(--free-shipping-bg-3);
 }
 
@@ -73,7 +71,7 @@
     background-color: var(--free-shipping-bg-2);
 }
 
-.haloCalculatorShipping .progress.progress-99 .progress-meter{
+.haloCalculatorShipping .progress.progress-100 .progress-meter{
     background-color: var(--free-shipping-bg-3);
 }
 
@@ -103,7 +101,7 @@
     color: var(--free-shipping-bg-2);
 }
 
-.haloCalculatorShipping .message.progress-99{
+.haloCalculatorShipping .message.progress-100{
     color: var(--free-shipping-bg-3);
 }
 
@@ -130,9 +128,9 @@
 }
 
 @media (min-width: 768px) and (max-width: 1279px){
-    .cart-content-item [id^='Cart-Shipping-Message-'] {
+    .cart-content-item .haloCalculatorShipping {
         width: 100%;
-        padding: 0 10px;
+        padding: 0px 10px;
     }
 }
 

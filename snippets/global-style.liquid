@@ -5,8 +5,6 @@
 {{ 'component-loading-banner.css' | asset_url | stylesheet_tag }}
 {{ 'component-loading-block.css' | asset_url | stylesheet_tag }}
 
-{{ 'custom.css' | asset_url | stylesheet_tag }}
-
 {%- unless request.page_type == 'product' -%}
 	<link rel="stylesheet" href="{{ 'component-product-form.css' | asset_url }}" media="print" onload="this.media='all'">
 	<link rel="stylesheet" href="{{ 'component-review.css' | asset_url }}" media="print" onload="this.media='all'">

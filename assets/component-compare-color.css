@@ -145,6 +145,30 @@
     text-transform: capitalize;
 }
 
+.halo-compare-color-popup .halo-popup-wrapper{
+	padding: 30px 0 0 0;
+}
+
+body.compare-color-show{
+    overflow-y: hidden;
+    height: 100%;
+}
+
+body.compare-color-show .background-overlay{
+    display: block;
+}
+
+body.compare-color-show .halo-compare-color-popup{
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translate3d(-50%,-50%,0);
+}
+
+body.compare-color-show .halo-compare-color-popup.halo-popup-topDown{
+    transform: translate3d(-50%,0,0);
+}
+
 @media (min-width: 551px) {
 	.halo-compareColors-image .item{
         width: 33.3333333%;
@@ -171,5 +195,9 @@
 
     .halo-compareColors-image .item{
         width: 20%;
+    }
+
+    body.compare-color-show{
+        padding-right: 10px;
     }
 }

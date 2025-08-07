@@ -1,6 +1,6 @@
-{% render 'footer-style',
-    footer_layout: '6'
-%}
+{{ 'section-footer.css' | asset_url | stylesheet_tag }}
+
+{% render 'footer-style' %}
 
 {%- liquid
     assign footer_style = section.settings.footer_style
@@ -8,43 +8,41 @@
     if show_footer_middle and section.blocks.size > 0
         assign footer_middle_container = section.settings.footer_middle_container
         assign show_footer_middle_bg_img = section.settings.show_footer_middle_bg_img
-        assign footer_logo = section.blocks | where: "type", "logo"
         assign footer_link = section.blocks | where: "type", "link_list"
         assign footer_newsletter = section.blocks | where: "type", "newsletter"
         assign footer_custom_information = section.blocks | where: "type", "custom_information"
         assign text_align = section.settings.footer_middle_text_align
         assign footer_midle_class = "footer-block__middle"
-        assign footer_logo_class = ""
-        if footer_logo.size > 0 and footer_newsletter.size == 0
-            assign footer_logo_class = "has-logo"
-        elsif footer_newsletter.size > 0 and footer_logo.size > 0
-            assign footer_logo_class = "has-logo__full"
-        endif
         if footer_link.size > 4
             assign footer_midle_class = "footer-block__middle full"
         elsif footer_custom_information.size == 0 and footer_newsletter.size == 0
             assign footer_midle_class = "footer-block__middle full"
         endif
     endif
-    assign footer_bottom_block = section.blocks | where: 'type', 'footer_bottom' | first
+    assign show_footer_bottom = section.settings.show_footer_bottom
+    if show_footer_bottom
+        assign footer_bottom_container = section.settings.footer_bottom_container
+        assign show_payment = section.settings.show_payment
+        if show_payment
+            assign payment_type = section.settings.payment_type
+        endif
+        assign show_copyright = section.settings.show_copyright
+        if show_copyright
+            assign copyright = section.settings.copyright
+        endif 
+        
+    endif
 -%}
-
 <footer class="footer footer-6">
     {%- if show_footer_middle and section.blocks.size > 0 -%}
         <div class="footer__content-middle{% if show_footer_middle_bg_img %} footer__content-bg{% endif %}">
             <div class="container container-{{ footer_middle_container }}">
-                <div class="{{ footer_midle_class }} style-{{ footer_style }} {{ footer_logo_class }}">
-                    {%- if footer_logo.size > 0 -%}
-                        {% render 'footer-logo',
-                            blocks: footer_logo,
-                            footer_layout: '6'
-                        %}
-                    {%- endif -%}
+                <div class="{{ footer_midle_class }} style-{{ footer_style }}">
                     {%- if footer_newsletter.size > 0 -%}
                         <div class="footer-block__item footer-block__newsletter text-{{ text_align }}">
-                            <div class="item column-{{ footer_newsletter.size }} clearfix">
+                           <div class="item column-{{ footer_newsletter.size }} clearfix">
                                 {%- for column in footer_newsletter -%}
-                                    <div class="footer-block__column{% if show_separate_line %} separate-line{% endif %}" {{ column.shopify_attributes }}>
+                                    <div class="footer-block__column{% if show_separate_line %} separate-line{% endif %}">
                                         {%- liquid
                                             assign newsletter_heading = column.settings.heading
                                             assign newsletter_sub_heading = column.settings.sub_heading
@@ -63,21 +61,12 @@
                                         {%- endif -%}
                                         {%- if show_newsletter -%}
                                             <div class="footer_newsletter-form">
-                                                {% render 'newsletter-form',
-                                                    block: column,
-                                                    show_newsletter: true,
-                                                    form_id: section.id,
-                                                    footer_layout: '6'
-                                                %}
+                                               {% render 'newsletter-form' %}
                                             </div>
                                         {%- endif -%}
                                         {%- if show_social -%}
                                             <div class="footer_social-media">
-                                                {% render 'halo-social-media-icons',
-                                                    block: column,
-                                                    show_social: true,
-                                                    footer_layout: '6'
-                                                %}
+                                                {% render 'halo-social-media-icons' %}
                                             </div>
                                         {%- endif -%}
                                     </div>
@@ -98,74 +87,35 @@
             </div>
         </div>
     {%- endif -%}
-    {% if footer_bottom_block != null or footer_bottom_block != blank %}
-        {% render 'footer-bottom',
-            block: footer_bottom_block,
-            footer_layout: '6',
-            text_center: true
-        %}
+    {%- if show_footer_bottom -%}
+        <div class="footer__content-bottom">
+            <div class="container container-{{ footer_bottom_container }}">
+                <div class="footer-block__bottom text-center">
+                    {%- if show_payment -%}
+                        <div class="footer__column-item footer__payment">
+                            {% render 'footer-payment',
+                                section: section,
+                                payment_type: payment_type
+                            %}
+                        </div>
+                    {%- endif -%}
+                    {%- if show_copyright -%}
+                        <div class="footer__column-item footer__copyright">
+                            {% render 'footer-copyright',
+                                copyright: copyright
+                            %}
+                        </div>
+                    {%- endif -%}
+                </div>
+            </div>
+        </div>
     {%- endif -%}
 </footer>
 
 {% schema %}
 {
-    "name": "t:sections.footer.name__6",
-    "limit": 1,
+    "name": "t:sections.footer.name",
     "blocks": [
-        {
-            "type": "logo",
-            "name": "t:sections.footer.blocks.logo.name",
-            "limit": 1,
-            "settings": [
-                {
-                    "type": "header",
-                    "content": "t:sections.footer.blocks.text.settings.header__1.content"
-                },
-                {
-                    "type": "textarea",
-                    "id": "text",
-                    "label": "t:sections.footer.blocks.text.settings.general.label__2",
-                    "default": "<p>Share store details, promotions, or brand content with your customers.</p>"
-                },
-                {
-                    "type": "header",
-                    "content": "t:sections.footer.blocks.text.settings.header__2.content",
-                    "info": "t:sections.footer.settings.header__2.info"
-                },
-                {
-                    "id": "show_social",
-                    "type": "checkbox",
-                    "default": true,
-                    "label": "t:sections.footer.blocks.text.settings.social_media_link.label__1"
-                },
-                {
-                    "id": "heading_social",
-                    "type": "text",
-                    "default": "Keep in touch",
-                    "label": "t:sections.footer.blocks.text.settings.social_media_link.label__2"
-                },
-                {
-                    "type": "paragraph",
-                    "content": "t:sections.general.settings.color.paragraph__1.content"
-                },
-                {
-                    "type": "color",
-                    "id": "social_color",
-                    "label": "t:sections.general.settings.color.label__4",
-                    "default": "#FFFFFF"
-                },
-                {
-                    "type": "paragraph",
-                    "content": "t:sections.general.settings.color.paragraph__2.content"
-                },
-                {
-                    "type": "color",
-                    "id": "social_color_hover",
-                    "label": "t:sections.general.settings.color.label__4",
-                    "default": "#FFFFFF"
-                }
-            ]
-        },
         {
             "type": "link_list",
             "name": "t:sections.footer.blocks.link_list.name",
@@ -192,6 +142,18 @@
             "limit": 1,
             "settings": [
                 {
+                    "type": "checkbox",
+                    "id": "show_newsletter",
+                    "label": "t:sections.footer.blocks.newsletter.settings.newsletter.label__1",
+                    "default": true
+                },
+                {
+                    "type": "checkbox",
+                    "id": "show_social",
+                    "label": "t:sections.footer.blocks.newsletter.settings.social_media_link.label__1",
+                    "default": true
+                },
+                {
                     "id": "heading",
                     "type": "text",
                     "default": "love halo? sign-up to newsletter",
@@ -202,80 +164,6 @@
                     "type": "text",
                     "default": "Receive early access, wishlist on discount and more. Your privacy is our policy.",
                     "label": "t:sections.footer.blocks.newsletter.settings.newsletter.label__3"
-                },
-                {
-                    "type": "header",
-                    "content": "t:sections.footer.settings.header__1.content"
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_newsletter",
-                    "label": "t:sections.footer.blocks.newsletter.settings.newsletter.label__1",
-                    "default": true
-                },
-                {
-                    "type": "color_background",
-                    "id": "newsletter_bg",
-                    "label": "t:sections.general.settings.color.label__1",
-                    "default": "#2E2E2E"
-                },
-                {
-                    "type": "color",
-                    "id": "newsletter_color",
-                    "label": "t:sections.general.settings.color.label__2",
-                    "default": "#808080"
-                },
-                {
-                    "type": "paragraph",
-                    "content": "t:sections.general.settings.color.paragraph__4.content"
-                },
-                {
-                    "type": "color_background",
-                    "id": "newsletter_btn_bg",
-                    "label": "t:sections.general.settings.color.label__1",
-                    "default": "#fff1dc"
-                },
-                {
-                    "type": "color",
-                    "id": "newsletter_btn_color",
-                    "label": "t:sections.general.settings.color.label__2",
-                    "default": "#202020"
-                },
-                {
-                    "type": "color",
-                    "id": "newsletter_btn_border",
-                    "label": "t:sections.general.settings.color.label__5",
-                    "default": "#505050"
-                },
-                {
-                    "type": "header",
-                    "content": "t:sections.footer.settings.header__2.content"
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_social",
-                    "label": "t:sections.footer.blocks.newsletter.settings.social_media_link.label__1",
-                    "default": true
-                },
-                {
-                    "type": "paragraph",
-                    "content": "t:sections.general.settings.color.paragraph__1.content"
-                },
-                {
-                    "type": "color",
-                    "id": "social_color",
-                    "label": "t:sections.general.settings.color.label__4",
-                    "default": "#FFFFFF"
-                },
-                {
-                    "type": "paragraph",
-                    "content": "t:sections.general.settings.color.paragraph__2.content"
-                },
-                {
-                    "type": "color",
-                    "id": "social_color_hover",
-                    "label": "t:sections.general.settings.color.label__4",
-                    "default": "#FFFFFF"
                 }
             ]
         },
@@ -388,222 +276,6 @@
                     "label": "t:sections.footer.blocks.custom_information.settings.content.label__5"
                 }
             ]
-        },
-        {
-            "type": "footer_bottom",
-            "name": "t:sections.footer.blocks.footer_bottom.name",
-            "limit": 1,
-            "settings": [
-                {
-                    "type": "header",
-                    "content": "t:sections.footer.settings.header__6.content"
-                },
-                {
-                    "id": "show_footer_bottom",
-                    "type": "checkbox",
-                    "label": "t:sections.footer.settings.footer_bottom.label__1",
-                    "default": true
-                },
-                {
-                    "type": "select",
-                    "id": "footer_bottom_container",
-                    "label": "t:sections.general.settings.container.label__1",
-                    "default": "1770",
-                    "options": [
-                    {
-                        "value": "1170",
-                        "label": "t:sections.general.settings.container.options__1"
-                    },
-                    {
-                        "value": "1370",
-                        "label": "t:sections.general.settings.container.options__2"
-                    },
-                    {
-                        "value": "1570",
-                        "label": "t:sections.general.settings.container.options__3"
-                    },
-                    {
-                        "value": "1770",
-                        "label": "t:sections.general.settings.container.options__4"
-                    }],
-                    "info": "t:sections.general.settings.container.info"
-                },
-                {
-                    "id": "footer_bottom_bg",
-                    "type": "color_background",
-                    "label": "t:sections.general.settings.color.label__1",
-                    "default": "#141414"
-                },
-                {
-                    "id": "footer_bottom_color",
-                    "type": "color",
-                    "label": "t:sections.general.settings.color.label__2",
-                    "default": "#808080"
-                },
-                {
-                    "type": "header",
-                    "content": "t:sections.footer.settings.header__7.content"
-                },
-                {
-                    "id": "show_copyright",
-                    "type": "checkbox",
-                    "label": "t:sections.footer.settings.copyright.label__1",
-                    "default": true
-                },
-                {
-                    "type": "text",
-                    "id": "copyright_link",
-                    "label": "t:sections.footer.settings.copyright.label__3"
-                },
-                {
-                    "type": "text",
-                    "id": "copyright",
-                    "label": "t:sections.footer.settings.copyright.label__2",
-                    "default": "Templates by HaloThemes.Com."
-                },
-                {
-                    "type": "header",
-                    "content": "t:sections.footer.settings.header__3.content"
-                },
-                {
-                    "id": "show_payment",
-                    "type": "checkbox",
-                    "default": true,
-                    "label": "t:sections.footer.settings.payment.label__1"
-                },
-                {
-                    "type": "select",
-                    "id": "payment_type",
-                    "label": "t:sections.footer.settings.payment.label__2",
-                    "default": "custom",
-                    "options": [
-                    {
-                        "value": "default",
-                        "label": "t:sections.footer.settings.payment.options__1"
-                    },
-                    {
-                        "value": "custom",
-                        "label": "t:sections.footer.settings.payment.options__2"
-                    }],
-                    "info": "t:sections.footer.settings.payment.info"
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_payment_visa",
-                    "label": "Visa",
-                    "default":true
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_payment_master",
-                    "label": "Master",
-                    "default":true
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_payment_maestro",
-                    "label": "Maestro"
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_payment_american_express",
-                    "label": "American Express",
-                    "default":true
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_payment_apple_pay",
-                    "label": "Apple Pay",
-                    "default":true
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_payment_bitcoin",
-                    "label": "Bitcoin"
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_payment_dankort",
-                    "label": "Dankort"
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_payment_diners_club",
-                    "label": "Diners Club"
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_payment_discover",
-                    "label": "Discover",
-                    "default":true
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_payment_paypal",
-                    "label": "Paypal",
-                    "default":true
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_payment_dogecoin",
-                    "label": "Dogecoin"
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_payment_dwolla",
-                    "label": "Dwolla"
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_payment_forbrugsforeningen",
-                    "label": "Forbrugsforeningen"
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_payment_jcb",
-                    "label": "JCB"
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_payment_litecoin",
-                    "label": "Litecoin"
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_payment_afterpay",
-                    "label": "Afterpay"
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_payment_google_pay",
-                    "label": "Googlepay"
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_payment_ideal",
-                    "label": "Ideal"
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_payment_klarna",
-                    "label": "Klarna"
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_payment_klarna-pay-later",
-                    "label": "Klarnapay Later"
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_payment_shopify_pay",
-                    "label": "Shopifypay"
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_payment_sofort",
-                    "label": "Sofort"
-                }
-            ]
         }
     ],
     "settings": [
@@ -633,6 +305,68 @@
                 "value": "4",
                 "label": "4"
             }]
+        },
+        {
+            "type": "header",
+            "content": "t:sections.footer.settings.header__1.content"
+        },
+        {
+            "type": "color_background",
+            "id": "newsletter_bg",
+            "label": "t:sections.general.settings.color.label__1",
+            "default": "#2E2E2E"
+        },
+        {
+            "type": "color",
+            "id": "newsletter_color",
+            "label": "t:sections.general.settings.color.label__2",
+            "default": "#808080"
+        },
+        {
+            "type": "header",
+            "content": "t:sections.general.settings.color.paragraph__4.content"
+        },
+        {
+            "type": "color_background",
+            "id": "newsletter_btn_bg",
+            "label": "t:sections.general.settings.color.label__1",
+            "default": "#fff1dc"
+        },
+        {
+            "type": "color",
+            "id": "newsletter_btn_color",
+            "label": "t:sections.general.settings.color.label__2",
+            "default": "#202020"
+        },
+        {
+            "type": "color",
+            "id": "newsletter_btn_border",
+            "label": "t:sections.general.settings.color.label__5",
+            "default": "#505050"
+        },
+        {
+            "type": "header",
+            "content": "t:sections.footer.settings.header__2.content"
+        },
+        {
+            "type": "paragraph",
+            "content": "t:sections.general.settings.color.paragraph__1.content"
+        },
+        {
+            "type": "color",
+            "id": "social_color",
+            "label": "t:sections.general.settings.color.label__4",
+            "default": "#FFFFFF"
+        },
+        {
+            "type": "paragraph",
+            "content": "t:sections.general.settings.color.paragraph__2.content"
+        },
+        {
+            "type": "color",
+            "id": "social_color_hover",
+            "label": "t:sections.general.settings.color.label__4",
+            "default": "#FFFFFF"
         },
         {
             "type": "header",
@@ -715,7 +449,7 @@
             "id": "heading_font_size",
             "label": "t:settings_schema.typography.settings.font_size.label",
             "min": 10,
-            "max": 22,
+            "max": 20,
             "step": 1,
             "unit": "t:settings_schema.typography.settings.font_size.unit",
             "default": 15
@@ -1002,136 +736,223 @@
                 "value": "cover",
                 "label": "t:sections.general.settings.background-image.options__14"
             }]
-        }
-    ],
-    "presets": [
+        },
         {
-            "name": "t:sections.footer.name__6",
-            "settings": {
-                "footer_style": "1",
-                "show_footer_middle": true,
-                "footer_middle_container": "1370",
-                "footer_middle_text_align": "left",
-                "heading_font": "font_1",
-                "heading_font_size": 17,
-                "heading_font_weight": "500",
-                "heading_text_transform": "normal",
-                "link_font": "font_1",
-                "link_font_size": 15,
-                "link_font_weight": "500",
-                "link_text_transform": "capitalize",
-                "footer_middle_bg": "#efe7db",
-                "link_color": "#202020",
-                "heading_color": "#202020",
-                "link_color_hover": "#fe3501",
-                "show_footer_middle_bg_img": false,
-                "footer_middle_bg_position_x": "center",
-                "footer_middle_bg_position_y": "center",
-                "footer_middle_bg_repeat": "no-repeat",
-                "footer_middle_bg_attachment": "fixed",
-                "footer_middle_bg_size": "contain"
+            "type": "header",
+            "content": "t:sections.footer.settings.header__6.content"
+        },
+        {
+            "id": "show_footer_bottom",
+            "type": "checkbox",
+            "label": "t:sections.footer.settings.footer_bottom.label__1",
+            "default": true
+        },
+        {
+            "type": "select",
+            "id": "footer_bottom_container",
+            "label": "t:sections.general.settings.container.label__1",
+            "default": "1770",
+            "options": [
+            {
+                "value": "1170",
+                "label": "t:sections.general.settings.container.options__1"
             },
-            "blocks": [
-                {
-                    "type": "link_list",
-                    "settings": {
-                        "heading": "Shop",
-                        "menu": "main-menu"
-                    }
-                },
-                {
-                    "type": "link_list",
-                    "settings": {
-                        "heading": "Information",
-                        "menu": "information"
-                    }
-                },
-                {
-                    "type": "link_list",
-                    "settings": {
-                        "heading": "Help",
-                        "menu": "customer-service"
-                    }
-                },
-                {
-                    "type": "newsletter",
-                    "settings": {
-                        "heading": "Be the first to know",
-                        "sub_heading": "Receive early access, wishlist on discount and more. Your privacy is our policy.",
-                        "show_newsletter": true,
-                        "newsletter_bg": "#fffaf3",
-                        "newsletter_color": "#505050",
-                        "newsletter_btn_bg": "#fff1dc",
-                        "newsletter_btn_color": "#202020",
-                        "newsletter_btn_border": "#505050",
-                        "show_social": true,
-                        "social_color": "#000000",
-                        "social_color_hover": "#fe3501"
-                    }
-                },
-                {
-                    "type": "custom_information",
-                    "settings": {
-                        "heading": "About us",
-                        "icon_1": "<svg xmlns=\"http:\/\/www.w3.org\/2000\/svg\" viewbox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\" role=\"presentation\">\n\t<path d=\"M 4 3 C 2.9 3 2 3.9 2 5 L 2 17 L 5 14 L 14 14 C 15.1 14 16 13.1 16 12 L 16 5 C 16 3.9 15.1 3 14 3 L 4 3 z M 18 8 L 18 12 C 18 14.206 16.206 16 14 16 L 8 16 L 8 17 C 8 18.1 8.9 19 10 19 L 19 19 L 22 22 L 22 10 C 22 8.9 21.1 8 20 8 L 18 8 z\"><\/path>\n<\/svg>",
-                        "text_1": "Live chat with us",
-                        "sub_text_1": "",
-                        "link_1": "shopify:\/\/pages\/contact-us",
-                        "icon_2": "<svg xmlns=\"http:\/\/www.w3.org\/2000\/svg\" fill=\"#000000\" viewbox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" role=\"presentation\"><path d=\"M30.96 23.54c-1.3.372-2.318 1.376-2.658 2.622-.857 3.142.109 7.034 2.87 11.567 2.757 4.527 5.825 7.265 9.118 8.136 1.315.348 2.749.011 3.741-.879l1.157-1.038c.944-.847 1.082-2.24.321-3.24l-1.672-2.196c-.653-.858-1.808-1.227-2.875-.917l-2.624.76c-.685.193-1.279-.308-1.504-.496-.544-.457-1.141-1.217-1.775-2.258-1.36-2.234-1.261-3.072-1.229-3.348.035-.294.18-.568.409-.77l1.951-1.724c.816-.722 1.057-1.855.599-2.819l-1.177-2.482c-.535-1.128-1.882-1.709-3.129-1.352L30.96 23.54zM23 24c-5.514 0-10-4.486-10-10S17.486 4 23 4c7.066 0 15.247 8.605 15.593 8.972.543.578.543 1.479 0 2.057C38.247 15.395 30.066 24 23 24zM29.464 38.769c-2.433-3.994-3.566-7.599-3.43-10.769H12.5C10.019 28 8 30.019 8 32.5v.763c0 2.354.979 4.616 2.687 6.207C12.907 41.536 17.019 44 24 44c3.375 0 6.074-.578 8.218-1.407C31.266 41.477 30.345 40.215 29.464 38.769z\"><\/path><\/svg>",
-                        "text_2": "Call us anytime",
-                        "sub_text_2": "<a href=\"tel:(018)20900-6690\/\">(018) 900-6690<\/a> or <a href=\"tel:900-6691\/\">900-6691<\/a>",
-                        "link_2": "",
-                        "icon_3": "",
-                        "text_3": "View store locations",
-                        "sub_text_3": "",
-                        "link_3": "shopify:\/\/pages\/store-locations",
-                        "icon_4": "",
-                        "text_4": "About HALO App",
-                        "sub_text_4": "",
-                        "link_4": "shopify:\/\/pages\/about-us"
-                    }
-                },
-                {
-                    "type": "footer_bottom",
-                    "settings": {
-                        "show_footer_bottom": true,
-                        "footer_bottom_container": "1370",
-                        "footer_bottom_bg": "#efe7db",
-                        "footer_bottom_color": "#505050",
-                        "show_copyright": true,
-                        "copyright_link": "https:\/\/1.envato.market\/5bq3En",
-                        "copyright": "Shopify Themes & Templates by <a href=\"https:\/\/www.halothemes.com\/\">HaloThemes.Com<\/a>.",
-                        "show_payment": false,
-                        "payment_type": "custom",
-                        "show_payment_visa": true,
-                        "show_payment_master": true,
-                        "show_payment_maestro": false,
-                        "show_payment_american_express": true,
-                        "show_payment_apple_pay": true,
-                        "show_payment_bitcoin": false,
-                        "show_payment_dankort": false,
-                        "show_payment_diners_club": false,
-                        "show_payment_discover": true,
-                        "show_payment_paypal": true,
-                        "show_payment_dogecoin": false,
-                        "show_payment_dwolla": false,
-                        "show_payment_forbrugsforeningen": false,
-                        "show_payment_jcb": false,
-                        "show_payment_litecoin": false,
-                        "show_payment_afterpay": false,
-                        "show_payment_google_pay": false,
-                        "show_payment_ideal": false,
-                        "show_payment_klarna": false,
-                        "show_payment_klarna-pay-later": false,
-                        "show_payment_shopify_pay": false,
-                        "show_payment_sofort": false
-                    }
-                }
-            ]
+            {
+                "value": "1370",
+                "label": "t:sections.general.settings.container.options__2"
+            },
+            {
+                "value": "1570",
+                "label": "t:sections.general.settings.container.options__3"
+            },
+            {
+                "value": "1770",
+                "label": "t:sections.general.settings.container.options__4"
+            }],
+            "info": "t:sections.general.settings.container.info"
+        },
+        {
+            "id": "footer_bottom_bg",
+            "type": "color_background",
+            "label": "t:sections.general.settings.color.label__1",
+            "default": "#141414"
+        },
+        {
+            "id": "footer_bottom_color",
+            "type": "color",
+            "label": "t:sections.general.settings.color.label__2",
+            "default": "#808080"
+        },
+        {
+            "type": "header",
+            "content": "t:sections.footer.settings.header__7.content"
+        },
+        {
+            "id": "show_copyright",
+            "type": "checkbox",
+            "label": "t:sections.footer.settings.copyright.label__1",
+            "default": true
+        },
+        {
+            "type": "text",
+            "id": "copyright_link",
+            "label": "t:sections.footer.settings.copyright.label__3"
+        },
+        {
+            "type": "text",
+            "id": "copyright",
+            "label": "t:sections.footer.settings.copyright.label__2",
+            "default": "Shopify Themes & Templates by HaloThemes.Com."
+        },
+        {
+            "type": "header",
+            "content": "t:sections.footer.settings.header__3.content"
+        },
+        {
+            "id": "show_payment",
+            "type": "checkbox",
+            "default": true,
+            "label": "t:sections.footer.settings.payment.label__1"
+        },
+        {
+            "type": "select",
+            "id": "payment_type",
+            "label": "t:sections.footer.settings.payment.label__2",
+            "default": "custom",
+            "options": [
+            {
+                "value": "default",
+                "label": "t:sections.footer.settings.payment.options__1"
+            },
+            {
+                "value": "custom",
+                "label": "t:sections.footer.settings.payment.options__2"
+            }],
+            "info": "t:sections.footer.settings.payment.info"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_payment_visa",
+            "label": "Visa",
+            "default":true
+        },
+        {
+            "type": "checkbox",
+            "id": "show_payment_master",
+            "label": "Master",
+            "default":true
+        },
+        {
+            "type": "checkbox",
+            "id": "show_payment_maestro",
+            "label": "Maestro"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_payment_american_express",
+            "label": "American Express",
+            "default":true
+        },
+        {
+            "type": "checkbox",
+            "id": "show_payment_apple_pay",
+            "label": "Apple Pay",
+            "default":true
+        },
+        {
+            "type": "checkbox",
+            "id": "show_payment_bitcoin",
+            "label": "Bitcoin"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_payment_dankort",
+            "label": "Dankort"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_payment_diners_club",
+            "label": "Diners Club"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_payment_discover",
+            "label": "Discover",
+            "default":true
+        },
+        {
+            "type": "checkbox",
+            "id": "show_payment_paypal",
+            "label": "Paypal",
+            "default":true
+        },
+        {
+            "type": "checkbox",
+            "id": "show_payment_dogecoin",
+            "label": "Dogecoin"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_payment_dwolla",
+            "label": "Dwolla"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_payment_forbrugsforeningen",
+            "label": "Forbrugsforeningen"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_payment_jcb",
+            "label": "JCB"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_payment_litecoin",
+            "label": "Litecoin"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_payment_afterpay",
+            "label": "Afterpay"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_payment_google_pay",
+            "label": "Googlepay"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_payment_ideal",
+            "label": "Ideal"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_payment_klarna",
+            "label": "Klarna"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_payment_klarna-pay-later",
+            "label": "Klarnapay Later"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_payment_shopify_pay",
+            "label": "Shopifypay"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_payment_sofort",
+            "label": "Sofort"
         }
     ],
-    "enabled_on": {
-        "groups": ["footer"]
+    "default": {
+        "blocks": [
+            {
+                "type": "link_list"
+            }
+        ]
     }
 }
 {% endschema %}

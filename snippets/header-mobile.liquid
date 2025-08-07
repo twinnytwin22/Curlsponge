@@ -1,0 +1,24 @@
+{%- if settings.header_mobile_layout == '1' -%}
+    {% render 'header-mobile-1',
+        menu_tab: menu_tab,
+        page_handle: page_handle,
+        icon_account: icon_account,
+        icon_cart: icon_cart,
+        icon_search: '1'
+    %}
+{%- elsif settings.header_mobile_layout == '2' -%}
+    {% render 'header-mobile-2',
+        menu_tab: menu_tab,
+        page_handle: page_handle,
+        icon_account: icon_account,
+        icon_cart: icon_cart,
+        icon_search: '4'
+    %}
+{%- else -%}
+    {% render 'header-mobile-3',
+        menu_tab: menu_tab,
+        page_handle: page_handle,
+        icon_cart: icon_cart,
+        icon_search: '4'
+    %}
+{%- endif -%}

@@ -4,10 +4,9 @@
     assign variantCount = product.variants | size
     assign swatch_type = settings.swatch_type
     assign swatch_style = settings.swatch_style
-    if type_trigger
+    assign type = settings.product_swatch_type
+    if settings.product_card_style == '5' or settings.product_card_style == '6' or settings.product_card_style == '7'
         assign type = 'grid'
-    else
-        assign type = settings.product_swatch_type 
     endif
     assign colorList = ''
     assign color = ''
@@ -44,7 +43,7 @@
                                         <span class="pattern" style="background-image: url({{ color | handle | append: '.' | append: file_extension | file_url }})" role="none"></span>
                                     {%- else -%}
                                         {% assign check_color = color | split: ' ' | last | handle %}
-                                        <span class="pattern{% if check_color == 'white' or check_color == 'White' %} pattern--white{% elsif check_color == 'black' or check_color == 'Black' %} pattern--black{% endif %}" style="background-color: {{ color | split: ' ' | last | handle }};" role="none"></span>
+                                        <span class="pattern{% if check_color == 'white' or check_color == 'White' %} pattern--white{% endif %}" style="background-color: {{ color | split: ' ' | last | handle }};" role="none"></span>
                                     {%- endif -%}
                                 {%- endif -%}
                             </div>

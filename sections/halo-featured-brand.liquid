@@ -1,4 +1,10 @@
-{%- if section.blocks.size > 0 and section.settings.show_featured_brand -%}
+{%- liquid
+    assign show_section = false
+    if section.blocks.size > 0 and section.settings.show_featured_brand
+        assign show_section = true
+    endif
+-%}
+{%- if show_section -%}
     {%- liquid
         assign padding_top = section.settings.padding_top | append: 'px'
         assign padding_bottom = section.settings.padding_bottom | append: 'px'
@@ -18,6 +24,7 @@
         assign layout_style = section.settings.layout_style
         assign link_title = section.settings.link_title
         assign link_url = section.settings.link_url
+        assign link_color = section.settings.link_color
         if layout == 'grid'
             assign column = section.settings.block_per_row | plus: 0
             if column > section.blocks.size
@@ -31,14 +38,31 @@
         assign image_border_radius = settings.image_border_radius
         assign image_effect = settings.image_effect
     -%}
-    <div class="halo-block halo-banner featured-brand featured-brand-1 style-{{ layout_style }} halo-block-padding" id="halo-featured-brand-{{ section.id }}" {% if layout == 'slider' or mobile_layout == 'slider' %}data-featured-brand-block data-loader-script="{{ 'halo.slide-brand.js' | asset_url }}"{% endif %}
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};"
-    >
+    <style type="text/css" media="screen">
+        #halo-featured-brand-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        #halo-featured-brand-{{ section.id }} .halo-block-footer span{
+            color: {{link_color}};
+        }
+
+        @media (max-width: 1024px) {
+            #halo-featured-brand-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #halo-featured-brand-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+    </style>
+    <div class="halo-block halo-banner featured-brand style-{{ layout_style }}" id="halo-featured-brand-{{ section.id }}" {% if layout == 'slider' or mobile_layout == 'slider' %}data-featured-brand-block data-loader-script="{{ 'halo.slide-brand.js' | asset_url }}"{% endif %}>
         <div class="container container-{{ container }}{% if mobile_layout == 'swipe' %} container-no-padding{% endif %}">
             {%- if block_title != blank -%}
                 <div class="halo-block-header">
@@ -70,32 +94,27 @@
                         <div class="halo-row-item item item-{{ block.id }}">
                             <div class="brands-item banner-item">
                                 <div class="img-box">
-                                    <loading-banner class="loading-banner">
-                                        {%- if image != blank -%}
-                                            <{% if link != blank %}a{% else %}div{% endif %} class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-{{ media_size }}" {% if link != blank %} href="{{ link }}"{% endif %}
-                                                {% if media_size == 'adapt' %}
-                                                    style="padding-bottom: {{ 1 | divided_by: image.aspect_ratio | times: 100 }}%;"
-                                                {% elsif media_size == 'square' %}
-                                                    style="padding-bottom: 100%;"
-                                                {% elsif media_size == 'portrait' %}
-                                                    {% if portrait_aspect_ratio != blank %}
-                                                        style="padding-bottom: {{ portrait_aspect_ratio }};"
-                                                    {% endif %}
-                                                {% elsif media_size == 'circle'%}
-                                                    style="padding-bottom: 100%;"
+                                    {%- if image != blank -%}
+                                        <{% if link != blank %}a{% else %}div{% endif %} class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-{{ media_size }}" {% if link != blank %} href="{{ link }}"{% endif %}
+                                            {% if media_size == 'adapt' %}
+                                                style="padding-bottom: {{ 1 | divided_by: image.aspect_ratio | times: 100 }}%;"
+                                            {% elsif media_size == 'square' %}
+                                                style="padding-bottom: 100%;"
+                                            {% elsif media_size == 'portrait' %}
+                                                {% if portrait_aspect_ratio != blank %}
+                                                    style="padding-bottom: {{ portrait_aspect_ratio }};"
                                                 {% endif %}
-                                            >
-                                                <img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x" src="{{ image | img_url: 'master' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
-                                                {%- if image_effect == 'liquid' -%}
-                                                    <span class="hover"></span>
-                                                {%- endif -%}
-                                            </{% if link != blank %}a{% else %}div{% endif %}>
-                                        {%- else -%}
-                                            <{% if link != blank %}a{% else %}div{% endif %} class="image" {% if link != blank %} href="{{ link }}"{% endif %}>
-                                                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-                                            </{% if link != blank %}a{% else %}div{% endif %}>
-                                        {%- endif -%}
-                                    </loading-banner>
+                                            {% elsif media_size == 'circle'%}
+                                                style="padding-bottom: 100%;"
+                                            {% endif %}
+                                        >
+                                            <img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x" src="{{ image | img_url: 'master' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
+                                        </{% if link != blank %}a{% else %}div{% endif %}>
+                                    {%- else -%}
+                                        <{% if link != blank %}a{% else %}div{% endif %} class="image" {% if link != blank %} href="{{ link }}"{% endif %}>
+                                            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                                        </{% if link != blank %}a{% else %}div{% endif %}>
+                                    {%- endif -%}
                                 </div>
                             </div>
                         </div>
@@ -125,21 +144,6 @@
                 "id": "show_featured_brand",
                 "label": "t:sections.featured-brand.settings.general.label__1",
                 "default": true
-            },
-            {
-                "type": "select",
-                "id": "layout_style",
-                "label": "t:sections.general.settings.style.label__1",
-                "default": "1",
-                "options": [
-                {
-                    "value": "1",
-                    "label": "1"
-                },
-                {
-                    "value": "2",
-                    "label": "2"
-                }]
             },
             {
                 "type": "select",
@@ -334,6 +338,21 @@
                 }]
             },
             {
+                "type": "select",
+                "id": "layout_style",
+                "label": "t:sections.general.settings.style.label__1",
+                "default": "1",
+                "options": [
+                {
+                    "value": "1",
+                    "label": "1"
+                },
+                {
+                    "value": "2",
+                    "label": "2"
+                }]
+            },
+            {
                 "type":"header",
                 "content":"t:sections.featured-brand.settings.header__6.content"
             },
@@ -347,6 +366,12 @@
                 "id": "link_url",
                 "label": "t:sections.general.settings.content.label__6",
                 "info": "t:sections.general.settings.content.info__1"
+            },
+            {
+                "type": "color",
+                "id": "link_color",
+                "label": "t:sections.general.settings.color.label__16",
+                "default": "#808080"
             },
             {
                 "type": "header",
@@ -493,9 +518,6 @@
                     }
                 ]
             }
-        ],
-        "disabled_on": {
-            "groups": ["header", "footer"]
-        }
+        ]
     }
 {% endschema %}

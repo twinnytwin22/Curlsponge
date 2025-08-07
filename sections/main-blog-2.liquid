@@ -37,31 +37,69 @@
     assign text_font_weight = section.settings.text_font_weight
     assign text_text_transform = section.settings.text_text_transform
 -%}
-<div data-section-id="{{ section.id }}" data-section-type="blog-layout-02" id="BlogSection-{{ section.id }}" data-section="{{ section.id }}" class="blog-layout-02 halo-page-padding"
-    style="--padding-top: {{ padding_top }};
-        --padding-bottom: {{ padding_bottom }};
-        --padding-top-tablet: {{ padding_top_tablet }};
-        --padding-bottom-tablet: {{ padding_bottom_tablet }};
-        --padding-top-mobile: {{ padding_top_mobile }};
-        --padding-bottom-mobile: {{ padding_bottom_mobile }};
+<style type="text/css" media="screen">
+    :root {
         {% if title_font == 'font_1' %}
-            --blog-title-font: var(--font-1-family);
+            --title-font-{{ section.id }}: var(--font-1-family);
         {% elsif title_font == 'font_2' %}
-           --blog-title-font: var(--font-2-family);
+            --title-font-{{ section.id }}: var(--font-2-family);
         {% elsif title_font == 'font_3' %}
-           --blog-title-font: var(--font-3-family);
+            --title-font-{{ section.id }}: var(--font-3-family);
         {% endif %}
-        --blog-title-font-size: {{ title_font_size }};
-        --blog-title-mobile-font-size: {{ title_mobile_font_size }};
-        --blog-title-font-weight: {{ title_font_weight }};
-        --blog-title-text-transform: {{ title_text_transform }};
-        --blog-text-font-size: {{ text_font_size }};
-        --blog-text-font-weight: {{ text_font_weight }};
-        --blog-text-text-transform: {{ text_text_transform }};
-        --blog-title-color: {{ title_color }};
-        --blog-text-color: {{ text_color }};
-        --blog-bg: {{ background_color }};"
->
+    }
+
+    #BlogSection-{{ section.id }}{
+        padding-top: {{ padding_top }};
+        padding-bottom: {{ padding_bottom }};
+    }
+
+    #BlogSection-{{ section.id }} .blog-block-item .blog-content{
+        background: {{ background_color }};
+    }
+
+    #BlogSection-{{ section.id }} .blog-block-item .blog-title{
+        font-family: var(--title-font-{{ section.id }});
+        font-size: {{ title_mobile_font_size }};
+        font-weight: {{ title_font_weight }};
+        text-transform: {{ title_text_transform }};
+        color: {{ title_color }}
+    }
+
+    #BlogSection-{{ section.id }} .blog-block-item .blog-info,
+    #BlogSection-{{ section.id }} .blog-block-item .blog-summary{
+        font-size: {{ text_font_size }};
+        font-weight: {{ text_font_weight }};
+        text-transform: {{ text_text_transform }};
+    }
+
+    #BlogSection-{{ section.id }} .blog-block-item .blog-info,
+    #BlogSection-{{ section.id }} .blog-block-item .blog-summary,
+    #BlogSection-{{ section.id }} .blog-block-item .blog-btn{
+        color: {{ text_color }}
+    }
+
+    @media (max-width: 1024px) {
+        #BlogSection-{{ section.id }}{
+            padding-top: {{ padding_top_tablet }};
+            padding-bottom: {{ padding_bottom_tablet }};
+        }
+    }
+
+    @media (max-width: 550px) {
+        #BlogSection-{{ section.id }}{
+            padding-top: {{ padding_top_mobile }};
+            padding-bottom: {{ padding_bottom_mobile }};
+        }
+    }
+
+    @media (min-width: 551px){
+        #BlogSection-{{ section.id }} .blog-block-item .blog-title{
+            font-size: {{ title_font_size }};
+        }
+    }
+</style>
+
+<div data-section-id="{{ section.id }}" data-section-type="blog-layout-02" id="BlogSection-{{ section.id }}" data-section="{{ section.id }}" class="blog-layout-02">
     {%- if show_breadcrumb -%}
         {% render 'breadcrumb', alignment: breadcrumb_alignment %}
     {%- endif -%}

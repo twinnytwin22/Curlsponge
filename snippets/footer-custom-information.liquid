@@ -1,53 +1,53 @@
 {%- if footer_custom_information.size > 0 -%}
     {%- for column in footer_custom_information -%}
         {%- if column.settings.heading != blank -%}
-            <toggle-mobile-column class="footer-block__column footer-block__mobile" {{ column.shopify_attributes }}>
-                <h2 class="footer-block__heading" data-toggle-column>
-                    {{- column.settings.heading | escape -}}
-                </h2>
-                <div class="footer-block__list">
-                    <ul class="list-unstyled">
-                        {%- for i in (1..4) -%}
-                            {% capture cap_icon %}icon_{{ i }}{% endcapture %}
-                            {% capture cap_text %}text_{{ i }}{% endcapture %}
-                            {% capture cap_sub_text %}sub_text_{{ i }}{% endcapture %}
-                            {% capture cap_link %}link_{{ i }}{% endcapture %}
-                            {% capture cap_content %}content_{{ i }}{% endcapture %}
-                            {%- liquid
-                                assign icon = column.settings[cap_icon]
-                                assign text = column.settings[cap_text]
-                                assign sub_text = column.settings[cap_sub_text]
-                                assign link = column.settings[cap_link]
-                                assign content = column.settings[cap_content]
-                            -%}
-                            {%- if text != blank -%}
-                                <li class="{% if content != blank %} list-menu__item--content{% endif %}{% if icon != blank %} list-menu__item--icon{% endif %}">
-                                    <{% if link != blank %}a{% else %}div{% endif %} {% if link != blank %} href="{{ link }}"{% endif %} class="link link-underline list-menu__item--link" role="button">
-                                        <span class="list-menu__item--wrapper">
-                                            {%- unless content != blank -%}
-                                                {%- if icon != blank -%}
-                                                    {{ icon }}
+            <div class="footer-block__column footer-block__mobile">
+                    <h2 class="footer-block__heading" data-toggle-column>
+                        {{- column.settings.heading | escape -}}
+                    </h2>
+                    <div class="footer-block__list">
+                        <ul class="list-unstyled">
+                            {%- for i in (1..4) -%}
+                                {% capture cap_icon %}icon_{{ i }}{% endcapture %}
+                                {% capture cap_text %}text_{{ i }}{% endcapture %}
+                                {% capture cap_sub_text %}sub_text_{{ i }}{% endcapture %}
+                                {% capture cap_link %}link_{{ i }}{% endcapture %}
+                                {% capture cap_content %}content_{{ i }}{% endcapture %}
+                                {%- liquid
+                                    assign icon = column.settings[cap_icon]
+                                    assign text = column.settings[cap_text]
+                                    assign sub_text = column.settings[cap_sub_text]
+                                    assign link = column.settings[cap_link]
+                                    assign content = column.settings[cap_content]
+                                -%}
+                                {%- if text != blank -%}
+                                    <li class="{% if content != blank %} list-menu__item--content{% endif %}{% if icon != blank %} list-menu__item--icon{% endif %}">
+                                        <{% if link != blank %}a{% else %}div{% endif %} {% if link != blank %} href="{{ link }}"{% endif %} class="link link-underline list-menu__item--link">
+                                            <span class="list-menu__item--wrapper">
+                                                {%- unless content != blank -%}
+                                                    {%- if icon != blank -%}
+                                                        {{ icon }}
+                                                    {%- endif -%}
+                                                {%- endunless -%}
+                                                <span class="text">{{ text }}</span>
+                                                {%- if content != blank -%}
+                                                    <span class="content">
+                                                        {{ content }}
+                                                    </span>
                                                 {%- endif -%}
-                                            {%- endunless -%}
-                                            <span class="text">{{ text }}</span>
-                                            {%- if content != blank -%}
-                                                <span class="content">
-                                                    {{ content }}
-                                                </span>
+                                            </span>
+                                            {%- if sub_text != blank -%}
+                                                <{% if link != blank %}span{% else %}div{% endif %} class="list-menu__item--text">
+                                                    {{ sub_text }}
+                                                </{% if link != blank %}span{% else %}div{% endif %}>
                                             {%- endif -%}
-                                        </span>
-                                        {%- if sub_text != blank -%}
-                                            <{% if link != blank %}span{% else %}div{% endif %} class="list-menu__item--text">
-                                                {{ sub_text }}
-                                            </{% if link != blank %}span{% else %}div{% endif %}>
-                                        {%- endif -%}
-                                    </{% if link != blank %}a{% else %}div{% endif %}>
-                                </li>
-                            {%- endif -%}
-                        {%- endfor -%}
-                    </ul>
-                </div>
-            </toggle-mobile-column>
+                                        </{% if link != blank %}a{% else %}div{% endif %}>
+                                    </li>
+                                {%- endif -%}
+                            {%- endfor -%}
+                        </ul>
+                    </div>
+            </div>
         {%- endif -%}
     {%- endfor -%}
 {%- endif -%}

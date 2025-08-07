@@ -192,7 +192,7 @@
     .productGrid.column-4 .product,
     .productGrid.column-5 .product{
         width: 33.3333333%;
-        margin-top: 30px;
+        margin-top: 30px
     }
 
     .productGrid.column-3 .product:nth-child(-n+3),
@@ -247,35 +247,11 @@
         margin-right: -10px;
     }
 
-    .productGrid.col-wide{
-        margin-left: -15px;
-        margin-right: -15px;
-    }
-
-    .productGrid.col-expand{
-        margin-left: -20px;
-        margin-right: -20px;
-    }
-
     .productGrid .product{
         padding-left: 10px;
         padding-right: 10px;
         margin-bottom: 0;
         margin-top: 60px;
-    }
-
-    .productGrid.productGrid-3 .product{
-        margin-top: 15px!important;
-    }
-
-    .productGrid.col-wide .product{
-        padding-left: 15px;
-        padding-right: 15px;
-    }
-
-    .productGrid.col-expand .product{
-        padding-left: 20px;
-        padding-right: 20px;
     }
 
     .productGrid.column-2 .product,

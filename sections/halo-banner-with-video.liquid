@@ -19,60 +19,118 @@
         assign text_text_transform = section.settings.text_text_transform
         assign title_font = section.settings.title_font
         assign title_font_size = section.settings.title_font_size
-        if title_font_size >= 60
-            assign title_tablet_font_size = title_font_size | minus: 30 | append: 'px'
-            assign title_font_size = title_font_size | append: 'px'
-        else
-            assign title_tablet_font_size = title_font_size | append: 'px'
-            assign title_font_size = title_font_size | append: 'px'
-        endif
         assign title_mobile_font_size = section.settings.title_mobile_font_size | append: 'px'
         assign title_font_weight = section.settings.title_font_weight
         assign title_text_transform = section.settings.title_text_transform
         assign position_x = section.settings.position_x
         assign position_y = section.settings.position_y
         assign align = section.settings.align
-        assign video_option = section.settings.video_option
-        if video_option == 'video_youtube'
-            assign video_link = section.settings.video_link
-        else
-            assign video_mp4_link = section.settings.video_mp4_link
-        endif
-
-        assign full_width = '100vw'
-        assign widths = '375, 550, 750, 1100, 1370w, 1500, 1770, 1780, 1880w, 2000, 3000, 3840'
-        if section.settings.image_behavior == 'ambient'
-            assign half_width = '60vw'
-            assign full_width = '120vw'
-            assign widths = '450, 660, 900, 1320, 1800, 2136, 2400, 3600, 7680'
-        endif
+        assign enable_parallax = section.settings.enable_parallax
     -%}
-    <div class="halo-block halo-banner halo-banner-with-video halo-block-padding" id="halo-banner-with-video-{{ section.id }}"
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};"
-    >
+	<style type="text/css" media="screen">
+		:root {
+            {% if title_font == 'font_1' %}
+                --title-font-{{ section.id }}: var(--font-1-family);
+            {% elsif title_font == 'font_2' %}
+                --title-font-{{ section.id }}: var(--font-2-family);
+            {% elsif title_font == 'font_3' %}
+                --title-font-{{ section.id }}: var(--font-3-family);
+            {% endif %}
+        }
+
+        #halo-banner-with-video-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        #halo-banner-with-video-{{ section.id }} .banner-title{
+            font-family: var(--title-font-{{ section.id }});
+            font-size: {{ title_mobile_font_size }};
+            font-weight: {{ title_font_weight }};
+            text-transform: {{ title_text_transform }};
+            color: {{ title_color }};
+        }
+
+        #halo-banner-with-video-{{ section.id }} .banner-text{
+            font-size: {{ text_font_size }};
+            font-weight: {{ text_font_weight }};
+            text-transform: {{ text_text_transform }};
+            color: {{ text_color }};
+        }
+
+        #halo-banner-with-video-{{ section.id }} .banner-icon .icon{
+        	fill: {{ text_color }};
+        }
+
+        @media (max-width: 1024px) {
+            #halo-banner-with-video-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+
+            {% if enable_parallax %}
+            	#halo-banner-with-video-{{ section.id }} .banner-parallax{
+            		background-attachment: initial;
+            		background-size: cover;
+            	}
+            {% endif %}
+        }
+
+        @media (max-width: 550px) {
+            #halo-banner-with-video-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+
+        {% if title_font_size >= 60 %}
+            @media (min-width: 768px){
+                #halo-banner-with-video-{{ section.id }} .banner-title{
+                    font-size: {{ title_font_size | minus: 30 | append: 'px' }};
+                }
+            }
+
+            @media (min-width: 1025px){
+                #halo-banner-with-video-{{ section.id }} .banner-title{
+                    font-size: {{ title_font_size | minus: 20 | append: 'px' }};
+                }
+            }
+
+            @media (min-width: 1600px) {
+                #halo-banner-with-video-{{ section.id }} .banner-title{
+                    font-size: {{ title_font_size | append: 'px' }};
+                }
+            }
+        {% else %}
+            @media (min-width: 551px) {
+                #halo-banner-with-video-{{ section.id }} .banner-title{
+                    font-size: {{ title_font_size | append: 'px' }};
+                }
+            }
+        {% endif %}
+    </style>
+    <div class="halo-block halo-banner halo-banner-with-video" id="halo-banner-with-video-{{ section.id }}">
     	<div class="container container-{{ container }}">
     		<div class="halo-block-content banner-with-video">
     			<div class="halo-banner-wrapper">
-    				<div class="item item-{{ section.id }}" {% if video_link != blank or video_mp4_link != blank %}data-deferred-video id="deferred-video-{{ video.id }}"{% endif %}>
-    					<div class="banner-item">
+    				<div class="item item-{{ section.id }}" data-deferred-video id="deferred-video-{{ video.id }}">
+    					<div class="banner-item{% if enable_parallax %} banner-parallax{% endif %}">
     						<div class="img-box img-box--mobile">
     							{%- if image != blank -%}
-                                    <div class="image image-adapt{% if image != blank and section.settings.image_behavior != 'none' %} animate--{{ section.settings.image_behavior }}{% endif %}" style="padding-top: {% unless image.presentation.focal_point == '50.0% 50.0%' %}{{ 1 | divided_by: image.aspect_ratio | times: 100 | divided_by: 1.1 }}%{% else %}{{ 1 | divided_by: image.aspect_ratio | times: 100 }}%{% endunless %}">
-                                        {%- assign image_alt = image.alt | default: shop.name | escape -%}
-                                        {{ image | image_url: width: 3840 | image_tag:
-                                            loading: 'lazy',
-                                            width: image.width,
-                                            height: image_height,
-                                            class: image_class,
-                                            sizes: full_width,
-                                            widths: widths,
-                                            alt: image_alt
-                                        }}
+                                    <div class="image image-adapt"
+                                    	style="
+	                                    {% if enable_parallax %}
+	                                        background-image:url({{ image | img_url: 'master' }});
+	                                        background-attachment: fixed;
+	                                        background-repeat: no-repeat;
+	                                        background-position: center;
+	                                        background-size: cover;
+	                                    {% endif %}
+                                        padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}"
+                                    >
+                                    {%- unless enable_parallax -%}
+                                        <img srcset="{{ image | img_url: '1920x' }} 1x, {{ image | img_url: '1920x', scale: 2 }} 2x" src="{{ image | img_url: '1920x', crop: 'center' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
+                                    {%- endunless -%}
                                     </div>
                                 {%- else -%}
                                     <div class="image">
@@ -81,31 +139,13 @@
                                     </div>
                                 {%- endif -%}
                                 {%- if mobile_image != blank -%}
-                                    <div class="image image-mobile image-adapt{% if mobile_image != blank and section.settings.image_behavior != 'none' %} animate--{{ section.settings.image_behavior }}{% endif %}" style="padding-top: {{ 1 | divided_by: mobile_image.aspect_ratio | times: 100 | append: '%' }}">
-                                        {%- assign image_alt = mobile_image.alt | default: shop.name | escape -%}
-                                        {{ mobile_image | image_url: width: 3840 | image_tag:
-                                            loading: 'lazy',
-                                            width: mobile_image.width,
-                                            height: image_height,
-                                            class: image_class,
-                                            sizes: full_width,
-                                            widths: widths,
-                                            alt: image_alt
-                                        }}
+                                    <div class="image image-mobile image-adapt" style="padding-top: {{ 1 | divided_by: mobile_image.aspect_ratio | times: 100 | append: '%' }}">
+                                        <img srcset="{{ mobile_image | img_url: 'master' }} 1x, {{ mobile_image | img_url: 'master', scale: 2 }} 2x" src="{{ mobile_image | img_url: 'master' }}" alt="{{ mobile_image.alt | default: shop.name | escape }}" loading="lazy">
                                     </div>
                                 {%- else -%}
                                     {%- if image != blank -%}
-                                        <div class="image image-mobile image-adapt{% if image != blank and section.settings.image_behavior != 'none' %} animate--{{ section.settings.image_behavior }}{% endif %}" style="padding-top: {% unless image.presentation.focal_point == '50.0% 50.0%' %}100%{% else %}{{ 1 | divided_by: image.aspect_ratio | times: 100 }}%{% endunless %}">
-                                            {%- assign image_alt = image.alt | default: shop.name | escape -%}
-                                            {{ image | image_url: width: 3840 | image_tag:
-                                                loading: 'lazy',
-                                                width: image.width,
-                                                height: image_height,
-                                                class: image_class,
-                                                sizes: full_width,
-                                                widths: widths,
-                                                alt: image_alt
-                                            }}
+                                        <div class="image image-mobile image-adapt" style="padding-top: 100%">
+                                            <img srcset="{{ image | img_url: '420x', crop: 'center' }} 1x, {{ image | img_url: '420x', crop: 'center',  scale: 2 }} 2x" src="{{ image | img_url: '420x', crop: 'center' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
                                         </div>
                                     {%- else -%}
                                         <div class="image image-mobile">
@@ -114,62 +154,35 @@
                                     {%- endif -%}
                                 {%- endif -%}
     						</div>
-                            <div class="content-box content-box--absolute content-box--{{ position_x }} content-box--{{ position_y }} text-{{ align }}"
-                                style="--text-font-size: {{ text_font_size }};
-                                    --text-font-weight: {{ text_font_weight }};
-                                    --text-text-transform: {{ text_text_transform }};
-                                    {% if title_font == 'font_1' %}
-                                        --title-font: var(--font-1-family);
-                                    {% elsif title_font == 'font_2' %}
-                                        --title-font: var(--font-2-family);
-                                    {% elsif title_font == 'font_3' %}
-                                        --title-font: var(--font-3-family);
-                                    {% endif %}
-                                    --title-font-size: {{ title_font_size }};
-                                    --title-tablet-font-size: {{ title_tablet_font_size }};
-                                    --title-mobile-font-size: {{ title_mobile_font_size }};
-                                    --title-font-weight: {{ title_font_weight }};
-                                    --title-text-transform: {{ title_text_transform }};
-                                    --title-color: {{ title_color }};
-                                    --text-color: {{ text_color }};
-                                    {% if settings.show_dark_mode %}
-                                        --dark-mode-title-color: {{ title_color }};
-                                        --dark-mode-text-color: {{ text_color }};
-                                    {% endif %}
-                                    "
-                            >
+                            <div class="content-box content-box--absolute content-box--{{ position_x }} content-box--{{ position_y }} text-{{ align }}">
                                 {%- if title != blank -%}
-                                    <h4 class="banner-title typography__mobile typography__tablet typography__desktop">
+                                    <h4 class="banner-title">
                                         {{ title | escape }}
                                     </h4>
                                 {%- endif -%}
                                 {%- if text != blank -%}
-                                    <span class="banner-text typography__text">
+                                    <span class="banner-text">
                                         {{ text }}
                                     </span>
                                 {%- endif -%}
-                                {%- if video_link != blank or video_mp4_link != blank -%}
-                                    <div class="banner-icon clearfix">
-                                        <a class="{% if video_option == 'video_youtube' %} video_youtube{% else %} video_mp4{% endif %}" href="javascript:void(0);" aria-label="link" data-video-banner data-video="{% if video_option == 'video_youtube' %}{{ video_link }}{% else %}{{ video_mp4_link }}{% endif %}" role="button">
-                                            {% render 'icon-play',
-                                                icon_play: 'circle'
-                                            %}
-                                            <span class="text">
-                                                {{ 'accessibility.play' | t }}
-                                            </span>
-                                        </a>
-                                    </div>
-                                {%- endif -%}
-                            </div>
-                            {%- if video_link != blank or video_mp4_link != blank -%}
-                                <div class="video-banner">
-                                        <a href="javascript:void(0)" class="halo-modal-close clearfix" data-close-video role="button">
-                                        <span class="visually-hidden">{{ 'general.common.close' | t }}</span>
-                                        {% render 'icon-close' %}
+                                <div class="banner-icon clearfix">
+                                    <a class="{% if section.settings.video_option == 'video_youtube' %} video_youtube{% else %} video_mp4{% endif %}" href="javascript:void(0);" aria-label="link" data-video-banner data-video="{% if section.settings.video_option == 'video_youtube' %}{{ section.settings.video_link }}{% else %}{{ section.settings.video_mp4_link }}{% endif %}" role="button">
+                                        {% render 'icon-play',
+                                            icon_play: 'circle'
+                                        %}
+                                        <span class="text">
+                                            {{ 'accessibility.play' | t }}
+                                        </span>
                                     </a>
-                                    <div class="modal-content-video"></div>
                                 </div>
-                            {%- endif -%}
+                            </div>
+                            <div class="video-banner">
+                                    <a href="javascript:void(0)" class="halo-modal-close clearfix" data-close-video role="button">
+                                    <span class="visually-hidden">{{ 'general.common.close' | t }}</span>
+                                    {% render 'icon-close' %}
+                                </a>
+                                <div class="modal-content-video"></div>
+                            </div>
     					</div>
     				</div>
     			</div>
@@ -307,6 +320,13 @@
                 "info": "t:sections.general.settings.image.info"
             },
             {
+                "type": "checkbox",
+                "id": "enable_parallax",
+                "label": "t:sections.general.settings.parallax.label__1",
+                "info": "t:sections.general.settings.parallax.info",
+                "default": false
+            },
+            {
                 "type": "select",
                 "id": "video_option",
                 "label": "t:sections.banner-with-video.settings.video.label__1",
@@ -405,30 +425,6 @@
                     "label": "t:sections.general.settings.content-alignment.options__3"
                 }],
                 "default": "left"
-            },
-            {
-                "type": "header",
-                "content": "t:sections.animation.content"
-            },
-            {
-                "type": "select",
-                "id": "image_behavior",
-                "options": [
-                    {
-                        "value": "none",
-                        "label": "t:sections.animation.image_behavior.options__1.label"
-                    },
-                    {
-                        "value": "ambient",
-                        "label": "t:sections.animation.image_behavior.options__2.label"
-                    },
-                    {
-                        "value": "fixed",
-                        "label": "t:sections.animation.image_behavior.options__3.label"
-                    }
-                ],
-                "default": "none",
-                "label": "t:sections.animation.image_behavior.label"
             },
             {
                 "type": "header",
@@ -628,9 +624,6 @@
             {
                 "name": "t:sections.banner-with-video.presets.name"
             }
-        ],
-        "disabled_on": {
-            "groups": ["header", "footer"]
-        }
+        ]
     }
 {% endschema %}

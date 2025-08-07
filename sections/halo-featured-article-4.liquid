@@ -1,4 +1,10 @@
-{%- if section.blocks.size > 0 and section.settings.show_featured_article -%}
+{%- liquid
+    assign show_section = false
+    if section.blocks.size > 0 and section.settings.show_featured_article
+        assign show_section = true
+    endif
+-%}
+{%- if show_section -%}
 	{%- liquid
         assign padding_top = section.settings.padding_top | append: 'px'
         assign padding_bottom = section.settings.padding_bottom | append: 'px'
@@ -40,34 +46,112 @@
         if section.blocks.size == 1
         	assign column = '1'
         endif
-
-        if settings.show_dark_mode
-            assign dark_mode_1 = false
-            unless block_bg == blank or block_bg == '#fff' or block_bg == '#FFF' or block_bg == '#ffffff' or block_bg == '#FFFFFF' or block_bg == 'rgb(255,255,255)' or block_bg == 'rgba(255,255,255,1)' or block_bg == 'rgba(0,0,0,0)' or block_bg == 'rgb(0,0,0,0)'
-                assign dark_mode_1 = true
-                assign dark_mode_background_color = section.settings.block_bg
-            endunless
-            assign dark_mode_2 = false
-            unless background_color == blank or background_color == '#fff' or background_color == '#FFF' or background_color == '#ffffff' or background_color == '#FFFFFF' or background_color == 'rgb(255,255,255)' or background_color == 'rgba(255,255,255,1)' or background_color == 'rgba(0,0,0,0)' or background_color == 'rgb(0,0,0,0)'
-                assign dark_mode_2 = true
-                assign dark_mode_block_background_color = section.settings.background_color
-                assign dark_mode_title_color = section.settings.title_color
-                assign dark_mode_text_color = section.settings.text_color
-            endunless
-        endif
     -%}
-    <div class="halo-block halo-banner halo-article halo-article-4 halo-block-padding halo-block-gradient{% unless dark_mode_1 %} dark-mode-1{% endunless %}" id="halo-featured-article-{{ section.id }}"
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};
-            --bg-color: {{ block_bg | default: settings.colors_bg }};
-            {% if dark_mode_1 %}
-                --dark-mode-bg-color: {{ dark_mode_background_color }};
-            {% endif %}"
-    >
+    <style type="text/css" media="screen">
+    	:root {
+            {% if title_font == 'font_1' %}
+                --title-font-{{ section.id }}: var(--font-1-family);
+            {% elsif title_font == 'font_2' %}
+                --title-font-{{ section.id }}: var(--font-2-family);
+            {% elsif title_font == 'font_3' %}
+                --title-font-{{ section.id }}: var(--font-3-family);
+            {% endif %}
+        }
+
+    	#halo-featured-article-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+            {% if block_bg != 'rgba(0,0,0,0)' and block_bg != blank %}
+            	background: {{ block_bg }};
+            {% endif %}
+        }
+
+        {% if background_color != 'rgba(0,0,0,0)' and background_color != blank %}
+        	#halo-featured-article-{{ section.id }} .article-item{
+        		box-shadow: 0 1px 3px -2px rgb(0, 0, 0, .1), 0 1px 2px -2px rgb(0, 0, 0, .15);
+        	}
+
+        	#halo-featured-article-{{ section.id }} .content-box{
+                background-color: {{ background_color }};
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+        {% endif %}
+
+        #halo-featured-article-{{ section.id }} .banner-title{
+            font-family: var(--title-font-{{ section.id }});
+            font-size: {{ title_mobile_font_size }};
+            font-weight: {{ title_font_weight }};
+            text-transform: {{ title_text_transform }};
+            color: {{ title_color }};
+        }
+
+        #halo-featured-article-{{ section.id }} .banner-info{
+        	font-size: calc({{ text_font_size }} - 2px);
+            font-weight: {{ text_font_weight }};
+            font-style: italic;
+            text-transform: {{ text_text_transform }};
+        }
+
+        #halo-featured-article-{{ section.id }} .banner-summary{
+            font-size: {{ text_font_size }};
+            font-weight: {{ text_font_weight }};
+            text-transform: {{ text_text_transform }};
+        }
+
+        #halo-featured-article-{{ section.id }} .banner-info,
+        #halo-featured-article-{{ section.id }} .banner-summary{
+            color: {{ text_color }};
+        }
+
+        @media (max-width: 1024px) {
+            #halo-featured-article-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #halo-featured-article-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+
+        {% if background_color != 'rgba(0,0,0,0)' and background_color != blank %}
+	        @media (min-width: 321px){
+	        	#halo-featured-article-{{ section.id }} .content-box{
+	        		padding-left: 30px;
+	        		padding-right: 30px;
+	        	}
+	        }
+	    {% endif %}
+
+        @media (min-width: 551px){
+            #halo-featured-article-{{ section.id }} .banner-title{
+                font-size: {{ title_font_size }};
+            }
+        }
+
+        {% if background_color != 'rgba(0,0,0,0)' and background_color != blank %}
+	        @media (min-width: 1025px){
+	        	#halo-featured-article-{{ section.id }} .content-box{
+	        		padding-left: 40px;
+	        		padding-right: 40px;
+	        	}
+	        }
+	    {% endif %}
+
+	    {% if background_color != 'rgba(0,0,0,0)' and background_color != blank %}
+	        @media (min-width: 1600px){
+	        	#halo-featured-article-{{ section.id }} .content-box{
+	        		padding-left: 50px;
+	        		padding-right: 50px;
+	        	}
+	        }
+	    {% endif %}
+    </style>
+    <div class="halo-block halo-banner halo-article halo-article-4" id="halo-featured-article-{{ section.id }}">
     	<div class="container container-{{ container }}">
 			{%- if block_title != blank -%}
 				<div class="halo-items halo-items-2 clearfix">
@@ -94,29 +178,7 @@
 	                	</div>
 	                </div>
             {%- endif -%}
-    		<div class="halo-block-content{% if block_title != blank %} halo-item{% endif %}{% unless dark_mode_2 %} dark-mode-2{% endunless %}"
-                style="{% if title_font == 'font_1' %}
-                    --blog-title-font: var(--font-1-family);
-                    {% elsif title_font == 'font_2' %}
-                        --blog-title-font: var(--font-2-family);
-                    {% elsif title_font == 'font_3' %}
-                        --blog-title-font: var(--font-3-family);
-                    {% endif %}
-                    --blog-title-font-size: {{ title_font_size }};
-                    --blog-title-mobile-font-size: {{ title_mobile_font_size }};
-                    --blog-title-font-weight: {{ title_font_weight }};
-                    --blog-title-text-transform: {{ title_text_transform }};
-                    --blog-title-color: {{ title_color }};
-                    --blog-text-font-size: {{ text_font_size }};
-                    --blog-text-font-weight: {{ text_font_weight }};
-                    --blog-text-text-transform: {{ text_text_transform }};
-                    --blog-text-color: {{ text_color }};
-                    --blog-bg-color: {{ background_color }};
-                    {% if dark_mode_2 %}
-                        --dark-mode-blog-title-color: {{ dark_mode_title_color }};
-                        --dark-mode-blog-text-color: {{ dark_mode_text_color }};
-                    {% endif %}"
-            >
+    		<div class="halo-block-content{% if block_title != blank %} halo-item{% endif %}">
     			<div class="halo-row halo-row--{{ col }} halo-row--grid column-{{ column }} disable-scrollbar">
                 	{%- for block in section.blocks -%}
                 		{%- liquid
@@ -134,60 +196,50 @@
                                         assign summary = article.excerpt_or_content | strip_html | truncatewords: 50
                                     -%}
                                     <div class="img-box">
-                                        <loading-banner class="loading-banner">
-                                        	{%- if article.image -%}
-                                        		<a class="image image-{{ media_size }}" href="{{ link }}"
-                                                    {% if media_size == 'adapt' %}
-                                                        style="padding-bottom: {{ 1 | divided_by: image.aspect_ratio | times: 100 }}%;"
-                                                    {% elsif media_size == 'square' %}
-                                                        style="padding-bottom: 100%;"
-                                                    {% elsif media_size == 'portrait' %}
-                                                        {% if portrait_aspect_ratio != blank %}
-                                                            style="padding-bottom: {{ portrait_aspect_ratio }};"
-                                                        {% endif %}
+                                    	{%- if article.image -%}
+                                    		<a class="image image-{{ media_size }}" href="{{ link }}"
+                                                {% if media_size == 'adapt' %}
+                                                    style="padding-bottom: {{ 1 | divided_by: image.aspect_ratio | times: 100 }}%;"
+                                                {% elsif media_size == 'square' %}
+                                                    style="padding-bottom: 100%;"
+                                                {% elsif media_size == 'portrait' %}
+                                                    {% if portrait_aspect_ratio != blank %}
+                                                        style="padding-bottom: {{ portrait_aspect_ratio }};"
                                                     {% endif %}
-                                                >
-                                                    <img srcset="
-                                                        {%- if image.width >= 165 -%}
-                                                            {{ image | img_url: '165x' }} 165w,
-                                                        {%- endif -%}
-                                                        {%- if image.width >= 360 -%}
-                                                            {{ image | img_url: '360x' }} 360w,
-                                                        {%- endif -%}
-                                                        {%- if image.width >= 533 -%}
-                                                            {{ image | img_url: '533x' }} 533w,
-                                                        {%- endif -%}
-                                                        {%- if image.width >= 720 -%}
-                                                            {{ image | img_url: '720x' }} 720w,
-                                                        {%- endif -%}
-                                                        {%- if image.width >= 940 -%}
-                                                            {{ image | img_url: '940x' }} 940w,
-                                                        {%- endif -%}
-                                                        {%- if image.width >= 1066 -%}
-                                                            {{ image | img_url: '1066x' }} 1066w
-                                                        {%- endif -%}"
-                                                        src="{{ image | img_url: '533x' }}"
-                                                        alt="{{ image.alt | default: shop.name | escape }}"
-                                                        sizes="(min-width: 1100px) 535px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)"
-                                                        loading="lazy"
-                                                    >
-                                                    {%- if image_effect == 'liquid' -%}
-                                                        <span class="hover"></span>
+                                                {% endif %}
+                                            >
+                                                <img srcset="
+                                                    {%- if image.width >= 165 -%}
+                                                        {{ image | img_url: '165x' }} 165w,
                                                     {%- endif -%}
-                                                </a>
-                                        	{%- else -%}
-                                        		<a class="image" href="{{ link }}">
-                                                    {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-                                                </a>
-                                        	{%- endif -%}
-                                        </loading-banner>
+                                                    {%- if image.width >= 360 -%}
+                                                        {{ image | img_url: '360x' }} 360w,
+                                                    {%- endif -%}
+                                                    {%- if image.width >= 533 -%}
+                                                        {{ image | img_url: '533x' }} 533w,
+                                                    {%- endif -%}
+                                                    {%- if image.width >= 720 -%}
+                                                        {{ image | img_url: '720x' }} 720w,
+                                                    {%- endif -%}
+                                                    {%- if image.width >= 940 -%}
+                                                        {{ image | img_url: '940x' }} 940w,
+                                                    {%- endif -%}
+                                                    {%- if image.width >= 1066 -%}
+                                                        {{ image | img_url: '1066x' }} 1066w
+                                                    {%- endif -%}"
+                                                    src="{{ image | img_url: '533x' }}"
+                                                    alt="{{ image.alt | default: shop.name | escape }}"
+                                                    sizes="(min-width: 1100px) 535px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)"
+                                                    loading="lazy"
+                                                >
+                                            </a>
+                                    	{%- else -%}
+                                    		<a class="image" href="{{ link }}">
+                                                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                                            </a>
+                                    	{%- endif -%}
                                     </div>
-                                    <div class="content-box text-{{ align }}{% if background_color != 'rgba(0,0,0,0)' and background_color != blank %} content-box--bg{% endif %}"
-                                        style="--bg-color: {{ background_color }};
-                                        {% if dark_mode_2 %}
-                                            --dark-mode-block-bg-color: {{ dark_mode_block_background_color }};
-                                        {% endif %}"
-                                    >
+                                    <div class="content-box text-{{ align }}">
                                     	{%- if show_author or show_date -%}
                                             <span class="banner-info">
                                                 {% if show_author %}{{ 'blogs.article.author' | t : author : author }}{% endif %}{% if show_date %}{{ article.published_at | time_tag: '%b %d, %Y' }}{% endif%}
@@ -762,9 +814,6 @@
 	                }
 	            ]
 	        }
-	    ],
-        "disabled_on": {
-            "groups": ["header", "footer"]
-        }
+	    ]
 	}
 {% endschema %}

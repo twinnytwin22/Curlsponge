@@ -1,16 +1,27 @@
 {%- liquid
     assign product_action_group = false
+    
     assign show_quick_view = settings.show_quick_view
     if show_quick_view
         assign show_quick_view_card_mobile = settings.show_quick_view_card_mobile
     endif
+
     assign show_wishlist = false
     if settings.show_wishlist_card and settings.show_wishlist
         assign show_wishlist = true
         assign show_wishlist_card_mobile = settings.show_wishlist_card_mobile
     endif
+
     assign show_compare = settings.show_compare
+
     assign show_action = settings.show_action
+    if show_action
+        if show_add_to_cart == true or show_add_to_cart == 'true'
+            assign show_action = true
+        else
+            assign show_action = false
+        endif
+    endif
 
     if show_quick_view or show_wishlist or show_compare or show_action
         assign product_action_group = true
@@ -38,21 +49,30 @@
                             {%- endif -%}
                         </span>
                         {% render 'icon-heart',
-                            icon_heart: icon_heart
+                            icon_heart: '1'
                         %}
                     </a>
                 </div>
             {%- endif -%}
             {%- if show_action -%}
-                <div class="card-product__group-item item-square item-hover card-action card-actionIcon card-grid__hidden d-none">
+                <div class="card-product__group-item item-square item-hover card-action card-actionIcon card-grid__hidden">
                     {%- liquid
                         assign sold_out = false
                         if product.available == false
                             assign sold_out = true
                         endif
+
                         assign variantCount = product.variants | size
                         assign option_name = product.options_with_values[0].name | downcase
                         assign product_swatch_option = settings.swatch | downcase
+
+                        assign has_popup = false
+
+                        if product.options_with_values.size == 1 and product_swatch_option contains option_name and settings.show_swatch
+                            assign has_popup = false
+                        else
+                            assign has_popup = true
+                        endif
                     -%}
 
                     <form action="{{ routes.cart_url }}/add" method="post" class="variants" id="{{ id }}-{{ product.id }}-{{ sectionId }}" data-product-id="{{ product.id }}" enctype="multipart/form-data">
@@ -120,7 +140,7 @@
                                     </button>
                                 {%- else -%}
                                     {%- if settings.show_quick_shop -%}
-                                        <a class="action-icon" href="{{ product.url }}" {% if settings.quick_shop_type == '3' %} data-open-quick-view-popup data-product-handle="{{ product.handle }}"{% else %} data-quickshop-popup{% endif %} role="button">
+                                        <a class="action-icon" href="{{ product.url }}" data-quickshop-popup role="button">
                                             <span class="text">
                                                 {{ 'products.product.quick_shop' | t }}
                                             </span>
@@ -202,31 +222,29 @@
         </div>
     </div>
     {%- if settings.show_quick_shop and product.available -%}
-        {%- if settings.quick_shop_type != '3' -%}
-            {%- liquid
+        {%- liquid
+            assign has_popup = false
+            assign variantCount = product.variants | size
+            assign option_name = product.options_with_values[0].name | downcase
+            assign product_swatch_option = settings.swatch | downcase
+            if product.options_with_values.size == 1 and product_swatch_option contains option_name and settings.show_swatch
                 assign has_popup = false
-                assign variantCount = product.variants | size
-                assign option_name = product.options_with_values[0].name | downcase
-                assign product_swatch_option = settings.swatch | downcase
-                if product.options_with_values.size == 1 and product_swatch_option contains option_name and settings.show_swatch
-                    assign has_popup = false
-                else
-                    assign has_popup = true
-                endif
-            -%}
-            {%- if variantCount > 0 and product.variants.first.title != 'Default Title' -%}
-                {%- if has_popup -%}
-                    <div class="variants-popup custom-scrollbar">
-                        {% render 'product-quick-shop-popup',
-                            product: product,
-                            id: 'form',
-                            list: 'list',
-                            position: position,
-                            sectionId: sectionId,
-                            show_internal_button: true
-                        %}
-                    </div>
-                {%- endif -%}
+            else
+                assign has_popup = true
+            endif
+        -%}
+        {%- if variantCount > 0 and product.variants.first.title != 'Default Title' -%}
+            {%- if has_popup -%}
+                <div class="variants-popup custom-scrollbar">
+                    {% render 'product-quick-shop-popup',
+                        product: product,
+                        id: 'form',
+                        list: 'list',
+                        position: position,
+                        sectionId: sectionId,
+                        show_internal_button: true
+                    %}
+                </div>
             {%- endif -%}
         {%- endif -%}
     {%- endif -%}

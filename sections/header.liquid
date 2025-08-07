@@ -1,18 +1,13 @@
 {{ 'section-header.css' | asset_url | stylesheet_tag }}
-{{ 'rtl-section-header.css' | asset_url | stylesheet_tag }}
 
 <link rel="stylesheet" href="{{ 'component-search.css' | asset_url }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ 'component-menu.css' | asset_url }}" media="print" onload="this.media='all'">
-{%- if section.settings.show_megamenu -%}
-    <link rel="stylesheet" href="{{ 'component-megamenu.css' | asset_url }}" media="print" onload="this.media='all'">
-{%- endif -%}
+<link rel="stylesheet" href="{{ 'component-megamenu.css' | asset_url }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ 'component-menu-mobile.css' | asset_url }}" media="print" onload="this.media='all'">
 
 <noscript>{{ 'component-search.css' | asset_url | stylesheet_tag }}</noscript>
 <noscript>{{ 'component-menu.css' | asset_url | stylesheet_tag }}</noscript>
-{%- if section.settings.show_megamenu -%}
-    <noscript>{{ 'component-megamenu.css' | asset_url | stylesheet_tag }}</noscript>
-{%- endif -%}
+<noscript>{{ 'component-megamenu.css' | asset_url | stylesheet_tag }}</noscript>
 <noscript>{{ 'component-menu-mobile.css' | asset_url | stylesheet_tag }}</noscript>
 
 {% render 'header-style' %}
@@ -156,18 +151,12 @@
                             -%}
                             {%- if header_search_style == 'full' -%}
                                 <details-modal class="header__iconItem header__search show-full">
-                                    {%- if settings.show_predictive_search -%}
-										<predictive-search data-loading-text="{{ 'accessibility.loading' | t }}" data-product-to-show="{{ settings.quick_search_to_show }}" class="header__seach--details predictive-search-form">
-									{%- endif -%}
-                                        <details class="header__seach--details">
-                                            {% render 'halo-search-layout-full',
-                                                icon_search: '1',
-                                                search_custom_class: 'search-modal__form--mobile style-2'
-                                            %}
-                                        </details>
-									{%- if settings.show_predictive_search -%}
-										</predictive-search>
-									{%- endif -%}
+                                    <details class="header__seach--details">
+                                        {% render 'halo-search-layout-full',
+                                            icon_search: '1',
+                                            search_custom_class: 'search-modal__form--mobile style-2'
+                                        %}
+                                    </details>
                                 </details-modal>
                             {%- else -%}
                                 <div class="header__iconItem header__search show-icon">
@@ -182,12 +171,7 @@
                         {%- endif -%}
                         <div class="header__iconItem header__group">
                             {%- if shop.customer_accounts_enabled and section.settings.show_customer -%}
-                                <a href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}" 
-                                    class="header__icon header__icon--account link focus-inset" 
-                                    {% if routes.account_login_url == '/account/login' %}
-										{% if settings.customer_login_type == 'popup' %} data-open-auth-popup{% else %} data-open-auth-sidebar{% endif %}
-									{% endif %}
-                                >
+                                <a href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}" class="header__icon header__icon--account link focus-inset" {% if settings.customer_login_type == 'popup' %} data-open-auth-popup{% else %} data-open-auth-sidebar{% endif %}>
                                     {% render 'icon-account',
                                         icon_account: '1'
                                     %}
@@ -210,9 +194,6 @@
                                     <span class="visually-hidden">
                                         {{ 'wishlist.general.title' | t }}
                                     </span>
-                                    <div class="wishlist-count-bubble">
-                                        <span class="text" aria-hidden="true" data-wishlist-count>0</span>
-                                    </div>
                                 </a>
                             {%- endif -%}
                             {%- if section.settings.show_cart -%}
@@ -274,28 +255,26 @@
                     {%- endif -%}
                     {%- if settings.enable_multilang_shopify or settings.enable_currencies -%}
                         <div class="header__inline-language_currency wrapper_language_currency header-bottom-right text-right">
-                            <language-currency class="language-currency--wrapper position-right">
-                                <div class="toggle-language-currency" data-language-currency-toggle>
-                                    <div class="top-language-currency justify-end">
-                                        {%- if settings.enable_multilang_shopify -%}
-                                            {% render 'halo-top-language' %}
-                                            {%- if settings.enable_auto_currency -%}
-                                                <span class="dropdown-icon" role="button" aria-label="{{ 'accessibility.dropdown' | t }}" tabindex="0">
-                                                    {% render 'icon-sort-down' %}
-                                                </span>
-                                            {%- endif -%}
-                                        {%- endif -%}
-                                        {%- if settings.enable_currencies -%}
-                                            {% render 'halo-top-currency' %}
-                                        {%- endif -%}
-                                        {%- unless settings.enable_auto_currency -%}
+                            <div class="language-currency--wrapper position-right">
+                                <div class="top-language-currency justify-end">
+                                    {%- if settings.enable_multilang_shopify -%}
+                                        {% render 'halo-top-language' %}
+                                        {%- if settings.enable_auto_currency -%}
                                             <span class="dropdown-icon" role="button" aria-label="{{ 'accessibility.dropdown' | t }}" tabindex="0">
                                                 {% render 'icon-sort-down' %}
                                             </span>
-                                        {%- endunless -%}
-                                    </div>
+                                        {%- endif -%}
+                                    {%- endif -%}
+                                    {%- if settings.enable_currencies -%}
+                                        {% render 'halo-top-currency' %}
+                                    {%- endif -%}
+                                    {%- unless settings.enable_auto_currency -%}
+                                        <span class="dropdown-icon" role="button" aria-label="{{ 'accessibility.dropdown' | t }}" tabindex="0">
+                                            {% render 'icon-sort-down' %}
+                                        </span>
+                                    {%- endunless -%}
                                 </div>
-                                <div class="dropdown-language-currency custom-scrollbar" data-language-currency-dropdown>
+                                <div class="dropdown-language-currency custom-scrollbar">
                                     {%- if settings.enable_multilang_shopify -%}
                                         {% render 'halo-language' %}
                                     {%- endif -%}
@@ -303,7 +282,7 @@
                                         {% render 'halo-currency' %}
                                     {%- endif -%} 
                                 </div>
-                            </language-currency>
+                            </div>
                         </div>
                     {%- endif -%}
                 </div>
@@ -639,7 +618,7 @@
         {
             "type": "textarea",
             "id": "logo_text",
-            "label": "t:sections.general.settings.content.label__2",
+            "label": "t:sections.header.settings.logo.label__6",
             "info": "t:sections.header.settings.logo.info"
         },
         {
@@ -709,7 +688,7 @@
         {
             "type": "color",
             "id": "logo_color",
-            "label": "t:sections.general.settings.color.label__2",
+            "label": "t:sections.header.settings.logo.label__7",
             "default": "#FFFFFF"
         },
         {
@@ -719,7 +698,7 @@
         {
             "type": "textarea",
             "id": "logo_icon",
-            "label": "t:sections.general.settings.content.label__8",
+            "label": "t:sections.header.settings.logo.label__8",
             "info": "t:sections.header.settings.logo.info"
         },
         {
@@ -1554,192 +1533,6 @@
                     "type": "url",
                     "id": "banner_url_4",
                     "label": "t:sections.header.blocks.mega.settings.banner.label__7"
-                },
-                {
-                    "type": "paragraph",
-                    "content": "t:sections.general.settings.typography.paragraph__1.content"
-                },
-                {
-                    "type": "select",
-                    "id": "heading_font",
-                    "label": "t:settings_schema.typography.settings.font.label",
-                    "options": [
-                    {
-                        "value": "font_1",
-                        "label": "t:settings_schema.typography.settings.font.options__1"
-                    },
-                    {
-                        "value": "font_2",
-                        "label": "t:settings_schema.typography.settings.font.options__2"
-                    },
-                    {
-                        "value": "font_3",
-                        "label": "t:settings_schema.typography.settings.font.options__3"
-                    }],
-                    "default": "font_1"
-                },
-                {
-                    "type": "range",
-                    "id": "heading_font_size",
-                    "label": "t:settings_schema.typography.settings.font_size.label",
-                    "min": 10,
-                    "max": 30,
-                    "step": 1,
-                    "unit": "t:settings_schema.typography.settings.font_size.unit",
-                    "default": 15
-                },
-                {
-                    "type": "select",
-                    "id": "heading_font_weight",
-                    "label": "t:settings_schema.typography.settings.font_weight.label",
-                    "default": "900",
-                    "options": [
-                    {
-                        "value": "400",
-                        "label": "t:settings_schema.typography.settings.font_weight.options__1"
-                    },
-                    {
-                        "value": "500",
-                        "label": "t:settings_schema.typography.settings.font_weight.options__2"
-                    },
-                    {
-                        "value": "600",
-                        "label": "t:settings_schema.typography.settings.font_weight.options__3"
-                    },
-                    {
-                        "value": "700",
-                        "label": "t:settings_schema.typography.settings.font_weight.options__4"
-                    },
-                    {
-                        "value": "800",
-                        "label": "t:settings_schema.typography.settings.font_weight.options__5"
-                    },
-                    {
-                        "value": "900",
-                        "label": "t:settings_schema.typography.settings.font_weight.options__6"
-                    }]
-                },
-                {
-                    "type": "select",
-                    "id": "heading_text_transform",
-                    "label": "t:settings_schema.typography.settings.text_transform.label",
-                    "default": "uppercase",
-                    "options": [
-                    {
-                        "value": "none",
-                        "label": "t:settings_schema.typography.settings.text_transform.options__1"
-                    },
-                    {
-                        "value": "capitalize",
-                        "label": "t:settings_schema.typography.settings.text_transform.options__2"
-                    },
-                    {
-                        "value": "uppercase",
-                        "label": "t:settings_schema.typography.settings.text_transform.options__3"
-                    },
-                    {
-                        "value": "lowercase",
-                        "label": "t:settings_schema.typography.settings.text_transform.options__4"
-                    }]
-                },
-                {
-                    "id": "heading_color",
-                    "type": "color",
-                    "label": "t:sections.general.settings.color.label__7",
-                    "default": "#000000"
-                },
-                {
-                    "type": "paragraph",
-                    "content": "t:sections.general.settings.typography.paragraph__2.content"
-                },
-                {
-                    "type": "select",
-                    "id": "link_font",
-                    "label": "t:settings_schema.typography.settings.font.label",
-                    "options": [
-                    {
-                        "value": "font_1",
-                        "label": "t:settings_schema.typography.settings.font.options__1"
-                    },
-                    {
-                        "value": "font_2",
-                        "label": "t:settings_schema.typography.settings.font.options__2"
-                    },
-                    {
-                        "value": "font_3",
-                        "label": "t:settings_schema.typography.settings.font.options__3"
-                    }],
-                    "default": "font_1"
-                },
-                {
-                    "type": "range",
-                    "id": "link_font_size",
-                    "label": "t:settings_schema.typography.settings.font_size.label",
-                    "min": 10,
-                    "max": 20,
-                    "step": 1,
-                    "unit": "t:settings_schema.typography.settings.font_size.unit",
-                    "default": 15
-                },
-                {
-                    "type": "select",
-                    "id": "link_font_weight",
-                    "label": "t:settings_schema.typography.settings.font_weight.label",
-                    "default": "400",
-                    "options": [
-                    {
-                        "value": "400",
-                        "label": "t:settings_schema.typography.settings.font_weight.options__1"
-                    },
-                    {
-                        "value": "500",
-                        "label": "t:settings_schema.typography.settings.font_weight.options__2"
-                    },
-                    {
-                        "value": "600",
-                        "label": "t:settings_schema.typography.settings.font_weight.options__3"
-                    },
-                    {
-                        "value": "700",
-                        "label": "t:settings_schema.typography.settings.font_weight.options__4"
-                    },
-                    {
-                        "value": "800",
-                        "label": "t:settings_schema.typography.settings.font_weight.options__5"
-                    },
-                    {
-                        "value": "900",
-                        "label": "t:settings_schema.typography.settings.font_weight.options__6"
-                    }]
-                },
-                {
-                    "type": "select",
-                    "id": "link_text_transform",
-                    "label": "t:settings_schema.typography.settings.text_transform.label",
-                    "default": "capitalize",
-                    "options": [
-                    {
-                        "value": "none",
-                        "label": "t:settings_schema.typography.settings.text_transform.options__1"
-                    },
-                    {
-                        "value": "capitalize",
-                        "label": "t:settings_schema.typography.settings.text_transform.options__2"
-                    },
-                    {
-                        "value": "uppercase",
-                        "label": "t:settings_schema.typography.settings.text_transform.options__3"
-                    },
-                    {
-                        "value": "lowercase",
-                        "label": "t:settings_schema.typography.settings.text_transform.options__4"
-                    }]
-                },
-                {
-                    "id": "link_color",
-                    "type": "color",
-                    "label": "t:sections.general.settings.color.label__2",
-                    "default": "#000000"
                 },
                 {
                     "type": "header",

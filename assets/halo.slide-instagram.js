@@ -22,7 +22,6 @@
                                 dots: true,
                                 slidesToShow: 1,
                                 slidesToScroll: 1,
-                                rtl: window.rtl_slick,
                                 nextArrow: '<button type="button" class="slick-arrow slick-next" aria-label="'+ window.accessibility.next_slide +'">' + window.slick.nextArrow + '</button>',
                                 prevArrow: '<button type="button" class="slick-arrow slick-prev" aria-label="'+ window.accessibility.previous_slide +'">' + window.slick.prevArrow + '</button>',
                                 responsive: [
@@ -61,34 +60,14 @@
                                     {
                                         breakpoint: 767,
                                         settings: {
-                                            get slidesToShow() {
-                                                if(itemToShow !== undefined && itemToShow !== null && itemToShow !== ''){
-                                                    if(itemToShow == 1 || itemToShow == 2){
-                                                        return this.slidesToShow = itemToShow;
-                                                    } else {
-                                                        return this.slidesToShow = 3;
-                                                    }
-                                                } else {
-                                                    return this.slidesToShow = 1;
-                                                }
-                                            },
+                                            slidesToShow: 3,
                                             slidesToScroll: 1
                                         }
                                     },
                                     {
                                         breakpoint: 550,
                                         settings: {
-                                            get slidesToShow() {
-                                                if(itemToShow !== undefined && itemToShow !== null && itemToShow !== ''){
-                                                    if(itemToShow == 1){
-                                                        return this.slidesToShow = itemToShow;
-                                                    } else {
-                                                        return this.slidesToShow = 2;
-                                                    }
-                                                } else {
-                                                    return this.slidesToShow = 1;
-                                                }
-                                            },
+                                            slidesToShow: 2,
                                             slidesToScroll: 1
                                         }
                                     }
@@ -107,7 +86,6 @@
                                     dots: true,
                                     slidesToShow: 1,
                                     slidesToScroll: 1,
-                                    rtl: window.rtl_slick,
                                     nextArrow: '<button type="button" class="slick-arrow slick-next" aria-label="'+ window.accessibility.next_slide +'">' + window.slick.nextArrow + '</button>',
                                     prevArrow: '<button type="button" class="slick-arrow slick-prev" aria-label="'+ window.accessibility.previous_slide +'">' + window.slick.prevArrow + '</button>',
                                     responsive: [
@@ -164,41 +142,20 @@
                                 dots: true,
                                 slidesToShow: 1,
                                 slidesToScroll: 1,
-                                rtl: window.rtl_slick,
                                 nextArrow: '<button type="button" class="slick-arrow slick-next" aria-label="'+ window.accessibility.next_slide +'">' + window.slick.nextArrow + '</button>',
                                 prevArrow: '<button type="button" class="slick-arrow slick-prev" aria-label="'+ window.accessibility.previous_slide +'">' + window.slick.prevArrow + '</button>',
                                 responsive: [
                                 {
                                     breakpoint: 767,
                                     settings: {
-                                        get slidesToShow() {
-                                            if(itemToShow !== undefined && itemToShow !== null && itemToShow !== ''){
-                                                if(itemToShow == 1 || itemToShow == 2){
-                                                    return this.slidesToShow = itemToShow;
-                                                } else {
-                                                    return this.slidesToShow = 3;
-                                                }
-                                            } else {
-                                                return this.slidesToShow = 1;
-                                            }
-                                        },
+                                        slidesToShow: 3,
                                         slidesToScroll: 1
                                     }
                                 },
                                 {
                                     breakpoint: 550,
                                     settings: {
-                                        get slidesToShow() {
-                                            if(itemToShow !== undefined && itemToShow !== null && itemToShow !== ''){
-                                                if(itemToShow == 1){
-                                                    return this.slidesToShow = itemToShow;
-                                                } else {
-                                                    return this.slidesToShow = 2;
-                                                }
-                                            } else {
-                                                return this.slidesToShow = 1;
-                                            }
-                                        },
+                                        slidesToShow: 2,
                                         slidesToScroll: 1
                                     }
                                 }]

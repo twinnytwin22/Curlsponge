@@ -19,33 +19,31 @@
         assign announcement_bar_bg = section.settings.announcement_bar_bg
         assign announcement_bar_color = section.settings.announcement_bar_color
         assign announcement_bar_line_text = section.settings.announcement_bar_line_text
-        assign top_header = section.settings.text_font_size | times: settings.line_height | plus: 25 | append: 'px'
-
-        if settings.show_dark_mode
-            assign dark_mode = false
-            unless announcement_bar_bg == blank or announcement_bar_bg == '#fff' or announcement_bar_bg == '#FFF' or announcement_bar_bg == '#ffffff' or announcement_bar_bg == '#FFFFFF' or announcement_bar_bg == 'rgb(255,255,255)' or announcement_bar_bg == 'rgba(255,255,255,1)' or announcement_bar_bg == 'rgba(0,0,0,0)'
-                assign dark_mode = true
-                assign dark_mode_announcement_bar_bg = section.settings.announcement_bar_bg
-                assign dark_mode_announcement_bar_color = section.settings.announcement_bar_color
-            endunless
-        endif
     -%}
     {%- if has_announcement_bar -%}
         <style type="text/css">
-            :root{
-                --top-fixed-header: {{ top_header }};
+            #announcement-bar-{{ section.id }}{
+                background: {{ announcement_bar_bg }};
+            }
+
+            #announcement-bar-{{ section.id }} .announcement-bar__message{
+                font-size: {{ text_font_size }};
+                font-weight: {{ text_font_weight }};
+                color: {{ announcement_bar_color }};
+            }
+
+            #announcement-bar-{{ section.id }} .announcement-bar__close svg{
+                fill: {{ announcement_bar_color }};
+                stroke: transparent;
+            }
+
+            @media (max-width: 767px){
+                #announcement-bar-{{ section.id }} .announcement-bar__message p{
+                    -webkit-line-clamp: {{ announcement_bar_line_text }};
+                }
             }
         </style>
-        <announcement-bar class="announcement-bar announcement-bar-3{% unless dark_mode %} dark-mode{% endunless %}" role="region" aria-label="{{ 'sections.header.announcement' | t }}" id="announcement-bar-{{ section.id }}" style="--bg-color: {{ announcement_bar_bg | default: settings.colors_bg }};
-            --text-color: {{ announcement_bar_color }};
-            --text-font-size: {{ text_font_size }};
-            --text-font-weight: {{ text_font_weight }};
-            --line-text: {{ announcement_bar_line_text }};
-            {% if dark_mode %}
-                --dark-mode-bg-color: {{ dark_mode_announcement_bar_bg }};
-                --dark-mode-text-color: {{ dark_mode_announcement_bar_color }};
-            {% endif %}"
-        >
+        <div class="announcement-bar" role="region" aria-label="{{ 'sections.header.announcement' | t }}" id="announcement-bar-{{ section.id }}">
             <div class="container container-{{ container }}">
                 <div class="top-announcement-bar top-announcement-bar-3 text-center">
                     {%- if link != blank -%}
@@ -57,20 +55,19 @@
                     {%- if link != blank -%}
                         </a>
                     {%- endif -%}
-                    <button type="button" class="announcement-bar__close clearfix">
+                    <a href="javascript:void(0)" class="announcement-bar__close clearfix" data-close-announcement-bar role="button">
                         <span class="visually-hidden">{{ 'general.common.close' | t }}</span>
                         {% render 'icon-close' %}
-                    </button>
+                    </a>
                 </div>
             </div>
-        </announcement-bar>
+        </div>
     {%- endif -%}
 {%- endif -%}
 
 {% schema %}
 {
-    "name": "t:sections.announcement-bar.name__3",
-    "class": "header-line announcement-bar-3",
+    "name": "t:sections.announcement-bar.name",
     "settings": [
         {
             "type": "header",
@@ -231,26 +228,6 @@
             "id": "announcement_bar_color",
             "default": "#FFFFFF"
         }
-    ],
-    "presets": [
-        {
-            "name": "t:sections.announcement-bar.name__3",
-            "settings": {
-                "show_announcement_bar": true,
-                "container": "1770",
-                "announcement-bar-show": "all",
-                "text": "<p>ENDS TONIGHT! <strong>20% OFF FINISHING TOUCHES<\/strong>. PRICES AS MARKED. EXCEPTIONS APPLY.<\/p>",
-                "link": "",
-                "announcement_bar_line_text": "1",
-                "text_font_size": 12,
-                "text_font_weight": "400",
-                "announcement_bar_bg": "#6c959d",
-                "announcement_bar_color": "#ffffff"
-            }
-        }
-    ],
-    "enabled_on": {
-        "groups": ["header" ]
-    }
+    ]
 }
 {% endschema %}

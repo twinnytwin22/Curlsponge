@@ -65,7 +65,7 @@
     font-size: var(--font-size);
     font-weight: var(--font-weight-normal);
     line-height: var(--line-height);
-    color: var(--color-text);
+    color: var(--color-text2);
     margin: 0 0 0 10px;
     text-transform: capitalize;
 }
@@ -74,12 +74,4 @@
     line-height: 1;
     margin-left: 5px;
     color: var(--color-grey);
-}
-
-body.dark-mode .halo-productReview .spr-badge-starrating .spr-icon.spr-icon-star:before {
-    color: #faa900;
-}
-
-body.dark-mode .halo-productReview .spr-badge-starrating .spr-icon.spr-icon-star-empty:before{
-    color: #E0E0E0;
 }

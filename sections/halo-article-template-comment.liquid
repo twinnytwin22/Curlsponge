@@ -9,14 +9,29 @@
     assign show_tags = section.settings.show_tags
     assign show_next_prev = section.settings.show_next_prev
 -%}
-<article data-section-id="{{ section.id }}" data-section-type="article-comment" id="ArticleCommentsSection-{{ section.id }}" data-section="{{ section.id }}" class="article-review-template halo-block-padding" itemscope itemtype="http://schema.org/BlogPosting"
-    style="--padding-top: {{ padding_top }};
-        --padding-bottom: {{ padding_bottom }};
-        --padding-top-tablet: {{ padding_top_tablet }};
-        --padding-bottom-tablet: {{ padding_bottom_tablet }};
-        --padding-top-mobile: {{ padding_top_mobile }};
-        --padding-bottom-mobile: {{ padding_bottom_mobile }};"
->
+
+<style type="text/css" media="screen">
+    #ArticleCommentsSection-{{ section.id }}{
+        padding-top: {{ padding_top }};
+        padding-bottom: {{ padding_bottom }};
+    }
+
+    @media (max-width: 1024px) {
+        #ArticleCommentsSection-{{ section.id }}{
+            padding-top: {{ padding_top_tablet }};
+            padding-bottom: {{ padding_bottom_tablet }};
+        }
+    }
+
+    @media (max-width: 550px) {
+        #ArticleCommentsSection-{{ section.id }}{
+            padding-top: {{ padding_top_mobile }};
+            padding-bottom: {{ padding_bottom_mobile }};
+        }
+    }
+</style>
+
+<article data-section-id="{{ section.id }}" data-section-type="article-comment" id="ArticleCommentsSection-{{ section.id }}" data-section="{{ section.id }}" class="article-review-template" itemscope itemtype="http://schema.org/BlogPosting">
     <div class="container container-{{ container }}">
         {%- if show_tags -%}
             {%- if article.tags.size > 0 -%}

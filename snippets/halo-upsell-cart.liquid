@@ -1,149 +1,157 @@
 {%- unless cart == empty -%}
-	<div id="Cart-Content-Upsell">
-		<div class="previewModal clearfix">
-		   	{%- if settings.show_calculator_free_shipping_message -%}
-		    	<div class="previewModal-top">
-		    		<div class="previewCartMessage">
-		    			{% render 'halo-calculator-shipping',
-		                    sectionId: 'Cart-Shipping-Message'
-		                %}
-		    		</div>
-		    	</div>
-		    {%- endif -%}
-		    <div class="previewModal-left">
-		    	<div class="previewModal-title text-center">
-		    		{{ 'sections.cart.quick_cart' | t}}
-		    	</div>
-		    	<div class="previewModal-desc text-center">
-			        <span class="text">
-			         	{{ 'sections.cart.items_in_your_cart' | t : count : cart.item_count }}  
-			        </span>
-		    	</div>
-		    	<div class="previewCartInfo">
-			        <ul class="previewCartTotalsPrice list-unstyled">
-			        	<li class="previewCartTotals subTotal">
-			        		<div class="previewCartTotals-label">
-			                    {{ 'sections.cart.headings.total' | t }}
-			                </div>
-			                <div class="previewCartTotals-value">
-			                	{{ cart.total_price | money }}
-			                </div>
-			        	</li>
-			        </ul>
-			        <div class="previewCartAction">
-			            <div class="previewCartGroup">
-			            	<a class="button button-height button--primary button-continue" href="javascript:void(0)" onclick="window.location.reload();">
-				                {{ 'sections.cart.continue_shopping' | t }}
-				            </a>
-			                <a class="button button-height flex align-center justify-center button-view-cart" href="{{ routes.cart_url }}">
-			                    {{ 'sections.cart.view_cart' | t }}
-			                </a>
-			                {%- liquid
-		                        if settings.show_global_checkbox
-		                            assign has_global_checkbox = false
-		                            assign global_checkbox_show = settings.global_checkbox_show
-		                            if global_checkbox_show == 'all' or global_checkbox_show == 'cart'
-		                                assign has_global_checkbox = true
-		                                assign global_checkbox_text = settings.global_checkbox_text
-		                            endif
-		                        endif
-		                    -%}
-			                {%- unless has_global_checkbox -%}
-			                	<button class="button button-height button--primary button-checkout" onclick="window.location='{{ routes.cart_url | split: '/cart' | first }}/checkout'">
-					                {{ 'sections.cart.checkout' | t }}
-					            </button>
-			                {%- endunless -%}
-			            </div>
-			            {%- if has_global_checkbox -%}
-			                <global-checkbox class="previewCartCheckbox global-checkbox">
-			                    <input class="global-checkbox--input" type="checkbox" name="conditions" id="upsell_cart_conditions" data-target="#cart-upsell-checkout">
-			                    <label class="global-checkbox--label form-label--checkbox" for="upsell_cart_conditions">
-			                        {{ global_checkbox_text }}
-			                    </label>
-					            <button class="button button-height button--primary button-checkout" onclick="window.location='{{ routes.cart_url | split: '/cart' | first }}/checkout'" {% if has_global_checkbox %} disabled="disabled"{% endif %} id="cart-upsell-checkout">
-					                {{ 'sections.cart.checkout' | t }}
-					            </button>
-			                </global-checkbox>
-			            {%- endif -%}
-			        </div>
-			    </div>
+	<div class="previewModal clearfix">
+	   	{%- if settings.show_calculator_free_shipping_message -%}
+	    	<div class="previewModal-top">
+	    		<div class="previewCartMessage">
+	    			{{ 'component-calculator-shipping.css' | asset_url | stylesheet_tag }}
+	    			<div class="haloCalculatorShipping style-{{ settings.calculator_free_shipping_message_style }} animated-loading">
+	                    <div class="progress" data-shipping-progress></div>
+	                    <div class="message" data-shipping-message></div>
+	                </div>
+	    		</div>
+	    	</div>
+	    {%- endif -%}
+	    <div class="previewModal-left">
+	    	<div class="previewModal-title text-center">
+	    		{{ 'sections.cart.quick_cart' | t}}
+	    	</div>
+	    	<div class="previewModal-desc text-center">
+		        <span class="text">
+		         	{{ 'sections.cart.items_in_your_cart' | t : count : cart.item_count }}  
+		        </span>
+	    	</div>
+	    	<div class="previewCartInfo">
+		        <ul class="previewCartTotalsPrice list-unstyled">
+		        	<li class="previewCartTotals subTotal">
+		        		<div class="previewCartTotals-label">
+		                    {{ 'sections.cart.headings.total' | t }}
+		                </div>
+		                <div class="previewCartTotals-value">
+		                	{{ cart.total_price | money }}
+		                </div>
+		        	</li>
+		        </ul>
+		        <div class="previewCartAction">
+		            <div class="previewCartGroup">
+		            	<a class="button button-height button--primary button-continue" href="javascript:void(0)" onclick="window.location.reload();">
+			                {{ 'sections.cart.continue_shopping' | t }}
+			            </a>
+		                <a class="button button-height flex align-center justify-center button-view-cart" href="{{ routes.cart_url }}">
+		                    {{ 'sections.cart.view_cart' | t }}
+		                </a>
+		                {%- liquid
+	                        if settings.show_global_checkbox
+	                            assign has_global_checkbox = false
+	                            assign global_checkbox_show = settings.global_checkbox_show
+	                            if global_checkbox_show == 'all' or global_checkbox_show == 'cart'
+	                                assign has_global_checkbox = true
+	                                assign global_checkbox_text = settings.global_checkbox_text
+			                        assign global_checkbox_link_text = settings.global_checkbox_link_text
+			                        assign global_checkbox_link = settings.global_checkbox_link
+			                        assign global_checkbox_type = settings.global_checkbox_type
+	                            endif
+	                        endif
+	                    -%}
+		                {%- unless has_global_checkbox -%}
+		                	<button class="button button-height button--primary button-checkout" onclick="window.location='{{ routes.cart_url | split: '/cart' | first }}/checkout'">
+				                {{ 'sections.cart.checkout' | t }}
+				            </button>
+		                {%- endunless -%}
+		            </div>
+		            {%- if has_global_checkbox -%}
+		                <div class="previewCartCheckbox global-checkbox">
+		                    <input class="global-checkbox--input" type="checkbox" name="conditions" id="upsell_cart_conditions" data-target="#cart-upsell-checkout">
+		                    <label class="global-checkbox--label form-label--checkbox" for="upsell_cart_conditions">
+		                        {{ global_checkbox_text }}
+		                    </label>
+		                    {%- if global_checkbox_link_text != blank -%}
+		                        <a href="{% if global_checkbox_type == 'popup' %}#{% else %}{{ global_checkbox_link }}{% endif %}" aria-label="link"{% if global_checkbox_type == 'popup'%} data-open-global-checkbox{% endif %}>
+		                            {{ global_checkbox_link_text | escape }}
+		                        </a>
+		                    {%- endif -%}
+				            <button class="button button-height button--primary button-checkout" onclick="window.location='{{ routes.cart_url | split: '/cart' | first }}/checkout'" {% if has_global_checkbox %} disabled="disabled"{% endif %} id="cart-upsell-checkout">
+				                {{ 'sections.cart.checkout' | t }}
+				            </button>
+		                </div>
+		            {%- endif -%}
+		        </div>
 		    </div>
-		    <div class="previewModal-right">
-		    	<div class="previewModal-title text-center">
-		    		{{ 'sections.cart.your_order' | t}}
-		    	</div>
-		    	<ul class="previewModal-cartList previewCartList list-unstyled custom-scrollbar-x">
-		    		{%- for item in cart.items -%}
-		    			<li class="previewCartItem">
-		    				<div class="previewCartItem-detail">
-			    				<a href="{{ item.url }}" class="previewCartItem-image">
-			                        <img srcset="{{ item.image | img_url: '110x' }}" src="{{ item.image | img_url: '110x' }}" alt="{{ item.title | escape }}" sizes="110px" loading="lazy">
-			                    </a>
-			                    <div class="previewCartItem-content">
-			                    	<a class="previewCartItem-name link-underline" href="{{ item.url }}">
-			                            <span class="text">{{ item.product.title }}</span>
-			                        </a>
-			                        {%- if item.product.variants.size != 0 -%}
-			                            {%- unless item.variant.title contains 'Default' -%}
-			                            	<div class="previewCartItem-options">
-			                                    <span class="previewCartItem-variant">
-			                                        {{ item.variant.title }}
-			                                    </span>
-			                                    {%- if settings.show_quick_edit_cart -%}
-			                                        <a href="javascript:void(0);" class="previewCartItem-edit" data-open-edit-cart data-edit-cart-url="{{ item.url }}&view=ajax_edit_cart" data-edit-cart-id="{{ item.id }}" data-edit-cart-quantity="{{ item.quantity }}" data-line="{{ item.key }}" aria-label="{{ 'sections.cart.edit_title' | t: title: item.variant.title }}">
-			                                            {% render 'icon-edit' %}
-			                                        </a>
-			                                    {%- endif -%}
-			                                </div>
-			                            {%- endunless -%}
-			                        {%- endif -%}
-			                        {%- if item.properties.size != 0 -%}
-			                            <dl class="previewCartItem-properties definitionList">
-			                                {%- for property in item.properties -%}
-			                                    {%- assign property_first_char = property.first | slice: 0 -%}
-			                                    {%- if property.last != blank and property_first_char != '_' -%}
-			                                        <dt class="definitionList-key">{{ property.first }}:</dt>
-			                                        <dd class="definitionList-value">
-			                                            {%- if property.last contains '/uploads/' -%}
-			                                                <a href="{{ property.last }}" target="_blank">
-			                                                    {{ property.last | split: '/' | last }}
-			                                                </a>
-			                                            {%- else -%}
-			                                                {{ property.last }}
-			                                            {%- endif -%}
-			                                        </dd>
-			                                    {%- endif -%}
-			                                {%- endfor -%}
-			                            </dl>
-			                        {%- endif -%}
-			                    </div>
-		    				</div>
-		    				<div class="previewCartItem-extra">
-		    					<div class="previewCartItem-price">
-		                            <span class="price">
-		                                {{ item.price | money }}
-		                            </span>
-		                        </div>
-		                        <div class="previewCartItem-qty">
-		                        	<label class="form-label hiddenLabels" for="upsell-update-{{ item.id }}">
-	                                    {{ 'sections.cart.heading.quantity' | t }}
-	                                </label>
-		                            <input class="form-input quantity" name="quantity" id="upsell-update-{{ item.id }}" data-qtt-id1="quantity{{ item.id }}" value="{{ item.quantity }}" type="number"{% if item.variant.inventory_management != null and item.variant.inventory_quantity > 0 %} data-inventory-quantity="{{ item.variant.inventory_quantity }}"{% endif %} data-cart-quantity data-cart-quantity-id="{{ item.id }}" data-line="{{ item.key }}"/>
-		                        </div>
-		                        <div class="previewCartItem-linePrice">
-		                            <span class="price">
-		                                {{ item.line_price | money }}
-		                            </span>
-		                        </div>
-		                        <a href="javascript:void(0)" class="previewCartItem-remove" data-cart-remove data-cart-remove-id="{{ item.id }}"data-line="{{ item.key }}" aria-label="{{ 'sections.cart.remove_title' | t: title: item.title }}">
-	                                {% render 'icon-close' %}
-	                            </a>
-		    				</div>
-		    			</li>
-		    		{%- endfor -%}
-		    	</ul>
-		    </div>
-		    <div class="previewModal-bottom"></div>
-		</div>
+	    </div>
+	    <div class="previewModal-right">
+	    	<div class="previewModal-title text-center">
+	    		{{ 'sections.cart.your_order' | t}}
+	    	</div>
+	    	<ul class="previewModal-cartList previewCartList list-unstyled custom-scrollbar-x">
+	    		{%- for item in cart.items -%}
+	    			<li class="previewCartItem">
+	    				<div class="previewCartItem-detail">
+		    				<a href="{{ item.url }}" class="previewCartItem-image">
+		                        <img srcset="{{ item.image | img_url: '110x' }}" src="{{ item.image | img_url: '110x' }}" alt="{{ item.title | escape }}" sizes="auto" loading="lazy">
+		                    </a>
+		                    <div class="previewCartItem-content">
+		                    	<a class="previewCartItem-name link-underline" href="{{ item.url }}">
+		                            <span class="text">{{ item.product.title }}</span>
+		                        </a>
+		                        {%- if item.product.variants.size != 0 -%}
+		                            {%- unless item.variant.title contains 'Default' -%}
+		                            	<div class="previewCartItem-options">
+		                                    <span class="previewCartItem-variant">
+		                                        {{ item.variant.title }}
+		                                    </span>
+		                                    {%- if settings.show_quick_edit_cart -%}
+		                                        <a href="javascript:void(0);" class="previewCartItem-edit" data-open-edit-cart data-edit-cart-url="{{ item.url }}&view=ajax_edit_cart" data-edit-cart-id="{{ item.id }}" data-edit-cart-quantity="{{ item.quantity }}" data-line="{{ item.key }}" aria-label="{{ 'sections.cart.edit_title' | t: title: item.variant.title }}">
+		                                            {% render 'icon-edit' %}
+		                                        </a>
+		                                    {%- endif -%}
+		                                </div>
+		                            {%- endunless -%}
+		                        {%- endif -%}
+		                        {%- if item.properties.size != 0 -%}
+		                            <dl class="previewCartItem-properties definitionList">
+		                                {%- for property in item.properties -%}
+		                                    {%- assign property_first_char = property.first | slice: 0 -%}
+		                                    {%- if property.last != blank and property_first_char != '_' -%}
+		                                        <dt class="definitionList-key">{{ property.first }}:</dt>
+		                                        <dd class="definitionList-value">
+		                                            {%- if property.last contains '/uploads/' -%}
+		                                                <a href="{{ property.last }}" target="_blank">
+		                                                    {{ property.last | split: '/' | last }}
+		                                                </a>
+		                                            {%- else -%}
+		                                                {{ property.last }}
+		                                            {%- endif -%}
+		                                        </dd>
+		                                    {%- endif -%}
+		                                {%- endfor -%}
+		                            </dl>
+		                        {%- endif -%}
+		                    </div>
+	    				</div>
+	    				<div class="previewCartItem-extra">
+	    					<div class="previewCartItem-price">
+	                            <span class="price">
+	                                {{ item.price | money }}
+	                            </span>
+	                        </div>
+	                        <div class="previewCartItem-qty">
+	                        	<label class="form-label hiddenLabels" for="upsell-update-{{ item.id }}">
+                                    {{ 'sections.cart.heading.quantity' | t }}
+                                </label>
+	                            <input class="form-input quantity" name="quantity" id="upsell-update-{{ item.id }}" data-qtt-id1="quantity{{ item.id }}" value="{{ item.quantity }}" type="number"{% if item.variant.inventory_management != null and item.variant.inventory_quantity > 0 %} data-inventory-quantity="{{ item.variant.inventory_quantity }}"{% endif %} data-cart-quantity data-cart-quantity-id="{{ item.id }}" data-line="{{ item.key }}"/>
+	                        </div>
+	                        <div class="previewCartItem-linePrice">
+	                            <span class="price">
+	                                {{ item.line_price | money }}
+	                            </span>
+	                        </div>
+	                        <a href="javascript:void(0)" class="previewCartItem-remove" data-cart-remove data-cart-remove-id="{{ item.id }}"data-line="{{ item.key }}" aria-label="{{ 'sections.cart.remove_title' | t: title: item.title }}">
+                                {% render 'icon-close' %}
+                            </a>
+	    				</div>
+	    			</li>
+	    		{%- endfor -%}
+	    	</ul>
+	    </div>
+	    <div class="previewModal-bottom"></div>
 	</div>
 {%- endunless -%}

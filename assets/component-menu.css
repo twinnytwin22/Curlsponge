@@ -4,31 +4,6 @@
     padding: 0 20px 0 0;
 }
 
-.menu-lv-1__action,
-.top-custom-link,
-.halo-sidebar-menu .nav-title-mobile{
-    font-family: var(--lv-1-font);
-    font-size: var(--lv-1-font-size);
-    font-weight: var(--lv-1-font-weight);
-    color: var(--lv-1-color);
-    text-transform: var(--lv-1-text-transform);
-}
-
-.menu-lv-1__action > .text {
-    text-underline-offset: var(--text-underline) !important;
-    letter-spacing: var(--menu-letter-spacing);
-}
-
-[data-menu-lv-toggle-content] .menu-lv-1__action,
-.menu-lv-2__action,
-.menu-lv-3__action{
-    font-family: var(--lv-2-font);
-    font-size: var(--lv-2-font-size);
-    font-weight: var(--lv-2-font-weight);
-    color: var(--lv-2-color) !important;
-    text-transform: var(--lv-2-text-transform);
-}
-
 .menu-lv-2__action,
 .menu-lv-3__action {
     margin-top: 0;
@@ -75,17 +50,17 @@
     margin-left: calc(100% - 30px);
 }
 
-.header-nav-vertical-menu .vertical-menu .menu-lv__dropdownmenu{
+.header-8 .menu-lv__dropdownmenu{
     width: 210px;
     box-shadow: none;
     border: 1px solid #f1f1f1;
 }
 
-.header-nav-vertical-menu .vertical-menu [data-navigation] .has-megamenu .menu-lv__dropdownmenu:not(.menu-lv__dropdownmenu-2){
+.header-8 [data-navigation] .has-megamenu .menu-lv__dropdownmenu:not(.menu-lv__dropdownmenu-2){
     border: 1px solid #f1f1f1;
 }
 
-.header-nav-vertical-menu .vertical-menu .menu-lv__dropdownmenu-2 {
+.header-8 .menu-lv__dropdownmenu-2{
     margin-left: 100%;
 }
 
@@ -106,19 +81,20 @@
     font-size: calc(var(--font-size) - 5px)!important;
     border-radius: 5px!important;
     transform: translateY(-50%)!important;
-    margin-left: 5px;
 }
 
 [data-menu-lv-toggle-content] .menu-lv-1__action .label:before{
     display: none!important;
 }
 
-.header-wrapper--border [data-menu-lv-toggle-content] .menu-lv-1 > .menu-lv__dropdownmenu,
 [data-menu-lv-toggle-content] .menu-lv-1 > .menu-lv__dropdownmenu{
-    top: 10px !important;
-    z-index: 3;
+    z-index: 2;
+    top: 10px;
     border-top: none;
-    margin-left: calc(-100% - 30px)!important;
+}
+
+[data-menu-lv-toggle-content] .menu-lv__dropdownmenu{
+    margin-left: calc(-100% + 10px);
 }
 
 [data-menu-lv-toggle-content] .menu-lv-1.has-megamenu > .menu-lv__dropdownmenu{
@@ -146,86 +122,20 @@
     border-bottom: none!important;
 }
 
-.menu-lv-1 > .menu-lv__dropdownmenu{
-    top: calc(100% + var(--spacing-bottom))!important;
+.header-2 .menu-lv__dropdownmenu{
+    box-shadow: 0px 6px 3px 0px rgba(0, 0, 0, 0.2);
 }
 
-.header-wrapper--border .menu-lv-1 > .menu-lv__dropdownmenu{
-    top: calc(100% + (var(--spacing-bottom) + 1px))!important;
+.header-2 .menu-lv-1 > .menu-lv__dropdownmenu{
+    top: calc(100% + 35px)!important;
 }
 
-[data-menu-lv-toggle] .menu-lv-item.has-megamenu,
-[data-menu-lv-toggle] .menu-lv-item.has-custom-megamenu{
-    position: relative;
+.header-2 .menu-lv__dropdownmenu--border{
+    border-top: 2px solid var(--bg-black);
 }
 
 [data-navigation] .category-menu .menu-lv-2__action:not(.site-nav-title) .icon-dropdown{
     display: block!important;
-}
-
-/* label */
-.menu-lv-item .label.new-label{
-    color: var(--new-label-color);
-    background: var(--new-label-bg);
-}
-
-.menu-lv-1__action > .label.new-label:before{
-    border-bottom-color: var(--new-label-bg);
-}
-
-.menu-lv-item .label.sale-label{
-    color: var(--sale-label-color);
-    background: var(--sale-label-bg);
-}
-
-.menu-lv-1__action > .label.sale-label:before{
-    border-bottom-color: var(--sale-label-bg);
-}
-
-.menu-lv-item .label.hot-label{
-    color: var(--hot-label-color);
-    background: var(--hot-label-bg);
-}
-
-.menu-lv-1__action > .label.hot-label:before{
-    border-bottom-color: var(--hot-label-bg);
-}
-
-/* Sale */
-.menu-sale > .menu-lv-1__action,
-.menu-sale > .menu-lv-2__action,
-.menu-sale > .menu-lv-3__action,
-.active-sale > .site-nav-link {
-    color: var(--sale-item-color)!important;
-}
-
-[data-navigation-mobile] .menu-sale > .menu-lv-1__action .icon,
-[data-navigation-mobile] .menu-sale > .menu-lv-2__action .icon {
-    fill: var(--sale-item-color)!important;
-}
-
-@media (max-width: 1024px) {
-    .menu-lv-1__action,
-    .halo-sidebar-menu .nav-title-mobile{
-        color:var(--lv-1-color-mobile);
-    }
-
-    .menu-lv-2__action,
-    .menu-lv-3__action{
-        color: var(--lv-2-color-mobile)!important;
-    }
-
-    body.dark-mode .menu-lv-1__action,
-    body.dark-mode .top-custom-link,
-    body.dark-mode .halo-sidebar-menu .nav-title-mobile{
-        color: var(--color-text);
-    }
-
-    body.dark-mode [data-menu-lv-toggle-content] .menu-lv-1__action,
-    body.dark-mode .menu-lv-2__action,
-    body.dark-mode .menu-lv-3__action{
-        color: var(--color-text2) !important;
-    }
 }
 
 @media (min-width: 1025px){
@@ -262,94 +172,26 @@
         text-decoration: underline!important;
         text-underline-offset: 0.3rem!important;
     }
-
-    [data-menu-lv-toggle-content] .menu-lv-1.dropdown:hover > .menu-lv-1__action > .text:after {
-        display: block;
-    }
-
-    [data-menu-lv-toggle-content] .menu-lv-1__action > .text:after {
-        content: "";
-        display: none;
-        position: absolute;
-        top: 0;
-        left: -35%;
-        height: calc(100% + (var(--spacing-bottom) + 15px));
-        z-index: 2;
-        width: 200%;
-    }
-
-    /* Main-Menu */
-    .menu-lv-1__action{
-        padding-left: var(--spacing-left);
-        padding-right: var(--spacing-right);
-    }
-
-    .header-nav .menu-lv__dropdownmenu,
-    .header-nav .menu-dropdown__block--title .text{
-        background: var(--lv-2-bg);
-    }
-
-    .header-nav .menu-lv-1:hover > .menu-lv-1__action,
-    body.dark-mode .header-nav .menu-lv-1:hover > .menu-lv-1__action {
-        color: var(--lv-1-color-hover);
-    }
-
-    [data-menu-lv-toggle-content] .menu-lv-1:hover > .menu-lv-1__action,
-    .header-nav .menu-lv-2:hover > .menu-lv-2__action,
-    .header-nav .menu-lv-3:hover > .menu-lv-3__action{
-        color: var(--lv-2-color-hover) !important;
-    }
-
-    .header-nav .has-megamenu .menu-lv-2:hover .menu-lv-2__action,
-    .header-nav .has-megamenu .menu-lv-3:hover .menu-lv-3__action,
-    .header-nav .has-custom-megamenu .menu-lv-2:hover .menu-lv-2__action,
-    .header-nav .has-custom-megamenu .menu-lv-3:hover .menu-lv-3__action{
-        color: var(--lv-2-color);
-    }
-
-    .header-nav .has-megamenu .menu-lv-2 .menu-lv-2__action:hover,
-    .header-nav .has-megamenu .menu-lv-3 .menu-lv-3__action:hover{
-        color: var(--lv-2-color-hover);
-    }
-
-    .header-nav [data-navigation] .has-megamenu .site-nav-title,
-    .header-nav [data-navigation] .has-custom-megamenu .site-nav-title,
-    .header-nav .menu-dropdown__block--title{
-        font-family: var(--lv-2-mega-font);
-        font-size: var(--lv-2-mega-font-size);
-        font-weight: var(--lv-2-mega-font-weight);
-        text-transform: var(--lv-2-mega-text-transform);
-        color: var(--lv-2-color);
-    }
-
-    .header-nav .header-nav__menu.show-underline [data-navigation] .menu-lv-1:hover > .list-menu__item > .text {
-        text-decoration: underline;
-    }
-
-    .header-nav .header-nav__menu:not(.show-underline) [data-navigation] .menu-lv-1:hover > .list-menu__item > .text,
-    .header-nav.background-transparent-3 .header-nav__menu [data-navigation] .menu-lv-1:hover > .list-menu__item > .text {
-        text-decoration: none;
-    }
 }
 
 @media (min-width: 1600px){
-    .header-nav-vertical-menu .vertical-menu .menu-lv__dropdownmenu{
+    .header-8 .menu-lv__dropdownmenu{
         padding-left: 25px;
     }
 
-    .header-nav-vertical-menu .vertical-menu .menu-lv-2,
-    .header-nav-vertical-menu .vertical-menu .menu-lv-3 {
+    .header-8 .menu-lv-2,
+    .header-8 .menu-lv-3 {
         padding-right: 25px;
     }
 }
 
 @media (min-width: 1920px){
-    .header-nav-vertical-menu .vertical-menu .menu-lv__dropdownmenu{
+    .header-8 .menu-lv__dropdownmenu{
         padding-left: 30px;
     }
 
-    .header-nav-vertical-menu .vertical-menu .menu-lv-2,
-    .header-nav-vertical-menu .vertical-menu .menu-lv-3 {
+    .header-8 .menu-lv-2,
+    .header-8 .menu-lv-3 {
         padding-right: 30px;
     }
 }

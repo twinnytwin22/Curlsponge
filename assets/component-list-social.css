@@ -77,7 +77,7 @@ li.list-social__item:last-child {
 .list-social-2 .list-social__link .icon{
     width: 19px;
     height: 19px;
-    fill: var(--color-grey)!important;
+    fill: var(--color-text2)!important;
 }
 
 .list-social-2 .list-social__info{

@@ -1,39 +1,27 @@
-{%- if product != blank -%}
+{%- liquid
+    assign product = all_products[gift_card_product]
+    assign product_downcase = product | downcase
+    assign id = product.selected_or_first_available_variant.id | minus: 0
+-%}
+{%- if product_downcase != 'emptydrop' -%}
     {%- liquid
-        assign productId = product.selected_or_first_available_variant.id
         assign check = false
         for item in cart.items
-            if item.id == productId
+            if item.id == id
                 assign check = true
             endif
         endfor
     -%}
-    <div id="{{ sectionId }}">
-        <gift-wrapping class="cart-gift element-spacing"
-            data-id="{{ productId }}"
-            data-quantity="1"
-            data-cart-item="{{ cart.items.size }}"
-            data-added-gift-wrapping="{{ check }}"
-            style="--spacing-top: {{ padding_top | append: 'px' }};
-                --spacing-bottom: {{ padding_bottom | append: 'px' }};
-                --spacing-top-mobile: {{ padding_top | times: 0.5 | round: 0 | append: 'px' }};
-                --spacing-bottom-mobile: {{ padding_bottom | times: 0.5 | round: 0 | append: 'px' }};
-                --spacing-top-tablet: {{ padding_top | times: 0.75 | round: 0 | append: 'px' }};
-                --spacing-bottom-tablet: {{ padding_bottom | times: 0.75 | round: 0 | append: 'px' }};"
-        >
-            <div class="cart-gift-wrapping__wapper">
-                <input id="gift-wrapping-{{ productId }}" type="checkbox" name="attributes[gift-wrapping]" value="yes" class="visually-hidden cart-gift-wrapping__input" {% if check %} checked{% endif %}>
-                <label for="gift-wrapping-{{ productId }}" class="cart-gift-wrapping__label form-label--checkbox">
-                    <div class="cart-gift-wrapping__content">
-                        {%- if content != blank -%}
-                            <div class="content">
-                                {{ content }}
-                            </div>
-                        {%- endif -%}
-                        {% render 'icon-gift-card' %}
-                    </div>
-                </label>
-            </div>
-        </gift-wrapping>
+    <div class="cart-gift" data-id="{{ id }}" {% if check %}style="display: none"{% endif %}>
+        {%- if gift_card_content != blank -%}
+            {% render 'icon-gift-card' %}
+            <span class="content">
+                {{ gift_card_content }}
+            </span>
+            <a id="gift-wrapping" href="javascript:void(0)" data-gift-card data-gift-card-id="{{ id }}" data-add-text="{{ 'sections.cart.gift_cart_add' | t }}" data-adding-text="{{ 'sections.cart.gift_cart_adding' | t }}">
+                {{ 'sections.cart.gift_cart_add' | t }}
+            </a>
+            <input type="hidden" name="attributes[gift-wrapping]" value="yes"/>
+        {%- endif -%}
     </div>
 {%- endif -%}

@@ -11,12 +11,9 @@
                 endif
             -%}
         {%- endfor -%}
-        <button type="button" class="disclosure__button dropdown-toggle localization-form__select localization-selector link" aria-describedby="HeaderLanguageLabel" aria-label="{{ localization.language.endonym_name | capitalize }}">
+        <button type="button" class="disclosure__button dropdown-toggle localization-form__select localization-selector link" aria-controls="HeaderLanguageList" aria-describedby="HeaderLanguageLabel" aria-label="{{ localization.language.endonym_name | capitalize }}">
             <span class="icon">
                 {{ logoActive }}
-            </span>
-            <span class="text text-language hidden">
-                {{ localization.language.endonym_name | capitalize }}
             </span>
             {%- if settings.enable_currencies == false or settings.enable_auto_currency -%}
                 <span class="text">

@@ -2,8 +2,10 @@ class CompareColor extends HTMLElement {
 	constructor() {
 		super();
 
-        this.imageList = this.querySelector('.halo-compareColors-image');
+		this.popup = this;
+        this.imageList = $(this.querySelector('.halo-compareColors-image'));
         this.textList = this.querySelector('.halo-compareColors-text');
+        this.sortTable = document.getElementById('sortTableList');
 
         if(document.querySelector('[data-open-compare-color-popup]')){
             document.querySelector('[data-open-compare-color-popup]').addEventListener(
@@ -25,7 +27,15 @@ class CompareColor extends HTMLElement {
 
         this.querySelector('ul').addEventListener('input', this.debouncedOnChange.bind(this));
 
-        document.querySelector('.background-overlay')?.addEventListener('click', this.onBackgroundClick.bind(this));
+        document.body.addEventListener('click', this.onBodyClickEvent.bind(this));
+
+        if (window.innerWidth >= 1025 && this.sortTable) {
+            new Sortable(this.sortTable, {
+                animation: 150
+            });
+        } else {
+            this.onRemoveHandler();
+        }
     }
 
     setOpenPopup(event){
@@ -35,44 +45,56 @@ class CompareColor extends HTMLElement {
         document.body.classList.add('compare-color-show');
     }
 
-    setClosePopup(){
+    setClosePopup(event){
+        event.preventDefault();
+        event.stopPropagation();
+
         document.body.classList.remove('compare-color-show');
     }
 
     onChangeHandler(event){
         event.preventDefault();
 
-        let input = event.target,
-            id = event.target.value,
-            label = event.target.nextElementSibling;
+        var input = event.target,
+            label = input.nextElementSibling,
+            id = input.value;
 
         if(input.checked){
-            let title = label.getAttribute('title'),
-                image = label.getAttribute('data-variant-img');
+            var title = label.getAttribute('title'),
+                image = label.getAttribute('data-variant-img'),
+                item = `<div class="item item-${id} item-compare-color"><span class="image"><img src="${image}" alt="${title}"></span><span class="title text-center">${title}</span></div>`;
 
-            const item = document.createElement('div');
-
-            item.innerHTML = `<div class="item item-${id} item-compare-color">\
-                                <span class="image"><img src="${image}" alt="${title}"></span>\
-                                <span class="title text-center">${title}</span>\
-                            </div>`;
-
-            this.imageList.appendChild(item.firstElementChild.cloneNode(true));
+            this.imageList.append(item);
         } else {
-            if(this.imageList.querySelector(`.item-${id}`)){
-                this.imageList.querySelector(`.item-${id}`).remove();
-            }
+            this.imageList.find(`.item-${id}`).remove();
         }
 
-        if(this.imageList.querySelectorAll('.item').length > 0){
+        if(this.imageList.children().length > 0){
             this.textList.style.display = 'none';
         } else{
             this.textList.style.display = 'block';
         }
     }
 
-    onBackgroundClick(event){
-        this.setClosePopup();
+    onRemoveHandler(){
+        this.imageList.on('click', '.item', (event) => {
+            event.preventDefault();
+
+            var $target = event.currentTarget,
+                itemId = $target.classList[1].replace('item-', ''),
+                optionId = `swatch-compare-color-${itemId}`,
+                item = $(document.getElementById(optionId));
+
+            item.trigger('click');
+        });
+    }
+
+    onBodyClickEvent(event){
+        if(document.body.classList.contains('compare-color-show')){
+            if ((!this.contains(event.target)) && ($(event.target).closest('[data-open-compare-color-popup]').length === 0)){
+                this.setClosePopup(event);
+            }
+        }
     }
 }
 

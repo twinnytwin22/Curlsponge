@@ -4,23 +4,13 @@
             <span class="visually-hidden">{{ 'general.common.close' | t }}</span>
             {% render 'icon-close' %}
         </a>
-        {%- assign formId = id | append: '-' | append: product.id -%}
+        {% assign formId = id | append: '-' | append: product.id %}
         <form action="{{ routes.cart_url }}/add" method="post" class="variants" id="swatch-{{ formId }}-{{ sectionId }}-{{ list }}" data-id="product-actions-{{ product.id }}" enctype="multipart/form-data">
             {%- assign product_swatch_option = settings.swatch | downcase -%}
             {%- for option in product.options_with_values -%}
                 {%- assign option_name = option.name | downcase -%}
                 {%- if product_swatch_option contains option_name -%}
-                    {%- liquid
-                        assign show_option_swatch = false
-                        if settings.quick_shop_type == '1'
-                            unless settings.show_swatch
-                                assign show_option_swatch = true
-                            endunless
-                        elsif settings.quick_shop_type == '2'
-                            assign show_option_swatch = true
-                        endif 
-                    -%}
-                    <div class="selector-wrapper selector-wrapper-1 swatch option-color" data-option-index="0" data-option-position="{{ forloop.index | minus: 1 }}"{% unless show_option_swatch %} style="display: none;"{% endunless %}>
+                    <div class="selector-wrapper selector-wrapper-1 swatch option-color" data-option-index="0" data-option-position="{{ forloop.index | minus: 1 }}" {% if settings.show_swatch %} style="display: none;"{% endif %}>
                         <label class="form-label">
                             {{ 'products.product.select' | t : name : option.name }}
                         </label>
@@ -38,36 +28,27 @@
                                     assign values = values | split: ';'
                                     assign value_2 = value | remove: " " | downcase
                                 -%}
-                                <div class="swatch-element {{ value_2 }}{% if variant.available %} available{% else %} soldout{% endif %}" data-value="{{ value | escape }}">
+                                <div class="swatch-element {{ value_2 }}{% if variant.available %} available{% else %} soldout{% endif %}" data-value="{{ value }}">
                                     <input
                                         class="single-option {{ option_index0 }}"
                                         type="radio"
                                         name="SingleOptionSelector-{{ option_index0 }}-{{ product.id }}-{{ sectionId }}{{ list }}"
                                         data-index="option{{ option_index }}"
                                         value="{{ value | escape }}"
-                                        id="SingleOptionSelector{{ option_index0 }}-{{ value | escape }}-{{ product.id }}-{{ sectionId }}{{ list }}"
-                                        {% unless variant.available %}
-                                            disabled
-                                        {% endunless %}
+                                        id="SingleOptionSelector{{ option_index0 }}-{{ value }}-{{ product.id }}-{{ sectionId }}{{ list }}"
+                                        {% unless variant.available %}disabled{% endunless %}
                                     >
                                     <label
                                         class="single-label"
                                         title="{{ value }}"
-                                        for="SingleOptionSelector{{ option_index0 }}-{{ value | escape }}-{{ product.id }}-{{ sectionId }}{{ list }}"
+                                        for="SingleOptionSelector{{ option_index0 }}-{{ value }}-{{ product.id }}-{{ sectionId }}{{ list }}"
                                     >
                                         <span class="name">{{ value }}</span>
                                     </label>
                                     {%- if settings.show_notify_form -%}
-                                        {%- liquid
-                                            if settings.product_card_style == '8'
-                                                assign icon_mail = '3'
-                                            else
-                                                assign icon_mail = '1'
-                                            endif
-                                        -%}
                                         <a class="single-action clearfix" href="#" data-open-notify-popup data-variant-id role="button">
                                             {% render 'icon-mail',
-                                                icon_mail: icon_mail
+                                                icon_mail: '1'
                                             %}
                                             <span class="text">
                                                 {{ 'notify_form.general.label' | t }}
@@ -97,22 +78,22 @@
                                     assign values = values | split: ';'
                                     assign value_2 = value | remove: " " | downcase
                                 -%}
-                                <div class="swatch-element {{ value_2 }}{% if variant.available %} available{% else %} soldout{% endif %}" data-value="{{ value | escape }}">
+                                <div class="swatch-element {{ value_2 }}{% if variant.available %} available{% else %} soldout{% endif %}" data-value="{{ value }}">
                                     <input
                                         class="single-option"
                                         type="radio"
                                         name="SingleOptionSelector-{{ option_index0 }}-{{ product.id }}-{{ sectionId }}{{ list }}"
                                         data-index="option{{ option_index }}"
                                         value="{{ value | escape }}"
-                                        id="SingleOptionSelector{{ option_index0 }}-{{ value | escape }}-{{ product.id }}-{{ sectionId }}{{ list }}"
+                                        id="SingleOptionSelector{{ option_index0 }}-{{ value }}-{{ product.id }}-{{ sectionId }}{{ list }}"
                                         {% unless variant.available %}
                                             disabled
                                         {% endunless %}
                                     >
                                     <label
                                         class="single-label"
-                                        title="{{ value | escape }}"
-                                        for="SingleOptionSelector{{ option_index0 }}-{{ value | escape }}-{{ product.id }}-{{ sectionId }}{{ list }}"
+                                        title="{{ value }}"
+                                        for="SingleOptionSelector{{ option_index0 }}-{{ value }}-{{ product.id }}-{{ sectionId }}{{ list }}"
                                     >
                                         <span class="name">{{ value }}</span>
                                         <span class="text">
@@ -120,16 +101,9 @@
                                         </span>
                                     </label>
                                     {%- if settings.show_notify_form -%}
-                                        {%- liquid
-                                            if settings.product_card_style == '8'
-                                                assign icon_mail = '3'
-                                            else
-                                                assign icon_mail = '1'
-                                            endif
-                                        -%}
                                         <a class="single-action clearfix" href="#" data-open-notify-popup data-variant-id role="button">
                                             {% render 'icon-mail',
-                                                icon_mail: icon_mail
+                                                icon_mail: '1'
                                             %}
                                             <span class="text">
                                                 {{ 'notify_form.general.label' | t }}

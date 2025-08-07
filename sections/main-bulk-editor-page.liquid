@@ -13,14 +13,29 @@
     assign page_title_alignment = section.settings.page_title_alignment
     assign container = section.settings.container
 -%}
-<div data-section-id="{{ section.id }}" data-section-type="page" id="BulkEditorSection-{{ section.id }}" data-section="{{ section.id }}" class="halo-page-padding"
-    style="--padding-top: {{ padding_top }};
-        --padding-bottom: {{ padding_bottom }};
-        --padding-top-tablet: {{ padding_top_tablet }};
-        --padding-bottom-tablet: {{ padding_bottom_tablet }};
-        --padding-top-mobile: {{ padding_top_mobile }};
-        --padding-bottom-mobile: {{ padding_bottom_mobile }};"
->
+
+<style type="text/css" media="screen">
+    #BulkEditorSection-{{ section.id }}{
+        padding-top: {{ padding_top }};
+        padding-bottom: {{ padding_bottom }};
+    }
+
+    @media (max-width: 1024px) {
+        #BulkEditorSection-{{ section.id }}{
+            padding-top: {{ padding_top_tablet }};
+            padding-bottom: {{ padding_bottom_tablet }};
+        }
+    }
+
+    @media (max-width: 550px) {
+        #BulkEditorSection-{{ section.id }}{
+            padding-top: {{ padding_top_mobile }};
+            padding-bottom: {{ padding_bottom_mobile }};
+        }
+    }
+</style>
+
+<div data-section-id="{{ section.id }}" data-section-type="page" id="BulkEditorSection-{{ section.id }}" data-section="{{ section.id }}">
     <div class="container container-{{ container }}">
         {%- if show_breadcrumb -%}
             {% render 'breadcrumb', alignment: breadcrumb_alignment %}
@@ -31,7 +46,7 @@
             </h1>
         {%- endif -%}
         <div class="halo-page-content">
-            <bulk-editor class="halo-bulk-editor">
+            <div class="halo-bulk-editor">
                 <div class="bulk-editor-content">
                     <div class="bulk-editor-sidebar">
                         <div class="bulk-editor-selector">
@@ -49,7 +64,7 @@
                                 </li>
                                 {%- for category in collections -%}
                                     <li>
-                                        <a class="product" href="javascript:void(0)" data-title="{{ category.title }}" data-href="&collection_id={{ category.id }}" data-bulk-list-item role="button">
+                                        <a class="product" href="javascript:void(0)" data-title="{{ category.title }}" data-href="&ids={% for product in category.products %}{{ product.id }}%2C{% endfor %}" data-bulk-list-item role="button">
                                             <span class="text">{{ category.title | escape }}</span>
                                         </a>
                                     </li>
@@ -60,52 +75,28 @@
                     <div class="bulk-editor-main">
                         <div class="bulk-editor-listing">
                             <div class="content-item">
-                                <input id="tag" type="checkbox" name="tag" value="tags%2C" checked>
-                                <label class="form-label--checkbox" for="tag">Tag</label>
+                                <input id="short_description" type="checkbox" name="short_description" value="metafields.c_f.short_description" checked>
+                                <label class="form-label--checkbox" for="short_description">Short Description</label>
                             </div>
                             <div class="content-item">
-                                <input id="product_type" type="checkbox" name="product_type" value="product_type%2C" checked>
-                                <label class="form-label--checkbox" for="product_type">Type</label>
+                                <input id="countdown" type="checkbox" name="countdown" value="metafields.c_f.countdown" checked>
+                                <label class="form-label--checkbox" for="countdown">Countdown</label>
                             </div>
                             <div class="content-item">
-                                <input id="vendor" type="checkbox" name="vendor" value="vendor%2C" checked>
-                                <label class="form-label--checkbox" for="vendor">Vendor</label>
+                                <input id="sizechart" type="checkbox" name="sizechart" value="metafields.c_f.size_chart" checked>
+                                <label class="form-label--checkbox" for="sizechart">Size Chart</label>
                             </div>
                             <div class="content-item">
-                                <input id="variants_sku" type="checkbox" name="variants_sku" value="variants.sku%2C" checked>
-                                <label class="form-label--checkbox" for="variants_sku">SKU</label>
+                                <input id="bundlediscountrate" type="checkbox" name="bundlediscountrate" value="metafields.c_f.bundle_discount_rate" checked>
+                                <label class="form-label--checkbox" for="bundlediscountrate">Bundle Discount Rate</label>
                             </div>
                             <div class="content-item">
-                                <input id="variants_price" type="checkbox" name="variants_price" value="variants.price%2C" checked>
-                                <label class="form-label--checkbox" for="variants_price">Price</label>
+                                <input id="groupedsubproduct" type="checkbox" name="groupedsubproduct" value="metafields.c_f.grouped_sub_product" checked>
+                                <label class="form-label--checkbox" for="groupedsubproduct">Grouped Sub Product</label>
                             </div>
                             <div class="content-item">
-                                <input id="variants_compare_at_price" type="checkbox" name="variants_compare_at_price%2C" value="variants.compare_at_price" checked>
-                                <label class="form-label--checkbox" for="variants_compare_at_price">Compare at price</label>
-                            </div>
-                            <div class="content-item">
-                                <input id="variants_cost" type="checkbox" name="variants_cost" value="variants.cost%2C" checked>
-                                <label class="form-label--checkbox" for="variants_cost">Cost per item</label>
-                            </div>
-                            <div class="content-item">
-                                <input id="variants_taxable" type="checkbox" name="variants_taxable" value="variants.taxable%2C" checked>
-                                <label class="form-label--checkbox" for="variants_taxable">Charges taxes</label>
-                            </div>
-                            <div class="content-item">
-                                <input id="variants_barcode" type="checkbox" name="variants_barcode" value="variants.barcode%2C" checked>
-                                <label class="form-label--checkbox" for="variants_barcode">Barcode</label>
-                            </div>
-                            <div class="content-item">
-                                <input id="variants_inventory_management" type="checkbox" name="variants_inventory_management" value="variants.inventory_management%2C" checked>
-                                <label class="form-label--checkbox" for="variants_inventory_management">Track quantity</label>
-                            </div>
-                            <div class="content-item">
-                                <input id="status" type="checkbox" name="status" value="status%2C" checked>
-                                <label class="form-label--checkbox" for="status">Status</label>
-                            </div>
-                            <div class="content-item">
-                                <input id="template_suffix" type="checkbox" name="template_suffix" value="template_suffix%2C" checked>
-                                <label class="form-label--checkbox" for="template_suffix">Template</label>
+                                <input id="custom_tab" type="checkbox" name="custom_tab" value="metafields.c_f.custom_tab" checked>
+                                <label class="form-label--checkbox" for="custom_tab">Custom Tab</label>
                             </div>
                         </div>
                     </div>
@@ -113,101 +104,94 @@
                 <div class="bulk-editor-action text-center">
                     <a class="button button--primary bulk-editor-submit" href="" target="_blank" >{{ 'bulk_editor_page.general.submit' | t }}</a>
                 </div>
-            </bulk-editor>
+            </div>
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
-    class BulkEditor extends HTMLElement {
-        constructor() {
-            super();
-            this.bESelect = this.querySelector('.bulk-editor-selector');
-            this.bEListing = this.querySelector('.bulk-editor-listing');
-            this.submitButton = this.querySelector('.bulk-editor-submit');
+    $(document).ready(() => {
+        $('.bulk-editor-selector .label-tab').on('click', (event) => {
+            var buttonElement = event.currentTarget;
 
-            this.bESelect.querySelectorAll('.label-tab').forEach((button) => {
-                button.addEventListener('click', this.onToggleDropdown.bind(this));
-            });
-
-            this.bESelect.querySelectorAll('[data-bulk-list-item]').forEach((button) => {
-                button.addEventListener('click', this.onSelectDropdown.bind(this));
-            });
-
-            this.submitButton.addEventListener('click', this.onSubmit.bind(this));
-
-            document.body.addEventListener('click', this.onBodyClickEvent.bind(this));
-        }
-
-        onToggleDropdown(event) {
-            if (event.currentTarget.getAttribute('aria-expanded') === 'false'){
-                event.currentTarget.setAttribute('aria-expanded', true);
+            if (buttonElement.getAttribute('aria-expanded') === 'false'){
+                buttonElement.setAttribute('aria-expanded', true);
             } else {
-                event.currentTarget.setAttribute('aria-expanded', false);
+                buttonElement.setAttribute('aria-expanded', false);
             }
-        }
+        });
 
-        onSelectDropdown(event) {
-            if (!event.currentTarget.classList.contains('is-active')) {
-                let value = event.currentTarget.getAttribute('data-value'),
-                    href = event.currentTarget.getAttribute('data-href'),
-                    text = event.currentTarget.querySelector('.text').innerText;
+        $('[data-bulk-list-item]').on('click', (event) => {
+            var buttonElement = event.currentTarget;
 
-                this.bESelect.querySelector('.label-text').innerText = text;
-                this.bESelect.querySelector('.label-tab').setAttribute('aria-expanded', false);
+            if (!buttonElement.classList.contains('is-active')) {
+                var value = buttonElement.querySelector('.text').getAttribute('data-value'),
+                    href = buttonElement.querySelector('.text').getAttribute('data-href'),
+                    text = buttonElement.querySelector('.text').innerText;
 
-                this.bESelect.querySelectorAll('[data-bulk-list-item]').forEach((element) => {
-                    if(!element.contains(event.target)){
-                        element.classList.remove('is-active');
-                    } else{
-                        element.classList.add('is-active');
-                    }
+                document.querySelector('.bulk-editor-selector .label-text').innerText = text;
+                document.querySelector('.bulk-editor-selector [data-toggle]').setAttribute('aria-expanded', false);
+
+                document.querySelectorAll('[data-bulk-list-item]').forEach((sortByButton) => {
+                    sortByButton.closest('li').classList.remove('is-active');
                 });
-            }
-        }
 
-        onSubmit(event) {
+                buttonElement.closest('li').classList.add('is-active');
+            }
+        });
+
+        var arrEditor = [];
+
+        $('.content-item label').on('click', (event) => {
+            var value = event.currentTarget.value,
+                href = event.currentTarget.dataset.href,
+                character = arrEditor.join(':string,'),
+                link = document.querySelector('.bulk-editor-submit').getAttribute('href');
+
+            arrEditor.push(value);
+            link.replace('edit=', 'edit=' + character);
+        });
+
+        $('.bulk-editor-submit').on('click', (event) => {
             event.preventDefault();
 
-            let arrEditor = [],
-                character,
-                id = '';
+            var arrEditor = [],
+                href = event.currentTarget.getAttribute('href');
 
-            if(!this.bEListing.querySelectorAll('input:checked').length) {
+            if($('.bulk-editor-listing input:checked').length == 0){
                 alert('Please choose metafields');
             } else {
-                this.bEListing.querySelectorAll('input:checked').forEach((element) => {
-                    arrEditor.push(element.value);
+                $('.bulk-editor-listing input[type=checkbox]').each((index, element) => {
+                    if (element.checked) {
+                        var value = element.value;
+
+                        arrEditor.push(value);
+                    }
                 });
-            }
 
-            character = arrEditor.join(',');
+                var character = arrEditor.join(':string,'),
+                    id = '';
 
-            event.currentTarget.setAttribute('href', `/admin/bulk?resource_name=Product&edit=${character}`);
+                event.currentTarget.setAttribute('href', `/admin/bulk?resource_name=Product&edit=${character}`);
 
-            this.bESelect.querySelectorAll('[data-bulk-list-item]').forEach((element) =>{
-                if(element.classList.contains('product')){
-                    if (element.classList.contains('is-active')) {
-                        id = element.dataset.href;
-                    }
-                } else if (element.classList.contains('all-products')){
-                    if (element.classList.contains('is-active')) {
-                        id = '';
-                    }
+                if ($('.bulk-editor-selector .product').parent().hasClass('is-active')) {
+                    id = '&ids=' + $('.bulk-editor-selector li.is-active .product').data('href');
+                } else if($('.bulk-editor-selector .all-products').parent().hasClass('is-active')){
+                    id = '';
                 }
-            });
 
-            window.open(`/admin/bulk?resource_name=Product&edit=${character}${id}`, '_blank');
-        }
+                var finalLink = `/admin/bulk?resource_name=Product&edit=${character}${id}`;
 
-        onBodyClickEvent(event) {
-            if (!(event.target).closest('.bulk-editor-selector')){
-                this.bESelect.querySelector('.label-tab').setAttribute('aria-expanded', false);
+                window.open(finalLink, '_blank');
             }
-        }
-    }
+        });
 
-    customElements.define('bulk-editor', BulkEditor);
+        $(document).on('click', (event) => {
+            if ($(event.target).closest('.bulk-editor-selector').length === 0) {
+                document.querySelector('.bulk-editor-selector [data-toggle]').setAttribute('aria-expanded', false);
+            }
+        });
+    });
 </script>
 
 {% schema %}

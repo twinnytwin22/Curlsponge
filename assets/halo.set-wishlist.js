@@ -6,43 +6,30 @@ Shopify.ProductWishlist = (() => {
             localStorage.setItem('wishlistItem', JSON.stringify(wishlistList));
 
             if (wishlistList.length > 0) {
-                Shopify.ProductWishlist.setWishlistCounter(wishlistList.length);
-
                 wishlistList = JSON.parse(localStorage.getItem('wishlistItem'));
                 
                 wishlistList.forEach((handle) => {
-                    Shopify.ProductWishlist.setProductForWishlist(handle);
+                    this.setProductForWishlist(handle);
                 });
             }
         },
 
         setProductForWishlist: (handle) => {
             var wishlistList = JSON.parse(localStorage.getItem('wishlistItem')),
+                item = $('[data-wishlist-handle="'+ handle +'"]'),
                 index = wishlistList.indexOf(handle);
 
-            if(document.querySelector(`[data-wishlist-handle="${handle}"]`)){
-                document.querySelectorAll(`[data-wishlist-handle="${handle}"]`).forEach((item) => {
-                    if(index >= 0) {
-                        item.classList.add('wishlist-added');
-
-                        if(item.querySelector('.text')){
-                            item.querySelector('.text').innerText = window.wishlist.added;
-                        }
-                    } else {
-                        item.classList.remove('wishlist-added');
-
-                        if(item.querySelector('.text')){
-                            item.querySelector('.text').innerText = window.wishlist.add;
-                        }
-                    }
-                });
+            if(index >= 0) {
+                item
+                    .addClass('wishlist-added')
+                    .find('.text')
+                    .text(window.wishlist.added)
+            } else {
+                item
+                    .removeClass('wishlist-added')
+                    .find('.text')
+                    .text(window.wishlist.add);
             }
-        },
-
-        setWishlistCounter: (count) => {
-            document.querySelectorAll(`[data-wishlist-count]`).forEach((counter) => {
-                counter.innerText = count;
-            });
         }
 	}
 })();

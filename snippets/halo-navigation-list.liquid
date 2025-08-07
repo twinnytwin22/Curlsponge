@@ -3,65 +3,16 @@
     More info on linklists:
     - http://docs.shopify.com/themes/liquid-variables/linklists
 {% endcomment %}
-<ul class="{{ listClass }}{% if block.settings.show_resize_menu %} flex justify-{{ block.settings.align }}{% endif %} list-unstyled" role="list" {% if block.settings.show_resize_menu %} data-resize-menu{% endif %}
-    style="--sale-item-color: {{ block.settings.sale_item_color }};
-    {% if block.settings.lv_1_font == 'font_1' %}
-        --lv-1-font: var(--font-1-family);
-    {% elsif block.settings.lv_1_font == 'font_2' %}
-        --lv-1-font: var(--font-2-family);
-    {% elsif block.settings.lv_1_font == 'font_3' %}
-        --lv-1-font: var(--font-3-family);
-    {% endif %}
-    {% if block.settings.lv_2_font == 'font_1' %}
-        --lv-2-font: var(--font-1-family);
-    {% elsif block.settings.lv_2_font == 'font_2' %}
-        --lv-2-font: var(--font-2-family);
-    {% elsif block.settings.lv_2_font == 'font_3' %}
-        --lv-2-font: var(--font-3-family);
-    {% endif %}
-    {% if block.settings.lv_2_mega_font == 'font_1' %}
-        --lv-2-mega-font: var(--font-1-family);
-    {% elsif block.settings.lv_2_mega_font == 'font_2' %}
-        --lv-2-mega-font: var(--font-2-family);
-    {% elsif block.settings.lv_2_mega_font == 'font_3' %}
-        --lv-2-mega-font: var(--font-3-family);
-    {% endif %}
-    --lv-1-font-size: {{ block.settings.lv_1_font_size | append: 'px' }};
-    --lv-1-font-weight: {{ block.settings.lv_1_font_weight }};
-    --lv-1-text-transform: {{ block.settings.lv_1_text_transform }};
-    --lv-1-color: {{ block.settings.lv_1_color }};
-    --lv-1-color-hover: {{ block.settings.lv_1_color_hover }};
-    --lv-1-color-mobile: {{ block.settings.lv_1_color_mobile }};
-
-    --lv-2-font-size: {{ block.settings.lv_2_font_size | append: 'px' }};
-    --lv-2-font-weight: {{ block.settings.lv_2_font_weight }};
-    --lv-2-text-transform: {{ block.settings.lv_2_text_transform }};
-
-    --lv-2-mega-font-size: {{ block.settings.lv_2_mega_font_size | append: 'px' }};
-    --lv-2-mega-font-weight: {{ block.settings.lv_2_mega_font_weight }};
-    --lv-2-mega-text-transform: {{ block.settings.lv_2_mega_text_transform }};
-    --lv-2-color: {{ block.settings.lv_2_color }};
-    --lv-2-color-hover: {{ block.settings.lv_2_color_hover }};
-    --lv-2-color-mobile: {{ block.settings.lv_2_color_mobile }};
-    --lv-2-bg: {{ block.settings.lv_2_bg }};
-    {% if block.settings.show_label %}
-        --new-label-color: {{ block.settings.new_label_color }};
-        --new-label-bg: {{ block.settings.new_label_bg }};
-        --sale-label-color: {{ block.settings.sale_label_color }};
-        --sale-label-bg: {{ block.settings.sale_label_bg }};
-        --hot-label-color: {{ block.settings.hot_label_color }};
-        --hot-label-bg: {{ block.settings.hot_label_bg }};
-    {% endif %}"
->
+<ul class="{{ listClass }} list-unstyled" role="list" {% if section.settings.show_resize_menu %} data-resize-menu{% endif %}>
     {%- liquid
-        if section.blocks.size > 0 and block.settings.show_megamenu
+        if section.blocks.size > 0 and section.settings.show_megamenu
             assign megamenu = section.blocks | where: "type", "megamenu"
         endif
         if search.terms != blank and template.suffix == 'ajax_mega_menu'
             assign menu = linklists[search.terms].links
         elsif request.page_type == 'page'
             assign menu_tab = section.blocks | where: "type", "tab"
-            assign menu = block.settings.menu.links
+            assign menu = section.settings.menu.links
             if menu_tab.size > 0
                 assign page_handle = page.handle
                 for block in menu_tab
@@ -72,28 +23,27 @@
                 endfor
             endif
         else
-            assign menu = block.settings.menu.links
+            assign menu = section.settings.menu.links
         endif
     -%}
 
     {%- for link in menu -%}
         {%- liquid
-            assign show_resize_menu = block.settings.show_resize_menu
-            assign sale_item_lv1 = block.settings.sale_item_1 | split: "," | strip | downcase | handle
-            assign sale_item_lv2 = block.settings.sale_item_2 | split: "," | strip | downcase | handle
-            assign sale_item_lv3 = block.settings.sale_item_3 | split: "," | strip | downcase | handle
+            assign sale_item_lv1 = section.settings.sale_item_1 | split: "," | strip | downcase | handle
+            assign sale_item_lv2 = section.settings.sale_item_2 | split: "," | strip | downcase | handle
+            assign sale_item_lv3 = section.settings.sale_item_3 | split: "," | strip | downcase | handle
             assign title = link.title | escape | downcase | handle
-            if block.settings.show_label
-                assign show_label_blink = block.settings.show_label_blink
-                assign new_label_1 = block.settings.new_label_1 | split: "," | strip | downcase | handle
-                assign new_label_2 = block.settings.new_label_2 | split: "," | strip | downcase | handle
-                assign new_label_3 = block.settings.new_label_3 | split: "," | strip | downcase | handle
-                assign sale_label_1 = block.settings.sale_label_1 | split: "," | strip | downcase | handle
-                assign sale_label_2 = block.settings.sale_label_2 | split: "," | strip | downcase | handle
-                assign sale_label_3 = block.settings.sale_label_3 | split: "," | strip | downcase | handle
-                assign hot_label_1 = block.settings.hot_label_1 | split: "," | strip | downcase | handle
-                assign hot_label_2 = block.settings.hot_label_2 | split: "," | strip | downcase | handle
-                assign hot_label_3 = block.settings.hot_label_3 | split: "," | strip | downcase | handle
+            if section.settings.show_label
+                assign show_label_blink = section.settings.show_label_blink
+                assign new_label_1 = section.settings.new_label_1 | split: "," | strip | downcase | handle
+                assign new_label_2 = section.settings.new_label_2 | split: "," | strip | downcase | handle
+                assign new_label_3 = section.settings.new_label_3 | split: "," | strip | downcase | handle
+                assign sale_label_1 = section.settings.sale_label_1 | split: "," | strip | downcase | handle
+                assign sale_label_2 = section.settings.sale_label_2 | split: "," | strip | downcase | handle
+                assign sale_label_3 = section.settings.sale_label_3 | split: "," | strip | downcase | handle
+                assign hot_label_1 = section.settings.hot_label_1 | split: "," | strip | downcase | handle
+                assign hot_label_2 = section.settings.hot_label_2 | split: "," | strip | downcase | handle
+                assign hot_label_3 = section.settings.hot_label_3 | split: "," | strip | downcase | handle
             endif
             for menuItem in megamenu
                 assign check_menu = false
@@ -142,16 +92,6 @@
                                 assign banner_text_4 = menuItem.settings.banner_text_4
                                 assign banner_url_4 = menuItem.settings.banner_url_4
                             endif
-                            assign heading_font = menuItem.settings.heading_font
-                            assign heading_font_size = menuItem.settings.heading_font_size
-                            assign heading_font_weight = menuItem.settings.heading_font_weight
-                            assign heading_text_transform = menuItem.settings.heading_text_transform
-                            assign heading_color = menuItem.settings.heading_color
-                            assign link_font = menuItem.settings.link_font
-                            assign link_font_size = menuItem.settings.link_font_size
-                            assign link_font_weight = menuItem.settings.link_font_weight
-                            assign link_text_transform = menuItem.settings.link_text_transform
-                            assign link_color = menuItem.settings.link_color
                         endif
                         assign show_az_brand = menuItem.settings.show_az_brand
                         if show_az_brand
@@ -174,7 +114,6 @@
             {% render 'halo-megamenu'
                 link: link,
                 title: title,
-                show_resize_menu: show_resize_menu,
                 sale_item_lv1: sale_item_lv1,
                 sale_item_lv2: sale_item_lv2,
                 sale_item_lv3: sale_item_lv3,
@@ -219,16 +158,6 @@
                 banner_title_4: banner_title_4,
                 banner_text_4: banner_text_4,
                 banner_url_4: banner_url_4,
-                heading_font: heading_font,
-                heading_font_size: heading_font_size,
-                heading_font_weight: heading_font_weight,
-                heading_text_transform: heading_text_transform,
-                heading_color: heading_color,
-                link_font: link_font,
-                link_font_size: link_font_size,
-                link_font_weight: link_font_weight,
-                link_text_transform: link_text_transform,
-                link_color: link_color,
                 show_az_brand: show_az_brand,
                 az_brand_title: az_brand_title,
                 az_brand_link_text: az_brand_link_text,
@@ -261,7 +190,7 @@
             %}
         {%- endif -%}
     {%- endfor -%}
-    {%- if block.settings.show_resize_menu -%}
+    {%- if section.settings.show_resize_menu -%}
         <li class="menu-lv-item menu-lv-toggle menu-lv-1 text-left no-megamenu visually-hidden" data-menu-lv-toggle>
             <p class="menu-lv-1__action list-menu__item link focus-inset">
                 <span class="text">

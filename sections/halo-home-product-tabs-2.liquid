@@ -16,12 +16,15 @@
         assign layout = section.settings.block_layout
         assign col = section.settings.col
         assign infinite_scroll = section.settings.block_infinite_scroll
+        if infinite_scroll
+	        assign infinite_scroll_color = section.settings.block_infinite_color
+	        assign infinite_scroll_backg = section.settings.block_infinite_backg
+        endif
         assign image_ratio = section.settings.block_image_ratio
         assign portrait_aspect_ratio = section.settings.portrait_aspect_ratio
         assign show_add_to_cart = section.settings.show_add_to_cart
         assign title_color = section.settings.title_color
         assign title_color_active = section.settings.title_color_active
-        assign title_tab_font = section.settings.title_tab_font
         assign title_tab_font_size = section.settings.title_tab_font_size | append: 'px'
         assign title_tab_font_weight = section.settings.title_tab_font_weight
         assign title_tab_transform = section.settings.title_tab_transform
@@ -33,30 +36,86 @@
         	if countdown != blank
         		assign has_countdown = true
         	endif
-            assign countdown_bg = section.settings.countdown_backg
+            assign countdown_backg = section.settings.countdown_backg
             assign countdown_color = section.settings.countdown_color
             assign countdown_num_color = section.settings.countdown_num_color
         else
         	assign has_countdown = false
         endif
     -%}
-    {%- if settings.show_dark_mode -%}
-        <style type="text/css" media="screen">
-            body.dark-mode .halo-product-tabs .product-tabs-list > .tab-links {
-                color: var(--color-grey) !important;
+    <style type="text/css" media="screen">
+        #halo-product-block-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        #halo-product-block-{{ section.id }} .halo-block-header .tab-links{
+            font-size: {{ title_tab_font_size }};
+            text-transform: {{ title_tab_transform }};
+            font-weight: {{title_tab_font_weight}};
+            color: {{ title_color }}!important;
+        }
+
+        #halo-product-block-{{ section.id }} .halo-block-header .tab-links.active{
+            color: {{ title_color_active }}!important;
+        }
+
+        #halo-product-block-{{ section.id }} .halo-countDown .text span{
+            color: {{countdown_color}};
+        }
+
+        #halo-product-block-{{ section.id }}  .halo-countDown  .seperate{
+            color: {{countdown_num_color}};  
+        }
+
+        #halo-product-block-{{ section.id }}  .halo-countDown.style-3  .seperate{
+            color: {{countdown_backg}};  
+        }
+
+        #halo-product-block-{{ section.id }} .halo-countDown .num{
+            color: {{countdown_num_color}};
+        }
+
+        #halo-product-block-{{ section.id }}  .halo-countDown.style-3 .num{
+            background: {{ countdown_backg }};
+            border-color: {{ countdown_backg }};  
+        }
+
+        {% if infinite_scroll %}
+            #halo-product-block-{{ section.id }} .product-infinite-scroll .button{
+                background: {{ infinite_scroll_backg }};
+                border-color: {{ infinite_scroll_backg }};
+                color: {{ infinite_scroll_color }};
+                box-shadow: none!important;
             }
-            
-            body.dark-mode .halo-product-tabs .product-tabs-list > .tab-links.active {
-                color: var(--color-white) !important;
+        {% endif %}
+
+        @media (max-width: 1024px) {
+            #halo-product-block-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
             }
-            
-            body.dark-mode .halo-product-tabs .product-tabs-list li .tab-links,
-            body.dark-mode .halo-product-tabs .product-tabs-list li .tab-links.active {
-                filter: invert(1);
+        }
+
+        @media (max-width: 550px) {
+            #halo-product-block-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
             }
-        </style>
-    {%- endif -%}
-    <div class="halo-block halo-product-block halo-product-tabs halo-product-tabs-2 halo-block-padding" id="halo-product-block-{{ section.id }}" data-product-tabs-2
+        }
+
+        @media (min-width: 1025px){
+            {% if infinite_scroll %}
+                #halo-product-block-{{ section.id }} .product-infinite-scroll .button:hover{
+                    color: var(--btn-1-color-hover);
+                    background: var(--btn-1-bg-hover);
+                    border-color: var(--btn-1-border-hover);
+                }
+            {% endif %}
+        }
+    </style>
+    <div class="halo-block halo-product-block halo-product-tabs halo-product-tabs-2" id="halo-product-block-{{ section.id }}"
+    	data-product-tabs-2
         data-limit="{{ limit }}"
         data-layout="grid"
         data-image-ratio="{{ image_ratio }}"
@@ -64,29 +123,6 @@
         data-ratio="{{ portrait_aspect_ratio }}"
         sectionId="{{ section.id }}"
         data-url = "{{ collection }}"
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};
-            {% if title_tab_font == 'font_1' %}
-                --tab-title-font: var(--font-1-family);
-            {% elsif title_tab_font == 'font_2' %}
-                --tab-title-font: var(--font-2-family);
-            {% elsif title_tab_font == 'font_3' %}
-                --tab-title-font: var(--font-3-family);
-            {% endif %}
-            --tab-font-size: {{ title_tab_font_size }};
-            --tab-font-weight: {{ title_tab_font_weight }};
-            --tab-text-transform: {{ title_tab_transform }};
-            --tab-color: {{ title_color }};
-            --tab-color-active: {{ title_color_active }};
-            {% if show_countdown %}
-                --countdown-bg: {{ countdown_bg }};
-                --countdown-color: {{ countdown_color }};
-                --countdown-number-color: {{ countdown_num_color }};
-            {% endif %}"
     >
     	<div class="container container-{{ container }}">
     		<div class="halo-block-header list-product-tabs text-{{ block_title_align }} flex align-center{% if block_title_align != 'center' %} justify-between{% else %} flex-wrap justify-center{% endif %}">
@@ -156,11 +192,7 @@
                     {%- endfor -%}
                 </ul>
                 {%- if has_countdown -%}
-                    <div class="product-tabs-countdown style-{{ countdown_style }} text-left clearfix countdown-{{ section.id }}">
-                    	<count-down class="product-tabs-countdown--wrapper clearfix" data-countdown="{{ countdown }}" data-type="product-block">
-                            <div class="product-tabs-countdown--countdown"></div>
-                        </count-down>
-                    </div>
+                	<div class="halo-countDown block-countdown text-{{ align_3 }} style-{{ countdown_style }}" data-product-tabs-countdown="{{ countdown }}"></div>
                 {%- endif -%}
     		</div>
     		<div class="halo-block-content product-tabs-content">
@@ -219,6 +251,49 @@
     	</div>
     </div>
     {{ 'halo-masonry.js' | asset_url | script_tag }}
+    {%- if has_countdown -%}
+		<script type="text/javascript">
+			var wrapper = $('#halo-product-block-{{ section.id }} [data-product-tabs-countdown]'),
+	            countDown = '{{ countdown }}',
+	            countDownDate = new Date(countDown).getTime(),
+	            countdownText = `{{ countdown_text }}`;
+
+	        var countdownfunction = setInterval(function() {
+	            var now = new Date().getTime(),
+	                distance = countDownDate - now;
+
+	            if (distance < 0) {
+	                clearInterval(countdownfunction);
+	                wrapper.remove();
+	            } else {
+	                var days = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0'),
+	                    hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0'),
+	                    minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0'),
+	                    seconds = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0'),
+	                    strCountDown;
+
+	                    {% if countdown_style == '1' %}
+		                    strCountDown = `<span class="text"><span>${countdownText}</span></span><span class="num days">${days}<span>${window.countdown.days}</span></span> <span class="seperate">:</span>\
+		                        <span class="num hours">${hours}<span>${window.countdown.hour}</span></span>\
+		                        <span class="num minutes">${minutes}<span>${window.countdown.min}</span></span>\
+		                        <span class="num seconds">${seconds}<span>${window.countdown.sec}</span></span>`;
+		                {% elsif countdown_style == '2' %}
+		                	strCountDown = `<span class="text"><span>${countdownText}</span></span><span class="num days">${days}<span>${window.countdown.day}</span></span><span class="seperate">:</span>\
+		                        <span class="num hours">${hours}</span><span class="seperate">:</span>\
+		                        <span class="num minutes">${minutes}</span><span class="seperate">:</span>\
+		                        <span class="num seconds">${seconds}</span>`;
+		                {% elsif countdown_style == '3' %}
+		                	strCountDown = `<span class="text"><span>${countdownText}</span></span><span class="num days">${days}<span>${window.countdown.day}</span></span> <span class="seperate">:</span>\
+		                        <span class="num hours">${hours}</span><span class="seperate">:</span>\
+		                        <span class="num minutes">${minutes}</span><span class="seperate">:</span>\
+		                        <span class="num seconds">${seconds}</span>`;
+		                {% endif %}
+
+	                wrapper.html(strCountDown);
+	            }
+	        }, 1000);
+		</script>
+	{%- endif -%}
 {%- endif -%}
 {% schema %}
 	{
@@ -444,25 +519,6 @@
                 "content": "t:sections.product-tabs-block.settings.header__4.content"
             },
             {
-                "type": "select",
-                "id": "title_tab_font",
-                "label": "t:settings_schema.typography.settings.font.label",
-                "options": [
-                {
-                    "value": "font_1",
-                    "label": "t:settings_schema.typography.settings.font.options__1"
-                },
-                {
-                    "value": "font_2",
-                    "label": "t:settings_schema.typography.settings.font.options__2"
-                },
-                {
-                    "value": "font_3",
-                    "label": "t:settings_schema.typography.settings.font.options__3"
-                }],
-                "default": "font_2"
-            },
-            {
                 "type": "range",
                 "id": "title_tab_font_size",
                 "label": "t:settings_schema.typography.settings.font_size.label",
@@ -580,6 +636,22 @@
                 "default": true
             },
             {
+                "type": "paragraph",
+                "content": "t:sections.general.settings.color.paragraph__4.content"
+            },
+            {
+                "type":"color_background",
+                "id": "block_infinite_backg",
+                "label": "t:sections.general.settings.color.label__1",
+                "default": "#f0f6ff"
+            },
+            {
+                "type": "color",
+                "id": "block_infinite_color",
+                "label": "t:sections.general.settings.color.label__3",
+                "default": "#505050"
+            },
+            {
                 "type": "header",
                 "content": "t:sections.product-tabs-block.settings.header__5.content"
             },
@@ -649,9 +721,6 @@
             {
                 "name": "t:sections.product-tabs-block.presets.name__2"
             }
-        ],
-        "disabled_on": {
-            "groups": ["header", "footer"]
-        }
+        ]
 	}
 {% endschema %}

@@ -11,19 +11,34 @@
         assign block_text = section.settings.block_text
         assign block_title_align = section.settings.block_title_align
         assign lookbook = section.settings.lookbook
+        assign lookbook_type = section.settings.lookbook_type
         assign lookbook_style = section.settings.lookbook_style
         assign style = section.settings.style
         assign image_border_radius = settings.image_border_radius
         assign image_effect = settings.image_effect
     -%}
-	<div class="halo-block halo-banner fixed-banner fixed-banner-4 halo-block-padding" id="halo-fixed-banner-{{ section.id }}"
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};"
-    >
+
+    <style type="text/css" media="screen">
+        #halo-fixed-banner-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        @media (max-width: 1024px) {
+            #halo-fixed-banner-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #halo-fixed-banner-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+    </style>
+	<div class="halo-block halo-banner fixed-banner fixed-banner-4" id="halo-fixed-banner-{{ section.id }}">
 		<div class="container container-{{ container }}">
 			{%- if block_title != blank -%}
                 <div class="halo-block-header">
@@ -39,28 +54,39 @@
 	                {%- endif -%}
                 </div>
             {%- endif -%}
-			<div class="halo-block-content lookbook-box">
+			<div class="halo-block-content{% if lookbook_type == 'popup_card' %} halo-lookbook-box{% endif %}">
 				<div class="halo-row mansory-layout style-{{ style }}">
                     <div class="mansory-layout-item one-item">
                         <div class="img-box">
-                            <loading-banner class="loading-banner">
-                                {%- liquid
-                                    assign image1 = section.settings.image_1
-                                    assign link1 = section.settings.link_1
-                                -%}
-                                {%- if image1 != blank -%}
-                                    <{% if link != blank %}a{% else %}div{% endif%} class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-adapt" {% if link != blank %}href="{{ link }}"{% endif %} style="padding-top: {{ 1 | divided_by: image1.aspect_ratio | times: 100 | append: '%' }}">
-                                        <img srcset="{{ image1 | img_url: 'master' }} 1x, {{ image1 | img_url: 'master', scale: 2 }} 2x" src="{{ image1 | img_url: 'master' }}" alt="{{ image1.alt | default: shop.name | escape }}" loading="lazy">
-                                        {%- if image_effect == 'liquid' -%}
-                                            <span class="hover"></span>
-                                        {%- endif -%}
-                                    </{% if link != blank %}a{% else %}div{% endif%}>
+                            {%- liquid
+                                assign image1 = section.settings.image_1
+                                assign link1 = section.settings.link_1
+                            -%}
+                            {%- if image1 != blank -%}
+                                {%- if link != blank -%}
+                                    <a class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-adapt" href="{{ link }}" style="padding-top: {{ 1 | divided_by: image1.aspect_ratio | times: 100 | append: '%' }}">
                                 {%- else -%}
-                                    <div class="image image-not-found">
-                                        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                                    <div class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-adapt" style="padding-top: {{ 1 | divided_by: image1.aspect_ratio | times: 100 | append: '%' }}">
+                                {%- endif -%}
+                                    <img srcset="{{ image1 | img_url: 'master' }} 1x, {{ image1 | img_url: 'master', scale: 2 }} 2x" src="{{ image1 | img_url: 'master' }}" alt="{{ image1.alt | default: shop.name | escape }}" loading="lazy">
+                                {%- if link1 != blank -%}
+                                    </a>
+                                {%- else -%}
                                     </div>
                                 {%- endif -%}
-                            </loading-banner>
+                            {%- else -%}
+                                {%- if link1 != blank -%}
+                                    <a class="image image-not-found" href="{{ link }}">
+                                {%- else -%}
+                                    <div class="image image-not-found">
+                                {%- endif -%}
+                                    {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                                {%- if link1 != blank -%}
+                                    </a>
+                                {%- else -%}
+                                    </div>
+                                {%- endif -%}
+                            {%- endif -%}
                         </div>
                         {%- if lookbook -%}
                             {%- for i in (1..3) -%}
@@ -74,40 +100,13 @@
                                     assign point_x = section.settings[cap_point_x]
                                 -%}
                                 {%- if product != blank and section.settings.lookbook-%}
-                                    <lookbook-point class="point-box style-{{ lookbook_style }}" data-popup="#LOOKBOOK-{{ block.id }}-{{ product.id }}-{{ forloop.index }}"
-                                        style="top: {{ point_y | append: '%' }};
-                                            left: {{ point_x | append: '%' }};"
-                                    >
-                                        <a href="{{ product.url }}" class="point-icon">
+                                    <div class="point-box style-{{ lookbook_style }}" style="top: {{ point_y }}%; left: {{ point_x }}%;">
+                                        <div class="point-icon" {% if lookbook_type == 'popup_quickview' %} data-open-quick-view-popup{% else %} data-open-lookbook-popup{% endif %} data-product-handle="{{ product.handle }}" role="button" tabindex="0">
                                             <span class="text{% if lookbook_style == '3' %} visually-hidden{% endif %}">
-                                                {%- if lookbook_style == '4' or lookbook_style == '6' -%}
-                                                    {% render 'icon-plus' %}
-                                                {%- else -%}
-                                                    {{ forloop.index }}
-                                                {%- endif -%}
+                                                {{ forloop.index }}
                                             </span>
-                                        </a>
-                                    </lookbook-point>
-                                    <lookbook-popup class="popup-box{% if lookbook_style == '6' %} style-6{% endif %}" id="LOOKBOOK-{{ block.id }}-{{ product.id }}-{{ forloop.index }}">
-                                        {%- liquid
-                                            assign target = product.selected_or_first_available_variant
-                                            assign compare_at_price = target.compare_at_price
-                                            assign price = target.price
-                                        -%}
-                                        <div class="popup-box__wrapper">
-                                            <a href="{{ product.url }}" class="link-with-arrow">
-                                                <span class="text">{{ product.title }}</span>
-                                                <span class="info">
-                                                    {%- if compare_at_price > price %}
-                                                        <span class="price old-price">{{ compare_at_price | money }}</span>
-                                                        <span class="price">{{ price | money }}</span>
-                                                    {%- else -%}
-                                                        <span class="price">{{ price | money }}</span>
-                                                    {%- endif -%}
-                                                </span>
-                                            </a>
                                         </div>
-                                    </lookbook-popup>
+                                    </div>
                                 {%- endif -%}
                             {%- endfor -%}
                         {%- endif -%}
@@ -121,16 +120,29 @@
                                         assign link2 = section.settings.link_2
                                     -%}
                                     {%- if image2 != blank -%}
-                                        <{% if link2 != blank %}a{% else %}div{% endif%} class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-adapt" {% if link2 != blank %}href="{{ link2 }}"{% endif %} style="padding-top: {{ 1 | divided_by: image2.aspect_ratio | times: 100 | append: '%' }}">
+                                        {%- if link2 != blank -%}
+                                            <a class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-adapt" href="{{ link }}" style="padding-top: {{ 1 | divided_by: image2.aspect_ratio | times: 100 | append: '%' }}">
+                                        {%- else -%}
+                                            <div class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-adapt" style="padding-top: {{ 1 | divided_by: image2.aspect_ratio | times: 100 | append: '%' }}">
+                                        {%- endif -%}
                                             <img srcset="{{ image2 | img_url: 'master' }} 1x, {{ image2 | img_url: 'master', scale: 2 }} 2x" src="{{ image2 | img_url: 'master' }}" alt="{{ image2.alt | default: shop.name | escape }}" loading="lazy">
-                                            {%- if image_effect == 'liquid' -%}
-                                                <span class="hover"></span>
-                                            {%- endif -%}
-                                        </{% if link2 != blank %}a{% else %}div{% endif%}>
+                                        {%- if link2 != blank -%}
+                                            </a>
+                                        {%- else -%}
+                                            </div>
+                                        {%- endif -%}
                                     {%- else -%}
-                                        <div class="image image-not-found">
+                                        {%- if link2 != blank -%}
+                                            <a class="image image-not-found" href="{{ link }}">
+                                        {%- else -%}
+                                            <div class="image image-not-found">
+                                        {%- endif -%}
                                             {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-                                        </div>
+                                        {%- if link2 != blank -%}
+                                            </a>
+                                        {%- else -%}
+                                            </div>
+                                        {%- endif -%}
                                     {%- endif -%}
                                 </div>
                                 {%- if lookbook -%}
@@ -145,40 +157,13 @@
                                             assign point_x = section.settings[cap_point_x]
                                         -%}
                                         {%- if product != blank and section.settings.lookbook -%}
-                                            <lookbook-point class="point-box style-{{ lookbook_style }}" data-popup="#LOOKBOOK-{{ block.id }}-{{ product.id }}-{{ forloop.index }}"
-                                                style="top: {{ point_y | append: '%' }};
-                                                    left: {{ point_x | append: '%' }};"
-                                            >
-                                                <a href="{{ product.url }}" class="point-icon">
+                                            <div class="point-box style-{{ lookbook_style }}" style="top: {{ point_y }}%; left: {{ point_x }}%;">
+                                                <div class="point-icon" {% if lookbook_type == 'popup_quickview' %} data-open-quick-view-popup{% else %} data-open-lookbook-popup{% endif %} data-product-handle="{{ product.handle }}" role="button" tabindex="0">
                                                     <span class="text{% if lookbook_style == '3' %} visually-hidden{% endif %}">
-                                                        {%- if lookbook_style == '4' or lookbook_style == '6' -%}
-                                                            {% render 'icon-plus' %}
-                                                        {%- else -%}
-                                                            {{ forloop.index }}
-                                                        {%- endif -%}
+                                                        {{ forloop.index }}
                                                     </span>
-                                                </a>
-                                            </lookbook-point>
-                                            <lookbook-popup class="popup-box" id="LOOKBOOK-{{ block.id }}-{{ product.id }}-{{ forloop.index }}">
-                                                {%- liquid
-                                                    assign target = product.selected_or_first_available_variant
-                                                    assign compare_at_price = target.compare_at_price
-                                                    assign price = target.price
-                                                -%}
-                                                <div class="popup-box__wrapper">
-                                                    <a href="{{ product.url }}" class="link-with-arrow">
-                                                        <span class="text">{{ product.title }}</span>
-                                                        <span class="info">
-                                                            {%- if compare_at_price > price %}
-                                                                <span class="price old-price">{{ compare_at_price | money }}</span>
-                                                                <span class="price">{{ price | money }}</span>
-                                                            {%- else -%}
-                                                                <span class="price">{{ price | money }}</span>
-                                                            {%- endif -%}
-                                                        </span>
-                                                    </a>
                                                 </div>
-                                            </lookbook-popup>
+                                            </div>
                                         {%- endif -%}
                                     {%- endfor -%}
                                 {%- endif -%}
@@ -190,16 +175,29 @@
                                         assign link3 = section.settings.link_3
                                     -%}
                                     {%- if image3 != blank -%}
-                                        <{% if link3 != blank %}a{% else %}div{% endif%} class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-adapt" {% if link3 != blank %}href="{{ link }}"{% endif %} style="padding-top: {{ 1 | divided_by: image3.aspect_ratio | times: 100 | append: '%' }}">
+                                        {%- if link3 != blank -%}
+                                            <a class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-adapt" href="{{ link }}" style="padding-top: {{ 1 | divided_by: image3.aspect_ratio | times: 100 | append: '%' }}">
+                                        {%- else -%}
+                                            <div class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-adapt" style="padding-top: {{ 1 | divided_by: image3.aspect_ratio | times: 100 | append: '%' }}">
+                                        {%- endif -%}
                                             <img srcset="{{ image3 | img_url: 'master' }} 1x, {{ image3 | img_url: 'master', scale: 2 }} 2x" src="{{ image3 | img_url: 'master' }}" alt="{{ image3.alt | default: shop.name | escape }}" loading="lazy">
-                                            {%- if image_effect == 'liquid' -%}
-                                                <span class="hover"></span>
-                                            {%- endif -%}
-                                        </{% if link3 != blank %}a{% else %}div{% endif%}>
+                                        {%- if link3 != blank -%}
+                                            </a>
+                                        {%- else -%}
+                                            </div>
+                                        {%- endif -%}
                                     {%- else -%}
-                                        <div class="image image-not-found">
+                                        {%- if link3 != blank -%}
+                                            <a class="image image-not-found" href="{{ link }}">
+                                        {%- else -%}
+                                            <div class="image image-not-found">
+                                        {%- endif -%}
                                             {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-                                        </div>
+                                        {%- if link3 != blank -%}
+                                            </a>
+                                        {%- else -%}
+                                            </div>
+                                        {%- endif -%}
                                     {%- endif -%}
                                 </div>
                                 {%- if lookbook -%}
@@ -214,40 +212,13 @@
                                             assign point_x = section.settings[cap_point_x]
                                         -%}
                                         {%- if product != blank and section.settings.lookbook -%}
-                                            <lookbook-point class="point-box style-{{ lookbook_style }}" data-popup="#LOOKBOOK-{{ block.id }}-{{ product.id }}-{{ forloop.index }}"
-                                                style="top: {{ point_y | append: '%' }};
-                                                    left: {{ point_x | append: '%' }};"
-                                            >
-                                                <a href="{{ product.url }}" class="point-icon">
+                                            <div class="point-box style-{{ lookbook_style }}" style="top: {{ point_y }}%; left: {{ point_x }}%;">
+                                                <div class="point-icon" {% if lookbook_type == 'popup_quickview' %} data-open-quick-view-popup{% else %} data-open-lookbook-popup{% endif %} data-product-handle="{{ product.handle }}" role="button" tabindex="0">
                                                     <span class="text{% if lookbook_style == '3' %} visually-hidden{% endif %}">
-                                                        {%- if lookbook_style == '4' or lookbook_style == '6' -%}
-                                                            {% render 'icon-plus' %}
-                                                        {%- else -%}
-                                                            {{ forloop.index }}
-                                                        {%- endif -%}
+                                                        {{ forloop.index }}
                                                     </span>
-                                                </a>
-                                            </lookbook-point>
-                                            <lookbook-popup class="popup-box" id="LOOKBOOK-{{ block.id }}-{{ product.id }}-{{ forloop.index }}">
-                                                {%- liquid
-                                                    assign target = product.selected_or_first_available_variant
-                                                    assign compare_at_price = target.compare_at_price
-                                                    assign price = target.price
-                                                -%}
-                                                <div class="popup-box__wrapper">
-                                                    <a href="{{ product.url }}" class="link-with-arrow">
-                                                        <span class="text">{{ product.title }}</span>
-                                                        <span class="info">
-                                                            {%- if compare_at_price > price %}
-                                                                <span class="price old-price">{{ compare_at_price | money }}</span>
-                                                                <span class="price">{{ price | money }}</span>
-                                                            {%- else -%}
-                                                                <span class="price">{{ price | money }}</span>
-                                                            {%- endif -%}
-                                                        </span>
-                                                    </a>
                                                 </div>
-                                            </lookbook-popup>
+                                            </div>
                                         {%- endif -%}
                                     {%- endfor -%}
                                 {%- endif -%}
@@ -261,16 +232,29 @@
                                         assign link4 = section.settings.link_4
                                     -%}
                                     {%- if image4 != blank -%}
-                                        <{% if link4 != blank %}a{% else %}div{% endif%} class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-adapt" {% if link4 != blank %}href="{{ link4 }}"{% endif %} style="padding-top: {{ 1 | divided_by: image4.aspect_ratio | times: 100 | append: '%' }}">
+                                        {%- if link4 != blank -%}
+                                            <a class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-adapt" href="{{ link }}" style="padding-top: {{ 1 | divided_by: image4.aspect_ratio | times: 100 | append: '%' }}">
+                                        {%- else -%}
+                                            <div class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-adapt" style="padding-top: {{ 1 | divided_by: image4.aspect_ratio | times: 100 | append: '%' }}">
+                                        {%- endif -%}
                                             <img srcset="{{ image4 | img_url: 'master' }} 1x, {{ image4 | img_url: 'master', scale: 2 }} 2x" src="{{ image4 | img_url: 'master' }}" alt="{{ image4.alt | default: shop.name | escape }}" loading="lazy">
-                                            {%- if image_effect == 'liquid' -%}
-                                                <span class="hover"></span>
-                                            {%- endif -%}
-                                        </{% if link4 != blank %}a{% else %}div{% endif%}>
+                                        {%- if link4 != blank -%}
+                                            </a>
+                                        {%- else -%}
+                                            </div>
+                                        {%- endif -%}
                                     {%- else -%}
-                                        <div class="image image-not-found">
+                                        {%- if link4 != blank -%}
+                                            <a class="image image-not-found" href="{{ link }}">
+                                        {%- else -%}
+                                            <div class="image image-not-found">
+                                        {%- endif -%}
                                             {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-                                        </div>
+                                        {%- if link4 != blank -%}
+                                            </a>
+                                        {%- else -%}
+                                            </div>
+                                        {%- endif -%}
                                     {%- endif -%}
                                 </div>
                                 {%- if lookbook -%}
@@ -285,40 +269,13 @@
                                             assign point_x = section.settings[cap_point_x]
                                         -%}
                                         {%- if product != blank and section.settings.lookbook -%}
-                                            <lookbook-point class="point-box style-{{ lookbook_style }}" data-popup="#LOOKBOOK-{{ block.id }}-{{ product.id }}-{{ forloop.index }}"
-                                                style="top: {{ point_y | append: '%' }};
-                                                    left: {{ point_x | append: '%' }};"
-                                            >
-                                                <a href="{{ product.url }}" class="point-icon">
+                                            <div class="point-box style-{{ lookbook_style }}" style="top: {{ point_y }}%; left: {{ point_x }}%;">
+                                                <div class="point-icon" {% if lookbook_type == 'popup_quickview' %} data-open-quick-view-popup{% else %} data-open-lookbook-popup{% endif %} data-product-handle="{{ product.handle }}" role="button" tabindex="0">
                                                     <span class="text{% if lookbook_style == '3' %} visually-hidden{% endif %}">
-                                                        {%- if lookbook_style == '4' or lookbook_style == '6' -%}
-                                                            {% render 'icon-plus' %}
-                                                        {%- else -%}
-                                                            {{ forloop.index }}
-                                                        {%- endif -%}
+                                                        {{ forloop.index }}
                                                     </span>
-                                                </a>
-                                            </lookbook-point>
-                                            <lookbook-popup class="popup-box" id="LOOKBOOK-{{ block.id }}-{{ product.id }}-{{ forloop.index }}">
-                                                {%- liquid
-                                                    assign target = product.selected_or_first_available_variant
-                                                    assign compare_at_price = target.compare_at_price
-                                                    assign price = target.price
-                                                -%}
-                                                <div class="popup-box__wrapper">
-                                                    <a href="{{ product.url }}" class="link-with-arrow">
-                                                        <span class="text">{{ product.title }}</span>
-                                                        <span class="info">
-                                                            {%- if compare_at_price > price %}
-                                                                <span class="price old-price">{{ compare_at_price | money }}</span>
-                                                                <span class="price">{{ price | money }}</span>
-                                                            {%- else -%}
-                                                                <span class="price">{{ price | money }}</span>
-                                                            {%- endif -%}
-                                                        </span>
-                                                    </a>
                                                 </div>
-                                            </lookbook-popup>
+                                            </div>
                                         {%- endif -%}
                                     {%- endfor -%}
                                 {%- endif -%}
@@ -326,6 +283,15 @@
                         </div>
                     </div>
             	</div>
+                {%- if lookbook_type == 'popup_card' -%}
+                    <div class="halo-lookbook-popup">
+                        <a href="#" class="close" data-close-lookbook-popup role="button">
+                            <span class="visually-hidden">{{ 'general.common.close' | t }}</span>
+                            {% render 'icon-close' %}
+                        </a>
+                        <div class="content"></div>
+                    </div>
+                {%- endif -%}
 			</div>
 		</div>
 	</div>
@@ -512,6 +478,21 @@
             },
             {
                 "type": "select",
+                "id": "lookbook_type",
+                "label": "t:sections.general.settings.lookbook.label__2",
+                "default": "popup_quickview",
+                "options": [
+                {
+                    "value": "popup_quickview",
+                    "label": "t:sections.general.settings.lookbook.options__1"
+                },
+                {
+                    "value": "popup_card",
+                    "label": "t:sections.general.settings.lookbook.options__2"
+                }]
+            },
+            {
+                "type": "select",
                 "id": "lookbook_style",
                 "label": "t:sections.general.settings.lookbook.label__3",
                 "default": "1",
@@ -527,18 +508,6 @@
                 {
                     "value": "3",
                     "label": "3"
-                },
-                {
-                    "value": "4",
-                    "label": "4"
-                },
-                {
-                    "value": "5",
-                    "label": "5"
-                },
-                {
-                    "value": "6",
-                    "label": "6"
                 }]
             },
             {
@@ -955,9 +924,6 @@
             {
                 "name": "t:sections.fixed-banner-4.presets.name"
             }
-        ],
-        "disabled_on": {
-            "groups": ["header", "footer"]
-        }
+        ]
 	}
 {% endschema %}

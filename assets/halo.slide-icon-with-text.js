@@ -24,8 +24,6 @@
                                 dots: itemDotsMobile,
                                 slidesToShow: 1,
                                 slidesToScroll: 1,
-                                fade: true,
-                                rtl: window.rtl_slick,
                                 nextArrow: '<button type="button" class="slick-arrow slick-next" aria-label="'+ window.accessibility.next_slide +'">' + window.slick.nextArrow + '</button>',
                                 prevArrow: '<button type="button" class="slick-arrow slick-prev" aria-label="'+ window.accessibility.previous_slide +'">' + window.slick.prevArrow + '</button>',
                                 responsive: [
@@ -34,7 +32,6 @@
                                         settings: {
                                             arrows: itemArrows,
                                             dots: itemDots,
-                                            fade: false,
                                             get slidesToShow() {
                                                 if(itemToShow !== undefined && itemToShow !== null && itemToShow !== ''){
                                                     return this.slidesToShow = itemToShow;
@@ -49,7 +46,6 @@
                                         settings: {
                                             arrows: itemArrows,
                                             dots: itemDots,
-                                            fade: false,
                                             get slidesToShow() {
                                                 if(itemToShow !== undefined && itemToShow !== null && itemToShow !== ''){
                                                     if(itemToShow == 5 || itemToShow == 6){
@@ -66,7 +62,6 @@
                                     {
                                         breakpoint: 767,
                                         settings: {
-                                            fade: false,
                                             slidesToShow: 3,
                                             slidesToScroll: 1
                                         }
@@ -86,8 +81,6 @@
                                     dots: itemDotsMobile,
                                     slidesToShow: 1,
                                     slidesToScroll: 1,
-                                    fade: true,
-                                    rtl: window.rtl_slick,
                                     nextArrow: '<button type="button" class="slick-arrow slick-next" aria-label="'+ window.accessibility.next_slide +'">' + window.slick.nextArrow + '</button>',
                                     prevArrow: '<button type="button" class="slick-arrow slick-prev" aria-label="'+ window.accessibility.previous_slide +'">' + window.slick.prevArrow + '</button>',
                                     responsive: [
@@ -96,7 +89,6 @@
                                             settings: {
                                                 arrows: itemArrows,
                                                 dots: itemDots,
-                                                fade: false,
                                                 get slidesToShow() {
                                                     if(itemToShow !== undefined && itemToShow !== null && itemToShow !== ''){
                                                         return this.slidesToShow = itemToShow;
@@ -111,7 +103,6 @@
                                             settings: {
                                                 arrows: itemArrows,
                                                 dots: itemDots,
-                                                fade: false,
                                                 get slidesToShow() {
                                                     if(itemToShow !== undefined && itemToShow !== null && itemToShow !== ''){
                                                         if(itemToShow == 5 || itemToShow == 6){
@@ -146,15 +137,12 @@
                                 dots: itemDotsMobile,
                                 slidesToShow: 1,
                                 slidesToScroll: 1,
-                                fade: true,
-                                rtl: window.rtl_slick,
                                 nextArrow: '<button type="button" class="slick-arrow slick-next" aria-label="'+ window.accessibility.next_slide +'">' + window.slick.nextArrow + '</button>',
                                 prevArrow: '<button type="button" class="slick-arrow slick-prev" aria-label="'+ window.accessibility.previous_slide +'">' + window.slick.prevArrow + '</button>',
                                 responsive: [
                                 {
                                     breakpoint: 767,
                                     settings: {
-                                        fade: false,
                                         slidesToShow: 3,
                                         slidesToScroll: 1
                                     }

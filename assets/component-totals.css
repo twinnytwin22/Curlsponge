@@ -1,9 +1,10 @@
 .cart--totals-title{
-    font-size: calc(var(--font-size) + 2px);
-    font-weight: var(--font-weight-bold);
+    font-family: var(--font-heading-family);
+    font-size: calc(var(--header-font-size) - 6px);
+    font-weight: var(--header-font-weight);
+    text-align: left;
     line-height: var(--line-height);
     letter-spacing: var(--letter-spacing);
-    text-align: left;
     text-transform: capitalize;
     color: var(--color-text);
     position: relative;
@@ -178,10 +179,6 @@
 
 .cart-actions .button + .button{
     margin-top: 10px;
-}
-
-body.dark-mode .cart-shipping .button{
-    background-color: var(--color-black);
 }
 
 @media (min-width: 768px){

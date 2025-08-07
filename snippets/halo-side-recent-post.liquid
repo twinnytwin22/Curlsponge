@@ -5,22 +5,22 @@
     -%}
     <div class="sidebarBlock{% if show_collapse %} sidebarBlock-collapse{% endif %}">
         {%- if show_collapse -%}
-            <collapse-button class="sidebarBlock-headingWrapper">
+            <div class="sidebarBlock-headingWrapper">
         {%- endif -%}
             {%- if heading != blank -%}
-                <h3 class="sidebarBlock-heading{% if show_collapse and sidebar_collapse == 'expand' %} is-clicked{% endif %}"{% if show_collapse %} data-collapse-button{% endif %}>
+                <h3 class="sidebarBlock-heading{% if show_collapse %}{% if sidebar_collapse == 'expand' %} is-clicked{% endif %}{% endif %}">
                     {{ heading | escape }}
                 </h3>
             {%- else -%}
                 {%- if show_collapse -%}
-                    <h3 class="sidebarBlock-heading{% if sidebar_collapse == 'expand' %} is-clicked{% endif %}"{% if show_collapse %} data-collapse-button{% endif %}>
+                    <h3 class="sidebarBlock-heading{% if sidebar_collapse == 'expand' %} is-clicked{% endif %}">
                         BLock Heading
                     </h3>
                 {%- endif -%}
             {%- endif -%}
         {%- if show_collapse -%}
-            </collapse-button>
-            <div class="sidebarBlock-contentWrapper{% if sidebar_collapse == 'expand' %} is-expanded{% endif %}">
+            </div>
+            <div class="sidebarBlock-contentWrapper" {% if sidebar_collapse == 'expand' %} style="display: block;"{% endif %}>
         {%- endif -%}
             <div class="sidebarBlock-content">
                 <div class="recentPosts-list">

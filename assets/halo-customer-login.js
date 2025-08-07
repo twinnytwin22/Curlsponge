@@ -2,6 +2,8 @@ class CustomerAuth extends HTMLElement {
 	constructor() {
 		super();
 
+		this.auth = this;
+
         if(document.querySelector('[data-open-auth-popup]')){
             document.querySelectorAll('[data-open-auth-popup]').forEach((openPopup) =>
                 openPopup.addEventListener('click', this.setOpenPopup.bind(this))
@@ -73,13 +75,13 @@ class CustomerAuth extends HTMLElement {
 
     onBodyClickEvent(event){
         if(document.body.classList.contains('auth-popup-show')){
-            if ((!this.contains(event.target)) && (!(event.target).closest('[data-open-auth-popup]')) && (!(event.target).closest('[data-auth-popup]'))){
+            if ((!this.contains(event.target)) && ($(event.target).closest('[data-open-auth-popup]').length === 0)){
                 this.setClosePopup(event);
             }
         }
 
         if(document.body.classList.contains('auth-sidebar-show')){
-            if ((!this.contains(event.target)) && (!(event.target).closest('[data-open-auth-sidebar]')) && (!(event.target).closest('[data-auth-sidebar]'))){
+            if ((!this.contains(event.target)) && ($(event.target).closest('[data-open-auth-sidebar]').length === 0)){
                 this.setCloseSidebar(event);
             }
         }

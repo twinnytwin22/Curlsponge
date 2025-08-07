@@ -14,27 +14,25 @@
         else
             assign has_announcement_bar = true
         endif
-
-        if settings.show_dark_mode
-            assign dark_mode = false
-            unless announcement_bar_bg == blank or announcement_bar_bg == '#fff' or announcement_bar_bg == '#FFF' or announcement_bar_bg == '#ffffff' or announcement_bar_bg == '#FFFFFF' or announcement_bar_bg == 'rgb(255,255,255)' or announcement_bar_bg == 'rgba(255,255,255,1)' or announcement_bar_bg == 'rgba(0,0,0,0)'
-                assign dark_mode = true
-                assign dark_mode_announcement_bar_bg = section.settings.announcement_bar_bg
-                assign dark_mode_announcement_bar_color = section.settings.announcement_bar_color
-            endunless
-        endif
     -%}
     {%- if has_announcement_bar -%}
-    	<div class="announcement-bar announcement-bar-2{% unless dark_mode %} dark-mode{% endunless %}" role="region" aria-label="{{ 'sections.header.announcement' | t }}" id="announcement-bar-{{ section.id }}"{% if section.blocks.size > 1 %} data-loader-script="{{ 'halo.slide-announcement-bar.js' | asset_url }}"{% endif %} 
-            style="--bg-color: {{ announcement_bar_bg | default: settings.colors_bg }};
-            --text-color: {{ announcement_bar_color }};
-            {% if dark_mode %}
-                --dark-mode-bg-color: {{ dark_mode_announcement_bar_bg }};
-                --dark-mode-text-color: {{ dark_mode_announcement_bar_color }};
-            {% endif %}"
-        >
+    	<style type="text/css">
+    		#announcement-bar-{{ section.id }}{
+    			background: {{ announcement_bar_bg }};
+    		}
+
+    		#announcement-bar-{{ section.id }} .top-announcement-bar-item{
+    			color: {{ announcement_bar_color }};
+    		}
+
+    		#announcement-bar-{{ section.id }} .top-announcement-bar-2 .slick-arrow svg{
+    			fill: {{ announcement_bar_color }};
+                stroke: {{ announcement_bar_color }};
+    		}
+    	</style>
+    	<div class="announcement-bar" role="region" aria-label="{{ 'sections.header.announcement' | t }}" id="announcement-bar-{{ section.id }}">
     		<div class="container container-{{ container }}">
-    			<div class="top-announcement-bar top-announcement-bar-2"{% if section.blocks.size > 1 %} data-announcement-bar{% endif %}>
+    			<div class="top-announcement-bar top-announcement-bar-2" data-announcement-bar>
     				{%- for block in section.blocks -%}
     					{%- liquid
                             assign text = block.settings.text
@@ -56,8 +54,7 @@
 
 {% schema %}
 {
-    "name": "t:sections.announcement-bar.name__2",
-    "class": "header-line announcement-bar-2",
+    "name": "t:sections.announcement-bar.name",
     "settings": [
         {
             "type": "header",
@@ -154,37 +151,6 @@
 			    }
 	    	]
 	    }
-    ],
-    "presets": [
-        {
-            "name": "t:sections.announcement-bar.name__2",
-            "settings": {
-                "show_announcement_bar": true,
-                "container": "1370",
-                "announcement-bar-show": "all",
-                "announcement_bar_bg": "#f5e3e7",
-                "announcement_bar_color": "#202020"
-            },
-            "blocks": [
-                {
-                    "type": "text",
-                    "settings": {
-                        "text": "SHOP NOW, PAY LATER WITH HALOPAY®. LEARN NOW",
-                        "link": ""
-                    }
-                },
-                {
-                    "type": "text",
-                    "settings": {
-                        "text": "SHOP NOW, PAY LATER WITH HALOPAY®. LEARN NOW",
-                        "link": ""
-                    }
-                }
-            ]
-        }
-    ],
-    "enabled_on": {
-        "groups": ["header" ]
-    }
+    ]
 }
 {% endschema %}

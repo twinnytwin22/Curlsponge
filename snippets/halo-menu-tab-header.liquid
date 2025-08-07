@@ -1,11 +1,6 @@
-{%- if block_menu_tab.size > 0 -%}
-    <ul class="header__list menu-tab list-unstyled" role="menu" {% if section.blocks.size > 0 %}data-menu-tab{% endif %}
-        style="--text-bg: {{ section.settings.text_bg }};
-            --text-color: {{ section.settings.text_color }};
-            --text-bg-active: {{ section.settings.text_bg_active }};
-            --text-color-active: {{ section.settings.text_color_active }};"
-    >
-        {%- for block in block_menu_tab limit: 3 -%}
+{%- if menu_tab.size > 0 -%}
+    <ul class="header__list menu-tab list-unstyled" role="menu" {% if section.blocks.size > 0 %}data-menu-tab{% endif %}>
+        {%- for block in menu_tab limit: 3 -%}
             {%- liquid
                 assign multi_page_handle = pages[block.settings.link].handle
                 assign multi_page_url = pages[block.settings.link].url
@@ -26,13 +21,13 @@
                     assign url = routes.root_url
                 endif
             -%}
-            <li class="{{ class }} {{ page_handle }}" data-load-page="{{ multi_page_handle }}" role="menuitem">
+            <li class="{{ class }}" data-load-page="{{ multi_page_handle }}" role="menuitem">
                 <a class="link" style="{% if text_color != 'rgba(0,0,0,0)' and text_color != blank %}color: {{text_color }};{% endif %}{% if text_bg != 'rgba(0,0,0,0)' and text_bg != blank %} background: {{ text_bg }};{% endif %}" href="{{ url }}">
                     {{ multi_page_title }}
                 </a>
             </li>
         {%- endfor -%}
-        {%- if block_menu_tab.size > 3 -%}
+        {%- if menu_tab.size > 3 -%}
             <li class="item item-more" role="menuitem">
                 <details-disclosure>
                     <details>
@@ -40,7 +35,7 @@
                             {% render 'icon-more' %}
                         </summary>
                         <ul class="dropdown clearfix" role="list" tabindex="-1">
-                            {%- for block in block_menu_tab -%}
+                            {%- for block in menu_tab -%}
                                 {%- if forloop.index > 3 -%}
                                     {%- liquid
                                         assign multi_page_handle = pages[block.settings.link].handle
@@ -75,14 +70,4 @@
             </li>
         {%- endif -%}
     </ul>
-    {%- for block in block_menu_tab -%}
-        {%- liquid
-            assign multi_page_handle = pages[block.settings.link].handle
-        -%}
-        {%- if request.page_type == 'page' and page_handle == multi_page_handle -%}
-            <script type="text/javascript">
-                window.page_active = '{{ page_handle }}';
-            </script>
-        {%- endif -%}
-    {%- endfor -%}
 {%- endif -%}

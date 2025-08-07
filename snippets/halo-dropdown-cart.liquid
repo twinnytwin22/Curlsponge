@@ -3,14 +3,14 @@
     assign btn_2 = settings.quick_cart_btn_2
     assign btn_3 = settings.quick_cart_redirect_button_type
 -%}
-<div class="cart-item cart-itemLeft" id="Cart-Item-Dropdown">
+<div class="cart-item cart-itemLeft">
     <div class="header-block">
         <div class="box-title">
             <span class="text">
                 {{ 'sections.cart.my_cart' | t }}
                 (<span data-cart-count>{{ cart.item_count }}</span>)
             </span>
-            <a href="javascript:void(0)" title="{{ 'general.common.close' | t }}" class="box-close" data-close-cart-popup role="button">
+            <a href="javascript:void(0)" title="{{ 'general.common.close' | t }}" class="box-close" data-close-cart-popup>
                 {% render 'icon-close' %}
             </a>
         </div>
@@ -25,7 +25,7 @@
                 > 
                     {%- for item in cart.items -%}
                         <div class="product">
-                            <div class="product-item" data-cart-item>
+                            <div class="product-item">
                                 <div class="card">
                                     <div class="card-product">
                                         <div class="card-product__wrapper">
@@ -33,7 +33,6 @@
                                                 assign image = item.image
                                                 assign media_size = settings.quick_cart_dropdown_image_ratio
                                                 assign portrait_aspect_ratio = settings.quick_cart_dropdown_portrait_aspect_ratio
-                                                assign current_variant = item.product.selected_or_first_available_variant
                                             -%}
                                             <a class="card-media card-media--{{ media_size }}" href="{{ item.url }}"
                                                 {% if media_size == 'adapt' %}
@@ -88,27 +87,9 @@
                                             </a>
                                         </div>
                                         <div class="card-price">
-                                            {%- assign current_variant = item.variant -%}
-                                            {%- if item.original_price != item.final_price -%}
-                                                <span class="price old-price">
-                                                    {{ item.original_price | money }}
-                                                </span>
-                                                <span class="price">
-                                                    {{ item.final_price | money }}
-                                                </span>
-                                            {%- elsif current_variant.compare_at_price > current_variant.price -%}
-                                                <span class="price old-price">
-                                                    {{ current_variant.compare_at_price | money }}
-                                                </span>
-                                                <span class="price">
-                                                    {{ current_variant.price | money }}
-                                                    {% comment %} {{ item.price | money }} {% endcomment %}
-                                                </span>
-                                            {%- else -%}
-                                                <span class="price">
-                                                    {{ item.price | money }}
-                                                </span>
-                                            {%- endif -%}
+                                            <span class="price">
+                                                {{ item.price | money }}
+                                            </span>
                                         </div>
                                         {%- if item.product.variants.size != 0 -%}
                                             {%- unless item.variant.title contains 'Default' -%}
@@ -122,7 +103,7 @@
                                                 {%- for property in item.properties -%}
                                                     {%- assign property_first_char = property.first | slice: 0 -%}
                                                     {%- if property.last != blank and property_first_char != '_' -%}
-                                                        <dt class="definitionList-key" data-property-item data-property-name="{{ property.first }}" data-property-value="{% if property.last contains '/uploads/' %}{{ property.last | split: '/' | last }}{% else %}{{ property.last }}{% endif %}">{{ property.first }}:</dt>
+                                                        <dt class="definitionList-key">{{ property.first }}:</dt>
                                                         <dd class="definitionList-value">
                                                             {%- if property.last contains '/uploads/' -%}
                                                                 <a href="{{ property.last }}" target="_blank">
@@ -147,14 +128,12 @@
                                             </div>
                                             <div class="actionItem actionItemRight clearfix">
                                                 {%- if settings.show_quick_edit_cart -%}
-                                                    <a href="javascript:void(0);" class="card-edit button" data-open-edit-cart data-edit-cart-url="{{ item.url }}&view=ajax_edit_cart" data-edit-cart-id="{{ item.id }}" data-edit-cart-quantity="{{ item.quantity }}" data-line="{{ item.key }}" aria-label="{{ 'sections.cart.edit_title' | t: title: item.variant.title }}" role="button">
+                                                    <a href="javascript:void(0);" class="card-edit button" data-open-edit-cart data-edit-cart-url="{{ item.url }}&view=ajax_edit_cart" data-edit-cart-id="{{ item.id }}" data-edit-cart-quantity="{{ item.quantity }}" data-line="{{ item.key }}" aria-label="{{ 'sections.cart.edit_title' | t: title: item.variant.title }}">
                                                         {% render 'icon-edit' %}
-                                                        <span class="visually-hidden">{{ 'sections.cart.edit_cart_title' | t }}</span>
                                                     </a>
                                                 {%- endif -%}
-                                                <a href="javascript:void(0)" class="card-remove button" data-cart-remove data-cart-remove-id="{{ item.id }}" data-line="{{ item.key }}" aria-label="{{ 'sections.cart.remove_title' | t: title: item.title }}" role="button">
+                                                <a href="javascript:void(0)" class="card-remove button" data-cart-remove data-cart-remove-id="{{ item.id }}" data-line="{{ item.key }}" aria-label="{{ 'sections.cart.remove_title' | t: title: item.title }}">
                                                     {% render 'icon-remove' %}
-                                                    <span class="visually-hidden">{{ 'wishlist.general.remove' | t }}</span>
                                                 </a>
                                             </div>
                                         </div>
@@ -191,7 +170,7 @@
         {%- endunless -%}
     </div>
 </div>
-<div class="cart-item cart-itemRight" id="Cart-Total-Dropdown">
+<div class="cart-item cart-itemRight">
     <div class="header-block">
         <div class="box-title">
             <span class="text">
@@ -205,9 +184,11 @@
     <div class="content-block">
         {%- if settings.show_calculator_free_shipping_message -%}
             <div class="previewCartMessage">
-                {% render 'halo-calculator-shipping',
-                    sectionId: 'Cart-Shipping-Message-Dropdown'
-                %}
+                {{ 'component-calculator-shipping.css' | asset_url | stylesheet_tag }}
+                <div class="haloCalculatorShipping style-{{ settings.calculator_free_shipping_message_style }} animated-loading">
+                    <div class="progress" data-shipping-progress></div>
+                    <div class="message" data-shipping-message></div>
+                </div>
             </div>
         {%- endif -%}
         <ul class="previewCartTotalsPrice list-unstyled">
@@ -237,22 +218,30 @@
                         if global_checkbox_show == 'all' or global_checkbox_show == 'cart'
                             assign has_global_checkbox = true
                             assign global_checkbox_text = settings.global_checkbox_text
+                            assign global_checkbox_link_text = settings.global_checkbox_link_text
+                            assign global_checkbox_link = settings.global_checkbox_link
+                            assign global_checkbox_type = settings.global_checkbox_type
                         endif
                     -%}
                     {%- if has_global_checkbox -%}
-                        <global-checkbox class="previewCartCheckbox global-checkbox">
+                        <div class="previewCartCheckbox global-checkbox">
                             <input class="global-checkbox--input" type="checkbox" name="conditions" id="dropdown_cart_conditions" data-target="#cart-sidebar-checkout">
-                            <label class="global-checkbox--label form-label--checkbox" for="dropdown_cart_conditions" role="button">
+                            <label class="global-checkbox--label form-label--checkbox" for="dropdown_cart_conditions">
                                 {{ global_checkbox_text }}
                             </label>
-                        </global-checkbox>
+                            {%- if global_checkbox_link_text != blank -%}
+                                <a href="{% if global_checkbox_type == 'popup' %}#{% else %}{{ global_checkbox_link }}{% endif %}" aria-label="link"{% if global_checkbox_type == 'popup'%} data-open-global-checkbox{% endif %}>
+                                    {{ global_checkbox_link_text | escape }}
+                                </a>
+                            {%- endif -%}
+                        </div>
                     {%- endif -%}
                 {%- endif -%}
                 <div class="previewCartGroup">
-                    <button class="button button-height button-{{ btn_1 }} button-checkout" onclick="window.location='{{ routes.cart_url | split: '/cart' | first }}/checkout'" {% if settings.show_global_checkbox %}{% if has_global_checkbox %} disabled="disabled"{% endif %}{% endif %} id="cart-sidebar-checkout" role="button">
+                    <button class="button button-height button-{{ btn_1 }} button-checkout" onclick="window.location='{{ routes.cart_url | split: '/cart' | first }}/checkout'" {% if settings.show_global_checkbox %}{% if has_global_checkbox %} disabled="disabled"{% endif %}{% endif %} id="cart-sidebar-checkout">
                         {{ 'sections.cart.checkout' | t }}
                     </button>
-                    <a class="button button-height flex align-center justify-center button-{{ btn_2 }} button-view-cart" href="{{ routes.cart_url }}" role="button">
+                    <a class="button button-height flex align-center justify-center button-{{ btn_2 }} button-view-cart" href="{{ routes.cart_url }}">
                         {{ 'sections.cart.view_cart' | t }}
                     </a>
                 </div>

@@ -1,4 +1,10 @@
-{%- if section.blocks.size > 0 and section.settings.show_product_block -%}
+{%- liquid
+    assign show_section = false
+    if section.blocks.size > 0 and section.settings.show_product_block
+        assign show_section = true
+    endif
+-%}
+{%- if show_section -%}
 	{%- liquid
         assign padding_top = section.settings.padding_top | append: 'px'
         assign padding_bottom = section.settings.padding_bottom | append: 'px'
@@ -8,12 +14,11 @@
         assign padding_bottom_mobile = section.settings.padding_bottom_mobile | append: 'px'
         assign container = section.settings.container
         assign block_bg = section.settings.block_bg
-        assign show_block_bg_img = section.settings.show_block_bg_img
-        if show_block_bg_img
+        if section.settings.show_block_bg_img
             assign block_bg_img = section.settings.block_bg_img
             assign block_bg_position_x = section.settings.block_bg_position_x
             assign block_bg_position_y = section.settings.block_bg_position_y
-            assign block_bg_repeat = section.settings.block_bg_repeat
+            assign block_bg_repeat =  section.settings.block_bg_repeat
             assign block_bg_attachment = section.settings.block_bg_attachment
             assign block_bg_size = section.settings.block_bg_size
         endif
@@ -25,22 +30,15 @@
         assign block_title_align = section.settings.block_title_align
         assign transparent_button = section.settings.transparent_button
         assign title_font = section.settings.title_font
-        assign title_font_size = section.settings.title_font_size
-        if title_font_size >= 60
-            assign title_tablet_font_size = title_font_size | minus: 30 | append: 'px'
-            assign title_font_size = title_font_size | append: 'px'
-        else
-            assign title_tablet_font_size = title_font_size | append: 'px'
-            assign title_font_size = title_font_size | append: 'px'
-        endif
+        assign title_font_size = section.settings.title_font_size | plus: 0
         assign title_mobile_font_size = section.settings.title_mobile_font_size | append: 'px'
         assign title_font_weight = section.settings.title_font_weight
         assign title_text_transform = section.settings.title_text_transform
         assign text_font_size = section.settings.text_font_size | append: 'px'
         assign text_font_weight = section.settings.text_font_weight
         assign text_text_transform = section.settings.text_text_transform
-        assign title_color = section.settings.color_title
-        assign text_color = section.settings.color_text
+        assign color_title = section.settings.color_title
+        assign color_text = section.settings.color_text
         assign collection = section.settings.block_collection
         assign limit = section.settings.block_limit
         assign image_ratio = section.settings.block_image_ratio
@@ -57,37 +55,143 @@
         assign image_border_radius = settings.image_border_radius
         assign image_effect = settings.image_effect
     -%}
-    <div class="halo-block halo-custom-product-banner halo-custom-product-banner-2 halo-product-block halo-block-padding" id="halo-product-block-{{ section.id }}" data-product-block data-limit="{{ limit }}" data-layout="slider" sectionId="{{ section.id }}"
-        {% if section.blocks.size > 1 %} data-product-custom-banner-block data-loader-script="{{ 'halo.slide-product-custom-banner.js' | asset_url }}"{% endif %}
+    <style type="text/css" media="screen">
+    	:root {
+            {% if title_font == 'font_1' %}
+                --title-font-{{ section.id }}: var(--font-1-family);
+            {% elsif title_font == 'font_2' %}
+                --title-font-{{ section.id }}: var(--font-2-family);
+            {% elsif title_font == 'font_3' %}
+                --title-font-{{ section.id }}: var(--font-3-family);
+            {% endif %}
+        }
+
+    	#halo-product-block-{{ section.id }} .halo-block-background{
+            background-color: {{ block_bg }};
+        }
+
+        #halo-product-block-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        #halo-product-block-{{ section.id }} .halo-block-header .title{
+        	font-family: var(--title-font-{{ section.id }});
+        	font-size: {{ title_mobile_font_size }};
+        	font-weight: {{ title_font_weight }};
+        	text-transform: {{ title_text_transform }};
+        }
+
+        #halo-product-block-{{ section.id }} .halo-block-header .desc{
+        	font-size: {{ text_font_size }};
+            font-weight: {{ text_font_weight }};
+            text-transform: {{ text_text_transform }};
+        }
+
+        #halo-product-block-{{ section.id }} .banner-title{
+            font-family: var(--title-font-{{ section.id }});
+            font-size: {{ title_mobile_font_size }};
+            font-weight: {{ title_font_weight }};
+            text-transform: {{ title_text_transform }};
+            color: {{ color_title }};
+        }
+
+        #halo-product-block-{{ section.id }} .banner-text{
+            font-size: {{ text_font_size }};
+            font-weight: {{ text_font_weight }};
+            text-transform: {{ text_text_transform }};
+            color: {{ color_text }};
+        }
+
+         #halo-product-block-{{ section.id }} .video-link{
+            color: {{ color_text }}!important;
+         }
+
+        {% if transparent_button %}
+            #halo-product-block-{{ section.id }} .banner-button{
+                background-color: transparent;
+                color: {{ color_text }};
+                border-color: {{ color_text }};
+            }
+
+            #halo-product-block-{{ section.id }} .banner-button:before{
+            	background-color: {{ color_text }};
+            }
+        {% endif %}
+
+        @media (max-width: 1024px) {
+            #halo-product-block-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550x) {
+            #halo-product-block-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+
+        @media (min-width: 1025px){
+        	#halo-product-block-{{ section.id }} .item--banner .slick-dots li button{
+        		border-color: {{ color_text }};
+        	}
+
+        	#halo-product-block-{{ section.id }} .item--banner .slick-dots li.slick-active button{
+        		background: {{ color_text }};
+        	}
+
+        	#halo-product-block-{{ section.id }} .item--product .slick-arrow svg,
+            #halo-product-block-{{ section.id }} .item--banner .slick-arrow svg{
+        		fill: {{ color_text }};
+        	}
+
+        	{% if section.settings.show_block_bg_img %}
+	        	#halo-product-block-{{ section.id }} .halo-block-background{
+		            background: url({{ block_bg_img | img_url: 'master' }});
+	    		    background-position: {{ block_bg_position_x }} {{ block_bg_position_y }};
+	    		    background-repeat: {{ block_bg_repeat }};
+	    		    background-attachment: {{ block_bg_attachment }};
+	    		    background-size: {{ block_bg_size }};
+		        }
+	    	{% endif %}
+        }
+
+        {% if title_font_size >= 60 %}
+            @media (min-width: 768px){
+                #halo-product-block-{{ section.id }} .banner-title{
+                    font-size: {{ title_font_size | minus: 30 | append: 'px' }};
+                }
+            }
+
+            @media (min-width: 1025px){
+                #halo-product-block-{{ section.id }} .banner-title{
+                    font-size: {{ title_font_size | minus: 20 | append: 'px' }};
+                }
+            }
+
+            @media (min-width: 1600px){
+                #halo-product-block-{{ section.id }} .banner-title{
+                    font-size: {{ title_font_size | append: 'px' }};
+                }
+            }
+        {% else %}
+            @media (min-width: 551px){
+                #halo-product-block-{{ section.id }} .banner-title{
+                    font-size: {{ title_font_size | append: 'px' }};
+                }
+            }
+        {% endif %}
+    </style>
+
+    <div class="halo-block halo-custom-product-banner halo-custom-product-banner-2 halo-product-block" id="halo-product-block-{{ section.id }}" data-product-block data-limit="{{ limit }}" data-layout="slider" sectionId="{{ section.id }}" {% if section.blocks.size > 1 %} data-product-custom-banner-block data-loader-script="{{ 'halo.slide-product-custom-banner.js' | asset_url }}"{% endif %}
         {% if collection != blank %}
             data-collection="{{ collection }}"
             data-image-ratio="{{ image_ratio }}"
             data-show-add-to-cart="{{ show_add_to_cart }}"
             data-ratio="{{ portrait_aspect_ratio }}"
         {% endif %}
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};
-            {% if title_font == 'font_1' %}
-                --title-font: var(--font-1-family);
-            {% elsif title_font == 'font_2' %}
-                --title-font: var(--font-2-family);
-            {% elsif title_font == 'font_3' %}
-                --title-font: var(--font-3-family);
-            {% endif %}
-            --title-font-size: {{ title_font_size }};
-            --title-tablet-font-size: {{ title_tablet_font_size }};
-            --title-mobile-font-size: {{ title_mobile_font_size }};
-            --title-font-weight: {{ title_font_weight }};
-            --title-text-transform: {{ title_text_transform }};
-            --title-color: {{ title_color }};
-            --text-font-size: {{ text_font_size }};
-            --text-font-weight: {{ text_font_weight }};
-            --text-text-transform: {{ text_text_transform }};
-            --text-color: {{ text_color }};"
     >
     	<div class="container container-{{ container }}{% if mobile_layout == 'swipe' %} container-no-padding{% endif %}">
             <div class="halo-block-content">
@@ -96,7 +200,7 @@
             			<div class="halo-item-wrapper">
             				{%- if block_title != blank -%}
 				                <div class="halo-block-header item--text">
-				                	<div class="item--wrapper text-{{ block_title_align }}">
+				                	<div class="item--wrapper">
 					                    <h3 class="title text-{{ block_title_align }}">
 					                        <span class="text">
 					                            {{ block_title | escape }}
@@ -165,27 +269,11 @@
 				                            assign align = block.settings.align
 				                        -%}
             							<div class="halo-row-item item item-{{ block.id }}" style="width: 100%;">
-            								<div class="banner-item image-{{ image_effect }} image-border-{{ image_border_radius }}">
+            								<div class="collections-item banner-item image-{{ image_effect }} image-border-{{ image_border_radius }}">
             									<div class="img-box">
-                                                    <loading-banner class="loading-banner">
-                										{%- if image != blank -%}
-    				                                        <{% if btn_url != blank or video_url != blank %}a{% else %}div{% endif %} class="image image-{{ banner_image_ratio }}{% unless show_featured_collection_absolute %} image-{{ image_effect }}{% endunless %}" {% if video_url != blank %} href="{{ video_url }}" data-fancybox="videos-{{ block.id }}"{% elsif btn_url != blank %} href="{{ btn_url }}"{% endif %} style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
-    				                                            <img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x" src="{{ image | img_url: 'master' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
-                                                                {%- if video_url != blank -%}
-                                                                    {%- if image_effect == 'liquid' -%}
-                                                                        <span class="hover"></span>
-                                                                    {%- endif -%}
-                                                                    <div href="{{ video_url }}" class="video video-link">
-                                                                        {% render 'icon-play',
-                                                                            icon_play: 'circle-2'
-                                                                        %}
-                                                                    </div>
-                                                                {%- endif -%}
-    				                                        </{% if btn_url != blank or video_url != blank %}a{% else %}div{% endif %}>
-    				                                    {%- else -%}
-    				                                        <{% if btn_url != blank or video_url != blank %}a{% else %}div{% endif %} class="image" {% if video_url != blank %} href="{{ video_url }}" data-fancybox="videos-{{ block.id }}"{% elsif btn_url != blank %} href="{{ btn_url }}"{% endif %}>
-    				                                            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-    				                                        </{% if btn_url != blank or video_url != blank %}a{% else %}div{% endif %}>
+            										{%- if image != blank -%}
+				                                        <{% if btn_url != blank or video_url != blank %}a{% else %}div{% endif %} class="image image-{{ banner_image_ratio }}{% unless show_featured_collection_absolute %} image-{{ image_effect }}{% endunless %}" {% if video_url != blank %} href="{{ video_url }}" data-fancybox="videos-{{ block.id }}"{% elsif btn_url != blank %} href="{{ btn_url }}"{% endif %} style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
+				                                            <img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x" src="{{ image | img_url: 'master' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
                                                             {%- if video_url != blank -%}
                                                                 <div href="{{ video_url }}" class="video video-link">
                                                                     {% render 'icon-play',
@@ -193,28 +281,37 @@
                                                                     %}
                                                                 </div>
                                                             {%- endif -%}
-    				                                    {%- endif -%}
-                                                    </loading-banner>
+				                                        </{% if btn_url != blank or video_url != blank %}a{% else %}div{% endif %}>
+				                                    {%- else -%}
+				                                        <{% if btn_url != blank or video_url != blank %}a{% else %}div{% endif %} class="image" {% if video_url != blank %} href="{{ video_url }}" data-fancybox="videos-{{ block.id }}"{% elsif btn_url != blank %} href="{{ btn_url }}"{% endif %}>
+				                                            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+				                                        </{% if btn_url != blank or video_url != blank %}a{% else %}div{% endif %}>
+                                                        {%- if video_url != blank -%}
+                                                            <div href="{{ video_url }}" class="video video-link">
+                                                                {% render 'icon-play',
+                                                                    icon_play: 'circle-2'
+                                                                %}
+                                                            </div>
+                                                        {%- endif -%}
+				                                    {%- endif -%}
             									</div>
             									{%- if title != blank or text != blank or btn_text != blank -%}
             										<div class="content-box content-box--absolute text-{{ align }}">
             											{%- if title != blank -%}
-				                                            <h4 class="banner-title typography__mobile typography__tablet typography__desktop">
+				                                            <h4 class="banner-title">
 				                                                <{% if btn_url != blank %}a{% else %}span{% endif %} {% if btn_url != blank %} href="{{ btn_url }}"{% endif %}>
 				                                                    {{ title | escape | newline_to_br }}
 				                                                </{% if btn_url != blank %}a{% else %}span{% endif %}>
 				                                            </h4>
 				                                        {%- endif -%}
 				                                        {%- if text != blank -%}
-				                                            <span class="banner-text typography__text">
+				                                            <span class="banner-text">
 				                                                {{ text }}
 				                                            </span>
 				                                        {%- endif -%}
 				                                        {%- if btn_text != blank -%}
 				                                            <{% if btn_url != blank %}a{% else %}div{% endif %} {% if btn_url != blank %} href="{{ btn_url }}"{% endif %} class="banner-button button button-{{ btn }}{% if transparent_button %} button--transparent{% endif %}">
-                                                                <span class="text">
-				                                               	    {{ btn_text | escape }}
-                                                                </span>
+				                                               	{{ btn_text | escape }}
 				                                            </{% if btn_url != blank %}a{% else %}div{% endif %}>
 				                                        {%- endif -%}
             										</div>
@@ -229,17 +326,7 @@
             	</div>
             </div>
     	</div>
-    	<div class="halo-block-background{% if show_block_bg_img %} halo-block-background--image{% endif %}"
-            style="--bg-block: {{ block_bg }};
-            {% if show_block_bg_img %}
-                --bg-block-img: url({{ block_bg_img | img_url: 'master' }}); 
-                --bg-block-img-position-x: {{ block_bg_position_x }};
-                --bg-block-img-position-y: {{ block_bg_position_y }};
-                --bg-block-img-repeat: {{ block_bg_repeat }};
-                --bg-block-img-attachment: {{ block_bg_attachment }};
-                --bg-block-img-size: {{ block_bg_size }};
-            {% endif %}" 
-        >&nbsp;</div>
+    	<div class="halo-block-background">&nbsp;</div>
     </div>
 {%- endif -%}
 {% schema %}
@@ -934,18 +1021,6 @@
                         {
                             "value": "5",
                             "label": "t:sections.general.settings.button.options__5"
-                        },
-                        {
-                            "value": "6",
-                            "label": "t:sections.general.settings.button.options__9"
-                        },
-                        {
-                            "value": "7",
-                            "label": "t:sections.general.settings.button.options__10"
-                        },
-                        {
-                            "value": "8",
-                            "label": "t:sections.general.settings.button.options__11"
                         }]
                     },
                     {
@@ -993,9 +1068,6 @@
                     }
                 ]
             }
-        ],
-        "disabled_on": {
-            "groups": ["header", "footer"]
-        }
+        ]
     }
 {% endschema %}

@@ -8,7 +8,7 @@
     padding: 8px 5px 5px 5px;
     margin-top: 0;
     margin-bottom: 0;
-    color: var(--color-black);
+    color: var(--color-text);
 }
 
 .recently-viewed-tab{
@@ -28,7 +28,6 @@
     box-shadow: 0px 3px 7px 0px rgba(0, 0, 0, 0.2);
     transform: translate3d(40px,0,0);
     transition: transform var(--duration-default) ease, visibility var(--duration-default) ease;
-    animation: right-out 0.3s forwards;
 }
 
 .recently-viewed-list{
@@ -48,7 +47,6 @@
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
-    animation: right-in 0.35s forwards;
 }
 
 .recently-viewed-content .products-grid{
@@ -76,10 +74,6 @@
     width: 170px;
     padding: 9px 0 15px 15px;
     background-color: var(--bg-white);
-}
-
-.recently-viewed-content .product-info .first .price-item .text {
-    font-size: min(14px,var(--product-price-compare-font-size));
 }
 
 .recently-viewed-content .products-grid .second{
@@ -248,13 +242,11 @@
     height: 46px;
     opacity: .1;
     margin: 0 0 15px 0;
-    fill: var(--color-black);
 }
 
 .recently-viewed-content .no-products .text{
     font-size: calc(var(--font-size) - 5px);
     font-weight: var(--font-weight-normal);
-    color: var(--color-black);
     line-height: 1.2;
     letter-spacing: var(--letter-spacing);
     padding: 0 10px;
@@ -312,7 +304,6 @@
     z-index: 100;
 }
 
-html.no-js .halo-recently-viewed-popup:not(.is-show),
 .halo-recently-viewed-popup.is-show{
     opacity: 1;
     visibility: visible;
@@ -322,75 +313,6 @@ html.no-js .halo-recently-viewed-popup:not(.is-show),
 
 .recently-viewed-icon + .recently-viewed-icon{
     border-top: 1px solid #cccccc;
-}
-
-.recently-dark-mode {
-    --transition-duration: 400ms;
-    --bg: white;
-    --text: #333;
-}
-
-.recently-dark-mode.active {
-    --bg: #333;
-    --text: white;
-}
-
-.recently-dark-mode {
-    background-color: var(--bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text);
-    transition: color, background-color var(--transition-duration);
-}
-
-.recently-dark-mode .icon {
-    transition: stroke var(--transition-duration);
-    stroke: var(--text) !important;
-    fill: transparent !important;
-    width: 20px;
-    height: 20px;
-    fill: none;
-}
-
-.recently-dark-mode .moon-icon {
-    stroke-dasharray: 0px 1px;
-    opacity: 0;
-    transition: stroke-dasharray 0.5s ease-in, opacity 300ms ease-in;
-}
-
-.recently-dark-mode .sun-icon {
-    stroke-dasharray: 1px 1px;
-    opacity: 1;
-    transition: stroke-dasharray 0.5s ease-in, opacity 300ms ease-in;
-}
-
-.recently-dark-mode.active .moon-icon {
-    stroke-dasharray: 1px 1px;
-    opacity: 1;
-}
-
-.recently-dark-mode.active .sun-icon {
-    stroke-dasharray: 0px 1px;
-    opacity: 0;
-}
-
-body.dark-mode .recently-viewed-icon .icon {
-    stroke: var(--bg-black);
-    fill: var(--bg-black);
-}
-
-body.dark-mode .recently-viewed-icon.social-media-icon .icon {
-    stroke: transparent;
-    fill: var(--bg-black);
-}
-
-body.dark-mode .recently-viewed-content .products-grid .slick-arrow svg {
-    fill: var(--bg-black);
-}
-
-body.dark-mode .recently-viewed-content .product-info .product-vendor a {
-    color: var(--color-black);
 }
 
 @media (min-width: 1025px){

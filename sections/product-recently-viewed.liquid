@@ -16,15 +16,28 @@
         assign image_ratio = section.settings.block_image_ratio
         assign portrait_aspect_ratio = section.settings.portrait_aspect_ratio
         assign show_add_to_cart = section.settings.show_add_to_cart
-        assign expire_day = settings.recently_viewed_expire
     -%}
-    <div class="halo-block halo-product-block halo-recently-viewed-block halo-block-padding" id="halo-recently-viewed-block-{{ section.id }}" data-recently-viewed-block data-limit="{{ limit }}" data-layout="{{ layout }}" sectionId="{{ section.id }}" data-image-ratio="{{ image_ratio }}" data-ratio="{{ portrait_aspect_ratio }}" data-show-add-to-cart="{{ show_add_to_cart }}" data-expire-day="{{ expire_day }}" style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};"
-    >
+    <style type="text/css" media="screen">
+        #halo-recently-viewed-block-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        @media (max-width: 1024px) {
+            #halo-recently-viewed-block-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #halo-recently-viewed-block-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+    </style>
+    <div class="halo-block halo-product-block halo-recently-viewed-block" id="halo-recently-viewed-block-{{ section.id }}" data-recently-viewed-block data-limit="{{ limit }}" data-layout="{{ layout }}" sectionId="{{ section.id }}" data-image-ratio="{{ image_ratio }}">
         <div class="container container-{{ container }}">
             {%- if block_title != blank -%}
                 <div class="halo-block-header">
@@ -45,7 +58,7 @@
                     {%- liquid
                         assign column = section.settings.product_recently_viewed_per_row
                     -%}
-                    <div class="products-grid column-{{ column }} col-{{ col }}" data-products-to-show="{{ limit }}">
+                    <div class="products-grid column-{{ column }} col-{{ col }}" data-products-to-show="{{ limit }}" id="recently-viewed-products-list-2">
                 {%- elsif layout == 'slider' -%}
                     {%- liquid
                         assign column = section.settings.product_recently_viewed_show
@@ -56,12 +69,43 @@
                         data-item-to-show="{{ column }}"
                         data-item-dots="{{ dots }}"
                         data-item-arrows="{{ arrows }}"
+                        id="recently-viewed-products-list-2"
                     >
                 {%- endif -%}
                 </div>
             </div>
         </div>
     </div>
+    {{ 'halo.recently-viewed-product.js' | asset_url | script_tag }}
+    <script type="text/javascript">
+        Shopify.Products.recordRecentlyViewed();
+
+        var cookieValue = $.cookie('shopify_recently_viewed');
+
+        if (!(cookieValue !== null && cookieValue !== undefined && cookieValue !== "")){
+            $('#halo-recently-viewed-block-{{ section.id }}').remove();
+        } else {
+            var recentlyViewed = $(this.popup);
+
+            var limit = {{ limit }},
+                expireDay = {{ settings.recently_viewed_expire }};
+
+            Shopify.Products.showRecentlyViewed({
+                howManyToShow: limit,
+                wrapperId: 'recently-viewed-products-list-2', 
+                templateId: 'recently-viewed-product-block',
+                layout: '{{ layout }}',
+                action: {{ show_add_to_cart }},
+                media: '{{ image_ratio }}',
+                ratio: '{{ portrait_aspect_ratio }}',
+                onComplete: function() {
+                    if (window.location.pathname.indexOf('/products/') !== -1) {
+                        $.cookie('shopify_recently_viewed', cookieValue, { expires: expireDay, path: "/", domain: window.location.hostname });
+                    }
+                }
+            });
+        }
+    </script>
 {%- endif -%}
 {% schema %}
     {

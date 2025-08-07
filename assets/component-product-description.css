@@ -7,14 +7,12 @@
 
 .description-block .content-box .heading{
     display: block;
-    font-family: var(--title-font);
-    font-size: var(--title-mobile-font-size);
-    font-weight: var(--title-font-weight);
+    font-size: 40px;
+    font-weight: var(--font-weight-bold);
     line-height: var(--line-height);
     letter-spacing: var(--letter-spacing);
     margin-top: 0;
-    margin-bottom: 20px;
-    color: var(--title-color);
+    margin-bottom: 19px;
 }
 
 .description-block .content-box .content{
@@ -22,7 +20,7 @@
     font-weight: var(--font-weight-normal);
     line-height: var(--line-height);
     letter-spacing: var(--letter-spacing);
-    color: var(--text-color);
+    color: var(--color-text2);
 }
 
 .description-block .content-box.text-center .content{
@@ -38,23 +36,9 @@
     margin-top: 33px;
 }
 
-body.dark-mode .description-block .content-box .heading {
-    color: var(--color-text);
-}
-
-body.dark-mode .description-block .content-box .content{
-    color: var(--text-color2);
-}
-
-@media (min-width: 768px) {
-    .description-block .content-box .heading{
-        font-size: var(--title-tablet-font-size);
-    }
-}
-
 @media (min-width: 1025px){
     .description-block .content-box .heading{
-        font-size: var(--title-font-size);
+        font-size: 60px;
         margin-bottom: 39px;
     }
 
@@ -77,5 +61,6 @@ body.dark-mode .description-block .content-box .content{
     .halo-product-description.style-2 .description-block .content-box .content {
         padding-left: 50px;
         padding-right: 50px;
+        font-size: calc(var(--font-size) + 1px );  
     }
 }

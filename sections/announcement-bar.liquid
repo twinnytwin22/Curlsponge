@@ -6,9 +6,9 @@
         assign content = section.settings.text
         assign link = section.settings.link
         assign text_transform = section.settings.text_transform
-        assign announcement_bar_bg = section.settings.background_color
-        assign announcement_bar_color_1 = section.settings.color_1
-        assign announcement_bar_color_2 = section.settings.color_2
+        assign background_color = section.settings.background_color
+        assign color_1 = section.settings.color_1
+        assign color_2 = section.settings.color_2
         assign has_announcement_bar = false
         if show == 'home'
             assign page_type = request.page_type | replace: 'customers/', ''
@@ -18,28 +18,52 @@
         else
             assign has_announcement_bar = true
         endif
-
-        if settings.show_dark_mode
-            assign dark_mode = false
-            unless announcement_bar_bg == blank or announcement_bar_bg == '#fff' or announcement_bar_bg == '#FFF' or announcement_bar_bg == '#ffffff' or announcement_bar_bg == '#FFFFFF' or announcement_bar_bg == 'rgb(255,255,255)' or announcement_bar_bg == 'rgba(255,255,255,1)' or announcement_bar_bg == 'rgba(0,0,0,0)'
-                assign dark_mode = true
-                assign dark_mode_announcement_bar_bg = section.settings.background_color
-                assign dark_mode_announcement_bar_color_1 = section.settings.color_1
-                assign dark_mode_announcement_bar_color_2 = section.settings.color_2
-            endunless
-        endif
     -%}
     {%- if has_announcement_bar -%}
-        <div class="announcement-bar announcement-bar-1{% if layout == 'scroll' %} announcement-bar-scroll{% else %} announcement-bar-normal{% endif %}{% unless dark_mode %} dark-mode{% endunless %}" role="region" aria-label="{{ 'sections.header.announcement' | t }}" id="announcement-bar-{{ section.id }}"
-            style="--bg-color: {{ announcement_bar_bg | default: settings.colors_bg }};
-            --text-color-1: {{ announcement_bar_color_1 }};
-            --text-color-2: {{ announcement_bar_color_2 }};
-            {% if dark_mode %}
-                --dark-mode-bg-color: {{ dark_mode_announcement_bar_bg }};
-                --dark-mode-text-color-1: {{ dark_mode_announcement_bar_color_1 }};
-                --dark-mode-text-color-2: {{ dark_mode_announcement_bar_color_2 }};
-            {% endif %}"
-        >
+        <style type="text/css">
+            {% if layout == 'scroll' %}
+                @-webkit-keyframes announcement-scroll {
+                    0% {
+                        transform: translate3d(0,0,0);
+                    }
+
+                    100% {
+                        transform: translate3d(-100%,0,0);
+                    }
+                }
+
+                @keyframes announcement-scroll {
+                    0% {
+                        transform: translate3d(0,0,0);
+                    }
+
+                    100% {
+                        transform: translate3d(-100%,0,0);
+                    }
+                }
+            {% endif %}
+
+            #announcement-bar-{{ section.id }} {
+                background: {{ background_color }};
+            }
+
+            {% if layout == 'scroll' %}
+                #announcement-bar-{{ section.id }} .announcement-bar__message {
+                    animation: announcement-scroll 60s infinite linear;
+                }
+            {% endif %}
+
+            #announcement-bar-{{ section.id }} .announcement-bar__message,
+            #announcement-bar-{{ section.id }} .announcement-bar__message .text{
+                color: {{ color_1 }};
+            }
+
+            #announcement-bar-{{ section.id }} .announcement-bar__message .text-code{
+                background-color: {{ color_1 }};
+                color: {{ color_2 }};
+            }
+        </style>
+        <div class="announcement-bar{% if layout == 'scroll' %} announcement-bar-scroll{% else %} announcement-bar-normal{% endif %}" role="region" aria-label="{{ 'sections.header.announcement' | t }}" id="announcement-bar-{{ section.id }}">
             <div class="wrapper-content">
                 {%- if link != blank -%}
                     <a href="{{ link }}" class="announcement-bar__link link focus-inset">
@@ -67,7 +91,6 @@
 {% schema %}
 {
     "name": "t:sections.announcement-bar.name",
-    "class": "header-line announcement-bar-1",
     "settings": [
         {
             "type": "header",
@@ -168,25 +191,6 @@
             "label": "t:sections.general.settings.color.label__6",
             "default": "#B91333"
         }
-    ],
-    "presets": [
-        {
-            "name": "t:sections.announcement-bar.name",
-            "settings": {
-                "show_announcement_bar": true,
-                "announcement-bar-layout": "scroll",
-                "announcement-bar-show": "all",
-                "text": "<span class=\"text\">LIMITED TIME OFFER:<\/span><span class=\"text\">BUY HALO THEME -<\/span><span class=\"text\">GET FREE INSTALLATION SERVICE<\/span><span class=\"text-code\">ONLY $39<\/span>",
-                "link": "https:\/\/1.envato.market\/5bq3En",
-                "text_transform": "uppercase",
-                "background_color": "#ff0033",
-                "color_1": "#ffffff",
-                "color_2": "#ae0015"
-            }
-        }
-    ],
-    "enabled_on": {
-        "groups": ["header", "footer"]
-    }
+    ]
 }
 {% endschema %}

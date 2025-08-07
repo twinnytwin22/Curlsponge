@@ -15,14 +15,29 @@
     assign show_faqs_filter = section.settings.show_faqs_filter
     assign faqs_text = section.settings.faqs_text
 -%}
-<faqs-item data-section-id="{{ section.id }}" data-section-type="faqs" id="FaqsSection-{{ section.id }}" data-section="{{ section.id }}" class="halo-page-padding"
-    style="--padding-top: {{ padding_top }};
-        --padding-bottom: {{ padding_bottom }};
-        --padding-top-tablet: {{ padding_top_tablet }};
-        --padding-bottom-tablet: {{ padding_bottom_tablet }};
-        --padding-top-mobile: {{ padding_top_mobile }};
-        --padding-bottom-mobile: {{ padding_bottom_mobile }};"
->
+
+<style type="text/css" media="screen">
+    #FaqsSection-{{ section.id }}{
+        padding-top: {{ padding_top }};
+        padding-bottom: {{ padding_bottom }};
+    }
+
+    @media (max-width: 1024px) {
+        #FaqsSection-{{ section.id }}{
+            padding-top: {{ padding_top_tablet }};
+            padding-bottom: {{ padding_bottom_tablet }};
+        }
+    }
+
+    @media (max-width: 550px) {
+        #FaqsSection-{{ section.id }}{
+            padding-top: {{ padding_top_mobile }};
+            padding-bottom: {{ padding_bottom_mobile }};
+        }
+    }
+</style>
+
+<faqs-item data-section-id="{{ section.id }}" data-section-type="faqs" id="FaqsSection-{{ section.id }}" data-section="{{ section.id }}">
     <div class="container container-{{ container }}">
         {%- if show_breadcrumb -%}
             {% render 'breadcrumb', alignment: breadcrumb_alignment %}
@@ -81,10 +96,12 @@
                                         {%- for i in (1..10) -%}
                                             {% capture cap_question %}question_{{ i }}{% endcapture %}
                                             {% capture cap_answer %}answer_{{ i }}{% endcapture %}
+
                                             {%- liquid
                                                 assign question = block.settings[cap_question]
                                                 assign answer = block.settings[cap_answer]
                                             -%}
+
                                             {%- if question != blank -%}
                                                 <div class="faqs-item">
                                                     <div class="card" id="#accordion-{{ block.id }}-{{ forloop.index }}">

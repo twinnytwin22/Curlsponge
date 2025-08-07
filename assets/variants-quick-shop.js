@@ -83,14 +83,17 @@ class VariantQuickShopSelects extends HTMLElement {
 
                             if(optionSoldout == undefined){
                                 if (optionUnavailable == undefined) {
-                                    label.classList.remove('available', 'soldout');
+                                    label.classList.remove('available');
+                                    label.classList.remove('soldout');
                                     label.classList.add('unavailable');
                                 } else {
-                                    label.classList.remove('available', 'unavailable');
+                                    label.classList.remove('available');
+                                    label.classList.remove('unavailable');
                                     label.classList.add('soldout');
                                 }
                             } else {
-                                label.classList.remove('soldout', 'unavailable');
+                                label.classList.remove('soldout');
+                                label.classList.remove('unavailable');
                                 label.classList.add('available');
                             }
                         });
@@ -102,14 +105,17 @@ class VariantQuickShopSelects extends HTMLElement {
 
                     if(optionSoldout == undefined){
                         if (optionUnavailable == undefined) {
-                            label.classList.remove('available', 'soldout');
+                            label.classList.remove('available');
+                            label.classList.remove('soldout');
                             label.classList.add('unavailable');
                         } else {
-                            label.classList.remove('available', 'unavailable');
+                            label.classList.remove('available');
+                            label.classList.remove('unavailable');
                             label.classList.add('soldout');
                         }
                     } else {
-                        label.classList.remove('soldout', 'unavailable');
+                        label.classList.remove('soldout');
+                        label.classList.remove('unavailable');
                         label.classList.add('available');
                     }
                 };
@@ -179,16 +185,19 @@ class VariantQuickShopSelects extends HTMLElement {
 
                             if(optionSoldout == undefined){
                                 if (optionUnavailable == undefined) {
-                                    option.classList.remove('available', 'soldout');
+                                    option.classList.remove('available');
+                                    option.classList.remove('soldout');
                                     option.classList.add('unavailable');
                                     option.setAttribute('disabled','disabled');
                                 } else {
-                                    option.classList.remove('available', 'unavailable');
+                                    option.classList.remove('available');
+                                    option.classList.remove('unavailable');
                                     option.classList.add('soldout');
                                     option.removeAttribute('disabled');
                                 }
                             } else {
-                                option.classList.remove('soldout', 'unavailable');
+                                option.classList.remove('soldout');
+                                option.classList.remove('unavailable');
                                 option.classList.add('available');
                                 option.removeAttribute('disabled');
                             }
@@ -199,16 +208,19 @@ class VariantQuickShopSelects extends HTMLElement {
                 var updateVariant = (optionSoldout, optionUnavailable, element) => {
                     if(optionSoldout == undefined){
                         if (optionUnavailable == undefined) {
-                            element.classList.remove('available', 'soldout');
+                            element.classList.remove('available');
+                            element.classList.remove('soldout');
                             element.classList.add('unavailable');
                             element.setAttribute('disabled','disabled');
                         } else {
-                            element.classList.remove('available', 'unavailable');
+                            element.classList.remove('available');
+                            element.classList.remove('unavailable');
                             element.classList.add('soldout');
                             element.removeAttribute('disabled');
                         }
                     } else {
-                        element.classList.remove('soldout', 'unavailable');
+                        element.classList.remove('soldout');
+                        element.classList.remove('unavailable');
                         element.classList.add('available');
                         element.removeAttribute('disabled');
                     }
@@ -322,9 +334,9 @@ class VariantQuickShopSelects extends HTMLElement {
         fetch(`${this.dataset.url}?variant=${this.currentVariant.id}&view=quick_shop`)
             .then((response) => response.text())
             .then((responseText) => {
+                const id = `product-price-${this.dataset.product}`;
                 const html = new DOMParser().parseFromString(responseText, 'text/html')
-                const id = `product-price-${html.querySelector('.halo-page-padding[id*="ProductSection-"]').dataset.sectionId}-${this.dataset.product}`;
-                const destination = document.getElementById(`product-quick-shop-price-${this.dataset.product}`);
+                const destination = document.getElementById(`card-price-${this.dataset.product}`);
                 const source = html.getElementById(id);
 
                 if (source && destination) {
@@ -342,6 +354,7 @@ class VariantQuickShopSelects extends HTMLElement {
     updateAttribute(unavailable = true, disable = true){
         this.item = this.popup.closest('.card');
         this.notifyMe = this.item.querySelector('.card-notifyMe');
+        this.hotStock = this.item.querySelector('.card-hotStock');
         const addButton = document.getElementById(`product-quick-shop-form-${this.dataset.product}`)?.querySelector('[name="add"]');
         const productForms = document.querySelectorAll(`#product-quick-shop-form-${this.dataset.product}`);
 
@@ -354,6 +367,10 @@ class VariantQuickShopSelects extends HTMLElement {
             if(this.notifyMe){
                 this.notifyMe.style.display = 'none';
             }
+
+            if(this.hotStock){
+                this.hotStock.style.display = 'none';
+            }
         } else {
             if (disable) {
                 let text = window.variantStrings.soldOut;
@@ -362,9 +379,13 @@ class VariantQuickShopSelects extends HTMLElement {
                 addButton.textContent = text;
 
                 if(this.notifyMe){
-                    this.notifyMe.querySelector('.halo-notify-product-variant').value = this.currentVariant.title;
+                    this.notifyMe.querySelector('input[name="halo-notify-product-variant"]').value = this.currentVariant.title;
                     this.notifyMe.querySelector('.notifyMe-text').innerHTML = '';
                     this.notifyMe.style.display = 'block';
+                }
+
+                if(this.hotStock){
+                    this.hotStock.style.display = 'none';
                 }
             } else{
                 let text,
@@ -381,6 +402,20 @@ class VariantQuickShopSelects extends HTMLElement {
                     if(inven_array != undefined) {
                         inven_num = inven_array[this.currentVariant.id];
                         inventoryQuantity = parseInt(inven_num);
+
+                        if(this.hotStock){
+                            let maxStock = parseInt(this.hotStock.getAttribute('data-hot-stock'));
+
+                            if(0 < inventoryQuantity && inventoryQuantity <= maxStock){
+                                let textStock = window.inventory_text.hotStock.replace('[inventory]', inventoryQuantity);
+
+                                this.hotStock.innerHTML = textStock;
+                                this.hotStock.style.display = 'block';
+                            } else {
+                                this.hotStock.innerHTML = '';
+                                this.hotStock.style.display = 'none';
+                            }
+                        }
                     }
                 }
 
@@ -426,7 +461,7 @@ class VariantQuickShopSelects extends HTMLElement {
     }
 
     checkNeedToConvertCurrency() {
-        return (window.show_multiple_currencies && Currency.currentCurrency != window.shop_currency) || window.show_auto_currency;
+        return (window.show_multiple_currencies && Currency.currentCurrency != shopCurrency) || window.show_auto_currency;
     }
 }
 

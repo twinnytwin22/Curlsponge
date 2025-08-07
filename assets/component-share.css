@@ -3,70 +3,25 @@
     position: relative;
 }
 
-.share-button__absolute{
-    position: absolute;
-    top: 10px;
-    left: auto;
-    right: 10px;
-    z-index: 3;
-}
-
-.title__relative .share-button{
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-.halo-productBadges--right ~ .share-button__absolute {
-    right: auto;
-    left: 10px;
-}
-
 .share-button__button{
-    position: relative;
-    text-align: center;
-    font-size: 0;
-    letter-spacing: 0;
-    line-height: 1;
-    padding: 10px;
-    width: 40px;
-    height: 40px;
-    background: var(--bg-white);
-    border: 0.1rem solid var(--bg-white);
-    color: var(--icon);
-    transition: transform var(--duration-default) ease;
-    border-radius: 50%;
-    cursor: pointer;
-    min-width: unset;
+    display: inline-block;
+    vertical-align: top;
+    width: auto;
+    min-width: 175px;
+    border-color: var(--form-input-border);
+    color: var(--form-input-color);
+    background-color: var(--form-input-bg);
 }
 
-.share-button__button:after{
-    content: "";
-    z-index: -1;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: var(--bg-white);
-    box-shadow: 0 3px 7px rgb(0, 0, 0, 0.2);
-    animation: iconAnimation .7s infinite ease;
-}
-
-.share-button__button .icon{
-    display: block;
-    width: 100%;
-    height: 100%;
-    color: currentColor;
-    fill: currentColor;
-    stroke: transparent;
+.share-button__button .icon {
+    width: 20px;
+    height: 20px;
+    vertical-align: top;
 }
 
 .share-button__fallback {
-    display: flex;
-    align-items: center;
     position: absolute;
-    padding: 1.5rem;
+    padding: 2rem;
     top: auto;
     left: 0;
     z-index: 3;
@@ -76,46 +31,59 @@
     animation: animateMenuOpen var(--duration-default) ease;
 }
 
-.share-button__fallback button {
-    cursor: pointer;
-    background-color: transparent;
-    border: none;
-    width: 4.4rem;
-    height: 4.4rem;
-    padding: 0;
-    flex-shrink: 0;
+.share-button__fallback {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+    flex-direction: column;
 }
 
-.share-button__fallback .icon,
-.share-button__fallback svg {
-    width: 1.5rem;
-    height: 1.5rem;
+.share-button__fallback .button {
+    margin-top: 10px;
 }
 
-.share-button__close:not(.hidden) + .share-button__copy {
-    display: none;
+.share-button__fallback .icon-clipboard {
+    height: 1.4rem;
+    width: 1.8rem;
 }
 
 .share-button__message:not(:empty) {
     display: block;
     font-size: var(--font-size);
     font-weight: var(--font-weight-normal);
+    text-align: center;
     line-height: var(--line-height);
     letter-spacing: var(--letter-spacing);
     color: var(--color-text2);
-    margin: 0 10px 0;
-    text-align: center;
+    margin: 10px 0 0 0;
 }
 
-details[open] > .share-button__fallback {
-    animation: animateMenuOpen var(--duration-default) ease;
+.at-share-btn-elements .at-icon-wrapper{
+    width: 22px!important;
+    height: 22px!important;
+    padding: 0!important;
+    margin: 0 8px 0 0!important;
 }
 
-body.dark-mode .share-button__button {
-    background: var(--color-background);
-    border: 0.1rem solid var(--bg-white);
+.at-share-btn-elements .at-icon-wrapper svg{
+    width: 100%!important;
+    height: 100%!important;
+    fill: var(--icon)!important;
+}
+
+.at-share-btn-elements .at-icon-wrapper:last-child{
+    margin-right: 0!important;
+}
+
+@media (min-width: 1025px){
+    .halo-socialShare .at-share-btn-elements .at-share-btn:hover .at-icon-wrapper{
+        background-color: var(--social_icon_bg_hover);
+    }
+
+    .halo-socialShare .at-share-btn-elements .at-share-btn:hover .at-icon-wrapper svg{
+        fill: var(--social_icon_color_hover)!important;
+    }
+
+    .halo-socialShare .at-share-btn-elements .at-share-btn:hover .at-icon-wrapper:before{
+        transform: scale(1);
+        opacity: 1;
+    }
 }

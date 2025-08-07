@@ -1,18 +1,22 @@
 Shopify.SearchByAllTypes = (() => {
 	var config = {
-		sectionId: 'main-page-article-grid',
+		sectionId: 'main-search',
         onComplete: null
 	};
 	return {
-		renderResultTable: () => {
-    		const section = document.getElementById(config.sectionId);
+		renderResultTable: (params) => {
+			var params = params || {};
 
-    		if(!section) return;
+    		$.extend(config, params);
 
-    		let url = section.getAttribute('data-url'),
-                id = section.getAttribute('data-id');
+    		this.section = document.getElementById(config.sectionId);
 
-    		fetch(url)
+    		if(!this.section) return;
+
+    		this.url = this.section.getAttribute('data-url');
+    		this.id = this.section.getAttribute('data-id');
+
+    		fetch(this.url)
             .then(response => response.text())
             .then(responseText => {
                 const html = responseText;
@@ -20,9 +24,9 @@ Shopify.SearchByAllTypes = (() => {
                 const resultElements = parsedHTML.querySelector(`div[id="${config.sectionId}"]`)?.querySelector('template').content.firstElementChild.cloneNode(true)
 
                 if(resultElements && resultElements.innerHTML.trim().length) {
-                    section.innerHTML = resultElements.innerHTML;
+                    this.section.innerHTML = resultElements.innerHTML;
                 } else {
-                    section.remove();
+                    this.section.remove();
                 }
             })
             .catch(e => {

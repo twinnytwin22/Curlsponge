@@ -1,0 +1,7 @@
+<div class="productView-hotStock" data-hot-stock="{{ productMaxStock }}">
+    {%- if current_variant.inventory_management -%}
+        {%- if current_variant.inventory_quantity > 0 and current_variant.inventory_quantity <= productMaxStock -%}
+            {{ 'products.product.hot_stock' | t : inventory: current_variant.inventory_quantity }}
+        {%- endif -%}
+    {%- endif -%}
+</div>

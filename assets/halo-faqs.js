@@ -51,10 +51,10 @@ class FAQs extends HTMLElement {
     }
 
     onClickFilterButtonHandler(event){
-        const btn = event.target.closest('li');
+        var btn = event.target.closest('li');
 
         if(!btn.classList.contains('is-active')){
-            let filterValue = btn.getAttribute('data-value'),
+            var filterValue = btn.getAttribute('data-value'),
                 filterText = event.target.innerText;
 
             this.filterToggle.querySelector('.text').innerText = filterText;
@@ -67,7 +67,9 @@ class FAQs extends HTMLElement {
 
             if(filterValue !== undefined && filterValue !== null){
                 this.querySelectorAll('.faqs-paragraph').forEach((element) => {
-                    if(element.getAttribute('id') == filterValue){
+                    var id = element.getAttribute('id');
+
+                    if(id == filterValue){
                         element.classList.remove('is-hidden');
                         element.classList.add('is-active');
                     } else {
@@ -76,6 +78,7 @@ class FAQs extends HTMLElement {
                     }
                 });
             } else {
+
                 this.querySelectorAll('.faqs-paragraph').forEach((element) => {
                     element.classList.remove('is-hidden', 'is-active');
                 });
@@ -86,8 +89,8 @@ class FAQs extends HTMLElement {
     }
 
     onClickHeaderButtonHandler(event){
-        const btn = event.currentTarget;
-        const content = btn.nextElementSibling;
+        var btn = event.currentTarget,
+            content = btn.nextElementSibling;
 
         btn.classList.toggle('collapsed');
 
@@ -99,9 +102,8 @@ class FAQs extends HTMLElement {
     }
 
     onClickPopupButtonHandler(event){
-        const btn = event.currentTarget;
-
-        let title = btn.getAttribute('data-title'),
+        var btn = event.currentTarget,
+            title = btn.getAttribute('data-title'),
             content = btn.nextElementSibling.innerHTML;
 
         btn.classList.add('is-active');
@@ -117,7 +119,6 @@ class FAQs extends HTMLElement {
         event.stopPropagation();
 
         document.body.classList.remove('faqs-popup-show');
-
         this.querySelectorAll('[data-open-faqs-popup]').forEach((popupButton) => {
             popupButton.classList.remove('is-active');
         });
@@ -126,16 +127,15 @@ class FAQs extends HTMLElement {
     onBodyClickEvent(event){
         if(this.filter){
             if(this.filterDropdown.classList.contains('is-show')){
-                if ((!this.filterDropdown.contains(event.target)) && (!(event.target).closest('[data-faqs-filter]'))){
+                if ((!this.filterDropdown.contains(event.target)) && ($(event.target).closest('[data-faqs-filter]').length === 0)){
                     this.filterDropdown.classList.remove('is-show');
                 }
             }
         }
 
         if(document.body.classList.contains('faqs-popup-show')){
-            if ((!this.faqsPopup.contains(event.target)) && (!(event.target).closest('[data-open-faqs-popup]'))){
+            if ((!this.faqsPopup.contains(event.target)) && ($(event.target).closest('[data-open-faqs-popup]').length === 0)){
                 document.body.classList.remove('faqs-popup-show');
-
                 this.querySelectorAll('[data-open-faqs-popup]').forEach((popupButton) => {
                     popupButton.classList.remove('is-active');
                 });

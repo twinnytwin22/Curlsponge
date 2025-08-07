@@ -201,10 +201,6 @@
     margin-top: 22px;
 }
 
-body.dark-mode .contact-info--item .item {
-    background-color: var(--bg-black);
-}
-
 @media (min-width: 375px){
     .contact-info--item .item{
         padding: 20px 30px 30px 30px;

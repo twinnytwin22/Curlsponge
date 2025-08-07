@@ -4,14 +4,14 @@
             <span class="icon-dropdown">
                 {% render 'icon-long-arrow' %}
             </span>
-            <a class="menu-lv-2__action link focus-inset" href="{{ menu_item_url }}" role="button">
+            <span class="menu-lv-2__action link focus-inset">
                 <span class="text">
                     {{ menu_item_heading | escape }}
                 </span>
-            </a>
+            </span>
         </li>
         <li class="menu-lv-item menu-lv-2 text-left nav-all-mobile">
-            <a href="{{ menu_item_url }}" class="menu-lv-2__action list-menu__item list-menu__item--end link focus-inset" role="button">
+            <a href="{{ menu_item_url }}" class="menu-lv-2__action list-menu__item list-menu__item--end link focus-inset">
                 <span class="text">
                     {{ 'general.navigation.go_to' | t : name : menu_item_heading | escape }}
                 </span>
@@ -32,7 +32,7 @@
 
             {%- if show_item -%}
             	<li class="menu-lv-item menu-lv-2 text-left menu-lv-image">
-            		<a href="{{ item_link }}" class="menu-lv-2__action list-menu__item list-menu__item--end link focus-inset" role="button">
+            		<a href="{{ item_link }}" class="menu-lv-2__action list-menu__item list-menu__item--end link focus-inset">
             			{%- if item_heading != blank -%}
 	            			<span class="text">
 	                            {{ item_heading | escape }}

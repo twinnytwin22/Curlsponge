@@ -42,7 +42,7 @@
     height: 100%;
     background: 0 0;
     z-index: 2;
-    background: var(--bg-color);
+    background-color: rgba(0, 0, 0, 0.3);
 }
 
 .collection-title{
@@ -51,7 +51,6 @@
 }
 
 .collection-description{
-	display: block;
 	margin: 0 auto;
 	padding: 0 0 8px 0;
 }
@@ -65,18 +64,7 @@
 }
 
 .collection-description .read-description{
-	background: transparent;
-	border: none;
 	display: inline;
-	cursor: pointer;
-	font-family: inherit;
-	font-size: inherit;
-    font-weight: var(--font-weight-bold);
-    line-height: inherit;
-    letter-spacing: inherit;
-    color: inherit;
-    padding-left: 0;
-    padding-right: 0;
 }
 
 .collection-description.show-full .short-description{
@@ -140,10 +128,6 @@
 
 .breadcrumb + .collection-content-2{
 	margin-top: 0;
-}
-
-body.dark-mode .collection-sub-list .item a {
-	background-color: var(--bg-black);
 }
 
 @media (min-width: 551px){

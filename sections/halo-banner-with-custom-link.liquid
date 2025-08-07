@@ -21,13 +21,6 @@
         assign sub_title_text_transform = section.settings.sub_title_text_transform
         assign title_font = section.settings.title_font
         assign title_font_size = section.settings.title_font_size
-        if title_font_size >= 60
-            assign title_tablet_font_size = title_font_size | minus: 30 | append: 'px'
-            assign title_font_size = title_font_size | append: 'px'
-        else
-            assign title_tablet_font_size = title_font_size | append: 'px'
-            assign title_font_size = title_font_size | append: 'px'
-        endif
         assign title_mobile_font_size = section.settings.title_mobile_font_size | append: 'px'
         assign title_font_weight = section.settings.title_font_weight
         assign title_text_transform = section.settings.title_text_transform
@@ -37,20 +30,108 @@
         assign block_text = section.settings.block_text
         assign block_title_align = section.settings.block_title_align
     -%}
-    <div class="halo-block halo-banner fullwidth-banner halo-customlink-banner style-{{ layout_style }} halo-block-padding" id="halo-customlink-banner-{{ section.id }}"
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};"
-    >
+    <style type="text/css" media="screen">
+        :root {
+            {% if sub_title_font == 'font_1' %}
+                --sub-title-font-{{ section.id }}: var(--font-1-family);
+            {% elsif sub_title_font == 'font_2' %}
+                --sub-title-font-{{ section.id }}: var(--font-2-family);
+            {% elsif sub_title_font == 'font_3' %}
+                --sub-title-font-{{ section.id }}: var(--font-3-family);
+            {% endif %}
+            {% if title_font == 'font_1' %}
+                --title-font-{{ section.id }}: var(--font-1-family);
+            {% elsif title_font == 'font_2' %}
+                --title-font-{{ section.id }}: var(--font-2-family);
+            {% elsif title_font == 'font_3' %}
+                --title-font-{{ section.id }}: var(--font-3-family);
+            {% endif %}
+        }
+
+        #halo-customlink-banner-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        #halo-customlink-banner-{{ section.id }} .sub-title,
+        #halo-customlink-banner-{{ section.id }} .wrapper-button .link{
+            font-family: var(--sub-title-font-{{ section.id }});
+            font-size: {{ sub_title_font_size }};
+            text-transform: {{ sub_title_text_transform }};
+            color: {{ text_color }};
+        }
+
+        #halo-customlink-banner-{{ section.id }} .sub-title{
+            font-weight: {{ sub_title_font_weight }};
+        }
+
+        #halo-customlink-banner-{{ section.id }} .banner-title,
+        #halo-customlink-banner-{{ section.id }} .banner-view-countDown .item .num,
+        #halo-customlink-banner-{{ section.id }} .banner-view-countDown .item .text{
+            font-family: var(--title-font-{{ section.id }});
+            font-size: {{ title_mobile_font_size }};
+            font-weight: {{ title_font_weight }};
+            text-transform: {{ title_text_transform }};
+            color: {{ title_color }};
+        }
+
+        #halo-customlink-banner-{{ section.id }} .banner-view-countDown .item .num,
+        #halo-customlink-banner-{{ section.id }} .banner-view-countDown .item .text{
+            color: {{ text_color }};
+        }
+
+        @media (max-width: 1024px) {
+            #halo-customlink-banner-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #halo-customlink-banner-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+
+        {% if title_font_size >= 60 %}
+            @media (min-width: 768px){
+                #halo-customlink-banner-{{ section.id }} .banner-title{
+                    font-size: {{ title_font_size | minus: 30 | append: 'px' }};
+                }
+            }
+
+            @media (min-width: 1025px){
+                #halo-customlink-banner-{{ section.id }} .banner-title{
+                    font-size: {{ title_font_size | minus: 20 | append: 'px' }};
+                }
+            }
+
+            @media (min-width: 1600px) {
+                #halo-customlink-banner-{{ section.id }} .banner-title,
+                #halo-customlink-banner-{{ section.id }} .banner-view-countDown .item .text,
+                #halo-customlink-banner-{{ section.id }} .banner-view-countDown .item .num{
+                    font-size: {{ title_font_size | append: 'px' }};
+                }
+            }
+        {% else %}
+            @media (min-width: 551px) {
+                #halo-customlink-banner-{{ section.id }} .banner-title,
+                #halo-customlink-banner-{{ section.id }} .banner-view-countDown .item .text,
+                #halo-customlink-banner-{{ section.id }} .banner-view-countDown .item .num{
+                    font-size: {{ title_font_size | append: 'px' }};
+                }
+            }
+        {% endif %}
+    </style>
+    
+    <div class="halo-block halo-banner fullwidth-banner halo-customlink-banner style-{{ layout_style }}" id="halo-customlink-banner-{{ section.id }}">
         <div class="container container-{{ container }}">
             {%- if block_title != blank or block_text != blank -%}
                 <div class="halo-block-header">
                     {%- if block_title != blank -%}
                         <h3 class="title text-{{ block_title_align }}">
-                            <span class="text">
+                            <span class="text{% if block_icon != blank %} text-2{% endif %}">
                                 {{ block_title | escape }}
                             </span>
                         </h3>
@@ -67,74 +148,31 @@
                     <div class="item">
                         <div class="banner-item">
                             <div class="img-box img-box--mobile">
-                                <loading-banner class="loading-banner">
+                                {%- if image != blank -%}
+                                    <{% if link != blank %}a{% else %}div{% endif %} class="image image-adapt" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
+                                        <img srcset="{{ image | img_url: '1920x' }} 1x, {{ image | img_url: '1920x', scale: 2 }} 2x" src="{{ image | img_url: '1920x', crop: 'center' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
+                                    </{% if link != blank %}a{% else %}div{% endif %}>
+                                {%- else -%}
+                                    <{% if link != blank %}a{% else %}div{% endif %} class="image" {% if link != blank %} href="{{ link }}"{% endif %}>
+                                        {% capture current %}{% cycle 1, 2 %}{% endcapture %}
+                                        {{ 'lifestyle-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}   
+                                    </{% if link != blank %}a{% else %}div{% endif %}>
+                                {%- endif -%}
+                                {%- if mobile_image != blank -%}
+                                    <{% if link != blank %}a{% else %}div{% endif %} class="image image-mobile image-adapt" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: {{ 1 | divided_by: mobile_image.aspect_ratio | times: 100 | append: '%' }}">
+                                        <img srcset="{{ mobile_image | img_url: 'master' }} 1x, {{ mobile_image | img_url: 'master', scale: 2 }} 2x" src="{{ mobile_image | img_url: 'master' }}" alt="{{ mobile_image.alt | default: shop.name | escape }}" loading="lazy">
+                                    </{% if link != blank %}a{% else %}div{% endif %}>
+                                {%- else -%}
                                     {%- if image != blank -%}
-                                        <{% if link != blank %}a{% else %}div{% endif %} class="image image-adapt" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: {% unless image.presentation.focal_point == '50.0% 50.0%' %}{{ 1 | divided_by: image.aspect_ratio | times: 100 | divided_by: 1.1 }}%{% else %}{{ 1 | divided_by: image.aspect_ratio | times: 100 }}%{% endunless %}">
-                                            <img srcset="{%- if image.width < 320 -%}{{ image | image_url: width: image.width }} 320w,{%- endif -%}
-                                                {%- if image.width >= 320 -%}{{ image | image_url: width: 375 }} 375w,{%- endif -%}
-                                                {%- if image.width >= 740 -%}{{ image | image_url: width: 740 }} 740w,{%- endif -%} 
-                                                {%- if image.width >= 750 -%}{{ image | image_url: width: 750 }} 750w,{%- endif -%}
-                                                {%- if image.width >= 1100 -%}{{ image | image_url: width: 1100 }} 1100w,{%- endif -%}
-                                                {%- if image.width >= 1370 -%}{{ image | image_url: width: 1370 }} 1370w,{%- endif -%}
-                                                {%- if image.width >= 1500 -%}{{ image | image_url: width: 1500 }} 1500w,{%- endif -%}
-                                                {%- if image.width >= 1770 -%}{{ image | image_url: width: 1770 }} 1770w,{%- endif -%}
-                                                {%- if image.width >= 1780 -%}{{ image | image_url: width: 1780 }} 1780w,{%- endif -%}
-                                                {%- if image.width >= 1880 -%}{{ image | image_url: width: 1880 }} 1880w,{%- endif -%}
-                                                {%- if image.width >= 2000 -%}{{ image | image_url: width: 2000 }} 2000w,{%- endif -%}
-                                                {%- if image.width >= 2800 -%}{{ image | image_url: width: 2800 }} 2800w{%- endif -%}"
-                                                alt="{{ image.alt | default: shop.name | escape }}" width="{{ image.width }}" height="{{ image.width | divided_by: image.aspect_ratio | round }}" 
-                                                {% unless image.presentation.focal_point == '50.0% 50.0%' %}style="object-position: {{ image.presentation.focal_point }}"{% endunless %}
-                                                loading="lazy"
-                                            >
+                                        <{% if link != blank %}a{% else %}div{% endif %} class="image image-mobile image-adapt" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: 100%">
+                                            <img srcset="{{ image | img_url: '420x', crop: 'center' }} 1x, {{ image | img_url: '420x', crop: 'center',  scale: 2 }} 2x" src="{{ image | img_url: '420x', crop: 'center' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
                                         </{% if link != blank %}a{% else %}div{% endif %}>
                                     {%- else -%}
-                                        <{% if link != blank %}a{% else %}div{% endif %} class="image" {% if link != blank %} href="{{ link }}"{% endif %}>
-                                            {% capture current %}{% cycle 1, 2 %}{% endcapture %}
-                                            {{ 'lifestyle-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}   
+                                        <{% if link != blank %}a{% else %}div{% endif %} class="image image-mobile" {% if link != blank %} href="{{ link }}"{% endif %}>
+                                            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
                                         </{% if link != blank %}a{% else %}div{% endif %}>
                                     {%- endif -%}
-                                    {%- if mobile_image != blank -%}
-                                        <{% if link != blank %}a{% else %}div{% endif %} class="image image-mobile image-adapt" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: {{ 1 | divided_by: mobile_image.aspect_ratio | times: 100 | append: '%' }}">
-                                            <img srcset="{%- if mobile_image.width < 320 -%}{{ mobile_image | image_url: width: mobile_image.width }} 320w,{%- endif -%}
-                                                {%- if mobile_image.width >= 320 -%}{{ mobile_image | image_url: width: 375 }} 375w,{%- endif -%}
-                                                {%- if mobile_image.width >= 750 -%}{{ mobile_image | image_url: width: 750 }} 750w,{%- endif -%}
-                                                {%- if mobile_image.width >= 1100 -%}{{ mobile_image | image_url: width: 1100 }} 1100w,{%- endif -%}
-                                                {%- if mobile_image.width >= 1370 -%}{{ mobile_image | image_url: width: 1370 }} 1370w,{%- endif -%}
-                                                {%- if mobile_image.width >= 1500 -%}{{ mobile_image | image_url: width: 1500 }} 1500w,{%- endif -%}
-                                                {%- if mobile_image.width >= 1780 -%}{{ mobile_image | image_url: width: 1780 }} 1780w,{%- endif -%}
-                                                {%- if mobile_image.width >= 2000 -%}{{ mobile_image | image_url: width: 2000 }} 2000w,{%- endif -%}
-                                                {%- if mobile_image.width >= 2800 -%}{{ mobile_image | image_url: width: 2800 }} 2800w{%- endif -%}"
-                                                alt="{{ mobile_image.alt | default: shop.name | escape }}" width="{{ mobile_image.width }}" height="{{ mobile_image.width | divided_by: mobile_image.aspect_ratio | round}}"
-                                                loading="lazy"
-                                            >
-                                        </{% if link != blank %}a{% else %}div{% endif %}>
-                                    {%- else -%}
-                                        {%- if image != blank -%}
-                                            <{% if link != blank %}a{% else %}div{% endif %} class="image image-mobile image-adapt" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: {% unless image.presentation.focal_point == '50.0% 50.0%' %}100%{% else %}{{ 1 | divided_by: image.aspect_ratio | times: 100 }}%{% endunless %}">
-                                                <img srcset="{%- if image.width < 320 -%}{{ image | image_url: width: image.width }} 320w,{%- endif -%}
-                                                    {%- if image.width >= 320 -%}{{ image | image_url: width: 375 }} 375w,{%- endif -%}
-                                                    {%- if image.width >= 740 -%}{{ image | image_url: width: 740 }} 740w,{%- endif -%} 
-                                                    {%- if image.width >= 750 -%}{{ image | image_url: width: 750 }} 750w,{%- endif -%}
-                                                    {%- if image.width >= 1100 -%}{{ image | image_url: width: 1100 }} 1100w,{%- endif -%}
-                                                    {%- if image.width >= 1370 -%}{{ image | image_url: width: 1370 }} 1370w,{%- endif -%}
-                                                    {%- if image.width >= 1500 -%}{{ image | image_url: width: 1500 }} 1500w,{%- endif -%}
-                                                    {%- if image.width >= 1770 -%}{{ image | image_url: width: 1770 }} 1770w,{%- endif -%}
-                                                    {%- if image.width >= 1780 -%}{{ image | image_url: width: 1780 }} 1780w,{%- endif -%}
-                                                    {%- if image.width >= 1880 -%}{{ image | image_url: width: 1880 }} 1880w,{%- endif -%}
-                                                    {%- if image.width >= 2000 -%}{{ image | image_url: width: 2000 }} 2000w,{%- endif -%}
-                                                    {%- if image.width >= 2800 -%}{{ image | image_url: width: 2800 }} 2800w{%- endif -%}"
-                                                    alt="{{ image.alt | default: shop.name | escape }}" width="{{ image.width }}" height="{{ image.width | divided_by: image.aspect_ratio | round }}" 
-                                                    {% unless image.presentation.focal_point == '50.0% 50.0%' %}style="object-position: {{ image.presentation.focal_point }}"{% endunless %}
-                                                    loading="lazy"
-                                                >
-                                            </{% if link != blank %}a{% else %}div{% endif %}>
-                                        {%- else -%}
-                                            <{% if link != blank %}a{% else %}div{% endif %} class="image image-mobile" {% if link != blank %} href="{{ link }}"{% endif %}>
-                                                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-                                            </{% if link != blank %}a{% else %}div{% endif %}>
-                                        {%- endif -%}
-                                    {%- endif -%}
-                                </loading-banner>
+                                {%- endif -%}
                                 <div class="video-banner">
                                     <a href="javascript:void(0)" class="halo-modal-close clearfix" data-close-video role="button">
                                         <span class="visually-hidden">{{ 'general.common.close' | t }}</span>
@@ -144,39 +182,14 @@
                                 </div>
                             </div>
                             {%- if title != blank or subtitle != blank -%}
-                                <div class="content-box content-box--absolute content-box--full text-center"
-                                    style="{% if sub_title_font == 'font_1' %}
-                                    --sub-title-font: var(--font-1-family);
-                                    {% elsif sub_title_font == 'font_2' %}
-                                    --sub-title-font: var(--font-2-family);
-                                    {% elsif sub_title_font == 'font_3' %}
-                                        --sub-title-font: var(--font-3-family);
-                                    {% endif %}
-                                    --sub-title-font-size: {{ sub_title_font_size }};
-                                    --sub-title-font-weight: {{ sub_title_font_weight }};
-                                    --sub-title-text-transform: {{ sub_title_text_transform }};
-                                    {% if title_font == 'font_1' %}
-                                        --title-font: var(--font-1-family);
-                                    {% elsif title_font == 'font_2' %}
-                                        --title-font: var(--font-2-family);
-                                    {% elsif title_font == 'font_3' %}
-                                        --title-font: var(--font-3-family);
-                                    {% endif %}
-                                    --title-font-size: {{ title_font_size }};
-                                    --title-tablet-font-size: {{ title_tablet_font_size }};
-                                    --title-mobile-font-size: {{ title_mobile_font_size }};
-                                    --title-font-weight: {{ title_font_weight }};
-                                    --title-text-transform: {{ title_text_transform }};
-                                    --title-color: {{ title_color }};
-                                    --text-color: {{ text_color }};"
-                                >
+                                <div class="content-box content-box--absolute content-box--full text-center">
                                     {%- if subtitle != blank -%}
                                         <h5 class="sub-title">
                                             {{ subtitle | escape }}
                                         </h5>
                                     {%- endif -%}
                                     {%- if title != blank -%}
-                                        <h4 class="banner-title typography__mobile typography__tablet typography__desktop">
+                                        <h4 class="banner-title">
                                             {{ title | escape }}
                                         </h4>
                                     {%- endif -%}
@@ -720,18 +733,6 @@
                     {
                         "value": "5",
                         "label": "t:sections.general.settings.button.options__5"
-                    },
-                    {
-                        "value": "6",
-                        "label": "t:sections.general.settings.button.options__9"
-                    },
-                    {
-                        "value": "7",
-                        "label": "t:sections.general.settings.button.options__10"
-                    },
-                    {
-                        "value": "8",
-                        "label": "t:sections.general.settings.button.options__11"
                     }]
                 },
                 {
@@ -789,9 +790,6 @@
                     }
                 ]
             }
-        ],
-        "disabled_on": {
-            "groups": ["header", "footer"]
-        }
+        ]
     }
 {% endschema %}

@@ -1,4 +1,10 @@
-{%- if section.blocks.size > 0 and section.settings.show_featured_collection -%}
+{%- liquid
+    assign show_section = false
+    if section.blocks.size > 0 and section.settings.show_featured_collection
+        assign show_section = true
+    endif
+-%}
+{%- if show_section -%}
 	{%- liquid
         assign padding_top = section.settings.padding_top | append: 'px'
         assign padding_bottom = section.settings.padding_bottom | append: 'px'
@@ -25,10 +31,6 @@
             assign dots = section.settings.block_dots
             assign arrows = section.settings.block_arrows
         endif
-        if mobile_layout == 'slider'
-            assign dots_mobi = section.settings.block_dots_mobi
-            assign arrows_mobi = section.settings.block_arrows_mobi
-        endif
         assign title_color = section.settings.title_color
         assign text_color = section.settings.text_color
         assign title_font = section.settings.title_font
@@ -42,48 +44,83 @@
         assign layout_style = section.settings.layout_style
         assign image_border_radius = settings.image_border_radius
         assign image_effect = settings.image_effect
-
-        if settings.show_dark_mode
-            assign dark_mode = false
-            unless background_color == blank or background_color == '#fff' or background_color == '#FFF' or background_color == '#ffffff' or background_color == '#FFFFFF' or background_color == 'rgb(255,255,255)' or background_color == 'rgba(255,255,255,1)' or background_color == 'rgba(0,0,0,0)' or background_color == 'rgb(0,0,0,0)'
-                assign dark_mode = true
-                assign dark_mode_background_color = section.settings.background_color
-                assign dark_mode_title_color = section.settings.title_color
-                assign dark_mode_text_color = section.settings.text_color
-            endunless
-        endif
     -%}
-    <div class="halo-block halo-banner featured-collection featured-collection-2 style-{{ layout_style }}{% if arrows_mobi %} has-arrow--mobile{% endif %} {% if dots_mobi %} has-dots--mobile{% endif %} halo-block-padding halo-block-gradient{% unless dark_mode %} dark-mode{% endunless %}" id="halo-featured-collection-{{ section.id }}" {% if layout == 'slider' or mobile_layout == 'slider' %}data-featured-collection-block data-loader-script="{{ 'halo.slide-collection.js' | asset_url }}"{% endif %}
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};
+    <style type="text/css" media="screen">
+        :root {
             {% if title_font == 'font_1' %}
-                --title-font: var(--font-1-family);
+                --title-font-{{ section.id }}: var(--font-1-family);
             {% elsif title_font == 'font_2' %}
-                --title-font: var(--font-2-family);
+                --title-font-{{ section.id }}: var(--font-2-family);
             {% elsif title_font == 'font_3' %}
-                --title-font: var(--font-3-family);
+                --title-font-{{ section.id }}: var(--font-3-family);
             {% endif %}
-            --title-font-size: {{ title_font_size }};
-            --title-tablet-font-size: {{ title_font_size }};
-            --title-mobile-font-size: {{ title_mobile_font_size }};
-            --title-font-weight: {{ title_font_weight }};
-            --title-text-transform: {{ title_text_transform }};
-            --text-font-size: {{ text_font_size }};
-            --text-font-weight: {{ text_font_weight }};
-            --text-text-transform: {{ text_text_transform }};
-            --title-color: {{ title_color }};
-            --text-color: {{ text_color }};
-            --bg-color: {{ background_color | default: settings.colors_bg }};
-            {% if dark_mode %}
-                --dark-mode-bg-color: {{ dark_mode_background_color }};
-                --dark-mode-title-color: {{ dark_mode_title_color }};
-                --dark-mode-text-color: {{ dark_mode_text_color }};
-            {% endif %}"
-    >
+        }
+
+        #halo-featured-collection-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        {% if background_color != 'rgba(0,0,0,0)' and background_color != blank %}
+        	#halo-featured-collection-{{ section.id }},
+        	#halo-featured-collection-{{ section.id }} .halo-block-header .title .text{
+        		background: {{ background_color  }};
+        	}
+       	{% endif %}
+
+        #halo-featured-collection-{{ section.id }} .banner-title{
+            font-family: var(--title-font-{{ section.id }});
+            font-size: {{ title_mobile_font_size }};
+            font-weight: {{ title_font_weight }};
+            text-transform: {{ title_text_transform }};
+            color: {{ title_color }};
+        }
+
+        #halo-featured-collection-{{ section.id }} .banner-text,
+        #halo-featured-collection-{{ section.id }} .banner-button,
+        #halo-featured-collection-{{ section.id }} .banner-subtitle{
+            color: {{ text_color }};
+            font-weight: {{ text_font_weight }};
+            text-transform: {{ text_text_transform }};
+        }
+
+        {% if layout_style == '1' %}
+            #halo-featured-collection-{{ section.id }} .banner-text,
+            #halo-featured-collection-{{ section.id }} .banner-subtitle{
+                font-size: calc({{ text_font_size }} + 2px);
+            }
+        {% else %}
+            #halo-featured-collection-{{ section.id }} .banner-text,
+            #halo-featured-collection-{{ section.id }} .banner-subtitle{
+                font-size: {{ text_font_size }};
+            }
+        {% endif %}
+
+        #halo-featured-collection-{{ section.id }} .banner-button{
+            font-size: {{ text_font_size }};
+        }
+
+        @media (max-width: 1024px) {
+            #halo-featured-collection-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #halo-featured-collection-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+
+        @media (min-width: 551px){
+            #halo-featured-collection-{{ section.id }} .banner-title{
+                font-size: {{ title_font_size }};
+            }
+        }
+    </style>
+    <div class="halo-block halo-banner featured-collection featured-collection-2 style-{{layout_style}}" id="halo-featured-collection-{{ section.id }}" {% if layout == 'slider' or mobile_layout == 'slider' %}data-featured-collection-block data-loader-script="{{ 'halo.slide-collection.js' | asset_url }}"{% endif %}>
     	<div class="container container-{{ container }}{% if mobile_layout == 'swipe' %} container-no-padding{% endif %}">
     		{%- if block_title != blank -%}
                 <div class="halo-block-header">
@@ -121,42 +158,37 @@
                         <div class="halo-row-item item item-{{ block.id }}">
                         	<div class="collections-item banner-item">
                         		<div class="img-box">
-                                    <loading-banner class="loading-banner">
-                            			{%- if image != blank -%}
-                                            <{% if link != blank %}a{% else %}div{% endif %} class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-adapt" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
-                                                <img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x" src="{{ image | img_url: 'master' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
-                                                {%- if image_effect == 'liquid' -%}
-                                                    <span class="hover"></span>
-                                                {%- endif -%}
-                                            </{% if link != blank %}a{% else %}div{% endif %}>
-                                        {%- else -%}
-                                            <{% if link != blank %}a{% else %}div{% endif %} class="image" {% if link != blank %} href="{{ link }}"{% endif %}>
-                                                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-                                            </{% if link != blank %}a{% else %}div{% endif %}>
-                                        {%- endif -%}
-                                    </loading-banner>
+                        			{%- if image != blank -%}
+                                        <{% if link != blank %}a{% else %}div{% endif %} class="image image-{{ image_effect }} image-border-{{ image_border_radius }} image-adapt" {% if link != blank %} href="{{ link }}"{% endif %} style="padding-top: {{ 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' }}">
+                                            <img srcset="{{ image | img_url: 'master' }} 1x, {{ image | img_url: 'master', scale: 2 }} 2x" src="{{ image | img_url: 'master' }}" alt="{{ image.alt | default: shop.name | escape }}" loading="lazy">
+                                        </{% if link != blank %}a{% else %}div{% endif %}>
+                                    {%- else -%}
+                                        <{% if link != blank %}a{% else %}div{% endif %} class="image" {% if link != blank %} href="{{ link }}"{% endif %}>
+                                            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                                        </{% if link != blank %}a{% else %}div{% endif %}>
+                                    {%- endif -%}
                         		</div>
                         		{%- if subtitle != blank or title != blank or text != blank or btn_text != blank -%}
                         			<div class="content-box text-{{ align }}">
                         				{%- if subtitle != blank -%}
-                                            <span class="banner-subtitle typography__subtitle">
+                                            <span class="banner-subtitle">
                                                 {{ subtitle | escape }}
                                             </span>
                                         {%- endif -%}
                                         {%- if title != blank -%}
-                                            <h4 class="banner-title typography__mobile typography__tablet typography__desktop">
+                                            <h4 class="banner-title">
                                                 <{% if link != blank %}a{% else %}span{% endif %} {% if link != blank %} href="{{ link }}"{% endif %}>
                                                     {{ title | escape }}
                                                 </{% if link != blank %}a{% else %}span{% endif %}>
                                             </h4>
                                         {%- endif -%}
                                         {%- if text != blank -%}
-                                            <span class="banner-text typography__text">
+                                            <span class="banner-text">
                                                 {{ text }}
                                             </span>
                                         {%- endif -%}
                                         {%- if btn_text != blank -%}
-                                            <{% if link != blank %}a{% else %}div{% endif %} {% if link != blank %} href="{{ link }}"{% endif %} class="banner-button link{% if layout_style == '1' %} link-underline {% else %} text-underline{% endif %} typography__button">
+                                            <{% if link != blank %}a{% else %}div{% endif %} {% if link != blank %} href="{{ link }}"{% endif %} class="banner-button link{% if layout_style == '1' %} link-underline {% else %} text-underline{% endif %}">
                                                 <span class="text">{{ btn_text | escape }}</span>
                                             </{% if link != blank %}a{% else %}div{% endif %}>
                                         {%- endif -%}
@@ -432,18 +464,6 @@
                 "type": "checkbox",
                 "id": "block_arrows",
                 "label": "t:sections.general.settings.slider.label__3",
-                "default": true
-            },
-            {
-                "type": "checkbox",
-                "id": "block_dots_mobi",
-                "label": "t:sections.general.settings.slider.label__7",
-                "default": false
-            },
-            {
-                "type": "checkbox",
-                "id": "block_arrows_mobi",
-                "label": "t:sections.general.settings.slider.label__8",
                 "default": true
             },
             {
@@ -734,9 +754,6 @@
                     }
                 ]
             }
-        ],
-        "disabled_on": {
-            "groups": ["header", "footer"]
-        }
+        ]
     }
 {% endschema %}

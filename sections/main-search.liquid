@@ -12,35 +12,32 @@
     assign container = section.settings.container
     assign has_sidebar = false
     assign show_sidebar = section.settings.show_sidebar
+    assign show_filter = section.settings.show_filter
+    assign sidebar_type = section.settings.sidebar_type
+    assign sidebar_position = section.settings.sidebar_position
+    assign show_sidebar_collapse = section.settings.show_sidebar_collapse
+    assign sidebar_collapse_default = section.settings.sidebar_collapse_default
     if show_sidebar
-        assign sidebar_type = section.settings.sidebar_type
-        assign sidebar_position = section.settings.sidebar_position
-        assign show_sidebar_collapse = section.settings.show_sidebar_collapse
-        assign sidebar_collapse_default = section.settings.sidebar_collapse_default
-        assign show_filter = section.settings.show_filter
         if sidebar_type == 'vertical'
             if show_filter
-                if search.filters != empty or section.blocks.size > 0
+                if search.filters != empty
                     assign has_sidebar = true
                 endif
+            elsif section.blocks.size > 0
+                assign has_sidebar = true
             endif
         else
-            if show_filter and search.filters != empty
-                assign has_sidebar = true
+            if show_filter
+                if search.filters != empty
+                    assign has_sidebar = true
+                endif
             endif
         endif
         if show_filter
             assign filter_swatch = section.settings.filter_swatch
             assign filter_swatch_type = section.settings.filter_swatch_type
             assign filter_rectangle = section.settings.filter_rectangle
-            assign price_range_show = section.settings.price_range_show
-        endif
-        if has_sidebar
-            assign sidebar_heading_font = section.settings.sidebar_heading_font
-            assign sidebar_heading_font_size = section.settings.sidebar_heading_font_size | append: 'px'
-            assign sidebar_heading_font_weight = section.settings.sidebar_heading_font_weight
-            assign sidebar_heading_text_transform = section.settings.sidebar_heading_text_transform
-        endif
+        endif 
     endif
     assign show_breadcrumb = section.settings.show_breadcrumb
     assign breadcrumb_alignment = section.settings.breadcrumb_alignment
@@ -49,7 +46,6 @@
     assign sort_by = search.sort_by | default: search.default_sort_by
     assign sort_options = search.sort_options
     assign layout = section.settings.layout
-    assign col = section.settings.col
     assign products_per_page =  section.settings.products_per_page
     assign show_toolbar = section.settings.show_toolbar
     if show_toolbar
@@ -60,17 +56,58 @@
     assign portrait_aspect_ratio = section.settings.portrait_aspect_ratio
     assign show_add_to_cart = section.settings.show_add_to_cart
     assign show_infinite_scrolling = section.settings.show_infinite_scrolling
+    if has_sidebar
+        assign sidebar_heading_font = section.settings.sidebar_heading_font
+        assign sidebar_heading_font_size = section.settings.sidebar_heading_font_size
+        assign sidebar_heading_font_weight = section.settings.sidebar_heading_font_weight
+        assign sidebar_heading_text_transform = section.settings.sidebar_heading_text_transform
+    endif
     assign search_value = search.terms | split:'*' | first
 -%}
 
-<div data-section-id="{{ section.id }}" data-section-type="search" id="SearchSection-{{ section.id }}" data-section="{{ section.id }}" class="halo-page-padding"
-    style="--padding-top: {{ padding_top }};
-        --padding-bottom: {{ padding_bottom }};
-        --padding-top-tablet: {{ padding_top_tablet }};
-        --padding-bottom-tablet: {{ padding_bottom_tablet }};
-        --padding-top-mobile: {{ padding_top_mobile }};
-        --padding-bottom-mobile: {{ padding_bottom_mobile }};"
->
+<style type="text/css" media="screen">
+    {% if has_sidebar %}
+        :root {
+            {% if sidebar_heading_font == 'font_1' %}
+                --sidebar-heading-font: var(--font-1-family);
+            {% elsif sidebar_heading_font == 'font_2' %}
+                --sidebar-heading-font: var(--font-2-family);
+            {% elsif sidebar_heading_font == 'font_3' %}
+                --sidebar-heading-font: var(--font-3-family);
+            {% endif %}
+        }
+    {% endif %}
+
+    #SearchSection-{{ section.id }}{
+        padding-top: {{ padding_top }};
+        padding-bottom: {{ padding_bottom }};
+    }
+
+    {% if has_sidebar %}
+        #SearchSection-{{ section.id }} .sidebarBlock-heading{
+            font-family: var(--sidebar-heading-font);
+            font-size: {{ sidebar_heading_font_size | append: 'px' }};
+            font-weight: {{ sidebar_heading_font_weight }};
+            text-transform: {{ sidebar_heading_text_transform }};
+        }
+    {% endif %}
+
+    @media (max-width: 1024px) {
+        #SearchSection-{{ section.id }}{
+            padding-top: {{ padding_top_tablet }};
+            padding-bottom: {{ padding_bottom_tablet }};
+        }
+    }
+
+    @media (max-width: 550px) {
+        #SearchSection-{{ section.id }}{
+            padding-top: {{ padding_top_mobile }};
+            padding-bottom: {{ padding_bottom_mobile }};
+        }
+    }
+</style>
+
+<div data-section-id="{{ section.id }}" data-section-type="search" id="SearchSection-{{ section.id }}" data-section="{{ section.id }}">
     <div class="container container-{{ container }}">
         {%- if show_breadcrumb -%}
             {% render 'breadcrumb', alignment: breadcrumb_alignment %}
@@ -92,22 +129,11 @@
             {%- if search.performed and search.results.size > 0 -%}
                 {%- if has_sidebar -%}
                     {{ 'component-main-sidebar.css' | asset_url | stylesheet_tag }}
-                    <div class="page-sidebar page-sidebar-{{ sidebar_position }} page-sidebar--{{ sidebar_type }}" id="halo-sidebar"
-                        style="{% if sidebar_heading_font == 'font_1' %}
-                            --sidebar-heading-font: var(--font-1-family);
-                        {% elsif sidebar_heading_font == 'font_2' %}
-                            --sidebar-heading-font: var(--font-2-family);
-                        {% elsif sidebar_heading_font == 'font_3' %}
-                            --sidebar-heading-font: var(--font-3-family);
-                        {% endif %}
-                        --sidebar-heading-font-size: {{ sidebar_heading_font_size }};
-                        --sidebar-heading-font-weight: {{ sidebar_heading_font_weight }};
-                        --sidebar-heading-font-text-transform: {{ sidebar_heading_text_transform }};"
-                    >
-                        <button type="button" class="halo-sidebar-close" data-close-sidebar type="{{ 'general.common.close' | t }}">
+                    <div class="page-sidebar page-sidebar-{{ sidebar_position }} page-sidebar--{{ sidebar_type }}" id="halo-sidebar">
+                        <a href="javascript:void(0)" class="halo-sidebar-close" data-close-sidebar role="button">
                             <span class="visually-hidden">{{ 'general.common.close' | t }}</span>
                             {% render 'icon-close' %}
-                        </button>
+                        </a>
                         <div class="halo-sidebar-header text-left">
                             <span class="title">
                                 {{ 'sections.sidebar.title' | t }}
@@ -120,13 +146,13 @@
                                 sort_by: sort_by,
                                 sidebar_type: sidebar_type,
                                 show_filter: show_filter,
+                                filter_type: 'storefront',
                                 show_sorting: show_sorting,
                                 show_collapse: show_sidebar_collapse,
                                 sidebar_collapse: sidebar_collapse_default,
                                 filter_swatch: filter_swatch,
                                 filter_swatch_type: filter_swatch_type,
-                                filter_rectangle: filter_rectangle,
-                                price_range_show: price_range_show
+                                filter_rectangle: filter_rectangle
                             %}
                         </div>
                     </div>
@@ -148,7 +174,7 @@
                                 %}
                             {%- endif -%}
                             <div class="collection resultListing">
-                                <ul class="productListing{% if layout == '1' %} productList{% else %} productGrid column-{{ layout }}{% endif %} list-{{ layout }} list-unstyled" id="main-collection-product-grid" data-id="{{ section.id }}">
+                                <ul class="productListing{% if section.settings.collection_results_per_row == 1 %} productList{% else %} productGrid column-{{ layout }}{% endif %} list-{{ layout }} list-unstyled" id="main-collection-product-grid" data-id="{{ section.id }}">
                                     {%- for item in search.results -%}
                                         <li class="product">
                                             {%- if item.object_type == 'product' -%}
@@ -195,7 +221,7 @@
                                                     </div>
                                                     <div class="halo-block-content">
                                                         <ul class="resultTable list-unstyled">
-                                                            {%- for item in search.results -%}
+                                                            {%- for item in search.results %}
                                                                 <li class="item">
                                                                     <div class="item-wrapper">
                                                                         <h6 class="title">
@@ -302,7 +328,9 @@
 {%- if settings.search_type == 'all' -%}
     {{ 'halo.search-by-all-types.js' | asset_url | script_tag }}
     <script type="text/javascript">
-        Shopify.SearchByAllTypes.renderResultTable();
+        Shopify.SearchByAllTypes.renderResultTable({
+            sectionId: 'main-page-article-grid'
+        });
     </script>
 {%- endif -%}
 <script src="{{ 'variants-quick-shop.js' | asset_url }}" defer="defer"></script>
@@ -628,15 +656,9 @@
     {
         "id": "show_filter",
         "type": "checkbox",
-        "default": true,
+        "default": false,
         "label": "t:sections.main-collection-product-grid.settings.filter.label__1",
         "info": "t:sections.main-collection-product-grid.settings.filter.info__1"
-    },
-    {
-        "type": "textarea",
-        "id": "filter_hidden_tag_list",
-        "label": "t:sections.main-collection-product-grid.settings.filter.label__2",
-        "info": "t:sections.main-collection-product-grid.settings.filter.info__4"
     },
     {
         "type": "text",
@@ -646,12 +668,6 @@
         "default": "Color"
     },
     {
-        "type": "checkbox",
-        "id": "show_filter_swatch_name",
-        "label": "t:sections.main-collection-product-grid.settings.filter.label__7",
-        "default": false
-    },
-    {
         "type": "select",
         "id": "filter_swatch_type",
         "label": "t:sections.main-collection-product-grid.settings.filter.label__4",
@@ -659,11 +675,11 @@
         "options": [
         {
             "value": "color",
-            "label": "t:sections.main-collection-product-grid.settings.filter.options__1"
+            "label": "t:sections.main-collection-product-grid.settings.filter.options__3"
         },
         {
             "value": "png",
-            "label": "t:sections.main-collection-product-grid.settings.filter.options__2"
+            "label": "t:sections.main-collection-product-grid.settings.filter.options__4"
         }]
     },
     {
@@ -672,29 +688,6 @@
         "label": "t:sections.main-collection-product-grid.settings.filter.label__5",
         "info": "t:sections.main-collection-product-grid.settings.filter.info__3",
         "default": "Size"
-    },
-    {
-        "type": "paragraph",
-        "content": "t:sections.main-collection-product-grid.settings.filter.paragraph__1.content"
-    },
-    {
-        "type": "select",
-        "id": "price_range_show",
-        "label": "t:sections.main-collection-product-grid.settings.filter.label__6",
-        "default": "both",
-        "options": [
-        {
-            "value": "box",
-            "label": "t:sections.main-collection-product-grid.settings.filter.options__3"
-        },
-        {
-            "value": "slider",
-            "label": "t:sections.main-collection-product-grid.settings.filter.options__4"
-        },
-        {
-            "value": "both",
-            "label": "t:sections.main-collection-product-grid.settings.filter.options__5"
-        }]
     },
     {
         "type": "header",
@@ -782,25 +775,6 @@
     },
     {
         "type": "select",
-        "id": "col",
-        "label": "t:sections.general.settings.column.label__1",
-        "default": "narrow",
-        "options": [
-        {
-            "value": "wide",
-            "label": "t:sections.general.settings.column.options__1"
-        },
-        {
-            "value": "narrow",
-            "label": "t:sections.general.settings.column.options__2"
-        },
-        {
-            "value": "expand",
-            "label": "t:sections.general.settings.column.options__5"
-        }]
-    },
-    {
-        "type": "select",
         "id": "image_ratio",
         "label": "t:sections.general.settings.image-ratio.label__1",
         "default": "adapt",
@@ -836,34 +810,6 @@
         "default": true
     }],
     "blocks": [
-        {
-            "type": "filter",
-            "name": "t:sections.main-sidebar.blocks.filter.name",
-            "settings": [
-                {
-                    "type":"header",
-                    "content":"t:sections.main-sidebar.blocks.filter.settings.header__1.content"
-                },
-                {
-                    "type": "checkbox",
-                    "id": "show_block",
-                    "label": "t:sections.main-sidebar.blocks.filter.settings.general.label__1",
-                    "default": true
-                },
-                {
-                    "type": "text",
-                    "id": "heading",
-                    "label": "t:sections.main-sidebar.blocks.filter.settings.general.label__2",
-                    "default": "Filter Title"
-                },
-                {
-                    "type": "textarea",
-                    "id": "list_tags",
-                    "label": "t:sections.main-sidebar.blocks.filter.settings.general.label__3",
-                    "info": "t:sections.main-sidebar.blocks.filter.settings.general.info"
-                }
-            ]
-        },
         {
             "type": "category",
             "name": "t:sections.main-sidebar.blocks.category.name",

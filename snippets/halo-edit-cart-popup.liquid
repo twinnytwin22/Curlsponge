@@ -1,6 +1,8 @@
+<link rel="stylesheet" href="{{ 'component-quick-edit-cart.css' | asset_url }}" media="print" onload="this.media='all'">
+
 <noscript>{{ 'component-quick-edit-cart.css' | asset_url | stylesheet_tag }}</noscript>
 
-<div class="halo-popup halo-edit-cart-popup halo-popup-topDown customPopup-large" data-edit-cart-popup id="halo-edit-cart-popup" data-url-style-edit-cart="{{ 'component-quick-edit-cart.css' | asset_url }}">
+<div class="halo-popup halo-edit-cart-popup halo-popup-topDown customPopup-large" data-edit-cart-popup id="halo-edit-cart-popup">
     <div class="halo-popup-wrapper">
     	<div class="halo-popup-header">
             <a href="javascript:void(0)" class="halo-popup-close clearfix" data-close-edit-cart role="button">
@@ -14,3 +16,4 @@
         <div class="halo-popup-content halo-popup-scroll custom-scrollbar"></div>
     </div>
 </div>
+<script src="{{ 'variants-edit-cart.js' | asset_url }}" defer="defer"></script>

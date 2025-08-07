@@ -1,0 +1,41 @@
+{%- liquid
+    assign previous_product = collection.previous_product
+    assign next_product = collection.next_product
+-%}
+
+{{ 'component-next-prev-product.css' | asset_url | stylesheet_tag }}
+
+<div class="productView-nextProducts">
+    <div class="next-prev-icons">
+        {%- if previous_product -%}
+            <a class="next-prev-icon prev-icon link link-underline" href="{{ previous_product }}" data-next-prev-icon data-target="#prev-product-modal">
+                <span class="visually-hidden">{{ 'accessibility.previous' | t }}</span>
+                {% render 'icon-long-arrow' %}
+            </a>
+        {%- endif -%}
+        {%- if next_product -%}
+            <a class="next-prev-icon next-icon link link-underline" href="{{ next_product }}" data-next-prev-icon data-target="#next-product-modal">
+                <span class="visually-hidden">{{ 'accessibility.next' | t }}</span>
+                {% render 'icon-long-arrow' %}
+            </a>
+        {%- endif -%}
+    </div>
+    <div class="next-prev-modals">
+        <div class="next-prev-modal" data-next-prev-modal>
+            {%- if previous_product -%}
+                <div id="prev-product-modal" class="next-prev-content" data-next-prev-content>
+                    {% render 'halo-next-prev-product-item',
+                        product: previous_product
+                    %}
+                </div>
+            {%- endif -%}
+            {%- if next_product -%}
+                <div id="next-product-modal" class="next-prev-content" data-next-prev-content>
+                    {% render 'halo-next-prev-product-item',
+                        product: next_product
+                    %}
+                </div>
+            {%- endif -%}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,55 @@
+<div class="product-item product-item-custom" data-product-id="product-{{ product.id }}">
+    <div class="card">
+        <div class="card-information">
+            <div class="card-information__wrapper text-left">
+                {%- if settings.show_vendor -%}
+                    <div class="card-vendor">
+                        <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
+                        {{ product.vendor | link_to_vendor }}    
+                    </div>
+                {%- endif -%} 
+                <a class="card-title link-underline{% if settings.product_title_line_text != 'full' %} card-title-ellipsis{% endif %}" href="{{ product }}">
+                    <span class="text">
+                        {{ product.title | escape }}
+                    </span>
+                </a>
+                <div class="card-price price-box">
+                    {%- if product.compare_at_price_min > product.price_min -%}
+                        <div class="price-sale">
+                            <span class="old-price">
+                                {{ product.compare_at_price_min | money }}
+                            </span>
+                            <span class="special-price">
+                                {{ product.price_min | money }}
+                            </span>
+                        </div>
+                    {%- else -%}
+                        <div class="price-regular">
+                            <span>
+                                {{ product.price_min | money }}
+                            </span>
+                        </div>
+                    {%- endif -%}
+                </div>
+            </div>
+        </div>
+        <div class="card-product">
+            <a class="card-media" href="{{ product }}">
+                {% render 'icon-external-link' %}
+                {%- if product.images.size > 0 -%}
+                    {% assign image = product.images[0].src %}
+                    <img srcset="{{ image | img_url: '960x' }}" 
+                        src="{{ image | img_url: '60x' }}"
+                        sizes="auto"
+                        alt="{{ image.alt | escape }}"
+                        loading="lazy"
+                        class="motion-reduce"
+                    >
+                {%- else -%}
+                    {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+                    {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
+            </a>
+        </div>
+    </div>
+</div>

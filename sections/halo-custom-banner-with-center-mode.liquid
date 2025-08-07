@@ -1,4 +1,7 @@
-{%- if section.settings.show_custom_banner -%}
+{%- liquid
+    assign show_custom_banner = section.settings.show_custom_banner
+-%}
+{%- if show_custom_banner -%}
     {%- liquid
         assign padding_top = section.settings.padding_top | append: 'px'
         assign padding_bottom = section.settings.padding_bottom | append: 'px'
@@ -12,46 +15,73 @@
         assign block_text = section.settings.block_text
         assign block_title_align = section.settings.block_title_align
         assign col = section.settings.col
+        assign column = 3
         assign background_color = section.settings.background_color
         assign title_color = section.settings.title_color
         assign title_font = section.settings.title_font
-        assign title_font_size = section.settings.title_font_size | append: 'px'
+        assign title_font_size = section.settings.title_font_size | plus: 0
         assign title_mobile_font_size = section.settings.title_mobile_font_size | append: 'px'
         assign title_font_weight = section.settings.title_font_weight
         assign title_text_transform = section.settings.title_text_transform
         assign image_border_radius = settings.image_border_radius
         assign image_effect = settings.image_effect
-
-        if settings.show_dark_mode
-            assign dark_mode = false
-            unless background_color == blank or background_color == '#fff' or background_color == '#FFF' or background_color == '#ffffff' or background_color == '#FFFFFF' or background_color == 'rgb(255,255,255)' or background_color == 'rgba(255,255,255,1)' or background_color == 'rgba(0,0,0,0)' or background_color == 'rgb(0,0,0,0)'
-                assign dark_mode = true
-                assign dark_mode_background_color = section.settings.background_color
-            endunless
-        endif
     -%}
-    <div class="halo-block halo-banner halo-custom-banner-center-mode halo-block-padding halo-block-gradient{% unless dark_mode %} dark-mode{% endunless %}" id="halo-custom-banner-center-mode-{{ section.id }}"
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};
-            --bg-color: {{ background_color | default: settings.colors_bg }};
-            {% if dark_mode %}
-                --dark-mode-bg-color: {{ dark_mode_background_color }};
-            {% endif %}"
-    >
+    <style type="text/css" media="screen">
+        :root {
+            {% if title_font == 'font_1' %}
+                --title-font-{{ section.id }}: var(--font-1-family);
+            {% elsif title_font == 'font_2' %}
+                --title-font-{{ section.id }}: var(--font-2-family);
+            {% elsif title_font == 'font_3' %}
+                --title-font-{{ section.id }}: var(--font-3-family);
+            {% endif %}
+        }
+
+        #halo-custom-banner-center-mode-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+            {% if background_color != 'rgba(0,0,0,0)' and background_color != blank %}
+                background: {{ background_color }};
+            {% endif %}
+        }
+
+        #halo-custom-banner-center-mode-{{ section.id }} .banner-title{
+            font-family: var(--title-font-{{ section.id }});
+            font-size: {{ title_mobile_font_size }};
+            font-weight: {{ title_font_weight }};
+            text-transform: {{ title_text_transform }};
+            color: {{ title_color }};
+        }
+
+        @media (max-width: 1024px) {
+            #halo-custom-banner-center-mode-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #halo-custom-banner-center-mode-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+
+        @media (min-width: 551px){
+            #halo-custom-banner-center-mode-{{ section.id }} .banner-title{
+                font-size: {{ title_font_size | append: 'px' }};
+            }
+        }
+    </style>
+    <div class="halo-block halo-banner halo-custom-banner-center-mode" id="halo-custom-banner-center-mode-{{ section.id }}">
         <div class="container container-{{ container }}{% if mobile_layout == 'swipe' %} container-no-padding{% endif %}">
             {%- if block_title != blank or block_text != blank -%}
                 <div class="halo-block-header">
-                    {%- if block_title != blank -%}
-                        <h3 class="title text-{{ block_title_align }}">
-                            <span class="text">
-                                {{ block_title | escape }}
-                            </span>
-                        </h3>
-                    {%- endif -%}
+                    <h3 class="title text-{{ block_title_align }}">
+                        <span class="text">
+                            {{ block_title | escape }}
+                        </span>
+                    </h3>
                     {%- if block_text != blank -%}
                         <span class="desc text-{{ block_title_align }}">
                             {{ block_text }}
@@ -59,69 +89,33 @@
                     {%- endif -%}
                 </div>
             {%- endif -%}
-            <div class="halo-block-content"
-                style="{% if title_font == 'font_1' %}
-                    --title-font: var(--font-1-family);
-                {% elsif title_font == 'font_2' %}
-                    --title-font: var(--font-2-family);
-                {% elsif title_font == 'font_3' %}
-                    --title-font: var(--font-3-family);
-                {% endif %}
-                --title-font-size: {{ title_font_size }};
-                --title-tablet-font-size: {{ title_mobile_font_size }};
-                --title-mobile-font-size: {{ title_mobile_font_size }};
-                --title-font-weight: {{ title_font_weight }};
-                --title-text-transform: {{ title_text_transform }};
-                --title-color: {{ title_color }};"
-            >
-                <div class="halo-row halo-row--{{ col }} halo-row--{{ mobile_layout }} column-3 disable-scrollbar">
+            <div class="halo-block-content">
+                <div class="halo-row halo-row--{{ col }} halo-row--{{ mobile_layout }} column-{{ column }} disable-scrollbar">
                     <div class="halo-row-item item item-odd">
                         {%- liquid
                             assign link_1 = section.settings.link_1
                             assign image_1 = section.settings.image_1
                             assign title_1 = section.settings.title_1
                         -%}
-                        <div class="banner-item">
+                        <div class="collections-item banner-item">
                             <div class="img-box image-{{ image_effect }} image-border-{{ image_border_radius }}">
-                                <loading-banner class="loading-banner">
-                                    {%- if image_1 != blank -%}
-                                        <{% if link_1 != blank %}a{% else %}div{% endif %} class="image image-adapt" {% if link_1 != blank %} href="{{ link_1 }}" {% endif %} 
-                                            style="padding-top: {% unless image_1.presentation.focal_point == '50.0% 50.0%' %}{{ 1 | divided_by: image_1.aspect_ratio | times: 100 | divided_by: 1.1 }}%{% else %}{{ 1 | divided_by: image_1.aspect_ratio | times: 100 }}%{% endunless %}"
-                                        >
-                                            <img srcset="{%- if image_1.width < 320 -%}{{ image_1 | image_url: width: image_1.width }} 320w,{%- endif -%}
-                                                {%- if image_1.width >= 320 -%}{{ image_1 | image_url: width: 375 }} 375w,{%- endif -%}
-                                                {%- if image_1.width >= 740 -%}{{ image_1 | image_url: width: 740 }} 740w,{%- endif -%} 
-                                                {%- if image_1.width >= 750 -%}{{ image_1 | image_url: width: 750 }} 750w,{%- endif -%}
-                                                {%- if image_1.width >= 1100 -%}{{ image_1 | image_url: width: 1100 }} 1100w,{%- endif -%}
-                                                {%- if image_1.width >= 1370 -%}{{ image_1 | image_url: width: 1370 }} 1370w,{%- endif -%}
-                                                {%- if image_1.width >= 1500 -%}{{ image_1 | image_url: width: 1500 }} 1500w,{%- endif -%}
-                                                {%- if image_1.width >= 1770 -%}{{ image_1 | image_url: width: 1770 }} 1770w,{%- endif -%}
-                                                {%- if image_1.width >= 1780 -%}{{ image_1 | image_url: width: 1780 }} 1780w,{%- endif -%}
-                                                {%- if image_1.width >= 1880 -%}{{ image_1 | image_url: width: 1880 }} 1880w,{%- endif -%}
-                                                {%- if image_1.width >= 2000 -%}{{ image_1 | image_url: width: 2000 }} 2000w,{%- endif -%}
-                                                {%- if image_1.width >= 2800 -%}{{ image_1 | image_url: width: 2800 }} 2800w{%- endif -%}"
-                                                alt="{{ image_1.alt | default: shop.name | escape }}" width="{{ image_1.width }}" height="{{ image_1.width | divided_by: image_1.aspect_ratio | round }}" 
-                                                {% unless image_1.presentation.focal_point == '50.0% 50.0%' %}style="object-position: {{ image_1.presentation.focal_point }}"{% endunless %}
-                                                loading="lazy"
-                                            >
-                                            {%- if image_effect == 'liquid' -%}
-                                                <span class="hover"></span>
-                                            {%- endif -%}
-                                        </{% if link_1 != blank %}a{% else %}div{% endif %}>
-                                    {%- else -%}
-                                        <div class="image">
-                                            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-                                        </div>
-                                    {%- endif -%}
-                                </loading-banner>
-                            </div>
-                            <div class="content-box content-box--absolute text-center">
+                                {%- if image_1 != blank -%}
+                                    <{% if link_1 !=blank %}a{% else %}div{% endif %} class="image image-adapt" {% if link_1 !=blank %} href="{{ link_1 }}" {% endif %} style="padding-top: {{ 1 | divided_by: image_1.aspect_ratio | times: 100 | append: '%' }}">
+                                        <img srcset="{{ image_1 | img_url: 'master' }} 1x, {{ image_1 | img_url: 'master', scale: 2 }} 2x" src="{{ image_1 | img_url: 'master' }}" alt="{{ image_1.alt | default: shop.name | escape }}" loading="lazy">
+                                    }
+                                    </{% if link_1 !=blank %}a{% else %}div{% endif %}>
+                                {%- else -%}
+                                    <div class="image">
+                                        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                                    </div>
+                                {%- endif -%}
+
                                 {%- if title_1 != blank -%}
-                                    <h4 class="banner-title typography__mobile typography__tablet typography__desktop">
+                                    <h4 class="banner-title">
                                         {%- if link_1 != blank -%}
-                                            <a href="{{ link_1 }}" class="link link-underline">
+                                            <a href="{{ link_1 }}">
                                         {%- endif -%}
-                                            <span class="text">{{ title_1 | escape }}</span>
+                                            {{ title_1 | escape }}
                                         {%- if link_1 != blank -%}
                                             </a>
                                         {%- endif -%}
@@ -136,47 +130,24 @@
                             assign image_2 = section.settings.image_2
                             assign title_2 = section.settings.title_2
                         -%}
-                        <div class="banner-item">
+                        <div class="collections-item banner-item">
                             <div class="img-box image-{{ image_effect }} image-border-{{ image_border_radius }}">
-                                <loading-banner class="loading-banner">
-                                    {%- if image_2 != blank -%}
-                                        <{% if link_2 != blank %}a{% else %}div{% endif %} class="image image-adapt" {% if link_2 != blank %} href="{{ link_2 }}" {% endif %} 
-                                            style="padding-top: {% unless image_2.presentation.focal_point == '50.0% 50.0%' %}{{ 1 | divided_by: image_2.aspect_ratio | times: 100 | divided_by: 1.1 }}%{% else %}{{ 1 | divided_by: image_2.aspect_ratio | times: 100 }}%{% endunless %}"
-                                        >
-                                            <img srcset="{%- if image_2.width < 320 -%}{{ image_2 | image_url: width: image_2.width }} 320w,{%- endif -%}
-                                                {%- if image_2.width >= 320 -%}{{ image_2 | image_url: width: 375 }} 375w,{%- endif -%}
-                                                {%- if image_2.width >= 740 -%}{{ image_2 | image_url: width: 740 }} 740w,{%- endif -%} 
-                                                {%- if image_2.width >= 750 -%}{{ image_2 | image_url: width: 750 }} 750w,{%- endif -%}
-                                                {%- if image_2.width >= 1100 -%}{{ image_2 | image_url: width: 1100 }} 1100w,{%- endif -%}
-                                                {%- if image_2.width >= 1370 -%}{{ image_2 | image_url: width: 1370 }} 1370w,{%- endif -%}
-                                                {%- if image_2.width >= 1500 -%}{{ image_2 | image_url: width: 1500 }} 1500w,{%- endif -%}
-                                                {%- if image_2.width >= 1770 -%}{{ image_2 | image_url: width: 1770 }} 1770w,{%- endif -%}
-                                                {%- if image_2.width >= 1780 -%}{{ image_2 | image_url: width: 1780 }} 1780w,{%- endif -%}
-                                                {%- if image_2.width >= 1880 -%}{{ image_2 | image_url: width: 1880 }} 1880w,{%- endif -%}
-                                                {%- if image_2.width >= 2000 -%}{{ image_2 | image_url: width: 2000 }} 2000w,{%- endif -%}
-                                                {%- if image_2.width >= 2800 -%}{{ image_2 | image_url: width: 2800 }} 2800w{%- endif -%}"
-                                                alt="{{ image_2.alt | default: shop.name | escape }}" width="{{ image_2.width }}" height="{{ image_2.width | divided_by: image_2.aspect_ratio | round }}" 
-                                                {% unless image_2.presentation.focal_point == '50.0% 50.0%' %}style="object-position: {{ image_2.presentation.focal_point }}"{% endunless %}
-                                                loading="lazy"
-                                            >
-                                            {%- if image_effect == 'liquid' -%}
-                                                <span class="hover"></span>
-                                            {%- endif -%}
-                                        </{% if link_2 != blank %}a{% else %}div{% endif %}>
-                                    {%- else -%}
-                                        <div class="image">
-                                            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-                                        </div>
-                                    {%- endif -%}
-                                </loading-banner>
-                            </div>
-                            <div class="content-box content-box--absolute text-center">
+                                {%- if image_2 != blank -%}
+                                    <{% if link_2 !=blank %}a{% else %}div{% endif %} class="image image-adapt" {% if link_2 !=blank %} href="{{ link_2 }}" {% endif %} style="padding-top: {{ 1 | divided_by: image_2.aspect_ratio | times: 100 | append: '%' }}">
+                                        <img srcset="{{ image_2 | img_url: 'master' }} 1x, {{ image_2 | img_url: 'master', scale: 2 }} 2x" src="{{ image_2 | img_url: 'master' }}" alt="{{ image_2.alt | default: shop.name | escape }}" loading="lazy">
+                                    }
+                                    </{% if link_2 !=blank %}a{% else %}div{% endif %}>
+                                {%- else -%}
+                                    <div class="image">
+                                        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                                    </div>
+                                {%- endif -%}
                                 {%- if title_2 != blank -%}
-                                    <h4 class="banner-title typography__mobile typography__tablet typography__desktop">
+                                    <h4 class="banner-title">
                                         {%- if link_2 != blank -%}
-                                            <a href="{{ link_2 }}" class="link link-underline">
+                                            <a href="{{ link_2 }}">
                                         {%- endif -%}
-                                            <span class="text">{{ title_2 | escape }}</span>
+                                            {{ title_2 | escape }}
                                         {%- if link_2 != blank -%}
                                             </a>
                                         {%- endif -%}
@@ -191,47 +162,24 @@
                             assign image_3 = section.settings.image_3
                             assign title_3 = section.settings.title_3
                         -%}
-                        <div class="banner-item">
+                        <div class="collections-item banner-item">
                             <div class="img-box image-{{ image_effect }} image-border-{{ image_border_radius }}">
-                                <loading-banner class="loading-banner">
-                                    {%- if image_3 != blank -%}
-                                        <{% if link_3 != blank %}a{% else %}div{% endif %} class="image image-adapt" {% if link_3 != blank %} href="{{ link_3 }}" {% endif %} 
-                                            style="padding-top: {% unless image_3.presentation.focal_point == '50.0% 50.0%' %}{{ 1 | divided_by: image_3.aspect_ratio | times: 100 | divided_by: 1.1 }}%{% else %}{{ 1 | divided_by: image_3.aspect_ratio | times: 100 }}%{% endunless %}"
-                                        >
-                                            <img srcset="{%- if image_3.width < 320 -%}{{ image_3 | image_url: width: image_3.width }} 320w,{%- endif -%}
-                                                {%- if image_3.width >= 320 -%}{{ image_3 | image_url: width: 375 }} 375w,{%- endif -%}
-                                                {%- if image_3.width >= 740 -%}{{ image_3 | image_url: width: 740 }} 740w,{%- endif -%} 
-                                                {%- if image_3.width >= 750 -%}{{ image_3 | image_url: width: 750 }} 750w,{%- endif -%}
-                                                {%- if image_3.width >= 1100 -%}{{ image_3 | image_url: width: 1100 }} 1100w,{%- endif -%}
-                                                {%- if image_3.width >= 1370 -%}{{ image_3 | image_url: width: 1370 }} 1370w,{%- endif -%}
-                                                {%- if image_3.width >= 1500 -%}{{ image_3 | image_url: width: 1500 }} 1500w,{%- endif -%}
-                                                {%- if image_3.width >= 1770 -%}{{ image_3 | image_url: width: 1770 }} 1770w,{%- endif -%}
-                                                {%- if image_3.width >= 1780 -%}{{ image_3 | image_url: width: 1780 }} 1780w,{%- endif -%}
-                                                {%- if image_3.width >= 1880 -%}{{ image_3 | image_url: width: 1880 }} 1880w,{%- endif -%}
-                                                {%- if image_3.width >= 2000 -%}{{ image_3 | image_url: width: 2000 }} 2000w,{%- endif -%}
-                                                {%- if image_3.width >= 2800 -%}{{ image_3 | image_url: width: 2800 }} 2800w{%- endif -%}"
-                                                alt="{{ image_3.alt | default: shop.name | escape }}" width="{{ image_3.width }}" height="{{ image_3.width | divided_by: image_3.aspect_ratio | round }}" 
-                                                {% unless image_3.presentation.focal_point == '50.0% 50.0%' %}style="object-position: {{ image_3.presentation.focal_point }}"{% endunless %}
-                                                loading="lazy"
-                                            >
-                                            {%- if image_effect == 'liquid' -%}
-                                                <span class="hover"></span>
-                                            {%- endif -%}
-                                        </{% if link_3 != blank %}a{% else %}div{% endif %}>
-                                    {%- else -%}
-                                        <div class="image">
-                                            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-                                        </div>
-                                    {%- endif -%}
-                                </loading-banner>
-                            </div>
-                            <div class="content-box content-box--absolute text-center">
+                                {%- if image_3 != blank -%}
+                                    <{% if link_3 !=blank %}a{% else %}div{% endif %} class="image image-adapt" {% if link_3 !=blank %} href="{{ link_3 }}" {% endif %} style="padding-top: {{ 1 | divided_by: image_3.aspect_ratio | times: 100 | append: '%' }}">
+                                        <img srcset="{{ image_3 | img_url: 'master' }} 1x, {{ image_3 | img_url: 'master', scale: 2 }} 2x" src="{{ image_3 | img_url: 'master' }}" alt="{{ image_3.alt | default: shop.name | escape }}" loading="lazy">
+                                    }
+                                    </{% if link_3 !=blank %}a{% else %}div{% endif %}>
+                                {%- else -%}
+                                    <div class="image">
+                                        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                                    </div>
+                                {%- endif -%}
                                 {%- if title_3 != blank -%}
-                                    <h4 class="banner-title typography__mobile typography__tablet typography__desktop">
+                                    <h4 class="banner-title">
                                         {%- if link_3 != blank -%}
-                                            <a href="{{ link_3 }}" class="link link-underline">
+                                            <a href="{{ link_3 }}">
                                         {%- endif -%}
-                                            <span class="text">{{ title_3 | escape }}</span>
+                                            {{ title_3 | escape }}
                                         {%- if link_3 != blank -%}
                                             </a>
                                         {%- endif -%}
@@ -605,9 +553,6 @@
             {
                 "name": "t:sections.custom-banner-center-mode.presets.name"
             }
-        ],
-        "disabled_on": {
-            "groups": ["header", "footer"]
-        }
+        ]
     }
 {% endschema %}

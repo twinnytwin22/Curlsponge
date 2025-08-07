@@ -1,112 +1,4 @@
-{%- liquid
-    assign formId = 'ContactFooter'
-    if form_id != blank
-        assign formId = 'ContactForm-' | append: form_id
-    endif
-
-    if show_newsletter
-        assign newsletter_bg = block.settings.newsletter_bg
-        assign newsletter_color = block.settings.newsletter_color
-        assign newsletter_border = block.settings.newsletter_border
-        assign newsletter_input_bg = block.settings.newsletter_input_bg
-        assign newsletter_input_color = block.settings.newsletter_input_color
-        assign newsletter_btn_bg =  block.settings.newsletter_btn_bg
-        assign newsletter_btn_color =  block.settings.newsletter_btn_color
-        assign newsletter_btn_border =  block.settings.newsletter_btn_border
-    endif
--%}
-
-{% if show_newsletter %}
-    <style>
-        {% if newsletter_bg != 'rgba(0,0,0,0)' and newsletter_bg != blank %}
-            .footer-{{ footer_layout }} .footer-block__newsletter .newsletter-form__field-wrapper{
-                border-color: {{ newsletter_bg }};
-                background: {{ newsletter_bg }};
-            }
-        {% endif %}
-    
-        {% if newsletter_color != 'rgba(0,0,0,0)' and newsletter_color != blank %}
-            .footer-{{ footer_layout }} .footer-block__newsletter .field__input{
-                color: {{ newsletter_color }};
-            }
-        {% endif %}
-    
-        {% if newsletter_border != 'rgba(0,0,0,0)' and newsletter_border != blank and newsletter_bg != 'rgba(0,0,0,0)' and newsletter_bg != blank %}
-            .footer-{{ footer_layout }} .footer-block__newsletter .newsletter-form__button{
-                color: {{ newsletter_bg }}!important;
-                background: {{ newsletter_border }}!important;
-            }
-        {% endif %}
-    
-        {% if footer_layout == '2' %}
-            {% if newsletter_border != 'rgba(0,0,0,0)' and newsletter_border != blank %}
-                .footer-2 .footer-block__newsletter .newsletter-form__field-wrapper{
-                    border-color: {{ newsletter_border }};
-                }
-            {% endif %}
-    
-            {% if newsletter_color != 'rgba(0,0,0,0)' and newsletter_color != blank and newsletter_bg != 'rgba(0,0,0,0)' and newsletter_bg != blank %}
-                .footer-2 .footer-block__newsletter .newsletter-form__button{
-                    color: {{ newsletter_color }}!important;
-                    background: {{ newsletter_bg }}!important;
-                }
-            {% endif %}
-        {% elsif footer_layout == '4' %}
-            {% if newsletter_bg != 'rgba(0,0,0,0)' and newsletter_bg != blank %}
-                .footer-4.style-2 .footer-block__newsletter .field__input{
-                    background: {{ newsletter_bg }};
-                }
-            {% endif %}
-        {% elsif footer_layout == '6' %}
-            {% if newsletter_btn_bg != 'rgba(0,0,0,0)' and newsletter_btn_bg != blank and newsletter_btn_border != 'rgba(0,0,0,0)' and newsletter_btn_border != blank and newsletter_btn_color != 'rgba(0,0,0,0)' and newsletter_btn_color != blank %}
-                .footer-6 .footer-block__newsletter .newsletter-form__button{
-                    background: {{ newsletter_btn_bg }}!important;
-                    border-color: {{ newsletter_btn_border }}!important;
-                    color: {{ newsletter_btn_color }}!important;
-                }
-            {% endif %}
-    
-            {% if newsletter_color != 'rgba(0,0,0,0)' and newsletter_color != blank and newsletter_bg != 'rgba(0,0,0,0)' and newsletter_bg != blank %}
-                .footer-6 .footer-block__newsletter .field__input{
-                    color: {{ newsletter_color }};
-                    background: {{ newsletter_bg }};
-                }
-            {% endif %}
-        {% elsif footer_layout == '10' %}
-            {% if newsletter_border != 'rgba(0,0,0,0)' and newsletter_border != blank %}
-                .footer-10 .footer-block__newsletter .field__input{
-                    border-color: {{ newsletter_border }};
-                }
-            {% endif %}
-    
-            {% if newsletter_color != 'rgba(0,0,0,0)' and newsletter_color != blank and newsletter_border != 'rgba(0,0,0,0)' and newsletter_border != blank %}
-                .footer-10 .footer-block__newsletter .newsletter-form__button{
-                    color: {{ newsletter_color }}!important;
-                    border-color: {{ newsletter_border }}!important;
-                    background: transparent!important;
-                }
-            {% endif %}
-        {% elsif footer_layout == '11' %}
-            {% if newsletter_bg != 'rgba(0,0,0,0)' and newsletter_bg != blank and newsletter_border != 'rgba(0,0,0,0)' and newsletter_border != blank and newsletter_color != 'rgba(0,0,0,0)' and newsletter_color != blank %}
-                .footer-11 .footer_newsletter-form .field__input{
-                    background: {{ newsletter_bg }};
-                    border-color: {{ newsletter_border }};
-                    color: {{ newsletter_color }};
-                }
-            {% endif %}
-    
-            {% if newsletter_btn_color != 'rgba(0,0,0,0)' and newsletter_btn_color != blank and newsletter_btn_border != 'rgba(0,0,0,0)' and newsletter_btn_border != blank %}
-                .footer-11 .footer_newsletter-form .newsletter-form__button{
-                    color: {{ newsletter_btn_color }}!important;
-                    border-color: {{ newsletter_btn_border }}!important;
-                    background: {{ newsletter_btn_border }}!important;
-                }
-            {% endif %}
-        {% endif %}
-    </style>
-{% endif %}
-
-{%- form 'customer', id: formId, class: 'footer__newsletter newsletter-form' -%}
+{%- form 'customer', id: 'ContactFooter', class: 'footer__newsletter newsletter-form' -%}
     <input type="hidden" name="contact[tags]" value="newsletter">
     <div class="newsletter-form__field-wrapper">
         <div class="field">
@@ -114,33 +6,31 @@
                 {{ 'newsletter.label' | t }}
             </label>
             <input id="NewsletterForm--{{ section.id }}" type="email" name="contact[email]" class="field__input form-input-placeholder" value="{{ form.email }}" aria-required="true" autocorrect="off" autocapitalize="off" autocomplete="off" {% if form.errors %} autofocus aria-invalid="true" aria-describedby="ContactFooter-error" {% elsif form.posted_successfully? %} aria-describedby="ContactFooter-success" {% endif %} placeholder="{{ 'newsletter.placeholder' | t }}">
-            {%- if footer_layout == '7' and newsletter_text != blank -%}
+            {%- if show_newsletter_text and newsletter_text != blank -%}
                 <div class="footer-block__subheading rte text-left">
                     {{ newsletter_text }}
                 </div>
             {%- endif -%}
         </div>
-        <button type="submit" class="button button--secondary newsletter-form__button" name="commit" id="Subscribe-{{ section.id }}" aria-label="{{ 'newsletter.button_label' | t }}">
-            {%- if footer_layout == '3' -%}
+        <button type="submit" class="button button--secondary newsletter-form__button" name="commit" id="Subscribe">
+            {%- if settings.footer_layout == '3' -%}
                 <span class="visually-hidden">{{ 'newsletter.button_label' | t }}</span>
                 {% render 'icon-plane' %}
-            {%- elsif footer_layout == '8' -%}
+            {%- elsif settings.footer_layout == '8' -%}
                 <span class="visually-hidden">{{ 'newsletter.button_label' | t }}</span>
                 {% render 'icon-search',
                     icon_search: '3'
                 %}
-            {%- elsif footer_layout == '9' -%}
+            {%- elsif settings.footer_layout == '9' -%}
                 <span class="visually-hidden">{{ 'newsletter.button_label' | t }}</span>
                 {% render 'icon-arrow',
                     icon_arrow: '1'
                 %}
-            {%- elsif footer_layout == '10' -%}
-                <span class="text">{{ 'newsletter.button_label' | t }}</span>
             {%- else -%}
                 {{ 'newsletter.button_label' | t }}
             {%- endif -%}
-            {%- if footer_layout == '7' -%}
-                <toggle-button class="overlay-button" data-target=".halo-newsletter .newsletter-style-7 .newsletter-form__field-wrapper"></toggle-button>
+            {%- if settings.footer_layout == '7' -%}
+                <a href="javascript:void(0)" class="overlay-button" data-overlay-button></a>
             {%- endif -%}
         </button>
     </div>
@@ -160,7 +50,10 @@
 
                     document.body.classList.add('newsletter-message-show');
 
-                    setCookie('emailSubcribeModal', 'closed', 1);
+                    $.cookie('emailSubcribeModal', 'closed', {
+                        expires: 1,
+                        path: '/'
+                    });
                 })();
 
                 var newURL = location.href.split("?")[0];
@@ -184,7 +77,10 @@
 
                         document.body.classList.add('newsletter-message-show');
 
-                        setCookie('emailSubcribeModal', 'closed', 1);
+                        $.cookie('emailSubcribeModal', 'closed', {
+                            expires: 1,
+                            path: '/'
+                        });
                     })();
 
                     var newURL = location.href.split("?")[0];

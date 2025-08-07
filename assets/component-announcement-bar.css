@@ -1,34 +1,6 @@
-@-webkit-keyframes announcement-scroll {
-    0% {
-        transform: translate3d(0,0,0);
-    }
-
-    100% {
-        transform: translate3d(-100%,0,0);
-    }
-}
-
-@keyframes announcement-scroll {
-    0% {
-        transform: translate3d(0,0,0);
-    }
-
-    100% {
-        transform: translate3d(-100%,0,0);
-    }
-}
-
 #shopify-section-announcement-bar
 [id^='shopify-section-announcement-bar-'] {
     z-index: 101;
-}
-
-announcement-bar{
-    display: block;
-}
-
-.announcement-bar{
-    background: var(--bg-color);
 }
 
 .announcement-bar .wrapper-content {
@@ -44,10 +16,6 @@ announcement-bar{
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-.announcement-bar-scroll .announcement-bar__message{
-    animation: announcement-scroll 15s infinite linear;
 }
 
 .announcement-bar__message .icon{
@@ -76,11 +44,6 @@ announcement-bar{
     color: var(--color-white);
 }
 
-.announcement-bar-1 .announcement-bar__message,
-.announcement-bar-1 .announcement-bar__message .text{
-    color: var(--text-color-1);
-}
-
 .announcement-bar__message p{
     margin-top: 0;
     margin-bottom: 0;
@@ -93,11 +56,6 @@ announcement-bar{
     line-height: var(--line-height);
     margin: 0 0 0 17px;
     padding: 0 2px;
-}
-
-.announcement-bar-1 .announcement-bar__message .text-code{
-    background: var(--text-color-1);
-    color: var(--text-color-2);
 }
 
 .announcement-bar__message .text + .text{
@@ -130,17 +88,11 @@ announcement-bar{
     font-size: 0;
     line-height: 1;
     transform: translateY(-50%);
-    background: transparent;
-    border: none;
-    cursor: pointer;
 }
 
 .announcement-bar__close svg{
     width: 15px;
     height: 15px;
-    color: var(--text-color);
-    fill: currentColor;
-    stroke: transparent;
 }
 
 .announcement-bar-normal{
@@ -216,13 +168,6 @@ announcement-bar{
 
 .top-announcement-bar-2 .slick-arrow{
     padding: 7px;
-    color: var(--text-color);
-}
-
-.top-announcement-bar-2 .slick-arrow svg{
-    color: currentColor;
-    fill: currentColor;
-    stroke: currentColor;
 }
 
 .top-announcement-bar-2 .slick-arrow.slick-prev{
@@ -251,7 +196,6 @@ announcement-bar{
 .top-announcement-bar-2 .top-announcement-bar-item {
     font-size: calc(var(--font-size) - 4px);
     font-weight: var(--font-weight-semibold);
-    color: var(--text-color);
 }
 
 .top-announcement-bar-3{
@@ -267,39 +211,15 @@ announcement-bar{
 .top-announcement-bar-3 .announcement-bar__message{
     display: block;
     text-align: center;
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
+.skin-7 .top-announcement-bar-3 .announcement-bar__message,
+.skin-10 .top-announcement-bar-3 .announcement-bar__message{
     padding-top: 12px;
     padding-bottom: 12px;
-    font-size: var(--text-font-size);
-    font-weight: var(--text-font-weight);
-    color: var(--text-color);
-}
-
-body.dark-mode .top-announcement-bar .slick-arrow svg {
-    fill: var(--color-black);
-    color: var(--color-black);
-}
-
-body.dark-mode .announcement-bar:not(.dark-mode) {
-    background: var(--dark-mode-bg-color);
-}
-
-body.dark-mode .announcement-bar.dark-mode {
-    background: var(--color-background);
-}
-
-body.dark-mode .announcement-bar:not(.dark-mode) .top-announcement-bar-2 .top-announcement-bar-item,
-body.dark-mode .announcement-bar:not(.dark-mode) .top-announcement-bar-3 .announcement-bar__message,
-body.dark-mode .announcement-bar:not(.dark-mode) .announcement-bar__close svg {
-    color: var(--dark-mode-text-color);
-}
-
-body.dark-mode .announcement-bar.dark-mode .top-announcement-bar-2 .top-announcement-bar-item {
-    color: var(--color-text);
-}
-
-body.dark-mode .announcement-bar.dark-mode .top-announcement-bar .slick-arrow svg {
-    fill: var(--color-white);
-    color: var(--color-white);
+    letter-spacing: .02em;
 }
 
 @media (max-width: 1024px){
@@ -321,7 +241,6 @@ body.dark-mode .announcement-bar.dark-mode .top-announcement-bar .slick-arrow sv
         display: -webkit-box;
         text-overflow: ellipsis;
         -webkit-box-orient: vertical;
-        -webkit-line-clamp: var(--line-text);
     }
 }
 

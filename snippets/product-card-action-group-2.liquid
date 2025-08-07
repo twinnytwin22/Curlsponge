@@ -13,7 +13,12 @@
         assign show_wishlist_card_mobile = settings.show_wishlist_card_mobile
     endif
 
-    assign show_action = settings.show_action
+    assign show_action = false
+    if settings.show_action
+        if show_add_to_cart == true or show_add_to_cart == 'true'
+            assign show_action = true
+        endif
+    endif
 
     if show_quick_view or show_wishlist or show_action
         assign product_action_group = true
@@ -42,20 +47,19 @@
                         </span>
                     {%- endif -%}
                     {% render 'icon-heart',
-                        icon_heart: icon_heart
+                        icon_heart: '4'
                     %}
                 </a>
             </div>
         {%- endif -%}
         {%- if show_action -%}
-            <div class="card-product__group-item card-product__group-item-2 card-action card-grid__hidden d-none{% if narrowClass %} narrow{% endif %}">
+            <div class="card-product__group-item card-product__group-item-2 card-action card-grid__hidden{% if settings.layout == '10' %} narrow{% endif %}">
                 {% render 'add-to-cart-form',
                     product: product,
                     id: 'form',
                     list: 'list',
                     position: position,
-                    sectionId: sectionId,
-                    positionQuick: 'top'
+                    sectionId: sectionId
                 %}
             </div>
         {%- endif -%}

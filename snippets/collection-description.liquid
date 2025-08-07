@@ -4,31 +4,28 @@
             {{ collection.title | escape }}
         </h1>
     {%- endif -%}
-    {%- if collection.description != blank -%}
-		<div class="collection-info-item">
-			<{% if show_read_more_read_less %}more-less-content{% else %}div{% endif %} class="collection-description halo-text-format text-{{ collection_description_align }}" data-show-more-text="{{ 'sections.collection_template.read_more' | t }}" data-show-less-text="{{ 'sections.collection_template.read_less' | t }}">
-				{%- if show_read_more_read_less -%}
-					<div class="short-description">
-						{%- liquid
-	                        assign desc = collection.description | strip_html
-	                        assign word_number = 400
-	                    -%}
-						{{ desc | truncate: word_number }}
-					</div>
-					<div class="full-description">
-						{{ collection.description }}
-					</div>
-					{%- if desc.size > 400 -%}
-						<button type="button" class="link link-underline read-description more">
-							<span class="text">{{ 'sections.collection_template.read_more' | t }}</span>
-						</button>
-					{%- endif -%}
-				{%- else -%}
+	<div class="collection-info-item">
+		<div class="collection-description halo-text-format text-{{ collection_description_align }}">
+			{%- if show_read_more_read_less -%}
+				<div class="short-description">
+					{%- liquid
+                        assign desc = collection.description | strip_html
+                        assign word_number = 50
+                    -%}
+
+					{{ desc | truncatewords: word_number }}
+				</div>
+				<div class="full-description">
 					{{ collection.description }}
-				{%- endif -%}
-			</{% if show_read_more_read_less %}more-less-content{% else %}div{% endif %}>
+				</div>
+				<a href="#" class="link link-underline read-description more">
+					<span class="text">{{ 'sections.collection_template.read_more' | t }}</span>
+				</a>
+			{%- else -%}
+				{{ collection.description }}
+			{%- endif -%}
 		</div>
-	{%- endif -%}
+	</div>
 	{%- if show_sub_collection -%}
 		{%- if linklists[collection.handle] != blank -%}
 			<div class="collection-info-item">

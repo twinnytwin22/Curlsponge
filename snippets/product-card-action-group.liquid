@@ -1,6 +1,7 @@
 {%- liquid
     assign product_action_group = false
     assign product_action_group_position = settings.product_action_group_position
+    
     assign show_quick_view = false
     if settings.show_quick_view and settings.product_quick_view_type == 'icon'
         assign show_quick_view = true
@@ -9,11 +10,13 @@
         assign show_quick_view = true
         assign show_quick_view_card_mobile = true
     endif
+
     assign show_wishlist = false
     if settings.show_wishlist_card and settings.show_wishlist
         assign show_wishlist = true
         assign show_wishlist_card_mobile = settings.show_wishlist_card_mobile
     endif
+
     assign show_compare = false
     if settings.show_compare and settings.product_compare_type == 'icon'
         assign show_compare = true
@@ -23,8 +26,9 @@
         assign product_action_group = true
     endif
 -%}
+
 {%- if product_action_group -%}
-    <div class="card-product__group group-{{ product_action_group_position }} {{ visible_class }}{% if settings.product_card_style == '6' %} group-visible group-bottom card-visible{% endif %}{% if settings.show_wishlist_card_mobile == false and settings.show_quick_view_card_mobile == false %} card-mobile__hidden{% endif %}">
+    <div class="card-product__group group-{{ product_action_group_position }}{% if settings.product_card_style == '6' %} group-visible group-bottom card-visible{% endif %}{% if settings.show_wishlist_card_mobile == false and settings.show_quick_view_card_mobile == false %} card-mobile__hidden{% endif %}">
         {%- if show_wishlist -%}
             <div class="card-product__group-item card-wishlist{% unless show_wishlist_card_mobile %} card-mobile__hidden{% endunless %}">
                 <a class="wishlist-icon{% if wishlist_add %} wishlist-added{% endif %}" href="#" data-wishlist data-wishlist-handle="{{ product.handle }}" data-product-id="{{ product.id }}" role="button">
@@ -45,7 +49,7 @@
                         </span>
                     {%- endif -%}
                     {% render 'icon-heart',
-                        icon_heart: icon_heart
+                        icon_heart: '1'
                     %}
                 </a>
             </div>
@@ -74,8 +78,9 @@
         {%- endif -%}
     </div>
 {%- endif -%}
+
 {%- if settings.show_quick_view and settings.product_quick_view_type == 'default' -%}
-    <div class="card-quickview">
+    <div class="card-quickview card-visible">
         <a class="quickview-button button{% unless show_quick_view_card_mobile %} card-mobile__hidden{% endunless %}" href="javascript:void(0)" data-product-id="{{ product.id }}" data-open-quick-view-popup data-product-handle="{{ product.handle }}" role="button">
             <span class="visually-hidden">{{ 'products.product.quick_view' | t }}</span>
             {{ 'products.product.quick_view' | t }}

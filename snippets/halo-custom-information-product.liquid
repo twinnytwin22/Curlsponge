@@ -1,5 +1,6 @@
 {{ 'component-custom-information.css' | asset_url | stylesheet_tag }}
-<div class="productView-customInfo custom-information">
+
+<product-custom-info class="productView-customInfo custom-information">
 	{%- for block in section.blocks -%}
 		{%- if  block.type == 'popup_information' -%}
 			{%- liquid
@@ -9,58 +10,33 @@
 				assign content_popup = block.settings.content_popup
 			-%}
 			{%- if icon != blank or title != blank or content != blank or content_popup != blank -%}
-				<{% if content_popup != blank %}custom-modal-opener{% else %}div{% endif %} class="item" {% if content_popup != blank %} data-modal="#Modal-CustomInformation-{{ forloop.index }}"{% endif%}
-					{{ block.shopify_attributes }}
-				>
-					{%- if content_popup != blank -%}
-						<div data-modal-opener>
-					{%- endif -%}
-					<div class="item-wrapper">
-						{%- if icon != blank -%}
-							<div class="icon">
-								{{ icon }}
-							</div>
-						{%- endif -%}
-						<div class="wrapper-content">
-							<h2 class="title">
-								<span class="text">{{ title }}</span>
-								{%- if section.settings.show_question_mark_icon -%}
-									<span class="symbol">
-										{% render 'icon-question',
-											icon_question: '1'
-										%}
-									</span>
-								{%- endif -%}
-							</h2>
-							<div class="desc">
-								{{ content }}
+				<div class="item">
+					<div class="icon" {% if content_popup != blank %} data-custom-information{% endif%}>
+						{{ icon }}
+					</div>
+					<div class="wrapper-content" {% if content_popup != blank %} data-custom-information{% endif%}>
+						<h3 class="title">
+							<span class="text">{{ title }}</span>
+							{%- if show_question_mark_icon -%}
+								<span class="symbol">
+									{% render 'icon-question',
+										icon_question: '1'
+									%}
+								</span>
+							{%- endif -%}
+						</h3>
+						<div class="desc">
+							{{ content }}
+						</div>
+						<div class="desc_popup hide">
+							<div class="halo-text-format">
+								{{ content_popup }}
 							</div>
 						</div>
-						{%- if content_popup != blank -%}
-							</div>
-						{%- endif -%}
 					</div>
-				</{% if content_popup != blank %}custom-modal-opener{% else %}div{% endif %}>
-				{%- if content_popup != blank -%}
-					<custom-information-modal class="halo-modal halo-modal__leftRight" id="Modal-CustomInformation-{{ forloop.index }}" {{ block.shopify_attributes }}>
-						<div class="halo-modal__dialog" role="dialog" aria-label="Dialog" aria-modal="true" tabindex="-1">
-					    	<div class="halo-modal-header">
-					            <button class="halo-modal-close clearfix" role="button" id="ModalClose-CustomInformation-{{ forloop.index }}" aria-label="{{ 'general.common.close' | t }}">
-							        {% render 'icon-close' %}
-							    </button>
-					            <h3 class="halo-modal-title text-center">
-					            	{{ title }}
-					            </h3>
-					    	</div>
-					    	<div class="halo-modal-content halo-popup-scroll custom-scrollbar halo-text-format" id="ModalWrapper-CustomInformation-{{ forloop.index }}">
-					    		<div class="halo-modal-contentWrapper">
-									{{ content_popup }}
-					    		</div>
-					    	</div>
-					    </div>
-					</custom-information-modal>
-				{%- endif -%}
+				</div>
 		    {%- endif -%}
 		{%- endif -%}
 	{%- endfor -%}
-</div>
+</product-custom-info>
+<script src="{{ 'custom-information.js' | asset_url }}" defer="defer"></script>

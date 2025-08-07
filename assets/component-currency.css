@@ -6,6 +6,10 @@
 	border-left: 1px solid #e2e2e2;
 }
 
+.header-7 .halo-currency.border-left{
+    border-left: none;
+}
+
 .halo-currency .currency-menu{
     padding: 0px 0px 18px;
     min-width: 135px;
@@ -27,10 +31,24 @@
     margin: 0;
 }
 
+.header-7 .halo-currency .title{
+    font-size: calc(var(--font-size) - 4px);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: .04em;
+    padding: 10px 19px 15px;
+    color: var(--color-text);
+}
+
 .halo-currency .currency-menu .icon{
     width: 35px;
     height: 35px;
     margin-right: 6px;
+}
+
+.header-7 .halo-currency .currency-menu .icon{
+    width: 23px;
+    height: 23px;
+    margin-right: 10px;
 }
 
 .halo-currency .currency-menu .icon svg{
@@ -58,6 +76,14 @@
     padding: 3px 17px;
 }
 
+.header-7 .halo-currency .currency-menu .dropdown-item{
+    font-size: calc(var(--font-size) - 2px);
+    font-weight: var(--font-weight-normal);
+    color: var(--color-text2);
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
 .halo-currency .currency-menu .dropdown-item .text span{
 	padding-right: 3px;
 }
@@ -73,6 +99,16 @@
 	background: var(--color-link);
 	position: absolute;
 	bottom: 2px;
+}
+
+.header-7 .halo-currency .currency-menu .dropdown-item.active .text{
+    text-decoration: none;
+    font-weight: var(--font-weight-medium);
+    color: var(--color-link-hover);
+}
+
+.header-7 .halo-currency .currency-menu .dropdown-item.active .text:before{
+    display: none;
 }
 
 .shopify-currency .img-icon{
@@ -92,8 +128,4 @@
     left: 50%;
     transform: translate(-50%,-50%);
     width: 100%;
-}
-
-body.dark-mode .halo-currency .currency-menu{
-    background: var(--color-background);
 }

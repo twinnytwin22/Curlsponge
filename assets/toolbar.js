@@ -65,9 +65,7 @@ class Toolbar extends HTMLElement {
         }
 
         if(this.checkNeedToConvertCurrency()){
-            let currencyCode = document.getElementById('currencies')?.querySelector('.active')?.getAttribute('data-currency');
-
-            Currency.convertAll(window.shop_currency, currencyCode, 'span.money', 'money_format');
+            Currency.convertAll(window.shop_currency, $('#currencies .active').attr('data-currency'), 'span.money', 'money_format');
         }
     }
 
@@ -114,7 +112,7 @@ class Toolbar extends HTMLElement {
     }
 
     checkNeedToConvertCurrency() {
-        return (window.show_multiple_currencies && Currency.currentCurrency != window.shop_currency) || window.show_auto_currency;
+        return (window.show_multiple_currencies && Currency.currentCurrency != shopCurrency) || window.show_auto_currency;
     }
 
     onClickDropdownButtonHandler(event) {
@@ -210,7 +208,10 @@ class Toolbar extends HTMLElement {
         this.setActiveViewModeMediaQuery(true);
 
         if(window.compare.show){
-            Shopify.ProductCompare.setLocalStorageProductForCompare();
+            Shopify.ProductCompare.setLocalStorageProductForCompare({
+                link: $('a[data-compare-link]'),
+                onComplete: null
+            });
         }
 
         if(window.wishlist.show){
@@ -251,9 +252,9 @@ class Toolbar extends HTMLElement {
     }
 
     setActiveViewModeMediaQuery(ajaxLoading = true){
-        var viewMode = this.mediaView?.querySelector('.icon-mode.active'),
-            viewModeMobile = this.mediaViewMobile?.querySelector('.icon-mode.active'),
-            column = parseInt(viewMode?.dataset.col),
+        var viewMode = this.mediaView.querySelector('.icon-mode.active'),
+            viewModeMobile = this.mediaViewMobile.querySelector('.icon-mode.active'),
+            column = parseInt(viewMode.dataset.col),
             windowWidth = window.innerWidth;
 
         if(column != 1){
@@ -439,12 +440,12 @@ class Toolbar extends HTMLElement {
                 data: {
                     "attributes[pagination]": value
                 },
-                success: (data) => {
+                success: function (data) {
                     window.location.reload();
                 },
-                error: (xhr, text) => {
+                error: function (xhr, text) {
                     alert($.parseJSON(xhr.responseText).description);
-                }
+                },
             });
         }
     }
@@ -459,16 +460,17 @@ class Toolbar extends HTMLElement {
     }
 
     onScroll() {
-        const offsetScroll = this.stickyBounds?.getBoundingClientRect().y;
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const offsetScroll = this.stickyBounds?.scrollTop + 100 || 100;
 
         var windowWidth = window.innerWidth;
 
         if (windowWidth < 1025) {
-            if (offsetScroll < 0) {
+            if (scrollTop > offsetScroll) {
                 requestAnimationFrame(this.showSticky.bind(this));
 
                 if(document.body.classList.contains('scroll-up') || document.body.classList.contains('stickyNavigation')){
-                    var height = document.querySelector('.header-group').offsetHeight;
+                    var height = document.querySelector('sticky-header').offsetHeight;
 
                     this.style.top = `${height}px`;
                 } else if(document.body.classList.contains('scroll-down')) {
@@ -480,6 +482,8 @@ class Toolbar extends HTMLElement {
                 requestAnimationFrame(this.hideSticky.bind(this));
             }
         }
+
+        this.currentScrollTop = scrollTop;
     }
 
     hideSticky() {

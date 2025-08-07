@@ -1,4 +1,5 @@
-{% layout 'ajax' %}
+{% layout none %}
 
-{% section 'halo-edit-cart' %}
-  <div id='Areviewsapp' class='page-full'>{%  render 'aliexpress_reviews' , product: product %}</div>
+{% render 'halo-edit-cart',
+	product: product
+%}

@@ -1,4 +1,3 @@
-{%- assign button_id = 'product-add-to-cart' | prepend: prefix -%}
 <div class="productView-action{% unless settings.show_wishlist %} productView-action-2{% endunless %}">
     <input type="hidden" name="id" value="{{ current_variant.id }}">
     <div class="product-form__buttons">
@@ -9,8 +8,8 @@
                     type="submit"
                     name="add"
                     data-btn-addToCart
-                    class="product-form__submit button-height button{% if use_available_button_style %} button-{{ btn }}{% else %} button-style{% endif %}{% if first_inventory > 0 %}{% if show_subtotal_text %}{% if subtotal_style == '1' %} button-text-change{% endif %}{% endif %}{% else %} button-text-change button-text-pre-order{% endif %}{% if enable_shake_affect %} button-shake-affect{% endif %}"
-                    id="{{ button_id }}">
+                    class="product-form__submit button button-height{% if first_inventory > 0 %}{% if show_subtotal_text %}{% if subtotal_style == '1' %} button-text-change{% endif %}{% endif %}{% else %} button-text-change button-text-pre-order{% endif %}{% if enable_shake_affect %} button-shake-affect{% endif %}"
+                    id="product-add-to-cart">
                     {%- if first_inventory > 0 -%}
                         {%- if show_subtotal_text -%}
                             {%- if subtotal_style == '1' -%}
@@ -40,8 +39,8 @@
                     type="submit"
                     name="add"
                     data-btn-addToCart
-                    class="product-form__submit button-height button{% if use_available_button_style %} button-{{ btn }}{% else %} button-style{% endif %}{% if show_subtotal_text %}{% if subtotal_style == '1' %} button-text-change{% endif %}{% endif %}{% if enable_shake_affect %} button-shake-affect{% endif %}"
-                    id="{{ button_id }}"
+                    class="product-form__submit button button-height{% if show_subtotal_text %}{% if subtotal_style == '1' %} button-text-change{% endif %}{% endif %}{% if enable_shake_affect %} button-shake-affect{% endif %}"
+                    id="product-add-to-cart"
                 >
                     {%- if show_subtotal_text -%}
                         {%- if subtotal_style == '1' -%}
@@ -60,8 +59,8 @@
                 type="submit"
                 name="add"
                 data-btn-addToCart
-                class="product-form__submit button-height button{% if use_available_button_style %} button-{{ btn }}{% else %} button-style{% endif %}"
-                id="{{ button_id }}"
+                class="product-form__submit button button-height"
+                id="product-add-to-cart"
                 disabled
             >
                 {{ 'products.product.sold_out' | t }}

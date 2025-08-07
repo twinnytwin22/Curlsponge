@@ -1,9 +1,18 @@
-{%- assign background_color = section.settings.colors_bg -%}
+{% assign background_color = section.settings.colors_bg %}
 
 {%- if background_color != 'rgba(0,0,0,0)' and background_color != blank and background_color != settings.colors_bg -%}
     <style type="text/css">
         :root {
-            --color-background: {{ background_color }};
+            --body-bg: {{ background_color }};
+        }
+
+        body{
+            background-color: var(--body-bg);
+        }
+
+        .skin-1 .halo-block-header .title .text,
+        .skin-2 .halo-block-header .title .text{
+            background-color: var(--body-bg);
         }
     </style>
 {%- endif -%}

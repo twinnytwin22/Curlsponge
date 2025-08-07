@@ -38,7 +38,7 @@
                                 <span class="pattern" style="background-image: url({{ variant.image.src | product_img_url: '40x'}});" role="none"></span>
                                 <span class="visually-hidden">{{ value | escape }}</span>
                                 <span class="expand">
-                                    <img srcset="{{ variant.image.src | product_img_url: '75x'}}" src="{{ variant.image.src | product_img_url: '75x'}}" sizes="75px" loading="lazy" alt="{{ value | escape }}">
+                                    <img srcset="{{ variant.image.src | product_img_url: '75x'}}" src="{{ variant.image.src | product_img_url: '75x'}}" sizes="auto" loading="lazy" alt="{{ value | escape }}">
                                 </span>
                             {%- else -%}
                                 {%- if settings.swatch_type == 'png' -%}

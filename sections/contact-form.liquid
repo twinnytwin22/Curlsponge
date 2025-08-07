@@ -1,6 +1,12 @@
-{%- if section.settings.show_contact_form -%}
+{%- liquid
+    assign show_section = section.settings.show_contact_form
+-%}
+
+{%- if show_section -%}
     <link rel="stylesheet" href="{{ 'component-contact-form.css' | asset_url }}" media="print" onload="this.media='all'">
+
     <noscript>{{ 'component-contact-form.css' | asset_url | stylesheet_tag }}</noscript>
+    
     {%- liquid
         assign padding_top = section.settings.padding_top | append: 'px'
         assign padding_bottom = section.settings.padding_bottom | append: 'px'
@@ -13,14 +19,28 @@
         assign block_text = section.settings.block_text
         assign block_title_align = section.settings.block_title_align
     -%}
-    <div class="halo-block halo-contact-form halo-block-padding" id="halo-contact-form-{{ section.id }}"
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};"
-    >
+    
+    <style type="text/css" media="screen">
+        #halo-contact-form-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        @media (max-width: 1024px) {
+            #halo-contact-form-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #halo-contact-form-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+    </style>
+    <div class="halo-block halo-contact-form" id="halo-contact-form-{{ section.id }}">
         <div class="container container-{{ container }}">
             {%- if block_title != blank -%}
                 <div class="halo-block-header">
@@ -197,9 +217,6 @@
         "presets": [
         {
             "name": "t:sections.contact-form.presets.name"
-        }],
-        "disabled_on": {
-            "groups": ["header", "footer"]
-        }
+        }]
     }
 {% endschema %}

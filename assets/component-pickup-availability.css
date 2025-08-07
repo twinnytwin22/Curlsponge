@@ -2,6 +2,11 @@ pickup-availability {
   display: block;
 }
 
+pickup-availability.product__pickup-availabilities {
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
 .pickup-availability-preview {
     display: flex;
     align-items: center;
@@ -204,30 +209,6 @@ pickup-availability-drawer[open] {
 
 body.overflow-hidden .background-overlay{
     display: block;
-}
-
-body.dark-mode pickup-availability-drawer {
-    background-color: var(--bg-black);
-}
-
-body.dark-mode .pickup-availability-header {
-    background-color: #121212;
-}
-
-body.dark-mode .pickup-availability-drawer-button {
-    background-color: var(--bg-white);
-    border: 1px solid;
-}
-
-body.dark-mode .pickup-availability-drawer-button svg {
-    fill: var(--color-black);
-}
-
-body.dark-mode .pickup-availability-preview,
-body.dark-mode .pickup-availability-drawer-title,
-body.dark-mode .pickup-availability-variant,
-body.dark-mode .pickup-availability-address {
-    color: var(--color-white);
 }
 
 @media screen and (min-width: 551px) {

@@ -31,31 +31,70 @@
     assign text_font_weight = section.settings.text_font_weight
     assign text_text_transform = section.settings.text_text_transform
 -%}
-<div data-section-id="{{ section.id }}" data-section-type="blog-default" id="BlogSection-{{ section.id }}" data-section="{{ section.id }}" class="blog-layout-03 halo-page-padding"
-    style="--padding-top: {{ padding_top }};
-        --padding-bottom: {{ padding_bottom }};
-        --padding-top-tablet: {{ padding_top_tablet }};
-        --padding-bottom-tablet: {{ padding_bottom_tablet }};
-        --padding-top-mobile: {{ padding_top_mobile }};
-        --padding-bottom-mobile: {{ padding_bottom_mobile }};
+
+<style type="text/css" media="screen">
+    :root {
         {% if title_font == 'font_1' %}
-            --blog-title-font: var(--font-1-family);
+            --title-font-{{ section.id }}: var(--font-1-family);
         {% elsif title_font == 'font_2' %}
-           --blog-title-font: var(--font-2-family);
+            --title-font-{{ section.id }}: var(--font-2-family);
         {% elsif title_font == 'font_3' %}
-           --blog-title-font: var(--font-3-family);
+            --title-font-{{ section.id }}: var(--font-3-family);
         {% endif %}
-        --blog-title-font-size: {{ title_font_size }};
-        --blog-title-mobile-font-size: {{ title_mobile_font_size }};
-        --blog-title-font-weight: {{ title_font_weight }};
-        --blog-title-text-transform: {{ title_text_transform }};
-        --blog-text-font-size: {{ text_font_size }};
-        --blog-text-font-weight: {{ text_font_weight }};
-        --blog-text-text-transform: {{ text_text_transform }};
-        --blog-title-color: {{ title_color }};
-        --blog-text-color: {{ text_color }};
-        --blog-bg: {{ background_color }};"
->
+    }
+
+    #BlogSection-{{ section.id }}{
+        padding-top: {{ padding_top }};
+        padding-bottom: {{ padding_bottom }};
+    }
+
+    #BlogSection-{{ section.id }} .blog-block-item .blog-content{
+        background: {{ background_color }};
+    }
+
+    #BlogSection-{{ section.id }} .blog-block-item .blog-title{
+        font-family: var(--title-font-{{ section.id }});
+        font-size: {{ title_mobile_font_size }};
+        font-weight: {{ title_font_weight }};
+        text-transform: {{ title_text_transform }};
+        color: {{ title_color }}
+    }
+
+    #BlogSection-{{ section.id }} .blog-block-item .blog-info,
+    #BlogSection-{{ section.id }} .blog-block-item .blog-summary{
+        font-size: {{ text_font_size }};
+        font-weight: {{ text_font_weight }};
+        text-transform: {{ text_text_transform }};
+    }
+
+    #BlogSection-{{ section.id }} .blog-block-item .blog-info,
+    #BlogSection-{{ section.id }} .blog-block-item .blog-summary,
+    #BlogSection-{{ section.id }} .blog-block-item .blog-btn{
+        color: {{ text_color }}
+    }
+
+    @media (max-width: 1024px) {
+        #BlogSection-{{ section.id }}{
+            padding-top: {{ padding_top_tablet }};
+            padding-bottom: {{ padding_bottom_tablet }};
+        }
+    }
+
+    @media (max-width: 550px) {
+        #BlogSection-{{ section.id }}{
+            padding-top: {{ padding_top_mobile }};
+            padding-bottom: {{ padding_bottom_mobile }};
+        }
+    }
+
+    @media (min-width: 551px){
+        #BlogSection-{{ section.id }} .blog-block-item .blog-title{
+            font-size: {{ title_font_size }};
+        }
+    }
+</style>
+
+<div data-section-id="{{ section.id }}" data-section-type="blog-default" id="BlogSection-{{ section.id }}" data-section="{{ section.id }}" class="blog-layout-03">
     <div class="container container-{{ container }}">
         {%- if show_breadcrumb -%}
             {% render 'breadcrumb', alignment: breadcrumb_alignment %}
@@ -82,29 +121,51 @@
                     assign block_title = block.settings.block_title
                     assign block_text = block.settings.block_text
                     assign block_title_font = block.settings.block_title_font
-                    assign block_title_font_size = block.settings.block_title_font_size | append: 'px'
+                    assign block_title_font_size = block.settings.block_title_font_size | plus: 0
                     assign block_title_mobile_font_size = block.settings.block_title_mobile_font_size | append: 'px'
                     assign block_title_font_weight = block.settings.block_title_font_weight
                     assign block_title_text_transform = block.settings.block_title_text_transform
                 -%}
                 <div class="blog-block-item clearfix">
+                    <style type="text/css" media="screen">
+                        :root {
+                            {% if block_title_font == 'font_1' %}
+                                --block-title-font-{{ block.id }}: var(--font-1-family);
+                            {% elsif block_title_font == 'font_2' %}
+                                --block-title-font-{{ block.id }}: var(--font-2-family);
+                            {% elsif block_title_font == 'font_3' %}
+                                --block-title-font-{{ block.id }}: var(--font-3-family);
+                            {% endif %}
+                        }
+
+                        .blog-block-item .item-{{ block.id }} .item-wrapper{
+                            background-color: {{ block_background }};
+                        }
+
+                        .blog-block-item .item-{{ block.id }} .title,
+                        .blog-block-item .item-{{ block.id }} .desc{
+                            color: {{ block_color }};
+                        }
+
+                        .blog-block-item .item-{{ block.id }} .title{
+                            font-family: var(--block-title-font-{{ block.id }});
+                            font-size: {{ block_title_mobile_font_size }};
+                            font-weight: {{ block_title_font_weight }};
+                            text-transform: {{ block_title_text_transform }};
+                        }
+
+                        @media (min-width: 1025px){
+                            .blog-block-item .item-{{ block.id }} .title{
+                                {% if block_title_font_size >= 40 %}
+                                    line-height: .5;
+                                {% endif %}
+                                font-size: {{ block_title_font_size | append: 'px' }};
+                            }
+                        }
+                    </style>
                     <div class="blog-block-itemWrapper">
                         <div class="itemWrapper-top content-direction-{{ content }}">
-                            <div class="item item-{{ content }} item-{{ block.id }}"
-                                style="{% if block_title_font == 'font_1' %}
-                                        --block-title-font: var(--font-1-family);
-                                    {% elsif block_title_font == 'font_2' %}
-                                        --block-title-font: var(--font-2-family);
-                                    {% elsif block_title_font == 'font_3' %}
-                                        --block-title-font: var(--font-3-family);
-                                    {% endif %}
-                                    --block-title-font-size: {{ block_title_font_size }};
-                                    --block-title-mobile-font-size: {{ block_title_mobile_font_size }};
-                                    --block-title-font-weight: {{ block_title_font_weight }};
-                                    --block-title-text-transform: {{ block_title_text_transform }};
-                                    --block-background: {{ block_background }};
-                                    --block-color: {{ block_color }};" 
-                            >
+                            <div class="item item-{{ content }} item-{{ block.id }}">
                                 <div class="item-wrapper">
                                     {%- if block_title != blank or block_text != blank -%}
                                         <div class="item-content text-{{ blog_text_align }}">

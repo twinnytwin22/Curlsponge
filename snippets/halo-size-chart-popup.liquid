@@ -1,22 +1,19 @@
 <link rel="stylesheet" href="{{ 'component-size-chart.css' | asset_url }}" media="print" onload="this.media='all'">
+
 <noscript>{{ 'component-size-chart.css' | asset_url | stylesheet_tag }}</noscript>
-<custom-modal class="halo-modal halo-modal__topDown" id="Modal-SizeChart">
-	<div class="halo-modal__dialog"
-      	role="dialog"
-      	aria-label="Dialog"
-      	aria-modal="true"
-      	tabindex="-1"
-    >
-    	<div class="halo-modal-header">
-            <button class="halo-modal-close clearfix" role="button" id="ModalClose-SizeChart" aria-label="{{ 'general.common.close' | t }}">
+
+<div class="halo-popup halo-size-chart-popup halo-popup-topDown customPopup-large" data-size-chart-popup id="halo-size-chart-popup">
+	<div class="halo-popup-wrapper">
+		<div class="halo-popup-header">
+			<a href="javascript:void(0)" title="{{ 'general.common.close' | t }}" class="halo-popup-close clearfix" data-close-size-chart-popup>
 		        {% render 'icon-close' %}
-		    </button>
-            <h3 class="halo-modal-title text-center">
-            	{{ 'size_chart.general.title' | t }}
-            </h3>
-    	</div>
-    	<div class="halo-modal-content halo-popup-scroll custom-scrollbar" id="ModalWrapper-SizeChart">
-    		<div class="halo-size-chart text-center">
+		    </a>
+		    <h5 class="halo-popup-title text-center">
+	            {{ 'size_chart.general.title' | t }}
+	        </h5>
+		</div>
+		<div class="halo-popup-content halo-popup-scroll custom-scrollbar">
+			<div class="halo-size-chart text-center {{ product.metafields.c_f.size_chart }}">
 				{%- if size_chart_type == 'metafield' -%}
 					{% assign img = product.metafields.c_f.size_chart %}
 					<img srcset="{{ img }}"
@@ -44,11 +41,9 @@
 		                src="{{ img | img_url: 'master' }}"
 		                loading="lazy"
 		                alt="{{ img.alt | default: shop.name | escape }}"
-		                width="{{ img.width | replace: 'px', '' }}"
-                        height="{{ img.height | replace: 'px', '' }}"
 		            >
 				{%- endif -%}
 			</div>
-    	</div>
-    </div>
-</custom-modal>
+		</div>
+	</div>
+</div>

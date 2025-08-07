@@ -23,9 +23,15 @@
     endif
     assign show_faqs_search_form = section.settings.show_faqs_search_form
 -%}
-{%- if show_faqs_image_bg_overlay -%}
-    {%- if faqs_image_bg_overlay != 'rgba(0,0,0,0)' and faqs_image_bg_overlay != blank -%}
-        <style type="text/css" media="screen">
+
+<style type="text/css" media="screen">
+    #FaqsSection-{{ section.id }}{
+        padding-top: {{ padding_top }};
+        padding-bottom: {{ padding_bottom }};
+    }
+
+    {% if show_faqs_image_bg_overlay %}
+        {% if faqs_image_bg_overlay != 'rgba(0,0,0,0)' and faqs_image_bg_overlay != blank %}
             #FaqsSection-{{ section.id }} .faqs-banner:before{
                 content: '';
                 display: block;
@@ -38,17 +44,25 @@
                 z-index: 2;
                 background-color: {{ faqs_image_bg_overlay | color_modify: 'alpha', 0.3 }};
             }
-        </style>
-    {%- endif -%}
-{%- endif -%}
-<faqs-item data-section-id="{{ section.id }}" data-section-type="faqs" id="FaqsSection-{{ section.id }}" data-section="{{ section.id }}" class="halo-page-padding"
-    style="--padding-top: {{ padding_top }};
-        --padding-bottom: {{ padding_bottom }};
-        --padding-top-tablet: {{ padding_top_tablet }};
-        --padding-bottom-tablet: {{ padding_bottom_tablet }};
-        --padding-top-mobile: {{ padding_top_mobile }};
-        --padding-bottom-mobile: {{ padding_bottom_mobile }};"
->
+        {% endif %}
+    {% endif %}
+
+    @media (max-width: 1024px) {
+        #FaqsSection-{{ section.id }}{
+            padding-top: {{ padding_top_tablet }};
+            padding-bottom: {{ padding_bottom_tablet }};
+        }
+    }
+
+    @media (max-width: 550px) {
+        #FaqsSection-{{ section.id }}{
+            padding-top: {{ padding_top_mobile }};
+            padding-bottom: {{ padding_bottom_mobile }};
+        }
+    }
+</style>
+
+<faqs-item data-section-id="{{ section.id }}" data-section-type="faqs" id="FaqsSection-{{ section.id }}" data-section="{{ section.id }}">
     {%- if show_faqs_image -%}
         <div class="faqs-header faqs-header-2 text-center">
             <div class="faqs-banner{% if show_faqs_image_parallax %} faqs-banner--parallax{% endif %}" {% if show_faqs_image_parallax %} style="background-image: url({{ faqs_image | img_url: '1920x' }});"{% endif %}>
@@ -137,10 +151,12 @@
                                         {%- for i in (1..10) -%}
                                             {% capture cap_question %}question_{{ i }}{% endcapture %}
                                             {% capture cap_answer %}answer_{{ i }}{% endcapture %}
+
                                             {%- liquid
                                                 assign question = block.settings[cap_question]
                                                 assign answer = block.settings[cap_answer]
                                             -%}
+
                                             {%- if question != blank -%}
                                                 <div class="faqs-item">
                                                     <div class="card">

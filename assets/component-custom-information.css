@@ -1,24 +1,16 @@
-.custom-information{
-	margin: 25px 0 0;
-}
-
-.custom-information .item{
+product-custom-info{
     display: block;
 }
 
-.custom-information .item-wrapper{
+.custom-information{
+	margin: 25px 0px -8px;
+}
+
+.custom-information .item{
 	display: flex;
 	justify-content: flex-start;
 	align-items: flex-start;
-}
-
-.custom-information [data-modal-opener]{
-    display: inline-block;
-    cursor: pointer;
-}
-
-.custom-information .item + .item{
-    margin-top: 10px;
+	margin-bottom: 12px;
 }
 
 .custom-information .icon{
@@ -29,9 +21,11 @@
 	position: relative;
     width: 25px;
     height: 25px;
-    color: var(--color-text);
-    fill: currentColor;
-    stroke: currentColor;
+    stroke: var(--icon);
+}
+
+[data-custom-information] {
+    cursor: pointer;
 }
 
 .custom-information .wrapper-content{
@@ -57,11 +51,7 @@
 
 .custom-information .wrapper-content .title .symbol svg{
 	width: 16px;
-	height: 16px;;
-    color: currentColor;
-    fill: currentColor;
-    stroke: transparent;
-    opacity: 0.2;
+	height: 16px;
 }
 
 .custom-information .wrapper-content .desc{
@@ -74,6 +64,32 @@
 }
 
 .custom-information .wrapper-content .desc p{
-	margin: 0;
+	margin: 0px;
 	padding-bottom: 4px;
+}
+
+.halo-global-custom-informatin-popup .halo-popup-header .symbol{
+    display: none;
+}
+
+body.custom-info-show{
+    overflow: hidden;
+    height: 100%;
+}
+
+body.custom-info-show .background-overlay{
+    display: block;
+}
+
+body.custom-info-show .halo-global-custom-informatin-popup{
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translate3d(-50%,-50%,0);
+}
+
+@media (min-width: 1025px){
+    body.custom-info-show{
+        padding-right: 10px;
+    }
 }

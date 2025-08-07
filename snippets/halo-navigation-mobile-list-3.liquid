@@ -1,7 +1,7 @@
 {%- for link in menu -%}
 	<li class="menu-lv-item menu-lv-1 text-left no-megamenu{% if link != blank %} dropdown{% endif %}">
 		{%- if link.links != blank -%}
-			<a class="menu-lv-1__action list-menu__item link focus-inset{% if show_icon %} menu-lv__flex{% endif %}" role="button">
+			<p class="menu-lv-1__action list-menu__item link focus-inset{% if show_icon %} menu-lv__flex{% endif %}">
 				{%- if show_icon -%}
 					{%- liquid
 						if image_type == 'jpg'
@@ -17,25 +17,25 @@
 						</span>
 					{%- endif -%}
 				{%- endif -%}
-				<span class="text {{ item_image }}">{{ link.title | escape }}</span>
+				<a class="text {{ item_image }}" href="{{ link.url }}">{{ link.title | escape }}</a>
 				<span class="icon-dropdown" data-toggle-menu-mb>
 					{% render 'icon-caret-right' %}
 				</span>
-			</a>
+			</p>
 			<div class="menu-lv__dropdownmenu{% if settings.layout == '2' %} menu-lv__dropdownmenu--border{% endif %}">
 				<ul class="menu-lv__list list-menu list-unstyled motion-reduce" role="list">
 					<li class="menu-lv-item menu-lv-2 nav-title-mobile text-center">
 			            <span class="icon-dropdown">
 			                {% render 'icon-long-arrow' %}
 			            </span>
-			            <a class="menu-lv-2__action link focus-inset" href="{{ link.url }}" role="button">
+			            <span class="menu-lv-2__action link focus-inset">
 			                <span class="text">
 			                    {{ link.title | escape }}
 			                </span>
-			            </a>
+			            </span>
 			        </li>
 			        <li class="menu-lv-item menu-lv-2 text-left nav-all-mobile">
-			            <a href="{{ link.url }}" class="menu-lv-2__action list-menu__item list-menu__item--end link focus-inset" role="button">
+			            <a href="{{ link.url }}" class="menu-lv-2__action list-menu__item list-menu__item--end link focus-inset">
 			                <span class="text">
 			                    {{ 'general.navigation.go_to' | t : name : link.title | escape }}
 			                </span>
@@ -44,7 +44,7 @@
 			        {%- for childlink in link.links -%}
 			        	<li class="menu-lv-item menu-lv-2 text-left{% if childlink.links != blank %} dropdown{% endif %}">
 			        		{%- if childlink.links == blank -%}
-			        			<a href="{{ childlink.url }}" class="menu-lv-2__action list-menu__item list-menu__item--end link focus-inset{% if show_icon %} menu-lv__flex{% endif %}" role="button">
+			        			<a href="{{ childlink.url }}" class="menu-lv-2__action list-menu__item list-menu__item--end link focus-inset{% if show_icon %} menu-lv__flex{% endif %}">
 			        				{%- if show_icon -%}
 										{%- liquid
 											if image_type == 'jpg'
@@ -65,7 +65,7 @@
 			                        </span>
 								</a>
 			        		{%- else -%}
-			        			<a class="menu-lv-2__action link list-menu__item focus-inset{% if show_icon %} menu-lv__flex{% endif %}" href="{{ childlink.url }}" role="button">
+			        			<p class="menu-lv-2__action link list-menu__item focus-inset{% if show_icon %} menu-lv__flex{% endif %}">
 			        				{%- if show_icon -%}
 										{%- liquid
 											if image_type == 'jpg'
@@ -81,27 +81,27 @@
 											</span>
 										{%- endif -%}
 									{%- endif -%}
-			        				<span class="text">
+			        				<a class="text" href="{{ childlink.url }}">
 			                            {{ childlink.title | escape }}
-			                        </span>
+			                        </a>
 			                        <span class="icon-dropdown" data-toggle-menu-mb>
 			                            {% render 'icon-caret-right' %}
 			                        </span>
-			        			</a>
+			        			</p>
 			        			<div class="menu-lv__dropdownmenu menu-lv__dropdownmenu-2">
 			        				<ul class="menu-lv__list list-menu list-unstyled motion-reduce">
 			        					<li class="menu-lv-item menu-lv-3 nav-title-mobile text-center">
 			                                <span class="icon-dropdown">
 			                                    {% render 'icon-long-arrow' %}
 			                                </span>
-			                                <a class="menu-lv-3__action link focus-inset" href="{{ childlink.url }}" role="button">
+			                                <span class="menu-lv-3__action link focus-inset">
 			                                    <span class="text">
 			                                        {{ childlink.title | escape }}
 			                                    </span>
-			                                </a>
+			                                </span>
 			                            </li>
 			                            <li class="menu-lv-item menu-lv-3 text-left nav-all-mobile">
-			                                <a href="{{ childlink.url }}" class="menu-lv-3__action list-menu__item list-menu__item--end link focus-inset" role="button">
+			                                <a href="{{ childlink.url }}" class="menu-lv-3__action list-menu__item list-menu__item--end link focus-inset">
 			                                    <span class="text">
 			                                        {{ 'general.navigation.go_to' | t : name : childlink.title | escape }}
 			                                    </span>
@@ -109,7 +109,7 @@
 			                            </li>
 			                            {%- for grandchildlink in childlink.links -%}
 			                            	<li class="menu-lv-item menu-lv-3 text-left">
-			                            		<a href="{{ grandchildlink.url }}" class="menu-lv-3__action list-menu__item list-menu__item--end link focus-inset{% if show_icon %} menu-lv__flex{% endif %}" role="button">
+			                            		<a href="{{ grandchildlink.url }}" class="menu-lv-3__action list-menu__item list-menu__item--end link focus-inset{% if show_icon %} menu-lv__flex{% endif %}">
 			                            			{%- if show_icon -%}
 														{%- liquid
 															if image_type == 'jpg'
@@ -139,7 +139,7 @@
 				</ul>
 			</div>
 		{%- else -%}
-			<a href="{{ link.url }}" class="menu-lv-1__action list-menu__item list-menu__item--end link focus-inset {% if show_icon %} menu-lv__flex{% endif %}" role="button">
+			<a href="{{ link.url }}" class="menu-lv-1__action list-menu__item list-menu__item--end link focus-inset {% if show_icon %} menu-lv__flex{% endif %}">
 				{%- if show_icon -%}
 					{%- liquid
 						if image_type == 'jpg'

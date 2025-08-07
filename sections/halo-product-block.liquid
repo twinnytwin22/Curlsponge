@@ -20,19 +20,33 @@
         assign portrait_aspect_ratio = section.settings.portrait_aspect_ratio
         assign show_add_to_cart = section.settings.show_add_to_cart
     -%}
-    <div class="halo-block halo-product-block halo-block-padding" id="halo-product-block-{{ section.id }}" data-product-block data-limit="{{ limit }}" data-layout="{{ layout }}" sectionId="{{ section.id }}"
+    <style type="text/css" media="screen">
+        #halo-product-block-{{ section.id }}{
+            padding-top: {{ padding_top }};
+            padding-bottom: {{ padding_bottom }};
+        }
+
+        @media (max-width: 1024px) {
+            #halo-product-block-{{ section.id }}{
+                padding-top: {{ padding_top_tablet }};
+                padding-bottom: {{ padding_bottom_tablet }};
+            }
+        }
+
+        @media (max-width: 550px) {
+            #halo-product-block-{{ section.id }}{
+                padding-top: {{ padding_top_mobile }};
+                padding-bottom: {{ padding_bottom_mobile }};
+            }
+        }
+    </style>
+    <div class="halo-block halo-product-block" id="halo-product-block-{{ section.id }}" data-product-block data-limit="{{ limit }}" data-layout="{{ layout }}" sectionId="{{ section.id }}"
         {% if collection != blank %}
             data-collection="{{ collection }}"
             data-image-ratio="{{ image_ratio }}"
             data-show-add-to-cart="{{ show_add_to_cart }}"
             data-ratio="{{ portrait_aspect_ratio }}"
         {% endif %}
-        style="--padding-top: {{ padding_top }};
-            --padding-bottom: {{ padding_bottom }};
-            --padding-top-tablet: {{ padding_top_tablet }};
-            --padding-bottom-tablet: {{ padding_bottom_tablet }};
-            --padding-top-mobile: {{ padding_top_mobile }};
-            --padding-bottom-mobile: {{ padding_bottom_mobile }};"
     >
         <div class="container container-{{ container }}{% if boxed_container %} container-boxed{% endif %}">
             {%- if block_title != blank -%}
@@ -445,9 +459,6 @@
             {
                 "name": "t:sections.product-block.presets.name"
             }
-        ],
-        "disabled_on": {
-            "groups": ["header", "footer"]
-        }
+        ]
     }
 {% endschema %}

@@ -23,7 +23,7 @@
 	        if bundle_discount
 	        	assign bundle_discount_rate = product.metafields.c_f.bundle_discount_rate | plus: 0 | divided_by: 100.00
 	        	assign bundle_discount_text = section.settings.bundle_discount_text
-                assign bundle_discount_text_color = section.settings.bundle_discount_text_color
+                assign bundle_discount_text_color =  section.settings.bundle_discount_text_color
 	        endif
             assign total_btn_bg = section.settings.total_btn_bg
             assign total_btn_color = section.settings.total_btn_color
@@ -31,15 +31,51 @@
             assign total_btn_bg_hover = section.settings.total_btn_bg_hover
             assign total_btn_color_hover = section.settings.total_btn_color_hover
             assign total_btn_border_hover = section.settings.total_btn_border_hover
-
-            if settings.show_dark_mode
-                assign dark_mode = false
-                unless background_color == blank or background_color == '#fff' or background_color == '#FFF' or background_color == '#ffffff' or background_color == '#FFFFFF' or background_color == 'rgb(255,255,255)' or background_color == 'rgba(255,255,255,1)' or background_color == 'rgba(0,0,0,0)' or background_color == 'rgb(0,0,0,0)'
-                    assign dark_mode = true
-                    assign dark_mode_background_color = section.settings.background_color
-                endunless
-            endif
 	    -%}
+        <style type="text/css" media="screen">
+            #halo-product-bundle{
+                padding-top: {{ padding_top }};
+                padding-bottom: {{ padding_bottom }};
+                background: {{ background_color }};
+            }
+
+            .skin-1 #halo-product-bundle .halo-block-header .title .text,
+            .skin-2 #halo-product-bundle .halo-block-header .title .text{
+                background-color: {{ background_color }};
+            }
+
+            #halo-product-bundle .bundle-product-text{
+                color: {{ bundle_discount_text_color }};
+            }
+
+            #halo-product-bundle .bundle-product-action .button{
+                background: {{ total_btn_bg }};
+                color: {{ total_btn_color }};
+                border-color: {{ total_btn_border }};
+            }
+
+            @media (max-width: 1024px) {
+                #halo-product-bundle{
+                    padding-top: {{ padding_top_tablet }};
+                    padding-bottom: {{ padding_bottom_tablet }};
+                }
+            }
+
+            @media (max-width: 550px) {
+                #halo-product-bundle{
+                    padding-top: {{ padding_top_mobile }};
+                    padding-bottom: {{ padding_bottom_mobile }};
+                }
+            }
+
+            @media (min-width: 1025px) {
+                #halo-product-bundle .bundle-product-action .button:hover{
+                    background: {{ total_btn_bg_hover }};
+                    color: {{ total_btn_color_hover }};
+                    border-color: {{ total_btn_border_hover }};
+                }
+            }
+        </style>
         <script>
             window.total_btn = {
                 add_item: `{{ 'products.product.bundle_block.add_item_to_cart' | t }}`,
@@ -47,25 +83,7 @@
                 add_all_item: `{{ 'products.product.bundle_block.add_all_to_cart' | t }}`
             }
         </script>
-	    <product-bundle class="halo-block halo-product-bundle halo-block-padding halo-block-gradient layout-{{ layout }} frequently-bought-together-block{% unless dark_mode %} dark-mode{% endunless %}" data-product-bundle id="halo-product-bundle"
-            style="--padding-top: {{ padding_top }};
-                --padding-bottom: {{ padding_bottom }};
-                --padding-top-tablet: {{ padding_top_tablet }};
-                --padding-bottom-tablet: {{ padding_bottom_tablet }};
-                --padding-top-mobile: {{ padding_top_mobile }};
-                --padding-bottom-mobile: {{ padding_bottom_mobile }};
-                --bg-color: {{ background_color | default: settings.colors_bg }};
-                --btn-bg: {{ total_btn_bg }};
-                --btn-color: {{ total_btn_color }};
-                --btn-border: {{ total_btn_border }};
-                --btn-bg-hover: {{ total_btn_bg_hover }};
-                --btn-color-hover: {{ total_btn_color_hover }};
-                --btn-border-hover: {{ total_btn_border_hover }};
-                --discount-color: {{ bundle_discount_text_color }};
-                {% if dark_mode %}
-                    --dark-mode-bg-color: {{ dark_mode_background_color }};
-                {% endif %}"
-        >
+	    <product-bundle class="halo-block halo-product-bundle layout-{{ layout }} frequently-bought-together-block" data-product-bundle id="halo-product-bundle">
 	    	<div class="container container-{{ container }}">
 	    	 	{%- if block_title != blank -%}
 	                <div class="halo-block-header">
@@ -146,6 +164,7 @@
 	            </div>
 	    	</div>
 	    </product-bundle>
+
 	    <script src="{{ 'product-bundle.js' | asset_url }}" defer></script>
     {%- endif -%}
 {%- endif -%}

@@ -13,7 +13,7 @@
         {%- endif -%}
         {%- for column in footer_link -%}
             {%- if column.settings.heading != blank -%}
-                <toggle-mobile-column class="footer-block__column footer-block__mobile" {{ column.shopify_attributes }}>
+                <div class="footer-block__column footer-block__mobile">
                     <h2 class="footer-block__heading" data-toggle-column>
                         {{ column.settings.heading | escape }}
                     </h2>
@@ -22,7 +22,7 @@
                             <ul class="list-unstyled">
                                 {%- for link in column.settings.menu.links -%}
                                     <li>
-                                        <a href="{{ link.url }}" class="link link-underline list-menu__item--link" role="button">
+                                        <a href="{{ link.url }}" class="link link-underline list-menu__item--link">
                                             <span class="text">{{ link.title }}</span>
                                         </a>
                                     </li>
@@ -30,7 +30,7 @@
                             </ul>
                         </div>
                     {%- endif -%}
-                </toggle-mobile-column>
+                </div>
             {%- endif -%}
         {%- endfor -%}
         {%- if footer_style == '2' or footer_style == '4' -%}
