@@ -584,7 +584,7 @@
         "block_title": "Best Sellers",
         "block_text": "",
         "block_title_align": "center",
-        "block_layout": "slider",
+        "block_layout": "grid",
         "col": "expand",
         "block_collection": "all",
         "block_limit": 5,
