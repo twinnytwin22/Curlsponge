@@ -1235,36 +1235,37 @@
 
                                         // Re-initialize lazy loading for new content
                                         if (window.lazySizes) {
-                                            // Force lazySizes to re-scan for new elements
-                                            lazySizes.autoSizer.checkElems();
-                                            // Manually check the new block for lazy images
-                                            var lazyImages = $block.find('.lazyload');
-                                            lazyImages.each(function() {
+                                            // Force lazySizes to re-scan for new elements immediately
+                                            setTimeout(function() {
+                                                lazySizes.autoSizer.checkElems();
                                                 lazySizes.loader.checkElems();
-                                            });
+                                            }, 100);
                                         }
                                         
-                                        // Alternative: trigger lazy loading check for data-src images
-                                        $block.find('img[data-src]').each(function() {
-                                            var $img = $(this);
-                                            if ($img.attr('data-src')) {
-                                                $img.attr('src', $img.attr('data-src'));
-                                                $img.removeAttr('data-src');
+                                        // Force immediate loading for all lazy images in the new block
+                                        setTimeout(function() {
+                                            $block.find('img.lazyload').each(function() {
+                                                var $img = $(this);
+                                                var dataSrc = $img.attr('data-src');
+                                                var src = $img.attr('src');
+                                                
+                                                // If img has data-src, move it to src
+                                                if (dataSrc) {
+                                                    $img.attr('src', dataSrc);
+                                                    $img.removeAttr('data-src');
+                                                }
+                                                
+                                                // Remove lazyload class to prevent conflicts
                                                 $img.removeClass('lazyload').addClass('lazyloaded');
-                                            }
-                                        });
-
-                                        // Force immediate loading for images with src but lazyload class
-                                        $block.find('img.lazyload[src]').each(function() {
-                                            var $img = $(this);
-                                            $img.removeClass('lazyload').addClass('lazyloaded');
-                                            // Trigger load event manually if needed
-                                            if (!$img[0].complete) {
-                                                $img[0].onload = function() {
-                                                    $(this).addClass('lazyloaded');
-                                                };
-                                            }
-                                        });
+                                                
+                                                // Force image to load if it hasn't already
+                                                if (!$img[0].complete && src) {
+                                                    $img[0].onload = function() {
+                                                        $(this).addClass('lazyloaded');
+                                                    };
+                                                }
+                                            });
+                                        }, 200);
 
                                         if(window.product_swatch_style == 'slider'){
                                             var productList = $block.find('.product');
@@ -1342,6 +1343,22 @@
                                 content.appendChild(element.querySelector('template').content.firstElementChild.cloneNode(true));
                                 element.classList.add('ajax-loaded');
                                 element.querySelector('[id^="ProductSection-"]').innerHTML = content.innerHTML;
+                                
+                                // Fix lazy loading for featured product images
+                                setTimeout(function() {
+                                    var $images = $block.find('img.lazyload');
+                                    $images.each(function() {
+                                        var $img = $(this);
+                                        var dataSrc = $img.attr('data-src');
+                                        
+                                        if (dataSrc) {
+                                            $img.attr('src', dataSrc);
+                                            $img.removeAttr('data-src');
+                                        }
+                                        
+                                        $img.removeClass('lazyload').addClass('lazyloaded');
+                                    });
+                                }, 100);
                                 
                                 if(element.querySelector('[id^="featured-product-option-"]')){
                                     Shopify.FeaturedProduct.onReady({
