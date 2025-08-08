@@ -49,7 +49,7 @@
             src="{{ product.featured_media | img_url: '533x' }}"
             sizes="(min-width: 1100px) 535px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)"
             alt="{{ product.featured_media.alt | escape }}"
-            class="lazyload"
+            class="{% unless loading == false %}lazyload{% endunless %}"
         >
         {%- if show_image_swap -%}
             {%- if has_video != blank -%}
@@ -78,7 +78,7 @@
                         src="{{ product.images[1] | img_url: '533x' }}"
                         sizes="(min-width: 1100px) 535px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)"
                         alt="{{ product.images[1].alt | escape }}"
-                        class="lazyload"
+                        class="{% unless loading == false %}lazyload{% endunless %}"
                     >
                 {%- endif -%}
             {%- endif -%}
