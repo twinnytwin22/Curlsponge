@@ -593,7 +593,7 @@
         "show_add_to_cart": true,
         "block_per_row": "3",
         "block_infinite_scroll": true,
-        "block_show": "3",
+        "block_show": "6",
         "block_dots": false,
         "block_arrows": true
       }
