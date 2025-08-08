@@ -1233,6 +1233,21 @@
                                             halo.productBlockSlider($block);
                                         }
 
+                                        // Re-initialize lazy loading for new content
+                                        if (window.lazySizes) {
+                                            lazySizes.init();
+                                        }
+                                        
+                                        // Alternative: trigger lazy loading check
+                                        $block.find('img[data-src]').each(function() {
+                                            var $img = $(this);
+                                            if ($img.attr('data-src')) {
+                                                $img.attr('src', $img.attr('data-src'));
+                                                $img.removeAttr('data-src');
+                                                $img.removeClass('lazyload').addClass('lazyloaded');
+                                            }
+                                        });
+
                                         if(window.product_swatch_style == 'slider'){
                                             var productList = $block.find('.product');
 
