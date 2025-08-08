@@ -1229,6 +1229,8 @@
                                         }
                                     },
                                     complete: function () {
+                                        console.log('AJAX complete for product block:', $block.attr('sectionId'));
+                                        
                                         if (layout == 'slider') {
                                             halo.productBlockSlider($block);
                                         }
@@ -1244,28 +1246,50 @@
                                         
                                         // Force immediate loading for all lazy images in the new block
                                         setTimeout(function() {
-                                            $block.find('img.lazyload').each(function() {
+                                            var images = $block.find('img');
+                                            console.log('Processing', images.length, 'images in block');
+                                            
+                                            images.each(function() {
                                                 var $img = $(this);
                                                 var dataSrc = $img.attr('data-src');
-                                                var src = $img.attr('src');
+                                                var srcset = $img.attr('srcset');
+                                                var dataSrcset = $img.attr('data-srcset');
                                                 
-                                                // If img has data-src, move it to src
+                                                console.log('Image:', $img[0], 'dataSrc:', dataSrc, 'classes:', $img.attr('class'));
+                                                
+                                                // Move any data-src to src immediately
                                                 if (dataSrc) {
                                                     $img.attr('src', dataSrc);
                                                     $img.removeAttr('data-src');
                                                 }
                                                 
-                                                // Remove lazyload class to prevent conflicts
-                                                $img.removeClass('lazyload').addClass('lazyloaded');
+                                                // Move any data-srcset to srcset immediately  
+                                                if (dataSrcset) {
+                                                    $img.attr('srcset', dataSrcset);
+                                                    $img.removeAttr('data-srcset');
+                                                }
                                                 
-                                                // Force image to load if it hasn't already
-                                                if (!$img[0].complete && src) {
-                                                    $img[0].onload = function() {
-                                                        $(this).addClass('lazyloaded');
-                                                    };
+                                                // Remove ALL lazy loading classes to prevent conflicts
+                                                $img.removeClass('lazyload lazyloading').addClass('lazyloaded');
+                                                
+                                                // Force the image to trigger loading
+                                                $img[0].loading = 'eager';
+                                                
+                                                // If the image isn't complete, ensure it loads
+                                                if (!$img[0].complete) {
+                                                    var originalSrc = $img.attr('src');
+                                                    if (originalSrc) {
+                                                        // Force reload by temporarily changing src
+                                                        $img.attr('src', '');
+                                                        $img.attr('src', originalSrc);
+                                                        
+                                                        $img[0].onload = function() {
+                                                            $(this).removeClass('lazyload lazyloading').addClass('lazyloaded');
+                                                        };
+                                                    }
                                                 }
                                             });
-                                        }, 200);
+                                        }, 50);
 
                                         if(window.product_swatch_style == 'slider'){
                                             var productList = $block.find('.product');
