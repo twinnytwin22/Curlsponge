@@ -128,14 +128,14 @@ div[class^='card style-']{
 }
 
 .media--loading-effect > img.lazyload,
-.media--loading-effect > img.lazyloading{
-    opacity: 0!important;
+.media--loading-effect > img.lazyloading {
+    opacity: 1;
 }
 
 .media--loading-effect > img.lazyload ~ .media-loading,
 .media--loading-effect > img.lazyloading ~ .media-loading,
-.card-media--loading .media-loading{
-    display: block;
+.card-media--loading .media-loading {
+    display: none;
 }
 
 .card-information{
